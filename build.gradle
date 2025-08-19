@@ -165,3 +165,44 @@ idea {
         downloadJavadoc = true
     }
 }
+
+// 生成资产目录（供清理与输出声明使用）
+def generatedAssetsDir = file("src/main/resources/assets/${project.mod_id}/textures/gui")
+
+// 清理已生成资产（可选）
+tasks.register('cleanGeneratedAssets', Delete) {
+    group = 'assets'
+    description = '删除由构建脚本生成的资源目录（textures/gui）'
+    delete generatedAssetsDir
+}
+
+tasks.register('buildAssets', Exec) {
+    group = 'assets'
+    description = '运行 src/main/resources/buildassets.sh 以生成资源'
+    workingDir file('src/main/resources')
+    commandLine 'bash', 'buildassets.sh'
+    dependsOn 'cleanGeneratedAssets'
+
+    // 增量构建：声明输入与输出，确保变更时会重新运行
+    inputs.files(
+            file('src/main/resources/buildassets.sh'),
+            file('src/main/resources/build_assets.py'),
+            file('src/main/resources/buildconfig.json'),
+            file('src/main/resources/packbig.png')
+    )
+    outputs.dir(generatedAssetsDir)
+}
+
+// 在尽可能多的关键任务之前执行生成资产
+// 资源处理、客户端运行、资产下载、运行准备、编译、打包、构建等
+[tasks.named('processResources'),
+ tasks.named('runClient'),
+ tasks.named('downloadAssets'),
+ tasks.named('prepareClientRun'),
+ tasks.named('classes'),
+ tasks.named('compileJava'),
+ tasks.named('jar'),
+ tasks.named('build')
+].each { provider ->
+    provider.configure { dependsOn 'buildAssets' }
+}
