@@ -1,0 +1,21 @@
+{
+  "item.programmable_magic.small_mana_cell": "Small Mana Cell",
+  "item.programmable_magic.test_wand": "Test Wand",
+
+  "item.programmable_magic.spell_display_projectile": "Spell: Projectile Carrier",
+  "item.programmable_magic.spell_display_gain_velocity": "Spell: Velocity",
+  "item.programmable_magic.spell_display_delay_1s": "Spell: Delay (1s)",
+  "item.programmable_magic.spell_display_mpx5": "Spell: Power x5",
+  "item.programmable_magic.spell_display_explosion": "Spell: Explosion",
+
+  "tooltip.programmable_magic.mana_stored": "Mana Stored:",
+  "tooltip.programmable_magic.mana_radi": "Radiation:",
+  "tooltip.programmable_magic.mana_temp": "Temperature:",
+  "tooltip.programmable_magic.mana_mome": "Momentum:",
+  "tooltip.programmable_magic.mana_pres": "Pressure:",
+
+  "tooltip.programmable_magic.mana_cost": "Mana Cost:",
+  "tooltip.programmable_magic.spell_carrier": "Carrier: Projectile",
+
+  "gui.programmable_magic.wand_title": "Wand"
+} 

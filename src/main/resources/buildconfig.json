@@ -1,0 +1,31 @@
+[
+  {
+    "packbig.png": [
+      {
+        "from_top_left": [0, 0],
+        "from_bottom_right": [265, 26],
+        "target_img_path": "assets/programmable_magic/textures/gui/release_spell_button_normal.png"
+      },
+      {
+        "from_top_left": [0, 28],
+        "from_bottom_right": [265, 54],
+        "target_img_path": "assets/programmable_magic/textures/gui/release_spell_button_hover.png"
+      },
+      {
+        "from_top_left": [0, 56],
+        "from_bottom_right": [321, 89],
+        "target_img_path": "assets/programmable_magic/textures/gui/inventory_slot.png"
+      },
+      {
+        "from_top_left": [0, 92],
+        "from_bottom_right": [447, 107],
+        "target_img_path": "assets/programmable_magic/textures/gui/used_spell_slot.png"
+      },
+      {
+        "from_top_left": [324, 2],
+        "from_bottom_right": [501, 53],
+        "target_img_path": "assets/programmable_magic/textures/gui/spell_display_slot.png"
+      }
+    ]
+  }
+]

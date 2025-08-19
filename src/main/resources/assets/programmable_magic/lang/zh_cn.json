@@ -1,0 +1,21 @@
+{
+  "item.programmable_magic.small_mana_cell": "小型魔力单元",
+  "item.programmable_magic.test_wand": "测试魔杖",
+
+  "item.programmable_magic.spell_display_projectile": "法术：投射物载体",
+  "item.programmable_magic.spell_display_gain_velocity": "法术：速度加成",
+  "item.programmable_magic.spell_display_delay_1s": "法术：延时（1秒）",
+  "item.programmable_magic.spell_display_mpx5": "法术：威力×5",
+  "item.programmable_magic.spell_display_explosion": "法术：爆炸",
+
+  "tooltip.programmable_magic.mana_stored": "魔力存储：",
+  "tooltip.programmable_magic.mana_radi": "辐射：",
+  "tooltip.programmable_magic.mana_temp": "温度：",
+  "tooltip.programmable_magic.mana_mome": "动量：",
+  "tooltip.programmable_magic.mana_pres": "压力：",
+
+  "tooltip.programmable_magic.mana_cost": "魔力消耗：",
+  "tooltip.programmable_magic.spell_carrier": "载体：投射物",
+
+  "gui.programmable_magic.wand_title": "魔杖"
+}
