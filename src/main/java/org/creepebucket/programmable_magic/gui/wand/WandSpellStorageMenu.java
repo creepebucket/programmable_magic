@@ -23,14 +23,12 @@ import static java.lang.Math.floor;
 import static org.creepebucket.programmable_magic.ModUtils.getItemsFromTag;
 import static org.creepebucket.programmable_magic.registries.ModTagKeys.SPELL;
 
-public class WandMenu extends BaseWamdMenu {
-    public WandMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
+public class WandSpellStorageMenu extends BaseWamdMenu {
+    public WandSpellStorageMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
         this(containerId, playerInventory, ContainerLevelAccess.NULL, extraData.readInt(), extraData.readDouble());
     }
 
-    public WandMenu(int containerId, Inventory playerInventory, ContainerLevelAccess levelAccess, int slots, double manaMult) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInventory, levelAccess, slots, manaMult, ModDataComponents.WAND_SPELLS_MENU.value());
-
-        addInventorySlot(playerInventory);
+    public WandSpellStorageMenu(int containerId, Inventory playerInventory, ContainerLevelAccess levelAccess, int slots, double manaMult) {
+        super(ModMenuTypes.WAND_SPELL_STORAGE_MENU.get(), containerId, playerInventory, levelAccess, slots - 5, manaMult, ModDataComponents.WAND_SPELLS_STORAGE.value());
     }
 }

@@ -10,10 +10,10 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 不能被拿取
  */
 public class SpellDisplaySlot extends SlotItemHandler {
-    private final WandMenu menu;
+    private final BaseWamdMenu menu;
     private final ItemStack spell;
 
-    public SpellDisplaySlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, WandMenu menu, ItemStack spell) {
+    public SpellDisplaySlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BaseWamdMenu menu, ItemStack spell) {
         super(itemHandler, index, xPosition, yPosition);
 
         this.menu = menu;

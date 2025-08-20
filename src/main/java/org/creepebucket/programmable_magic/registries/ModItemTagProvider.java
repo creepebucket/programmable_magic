@@ -5,6 +5,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
+import org.creepebucket.programmable_magic.items.wand.TestWand;
+
 import java.util.concurrent.CompletableFuture;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -27,6 +29,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
             var logicSupplier = entry.getValue();
             var logic = logicSupplier.get();
 
+            System.out.println("nihaonihao");
             switch (logic.getSpellType()) {
                 case BASE_SPELL:
                     tag(ModTagKeys.SPELL_BASE_EFFECT).add(itemSupplier.get());
@@ -52,5 +55,8 @@ public class ModItemTagProvider extends ItemTagsProvider {
         this.tag(ModTagKeys.SPELL)
                 .addTag(ModTagKeys.SPELL_MOD)
                 .addTag(ModTagKeys.SPELL_BASE_EFFECT);
+
+        this.tag(ModTagKeys.WAND)
+                .add(ModItems.TEST_WAND_DEFERRED_ITEM.get());
     }
 }

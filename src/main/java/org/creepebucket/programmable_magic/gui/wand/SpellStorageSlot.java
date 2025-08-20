@@ -5,9 +5,9 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public class SpellStorageSlot extends SlotItemHandler {
-    public final WandMenu menu;
+    public final BaseWamdMenu menu;
 
-    public SpellStorageSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, WandMenu menu) {
+    public SpellStorageSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, BaseWamdMenu menu) {
         super(itemHandler, index, xPosition, yPosition);
         this.menu = menu;
     }
