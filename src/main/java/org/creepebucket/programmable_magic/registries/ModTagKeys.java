@@ -16,6 +16,4 @@ public class ModTagKeys {
 
     public static final TagKey<Item> SPELL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell"));
     public static final TagKey<Item> SPELL_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier"));
-
-    public static final TagKey<Item> WAND = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "wand"));
 }

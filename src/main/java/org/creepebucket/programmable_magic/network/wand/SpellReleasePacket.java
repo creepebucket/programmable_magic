@@ -27,27 +27,12 @@ public record SpellReleasePacket(List<ItemStack> spells) implements CustomPacket
             SpellReleasePacket::new
     );
 
-    // 规范化构造器：过滤空物品并限制数量范围，防止编码时抛错
-    public SpellReleasePacket {
-        List<ItemStack> normalized = new ArrayList<>();
-        for (ItemStack stack : spells) {
-            if (stack == null || stack.isEmpty() || stack.getCount() <= 0) continue;
-            ItemStack copy = stack.copy();
-            int clamped = Math.min(Math.max(copy.getCount(), 1), 99);
-            copy.setCount(clamped);
-            normalized.add(copy);
-        }
-        spells = List.copyOf(normalized);
-    }
-
-    public SpellReleasePacket(List<ItemStack> spells, boolean log) {
-        this(spells);
-        if (log) {
-            LOGGER.debug("SpellReleasePacket 构造函数被调用，包含 {} 个法术", this.spells.size());
-            for (int i = 0; i < this.spells.size(); i++) {
-                ItemStack spell = this.spells.get(i);
-                LOGGER.debug("法术 {}: {} x{}", i + 1, spell.getDisplayName().getString(), spell.getCount());
-            }
+    public SpellReleasePacket(List<ItemStack> spells) {
+        this.spells = spells;
+        LOGGER.debug("SpellReleasePacket 构造函数被调用，包含 {} 个法术", spells.size());
+        for (int i = 0; i < spells.size(); i++) {
+            ItemStack spell = spells.get(i);
+            LOGGER.debug("法术 {}: {} x{}", i + 1, spell.getDisplayName().getString(), spell.getCount());
         }
     }
 
