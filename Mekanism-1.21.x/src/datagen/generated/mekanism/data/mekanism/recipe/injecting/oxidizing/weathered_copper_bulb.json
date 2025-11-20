@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:exposed_copper_bulb"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:weathered_copper_bulb"
+  },
+  "per_tick_usage": true
+}

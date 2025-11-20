@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:rotary",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:ethene"
+  },
+  "chemical_output": {
+    "amount": 1,
+    "id": "mekanism:ethene"
+  },
+  "fluid_input": {
+    "amount": 1,
+    "tag": "c:ethene"
+  },
+  "fluid_output": {
+    "amount": 1,
+    "id": "mekanism:ethene"
+  }
+}

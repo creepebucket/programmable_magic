@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "c:ingots/bronze"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "I",
+    "R",
+    "R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:bronze_shovel"
+  }
+}

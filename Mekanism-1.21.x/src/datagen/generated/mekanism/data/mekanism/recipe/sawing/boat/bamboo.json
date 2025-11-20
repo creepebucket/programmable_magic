@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:bamboo_raft"
+  },
+  "main_output": {
+    "count": 5,
+    "id": "minecraft:bamboo_planks"
+  }
+}

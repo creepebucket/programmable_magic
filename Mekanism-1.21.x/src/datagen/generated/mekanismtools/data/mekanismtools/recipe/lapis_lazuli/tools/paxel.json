@@ -1,0 +1,27 @@
+{
+  "type": "mekanismtools:paxel",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "mekanismtools:lapis_lazuli_axe"
+    },
+    "P": {
+      "item": "mekanismtools:lapis_lazuli_pickaxe"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "S": {
+      "item": "mekanismtools:lapis_lazuli_shovel"
+    }
+  },
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_paxel"
+  }
+}

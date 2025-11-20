@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "C": {
+      "tag": "c:ingots/conductive_alloy"
+    },
+    "E": {
+      "tag": "c:ingots/copper_alloy"
+    },
+    "V": {
+      "tag": "c:gems/vibrant_crystal"
+    }
+  },
+  "pattern": [
+    "CVC",
+    "C C",
+    "E E"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:electromagnet"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:obsidians/normal"
+  },
+  "output": {
+    "count": 4,
+    "id": "mekanism:dust_obsidian"
+  }
+}

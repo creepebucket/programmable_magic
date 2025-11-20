@@ -1,0 +1,29 @@
+{
+  "type": "enderio:fire_crafting",
+  "base_blocks": [
+    "minecraft:bedrock"
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "results": [
+    {
+      "chance": 0.8,
+      "max_count": 3,
+      "min_count": 1,
+      "result": {
+        "count": 1,
+        "id": "enderio:grains_of_infinity"
+      }
+    },
+    {
+      "chance": 0.3,
+      "max_count": 1,
+      "min_count": 1,
+      "result": {
+        "count": 1,
+        "id": "enderio:suspicious_seed"
+      }
+    }
+  ]
+}

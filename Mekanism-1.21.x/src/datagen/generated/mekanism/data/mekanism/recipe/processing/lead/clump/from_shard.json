@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "c:shards/lead"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:clump_lead"
+  },
+  "per_tick_usage": true
+}

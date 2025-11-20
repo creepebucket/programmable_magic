@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:ingots/refined_glowstone"
+    },
+    "I": {
+      "tag": "c:ingots/refined_obsidian"
+    }
+  },
+  "pattern": [
+    "III",
+    "IGI",
+    "III"
+  ],
+  "result": {
+    "count": 9,
+    "id": "mekanism:teleporter_frame"
+  }
+}

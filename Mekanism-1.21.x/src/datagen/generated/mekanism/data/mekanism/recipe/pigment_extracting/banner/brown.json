@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "minecraft:brown_banner"
+  },
+  "output": {
+    "amount": 64,
+    "id": "mekanism:brown"
+  }
+}

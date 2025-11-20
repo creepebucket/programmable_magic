@@ -1,0 +1,43 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:auto",
+                "mekanism:color",
+                "mekanism:filters",
+                "mekanism:owner",
+                "mekanism:qio_frequency",
+                "mekanism:redstone_control",
+                "mekanism:round_robin",
+                "mekanism:security",
+                "mekanism:upgrades"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "mekanism:qio_exporter"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "mekanism:blocks/qio_exporter"
+}

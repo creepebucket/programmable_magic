@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:book"
+    },
+    "D": {
+      "tag": "c:gems/diamond"
+    },
+    "I": {
+      "tag": "c:ingots/dark_steel"
+    },
+    "L": {
+      "item": "minecraft:lectern"
+    }
+  },
+  "pattern": [
+    " B ",
+    "DLD",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:enchanter"
+  }
+}

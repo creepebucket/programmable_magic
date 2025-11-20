@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "I": {
+      "tag": "c:ingots/dark_steel"
+    }
+  },
+  "pattern": [
+    " I ",
+    " I ",
+    " I "
+  ],
+  "result": {
+    "count": 12,
+    "id": "enderio:dark_steel_ladder"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "chemical": "mekanism:black"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete_powder"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:black_concrete_powder"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:black_concrete_powder"
+  },
+  "per_tick_usage": false
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:iron_bars"
+    },
+    "A": {
+      "tag": "c:alloys/elite"
+    },
+    "C": {
+      "tag": "c:circuits/elite"
+    },
+    "H": {
+      "tag": "c:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "CPC",
+    "HHH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_magnetic_attraction_unit"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:electrolytic_core"
+    },
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_electrolytic_breathing_unit"
+  }
+}

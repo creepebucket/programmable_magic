@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:glow_panels"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:brown_glow_panel"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/brown"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:brown_glow_panel"
+  }
+}

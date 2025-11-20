@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:balloons"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:green_balloon"
+      }
+    },
+    {
+      "tag": "c:dyes/green"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismadditions:green_balloon"
+  }
+}

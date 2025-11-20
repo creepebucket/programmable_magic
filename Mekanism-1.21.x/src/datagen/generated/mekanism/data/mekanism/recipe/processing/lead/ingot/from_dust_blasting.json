@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.3,
+  "ingredient": {
+    "item": "mekanism:dust_lead"
+  },
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_lead"
+  }
+}

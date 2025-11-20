@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "D": {
+      "tag": "c:ingots/dark_steel"
+    },
+    "L": {
+      "tag": "c:leathers"
+    }
+  },
+  "pattern": [
+    "  D",
+    " DL",
+    "DLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:glider_wing"
+  }
+}

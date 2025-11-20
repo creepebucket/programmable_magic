@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:green_plastic_glow"
+  },
+  "output": {
+    "amount": 42,
+    "id": "mekanism:green"
+  }
+}

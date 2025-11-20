@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:deepslate"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:cobbled_deepslate"
+  }
+}

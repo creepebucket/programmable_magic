@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "biomesoplenty:blue_hydrangea"
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:light_blue_dye"
+  }
+}

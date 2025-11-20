@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:ores/netherite_scrap"
+  },
+  "output": {
+    "count": 3,
+    "id": "mekanism:dirty_netherite_scrap"
+  }
+}

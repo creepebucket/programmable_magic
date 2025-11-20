@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "chemical": "mekanism:purple"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/wool"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:purple_wool"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:purple_wool"
+  },
+  "per_tick_usage": false
+}

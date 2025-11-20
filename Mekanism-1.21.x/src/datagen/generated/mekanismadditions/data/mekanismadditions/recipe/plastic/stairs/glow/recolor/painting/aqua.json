@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 64,
+    "chemical": "mekanism:aqua"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_stairs/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:aqua_plastic_glow_stairs"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanismadditions:aqua_plastic_glow_stairs"
+  },
+  "per_tick_usage": false
+}

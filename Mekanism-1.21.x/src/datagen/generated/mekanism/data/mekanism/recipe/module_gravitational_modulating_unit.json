@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:nether_stars"
+    },
+    "A": {
+      "tag": "c:alloys/ultimate"
+    },
+    "E": {
+      "item": "mekanism:ultimate_induction_provider"
+    },
+    "H": {
+      "tag": "c:pellets/antimatter"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "EPE",
+    "HHH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_gravitational_modulating_unit"
+  }
+}

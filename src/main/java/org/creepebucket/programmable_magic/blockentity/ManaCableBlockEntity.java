@@ -44,7 +44,8 @@ public class ManaCableBlockEntity extends BlockEntity implements IManaNetNode {
     @Override
     public BlockPos getBlockPos() {return super.getBlockPos();}
 
-    // 生命周期与邻居变化钩子（示例）
+    // 生命周期与邻居变化钩子：只在放置/邻居变化时触发 SimpleNetManager；
+    // 卸载/保存阶段不做任何网络处理（避免卡在“Saving worlds”）。
     public void onLoadServer() {
         if (!(level instanceof net.minecraft.server.level.ServerLevel sl)) return;
         SimpleNetManager.get(sl).onTopologyChanged(getBlockPos());
@@ -53,8 +54,7 @@ public class ManaCableBlockEntity extends BlockEntity implements IManaNetNode {
     @Override
     public void setRemoved() {
         super.setRemoved();
-        if (!(level instanceof net.minecraft.server.level.ServerLevel sl)) return;
-        SimpleNetManager.get(sl).onTopologyChanged(getBlockPos());
+        // 不在卸载阶段重建网络，避免世界保存/卸载时排队大量任务
     }
 
     public void onNeighborChanged(Direction side) {
@@ -65,9 +65,11 @@ public class ManaCableBlockEntity extends BlockEntity implements IManaNetNode {
     // 供服务器更新客户端展示值
     // 新：供 SimpleNetManager 写入单层网络ID
     public void setSimpleNetId(long id) {
-        if (this.simpleNetId == id) return; // 去抖：未变化不落盘
+        if (this.simpleNetId == id) return;
+        boolean wasZero = (this.simpleNetId == 0);
         this.simpleNetId = id;
-        if (level != null) setChanged();
+        // 仅在首次从 0 -> 非 0 时标脏，确保世界加载后具备持久 netId，后续变动不打脏以避免保存抖动
+        if (wasZero && id != 0 && level != null) setChanged();
     }
 
     public long getSimpleNetId() { return simpleNetId; }

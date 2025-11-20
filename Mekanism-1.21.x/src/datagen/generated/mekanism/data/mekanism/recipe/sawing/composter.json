@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:composter"
+  },
+  "main_output": {
+    "count": 7,
+    "id": "minecraft:oak_slab"
+  }
+}

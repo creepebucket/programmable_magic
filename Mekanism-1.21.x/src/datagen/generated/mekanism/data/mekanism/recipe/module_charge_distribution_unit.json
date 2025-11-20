@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:basic_induction_provider"
+    },
+    "A": {
+      "tag": "c:alloys/elite"
+    },
+    "H": {
+      "tag": "c:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_charge_distribution_unit"
+  }
+}

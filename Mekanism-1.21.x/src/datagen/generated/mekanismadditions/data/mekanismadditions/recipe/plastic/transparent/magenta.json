@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "c:dyes/magenta"
+    }
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mekanismadditions:magenta_plastic_transparent"
+  }
+}

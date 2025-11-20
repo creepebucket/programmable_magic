@@ -1,0 +1,18 @@
+{
+    "loader": "neoforge:composite",
+    "parent": "block/block",
+    "textures": {
+        "particle": "mekanism:block/factory/crushing/crushing_factory_front"
+    },
+    "children": {
+        "base": {
+            "parent": "mekanism:block/factory/crushing/base",
+            "textures": {
+                "front": "mekanism:block/factory/crushing/crushing_factory_front_active"
+            }
+        },
+        "front_led": {
+            "parent": "mekanism:block/factory/front_led/active/ultimate"
+        }
+    }
+}

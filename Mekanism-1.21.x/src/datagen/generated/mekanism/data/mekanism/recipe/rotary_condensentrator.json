@@ -1,0 +1,30 @@
+{
+  "type": "mekanism:mek_data",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:basic_fluid_tank"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "G": {
+      "tag": "c:glass_blocks/cheap"
+    },
+    "T": {
+      "item": "mekanism:basic_chemical_tank"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "TE#",
+    "GCG"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:rotary_condensentrator"
+  }
+}

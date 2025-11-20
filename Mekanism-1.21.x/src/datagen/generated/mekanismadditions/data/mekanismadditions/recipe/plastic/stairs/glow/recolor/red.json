@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_stairs/glow"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:red_plastic_glow_stairs"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/red"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:red_plastic_glow_stairs"
+  }
+}

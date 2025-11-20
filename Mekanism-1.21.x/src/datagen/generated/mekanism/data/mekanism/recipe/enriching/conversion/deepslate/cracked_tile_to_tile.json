@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:cracked_deepslate_tiles"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:deepslate_tiles"
+  }
+}

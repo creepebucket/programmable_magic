@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "biomesoplenty:violet"
+      },
+      {
+        "item": "biomesoplenty:lavender"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:purple"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 64,
+    "chemical": "mekanism:brown"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:brown_plastic_glow"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanismadditions:brown_plastic_glow"
+  },
+  "per_tick_usage": false
+}

@@ -1,0 +1,5 @@
+{
+  "parent": "neoforge:item/bucket",
+  "fluid": "mekanism:sulfuric_acid",
+  "loader": "neoforge:fluid_container"
+}

@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:mek_data",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "I": {
+      "tag": "c:ingots/tin"
+    },
+    "P": {
+      "item": "mekanism:electric_pump"
+    }
+  },
+  "pattern": [
+    "III",
+    "CPC",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:fluidic_plenisher"
+  }
+}

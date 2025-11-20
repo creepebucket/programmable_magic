@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "c:dyes/white"
+    }
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mekanismadditions:white_plastic_transparent"
+  }
+}

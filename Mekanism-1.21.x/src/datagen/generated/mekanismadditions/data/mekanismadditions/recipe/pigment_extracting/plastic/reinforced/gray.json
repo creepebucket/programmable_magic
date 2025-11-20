@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:gray_reinforced_plastic"
+  },
+  "output": {
+    "amount": 42,
+    "id": "mekanism:gray"
+  }
+}

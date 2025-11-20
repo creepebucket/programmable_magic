@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 8,
+    "tag": "c:dusts/wood"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:dust_charcoal"
+  }
+}

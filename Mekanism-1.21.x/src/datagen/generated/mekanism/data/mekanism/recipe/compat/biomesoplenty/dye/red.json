@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:enriching",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "biomesoplenty:rose"
+      },
+      {
+        "item": "biomesoplenty:waterlily"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:red_dye"
+  }
+}

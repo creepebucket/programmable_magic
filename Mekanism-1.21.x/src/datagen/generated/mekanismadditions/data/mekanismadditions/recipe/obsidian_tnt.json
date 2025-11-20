@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "O": {
+      "tag": "c:obsidians/normal"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "TTT",
+    "OOO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismadditions:obsidian_tnt"
+  }
+}

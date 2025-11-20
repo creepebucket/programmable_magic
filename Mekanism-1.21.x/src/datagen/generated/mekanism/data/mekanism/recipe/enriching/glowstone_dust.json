@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:glowstone"
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:glowstone_dust"
+  }
+}

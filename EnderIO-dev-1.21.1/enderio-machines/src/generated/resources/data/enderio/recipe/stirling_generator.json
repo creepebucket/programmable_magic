@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:deepslate"
+    },
+    "F": {
+      "item": "minecraft:furnace"
+    },
+    "G": {
+      "tag": "c:gears/iron"
+    },
+    "I": {
+      "tag": "c:ingots/iron"
+    },
+    "O": {
+      "tag": "c:obsidians"
+    },
+    "V": {
+      "item": "enderio:void_chassis"
+    }
+  },
+  "pattern": [
+    "GFG",
+    "IVI",
+    "ODO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:stirling_generator"
+  }
+}

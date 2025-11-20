@@ -1,0 +1,20 @@
+{
+  "block.mekanismgenerators.bio_generator": "เครื่องกำเนิดชีวภาพ",
+  "block.mekanismgenerators.fission_reactor_port": "ตัวควบคุมเครื่องปฏิกรณ์ฟิวชั่น",
+  "block.mekanismgenerators.fusion_reactor_controller": "ตัวควบคุมเครื่องปฏิกรณ์ฟิวชั่น",
+  "block.mekanismgenerators.fusion_reactor_port": "Fusion Reactor Port",
+  "block.mekanismgenerators.heat_generator": "เครื่องกำเนิดความร้อน",
+  "block.mekanismgenerators.reactor_glass": "กระจก เครื่องปฏิกรณ์",
+  "block.mekanismgenerators.solar_generator": "เครื่องกำเนิดไฟฟ้าพลังงานแสงอาทิตย์",
+  "description.mekanismgenerators.advanced_solar_generator": "เครื่องกำเนิดไฟฟ้าขั้นสูงจะซึมซับจากแสงอาทิตย์โดยตรงโดยสูญเสียเล็กน้อยเพื่อผลิตพลังงาน",
+  "description.mekanismgenerators.bio_generator": "เครื่องกำเนิดไฟฟ้าจะเผาผลาญวัตถุทางชีวภาพเพื่อผลิตพลังงาน",
+  "description.mekanismgenerators.electromagnetic_coil": "บล็อกนี้จะเปลี่ยนพลังงานจลน์จาก Rotational Complex เป็นกระแสไฟฟ้าที่ใช้งานได้ โดยสามารถอย่างไรก็ได้ให้สัมผัสกับ Rotational Complex",
+  "description.mekanismgenerators.gas_burning_generator": "เครื่องกำเนิดไฟฟ้าจะควบคุมโมเลกุลของก๊าซที่แตกต่างกันเพื่อผลิตพลังงาน",
+  "description.mekanismgenerators.heat_generator": "เครื่องกำเนิดไฟฟ้าที่ใช้ความร้อนของลาวาหรือทรัพยากรที่เผาไหม้ได้อื่น ๆ เพื่อผลิตพลังงาน",
+  "description.mekanismgenerators.laser_focus_matrix": "กระจกของเครื่องปฏิกรณ์ สามารถดูดซับพลังงานแสงและทำให้เครื่องปฏิกรณ์ฟิวชั่นอุ่นขึ้นได้",
+  "description.mekanismgenerators.reactor.logic.capacity": "คอร์จุความร้อนหลักของเครื่องปฏิกรณ์",
+  "description.mekanismgenerators.reactor.logic.depleted": "เครื่องปฏิกรณ์มีเชื้อเพลิงไม่เพียงพอต่อการเกิดปฏิกิริยา",
+  "description.mekanismgenerators.reactor.logic.disabled": "จะไม่ปล่อยสัญญาณ Redstone",
+  "description.mekanismgenerators.reactor.logic.ready": "เครื่องปฏิกรณ์ถึงระดับความร้อนที่ต้องการเพื่อจุดติดไฟ",
+  "description.mekanismgenerators.reactor_glass": "Reinforced glass that can be used in the Fusion Reactor multiblock."
+}

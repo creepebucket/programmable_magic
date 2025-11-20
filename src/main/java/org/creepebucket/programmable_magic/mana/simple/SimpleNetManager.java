@@ -17,11 +17,20 @@ import java.util.Set;
 /**
  * 极简单层网络管理器（KISS）。
  *
- * 设计要点：
- * - 无 L0/L1/L2 与全局图，仅按需对变化附近做“就地染色（Flood Fill）”。
- * - 网络 ID 由分量的“最小坐标”确定性编码，合并/拆分稳定且无需全局自增计数器。
- * - 分桶：后续将把一个 16x16x16 Section 切成 8 个 8x8x8 子桶，并以位集加速桶内 flood fill。
- *   本类先给出可工作的朴素版本，便于后续替换为位集实现（不改对外接口）。
+ * 思想：任何拓扑变化（放置/拆除/邻居变化）都只在变化附近做一次“就地染色”，
+ * 用 BFS/Flood Fill 收集该连通分量的所有线缆，然后把“分量最小坐标编码”作为网络 ID
+ * 写回每个成员。
+ *
+ * 不做的事：
+ * - 不维护全局图/多层网络（L0/L1/L2）；
+ * - 不在世界保存/卸载阶段重建网络；
+ * - 不把网络 ID 的每次变化持久化（只在 0->非0 首次落盘）。
+ *
+ * 关键实现点：
+ * - 8x8x8 子桶 flood fill：把世界划分为 8 对齐的子块，桶内用位集记录已访问/已入栈，
+ *   常数小、缓存友好；跨桶时把相邻桶入队继续处理。
+ * - 本 tick 合并：把本 tick 多个变化点合并到一个任务末尾执行，避免重复刷。
+ * - 网络 ID 稳定：采用“分量词典序最小坐标”的 64 位编码（21+21+21），合并/拆分稳定。
  */
 public final class SimpleNetManager {
 
@@ -42,8 +51,11 @@ public final class SimpleNetManager {
     }
 
     /**
-     * 拓扑变化统一入口：在 pos 及其 6 向邻居周围做一次就地染色。
-     * KISS：朴素 BFS 收集连通块 → 计算分量最小坐标 → 得到确定性 netId → 批量写回。
+     * 拓扑变化统一入口：积累变化位置，并在本 tick 尾部批处理一次。
+     *
+     * 为什么不立即做：
+     * - updateShape/邻居变化可能在同一 tick 高频触发（例如 /fill 放置）；
+     * - 合并后只做一次 flood fill，可大幅减少重复工作。
      */
     public void onTopologyChanged(BlockPos pos) {
         synchronized (this) {
@@ -57,6 +69,11 @@ public final class SimpleNetManager {
         }
     }
 
+    /**
+     * 本 tick 尾部处理所有积累的种子位置：
+     * - 为每个种子做一次连通分量收集（已访问去重，避免交叉分量重复）
+     * - 计算网络 ID（最小坐标编码），并回写每个成员。
+     */
     private void processPending() {
         it.unimi.dsi.fastutil.longs.LongOpenHashSet toProcess;
         synchronized (this) {
@@ -78,7 +95,11 @@ public final class SimpleNetManager {
     }
 
     /**
-     * 朴素 BFS 收集一个连通分量，并把收集到的节点加入 visited。
+     * 收集“以 start 为种子”的连通分量：
+     * - visited 用于全局去重（BlockPos 层面），避免处理到相邻分量时重复遍历；
+     * - visitedGlobal 用于跨桶去重（long 层面），避免在子桶之间反复入队；
+     * - 桶内 flood fill 使用位集表示已访问/已入栈，常数低；
+     * - 碰到跨桶邻居时，把相邻子桶的基坐标与起点局部索引入队。
      */
     private Component collectComponent(BlockPos start, Set<BlockPos> visited) {
         // 全局已访问（按 long）避免跨桶重复
@@ -110,6 +131,9 @@ public final class SimpleNetManager {
         return new Component(new HashSet<>(members), minPos);
     }
 
+    /**
+     * 计算“pos 所在子桶”的基坐标（8 对齐）与其在子桶内的局部线性索引 [0, 511]。
+     */
     private static long[] bucketEntryFor(BlockPos pos) {
         int bx = (pos.getX() >> 3) << 3; // 向下取 8 的倍数
         int by = (pos.getY() >> 3) << 3;
@@ -122,10 +146,12 @@ public final class SimpleNetManager {
     }
 
     /**
-     * 在一个 8x8x8 子桶内做堆栈式 flood fill；
-     * - 仅当相邻单元两端都能互连时才扩张；
-     * - 越界到相邻子桶的邻居，入队到 bucketsToProcess；
-     * - 所有加入 members 的世界坐标都会同时写入 visitedGlobal。
+     * 在一个 8x8x8 子桶内做“堆栈式 flood fill”。
+     * 约定：
+     * - 仅当相邻单元“两端都能互连”时才扩张（连通性由 IManaNetNode.canConnectTo 决定）；
+     * - 越界到相邻子桶的邻居，打包为条目入队，稍后独立处理；
+     * - visitedBits/pushedBits 使用位集记录桶内访问状态，避免 boolean[512] 带来的缓存 miss；
+     * - 每个被纳入 members 的世界坐标，也会同步写入 visitedGlobal 用于跨桶去重。
      */
     private void fillSingleBucket(int baseX, int baseY, int baseZ, int startIdx,
                                   it.unimi.dsi.fastutil.longs.LongOpenHashSet visitedGlobal,
@@ -138,16 +164,17 @@ public final class SimpleNetManager {
         BlockPos startPos = new BlockPos(sx, sy, sz);
         if (!isCable(startPos)) return;
 
-        boolean[] visitedLocal = new boolean[512]; // 已处理
-        boolean[] pushedLocal = new boolean[512];  // 已入栈
-        int[] stack = new int[512];               // 栈容量等于桶内最大节点数
+        long[] visitedBits = new long[8]; // x 层各 64 位：已处理
+        long[] pushedBits = new long[8];  // x 层各 64 位：已入栈
+        int[] stack = new int[512];       // 栈容量等于桶内最大节点数
         int sp = 0;
-        pushedLocal[startIdx] = true;
+        setPushed(pushedBits, startIdx);
         stack[sp++] = startIdx;
 
         while (sp > 0) {
             int idx = stack[--sp];
-            if (visitedLocal[idx]) continue;
+            // 已处理则跳过
+            if (isVisited(visitedBits, idx)) continue;
             int lx = (idx >>> 6) & 7;
             int ly = (idx >>> 3) & 7;
             int lz = idx & 7;
@@ -155,15 +182,17 @@ public final class SimpleNetManager {
             int wy = baseY + ly;
             int wz = baseZ + lz;
             long wlong = BlockPos.asLong(wx, wy, wz);
-            if (visitedGlobal.contains(wlong)) { visitedLocal[idx] = true; continue; }
+            // 跨桶去重：相邻子桶已处理过当前位置，直接标记并跳过
+            if (visitedGlobal.contains(wlong)) { setVisited(visitedBits, idx); continue; }
             BlockPos cur = new BlockPos(wx, wy, wz);
-            if (!isCable(cur)) { visitedLocal[idx] = true; continue; }
+            // 当前格不是线缆，标记并跳过
+            if (!isCable(cur)) { setVisited(visitedBits, idx); continue; }
 
-            visitedLocal[idx] = true;
+            setVisited(visitedBits, idx);
             visitedGlobal.add(wlong);
             members.add(cur);
 
-            // 六向尝试扩张
+            // 六向尝试扩张（桶内优先，跨桶入队）
             for (Direction d : Direction.values()) {
                 int nwx = wx + d.getStepX();
                 int nwy = wy + d.getStepY();
@@ -176,8 +205,8 @@ public final class SimpleNetManager {
                 int nlz = lz + d.getStepZ();
                 if ((nlx | nly | nlz) >= 0 && nlx < 8 && nly < 8 && nlz < 8) {
                     int nidx = (nlx << 6) | (nly << 3) | nlz;
-                    if (!visitedLocal[nidx] && !pushedLocal[nidx]) {
-                        pushedLocal[nidx] = true;
+                    if (!isVisited(visitedBits, nidx) && !isPushed(pushedBits, nidx)) {
+                        setPushed(pushedBits, nidx);
                         if (sp < stack.length) stack[sp++] = nidx;
                     }
                 } else {
@@ -198,6 +227,34 @@ public final class SimpleNetManager {
         }
     }
 
+    /** 桶内：查询是否“已处理” */
+    private static boolean isVisited(long[] visitedBits, int idx) {
+        int lx = (idx >>> 6) & 7;
+        int bit = idx & 63;
+        return ((visitedBits[lx] >>> bit) & 1L) != 0L;
+    }
+
+    /** 桶内：标记为“已处理” */
+    private static void setVisited(long[] visitedBits, int idx) {
+        int lx = (idx >>> 6) & 7;
+        int bit = idx & 63;
+        visitedBits[lx] |= (1L << bit);
+    }
+
+    /** 桶内：查询是否“已入栈待处理” */
+    private static boolean isPushed(long[] pushedBits, int idx) {
+        int lx = (idx >>> 6) & 7;
+        int bit = idx & 63;
+        return ((pushedBits[lx] >>> bit) & 1L) != 0L;
+    }
+
+    /** 桶内：标记为“已入栈待处理” */
+    private static void setPushed(long[] pushedBits, int idx) {
+        int lx = (idx >>> 6) & 7;
+        int bit = idx & 63;
+        pushedBits[lx] |= (1L << bit);
+    }
+
     private static final class Component {
         final Set<BlockPos> members;
         final BlockPos minPos;
@@ -205,18 +262,14 @@ public final class SimpleNetManager {
         boolean isEmpty() {return members.isEmpty();}
     }
 
-    /**
-     * 判断该位置是否是“可参与网络”的线缆。
-     */
+    /** 判断该位置是否是“可参与网络”的线缆。 */
     private boolean isCable(BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         if (!(be instanceof IManaNetNode node)) return false;
         return node.isManaConnectable();
     }
 
-    /**
-     * 互相同意的连通性：两端都是线缆且各自声明对对方方向可连。
-     */
+    /** 互相同意的连通性：两端都是线缆且各自声明对对方方向可连。 */
     private boolean canConnectBothWays(BlockPos a, BlockPos b, Direction dirAB) {
         BlockEntity beA = level.getBlockEntity(a);
         BlockEntity beB = level.getBlockEntity(b);
@@ -227,7 +280,6 @@ public final class SimpleNetManager {
 
     /**
      * 应用 netId 到世界中的方块实体。
-     *
      * 说明：直接调用 ManaCableBlockEntity#setSimpleNetId(long)，不做旧代码兼容。
      */
     private void applyNetId(BlockPos pos, long netId) {
@@ -237,18 +289,14 @@ public final class SimpleNetManager {
         }
     }
 
-    /**
-     * 词典序比较：x, y, z 依次升序。
-     */
+    /** 词典序比较：x, y, z 依次升序。 */
     private static int comparePos(BlockPos a, BlockPos b) {
         if (a.getX() != b.getX()) return Integer.compare(a.getX(), b.getX());
         if (a.getY() != b.getY()) return Integer.compare(a.getY(), b.getY());
         return Integer.compare(a.getZ(), b.getZ());
     }
 
-    /**
-     * 把坐标编码为 64 位无符号 netId（21+21+21 位，支持坐标范围 [-2^20, 2^20)）。
-     */
+    /** 把坐标编码为 64 位无符号 netId（21+21+21 位，支持坐标范围 [-2^20, 2^20)）。 */
     public static long encodeNetId(BlockPos pos) {
         long ux = toUnsigned21(pos.getX());
         long uy = toUnsigned21(pos.getY());

@@ -1,0 +1,5 @@
+{
+  "parent": "neoforge:item/bucket",
+  "fluid": "mekanism:brine",
+  "loader": "neoforge:fluid_container"
+}

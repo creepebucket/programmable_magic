@@ -1,0 +1,16 @@
+{
+    "parent": "minecraft:item/generated",
+    "loader": "neoforge:item_layers",
+    "neoforge_data": {
+        "layers": {
+            "1": {
+                "block_light": 15,
+                "sky_light": 15
+            }
+        }
+    },
+    "textures": {
+        "layer0": "mekanism:item/portable_qio_dashboard",
+        "layer1": "mekanism:item/portable_qio_dashboard_tint_led"
+    }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "G": {
+      "tag": "c:gravels"
+    },
+    "S": {
+      "tag": "c:sands"
+    }
+  },
+  "pattern": [
+    "GCG",
+    "SGS",
+    "GCG"
+  ],
+  "result": {
+    "count": 8,
+    "id": "enderio:conduit_binder_composite"
+  }
+}

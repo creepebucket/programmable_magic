@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/glow"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:gray_plastic_glow"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/gray"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:gray_plastic_glow"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "chemical": "mekanism:gray"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "mekanism:dye_base"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:gray_dye"
+  },
+  "per_tick_usage": false
+}

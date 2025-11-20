@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:purifying",
+  "chemical_input": {
+    "amount": 2,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "c:storage_blocks/raw_iron"
+  },
+  "output": {
+    "count": 18,
+    "id": "mekanism:clump_iron"
+  },
+  "per_tick_usage": true
+}

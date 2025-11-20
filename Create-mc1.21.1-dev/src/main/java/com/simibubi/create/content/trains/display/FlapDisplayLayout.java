@@ -1,0 +1,63 @@
+package com.simibubi.create.content.trains.display;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import net.createmod.catnip.nbt.NBTHelper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+
+public class FlapDisplayLayout {
+
+	List<FlapDisplaySection> sections;
+	String layoutKey;
+
+	public FlapDisplayLayout(int maxCharCount) {
+		loadDefault(maxCharCount);
+	}
+
+	public void loadDefault(int maxCharCount) {
+		configure("Default", Arrays
+			.asList(new FlapDisplaySection(maxCharCount * FlapDisplaySection.MONOSPACE, "alphabet", false, false)));
+	}
+
+	public boolean isLayout(String key) {
+		return layoutKey.equals(key);
+	}
+
+	public void configure(String layoutKey, List<FlapDisplaySection> sections) {
+		this.layoutKey = layoutKey;
+		this.sections = sections;
+	}
+
+	public CompoundTag write(HolderLookup.Provider registries) {
+		CompoundTag tag = new CompoundTag();
+		tag.putString("Key", layoutKey);
+		tag.put("Sections", NBTHelper.writeCompoundList(sections, s -> s.write(registries)));
+		return tag;
+	}
+
+	public void read(CompoundTag tag, HolderLookup.Provider registries) {
+		String prevKey = layoutKey;
+		layoutKey = tag.getString("Key");
+		ListTag sectionsTag = tag.getList("Sections", Tag.TAG_COMPOUND);
+
+		if (!prevKey.equals(layoutKey)) {
+			sections = NBTHelper.readCompoundList(sectionsTag, i -> FlapDisplaySection.load(i, registries));
+			return;
+		}
+
+		MutableInt index = new MutableInt(0);
+		NBTHelper.iterateCompoundList(sectionsTag, nbt -> sections.get(index.getAndIncrement())
+			.update(nbt, registries));
+	}
+
+	public List<FlapDisplaySection> getSections() {
+		return sections;
+	}
+
+}

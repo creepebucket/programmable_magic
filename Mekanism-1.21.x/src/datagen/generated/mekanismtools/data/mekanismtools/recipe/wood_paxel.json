@@ -1,0 +1,27 @@
+{
+  "type": "mekanismtools:paxel",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "minecraft:wooden_axe"
+    },
+    "P": {
+      "item": "minecraft:wooden_pickaxe"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    },
+    "S": {
+      "item": "minecraft:wooden_shovel"
+    }
+  },
+  "pattern": [
+    "APS",
+    " R ",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:wood_paxel"
+  }
+}

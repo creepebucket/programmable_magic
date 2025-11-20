@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "D": {
+      "tag": "c:dyes/purple"
+    }
+  },
+  "pattern": [
+    "###",
+    "#D#",
+    "###"
+  ],
+  "result": {
+    "count": 8,
+    "id": "mekanismadditions:purple_plastic_transparent"
+  }
+}

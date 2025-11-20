@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:deepslate_bricks"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:cracked_deepslate_bricks"
+  }
+}

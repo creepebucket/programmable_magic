@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:orange_tulip"
+      },
+      {
+        "item": "minecraft:torchflower"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:orange"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:charcoal"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:dust_charcoal"
+  }
+}

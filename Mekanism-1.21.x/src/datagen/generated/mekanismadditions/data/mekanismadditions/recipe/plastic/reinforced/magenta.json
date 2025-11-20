@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "mekanismadditions:magenta_plastic"
+    },
+    "O": {
+      "tag": "c:dusts/osmium"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#O#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:magenta_reinforced_plastic"
+  }
+}

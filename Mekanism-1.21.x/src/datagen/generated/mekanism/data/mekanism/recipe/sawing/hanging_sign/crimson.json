@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:crimson_hanging_sign"
+  },
+  "main_output": {
+    "count": 2,
+    "id": "minecraft:crimson_planks"
+  },
+  "secondary_chance": 0.5,
+  "secondary_output": {
+    "count": 1,
+    "id": "mekanism:sawdust"
+  }
+}

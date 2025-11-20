@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:oxeye_daisy"
+      },
+      {
+        "item": "minecraft:azure_bluet"
+      },
+      {
+        "item": "minecraft:white_tulip"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:light_gray"
+  }
+}

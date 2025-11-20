@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:owner",
+                "mekanism:security"
+              ],
+              "source": "block_entity"
+            },
+            {
+              "function": "mekanism:personal_storage_contents"
+            }
+          ],
+          "name": "mekanism:personal_barrel"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "mekanism:blocks/personal_barrel"
+}

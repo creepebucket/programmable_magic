@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:red_plastic_glow_slab"
+  },
+  "output": {
+    "amount": 21,
+    "id": "mekanism:red"
+  }
+}

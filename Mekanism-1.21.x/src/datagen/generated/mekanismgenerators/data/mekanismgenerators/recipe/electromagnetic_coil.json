@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "I": {
+      "tag": "c:ingots/gold"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SIS",
+    "IEI",
+    "SIS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismgenerators:electromagnetic_coil"
+  }
+}

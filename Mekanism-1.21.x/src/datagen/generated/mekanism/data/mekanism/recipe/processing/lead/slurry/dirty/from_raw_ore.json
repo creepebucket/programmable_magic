@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:dissolution",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:sulfuric_acid"
+  },
+  "item_input": {
+    "count": 3,
+    "tag": "c:raw_materials/lead"
+  },
+  "output": {
+    "amount": 2000,
+    "id": "mekanism:dirty_lead"
+  },
+  "per_tick_usage": true
+}

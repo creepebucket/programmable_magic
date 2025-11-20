@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "chemical": "mekanism:light_blue"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/terracotta"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:light_blue_terracotta"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:light_blue_terracotta"
+  },
+  "per_tick_usage": false
+}

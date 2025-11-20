@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:network_reader"
+    },
+    "C": {
+      "tag": "c:circuits/elite"
+    },
+    "G": {
+      "tag": "c:glass_blocks/cheap"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
+  },
+  "pattern": [
+    "SGS",
+    "CXC",
+    "S#S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:security_desk"
+  }
+}

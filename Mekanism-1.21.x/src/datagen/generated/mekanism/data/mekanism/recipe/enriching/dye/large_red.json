@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:rose_bush"
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:red_dye"
+  }
+}

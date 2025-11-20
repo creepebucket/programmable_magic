@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:leathers"
+    },
+    {
+      "tag": "c:strings"
+    },
+    {
+      "tag": "c:dyes/white"
+    }
+  ],
+  "result": {
+    "count": 2,
+    "id": "mekanismadditions:white_balloon"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:basic_control_circuit",
+  "criteria": {
+    "industrial_alarm": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:industrial_alarm"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.alarm.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:industrial_alarm"
+    },
+    "title": {
+      "translate": "advancements.mekanism.alarm.title"
+    }
+  },
+  "requirements": [
+    [
+      "industrial_alarm"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

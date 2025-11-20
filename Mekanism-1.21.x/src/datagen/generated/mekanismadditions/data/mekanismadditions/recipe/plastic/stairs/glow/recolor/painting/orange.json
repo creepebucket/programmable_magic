@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 64,
+    "chemical": "mekanism:orange"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_stairs/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:orange_plastic_glow_stairs"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanismadditions:orange_plastic_glow_stairs"
+  },
+  "per_tick_usage": false
+}

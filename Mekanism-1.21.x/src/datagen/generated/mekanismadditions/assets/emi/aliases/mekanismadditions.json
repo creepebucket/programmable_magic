@@ -1,0 +1,16 @@
+{
+  "aliases": [
+    {
+      "stacks": "item:mekanismadditions:walkie_talkie",
+      "text": "alias.mekanismadditions.walkie_talkie.radio"
+    },
+    {
+      "stacks": "#item:mekanismadditions:glow_panels",
+      "text": "alias.mekanismadditions.glow_panel.light_source"
+    },
+    {
+      "stacks": "#item:mekanismadditions:plastic_blocks/road",
+      "text": "alias.mekanismadditions.plastic_road.path"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:hydrogen_bucket"
+    },
+    "A": {
+      "tag": "c:alloys/elite"
+    },
+    "H": {
+      "tag": "c:pellets/polonium"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "H#H"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_frost_walker_unit"
+  }
+}

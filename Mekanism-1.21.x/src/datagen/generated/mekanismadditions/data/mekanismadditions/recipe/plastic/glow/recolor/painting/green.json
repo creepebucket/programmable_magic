@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 64,
+    "chemical": "mekanism:green"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:plastic_blocks/glow"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:green_plastic_glow"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanismadditions:green_plastic_glow"
+  },
+  "per_tick_usage": false
+}

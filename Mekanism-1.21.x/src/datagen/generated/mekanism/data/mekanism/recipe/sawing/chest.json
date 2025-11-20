@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:chest"
+  },
+  "main_output": {
+    "count": 8,
+    "id": "minecraft:oak_planks"
+  }
+}

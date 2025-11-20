@@ -1,0 +1,20 @@
+{
+  "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 10,
+    "chemical": "mekanism:oxygen"
+  },
+  "chemical_output": {
+    "amount": 10,
+    "id": "mekanism:hydrogen"
+  },
+  "duration": 15,
+  "fluid_input": {
+    "amount": 10,
+    "tag": "minecraft:water"
+  },
+  "item_input": {
+    "count": 3,
+    "tag": "c:rods/wooden"
+  }
+}

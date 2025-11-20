@@ -1,0 +1,40 @@
+{
+  "parent": "mekanismadditions:balloon",
+  "criteria": {
+    "pop": {
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "mekanismadditions:balloon"
+            }
+          }
+        ]
+      },
+      "trigger": "minecraft:player_killed_entity"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanismadditions.pop_pop.description"
+    },
+    "frame": "goal",
+    "hidden": true,
+    "icon": {
+      "count": 1,
+      "id": "mekanismadditions:red_balloon"
+    },
+    "title": {
+      "translate": "advancements.mekanismadditions.pop_pop.title"
+    }
+  },
+  "requirements": [
+    [
+      "pop"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

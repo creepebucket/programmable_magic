@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:pigment_mixing",
+  "left_input": {
+    "amount": 1,
+    "chemical": "mekanism:black"
+  },
+  "output": {
+    "amount": 2,
+    "id": "mekanism:gray"
+  },
+  "right_input": {
+    "amount": 1,
+    "chemical": "mekanism:white"
+  }
+}

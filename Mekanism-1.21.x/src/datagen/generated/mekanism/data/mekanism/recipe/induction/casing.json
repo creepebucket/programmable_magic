@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "mekanism:energy_tablet"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SES",
+    " S "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanism:induction_casing"
+  }
+}

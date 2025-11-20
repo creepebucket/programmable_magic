@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:storage_blocks/wheat"
+  },
+  "output": {
+    "count": 2,
+    "id": "mekanism:block_bio_fuel"
+  }
+}

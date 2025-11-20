@@ -1,0 +1,8 @@
+{
+  "type": "mekanism:energy_conversion",
+  "input": {
+    "count": 1,
+    "tag": "c:dusts/redstone"
+  },
+  "output": 10000
+}

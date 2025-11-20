@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:pellets/polonium"
+    },
+    "A": {
+      "tag": "c:alloys/ultimate"
+    },
+    "X": {
+      "item": "mekanism:steel_casing"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "#X#",
+    "A#A"
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismgenerators:fusion_reactor_frame"
+  }
+}

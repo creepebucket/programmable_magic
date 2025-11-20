@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:polished_basalt"
+      },
+      {
+        "item": "minecraft:smooth_basalt"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:basalt"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:polished_granite_stairs"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:granite_stairs"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "mekanismgenerators:fusion_reactor_frame"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    " R ",
+    "RFR",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismgenerators:fusion_reactor_logic_adapter"
+  }
+}

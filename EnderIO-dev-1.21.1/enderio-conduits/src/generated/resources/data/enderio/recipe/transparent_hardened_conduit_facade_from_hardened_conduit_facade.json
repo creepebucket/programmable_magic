@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "enderio:hardened_conduit_facade"
+    },
+    {
+      "tag": "c:glass_blocks/clear"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:transparent_hardened_conduit_facade"
+  }
+}

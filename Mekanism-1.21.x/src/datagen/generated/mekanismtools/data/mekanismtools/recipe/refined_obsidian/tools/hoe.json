@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "c:ingots/refined_obsidian"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "II",
+    " R",
+    " R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:refined_obsidian_hoe"
+  }
+}

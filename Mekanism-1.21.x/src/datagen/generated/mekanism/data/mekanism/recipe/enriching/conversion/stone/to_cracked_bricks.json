@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "item": "minecraft:stone"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:cracked_stone_bricks"
+  }
+}

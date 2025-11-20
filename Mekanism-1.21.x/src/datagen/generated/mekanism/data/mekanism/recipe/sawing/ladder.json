@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 3,
+    "item": "minecraft:ladder"
+  },
+  "main_output": {
+    "count": 7,
+    "id": "minecraft:stick"
+  }
+}

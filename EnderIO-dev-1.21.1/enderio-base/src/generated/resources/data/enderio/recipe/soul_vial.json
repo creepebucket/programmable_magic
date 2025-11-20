@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "Q": {
+      "tag": "c:glass_blocks/fused_quartz"
+    },
+    "S": {
+      "tag": "c:ingots/soularium"
+    }
+  },
+  "pattern": [
+    " S ",
+    "Q Q",
+    " Q "
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:soul_vial"
+  }
+}

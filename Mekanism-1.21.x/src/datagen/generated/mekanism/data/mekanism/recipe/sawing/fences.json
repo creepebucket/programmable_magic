@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "tag": "c:fences/wooden"
+  },
+  "main_output": {
+    "count": 3,
+    "id": "minecraft:stick"
+  }
+}

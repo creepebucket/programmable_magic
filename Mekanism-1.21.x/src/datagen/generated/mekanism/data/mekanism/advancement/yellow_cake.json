@@ -1,0 +1,35 @@
+{
+  "parent": "mekanism:enricher",
+  "criteria": {
+    "yellow_cake_uranium": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:yellow_cake_uranium"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.yellow_cake.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "mekanism:yellow_cake_uranium"
+    },
+    "title": {
+      "translate": "advancements.mekanism.yellow_cake.title"
+    }
+  },
+  "requirements": [
+    [
+      "yellow_cake_uranium"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:chests/wooden"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "G": {
+      "tag": "c:glass_panes"
+    },
+    "P": {
+      "item": "mekanism:dictionary"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SGS",
+    "CPC",
+    "S#S"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:oredictionificator"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:infused_alloy",
+  "criteria": {
+    "advanced_control_circuit": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:advanced_control_circuit"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.advanced_control_circuit.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:advanced_control_circuit"
+    },
+    "title": {
+      "translate": "advancements.mekanism.advanced_control_circuit.title"
+    }
+  },
+  "requirements": [
+    [
+      "advanced_control_circuit"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

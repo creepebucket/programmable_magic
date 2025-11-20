@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:circuits/basic"
+    },
+    "O": {
+      "tag": "c:ingots/osmium"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "  O",
+    "SCS",
+    " S "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismadditions:walkie_talkie"
+  }
+}

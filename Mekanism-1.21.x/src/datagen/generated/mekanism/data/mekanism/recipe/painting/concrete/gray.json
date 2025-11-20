@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "chemical": "mekanism:gray"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:gray_concrete"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:gray_concrete"
+  },
+  "per_tick_usage": false
+}

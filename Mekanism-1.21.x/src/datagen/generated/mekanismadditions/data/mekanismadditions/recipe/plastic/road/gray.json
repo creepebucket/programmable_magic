@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "item": "mekanismadditions:gray_slick_plastic"
+    },
+    "S": {
+      "tag": "c:sands"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "###",
+    "SSS"
+  ],
+  "result": {
+    "count": 3,
+    "id": "mekanismadditions:gray_plastic_road"
+  }
+}

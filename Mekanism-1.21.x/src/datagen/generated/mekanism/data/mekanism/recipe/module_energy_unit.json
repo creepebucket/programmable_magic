@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:basic_induction_cell"
+    },
+    "A": {
+      "tag": "c:alloys/advanced"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "item": "mekanism:module_base"
+    }
+  },
+  "pattern": [
+    "A#A",
+    "APA",
+    "HHH"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:module_energy_unit"
+  }
+}

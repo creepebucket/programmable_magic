@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanism:dynamic_tank"
+    },
+    "C": {
+      "tag": "c:circuits/basic"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#C#",
+    " # "
+  ],
+  "result": {
+    "count": 2,
+    "id": "mekanism:dynamic_valve"
+  }
+}

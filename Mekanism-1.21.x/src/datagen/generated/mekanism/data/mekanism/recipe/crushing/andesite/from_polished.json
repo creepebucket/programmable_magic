@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:polished_andesite"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:andesite"
+  }
+}

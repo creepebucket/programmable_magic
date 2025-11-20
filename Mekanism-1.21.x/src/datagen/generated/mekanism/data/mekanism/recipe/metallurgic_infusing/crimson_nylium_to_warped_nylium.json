@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 10,
+    "tag": "mekanism:fungi"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:crimson_nylium"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:warped_nylium"
+  },
+  "per_tick_usage": false
+}

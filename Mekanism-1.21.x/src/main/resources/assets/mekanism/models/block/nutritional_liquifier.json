@@ -1,0 +1,15 @@
+{
+  "loader": "neoforge:composite",
+  "parent": "block/block",
+  "textures": {
+    "particle": "mekanism:block/nutritional_liquifier"
+  },
+  "children": {
+    "base": {
+      "parent": "mekanism:block/nutritional_liquifier_base"
+    },
+    "blade": {
+      "parent": "mekanism:block/liquifier_blade"
+    }
+  }
+}

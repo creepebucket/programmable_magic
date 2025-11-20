@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:cyan_plastic_slab"
+  },
+  "output": {
+    "amount": 24,
+    "id": "mekanism:cyan"
+  }
+}

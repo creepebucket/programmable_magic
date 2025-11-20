@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:digital_miner",
+  "criteria": {
+    "dictionary": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:dictionary"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.dictionary.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:dictionary"
+    },
+    "title": {
+      "translate": "advancements.mekanism.dictionary.title"
+    }
+  },
+  "requirements": [
+    [
+      "dictionary"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

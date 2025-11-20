@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "chemical": "mekanism:aqua"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanismadditions:balloons"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "mekanismadditions:aqua_balloon"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanismadditions:aqua_balloon"
+  },
+  "per_tick_usage": false
+}

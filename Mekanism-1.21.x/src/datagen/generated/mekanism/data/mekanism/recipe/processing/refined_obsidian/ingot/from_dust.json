@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:compressing",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:osmium"
+  },
+  "item_input": {
+    "count": 1,
+    "tag": "c:dusts/refined_obsidian"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:ingot_refined_obsidian"
+  },
+  "per_tick_usage": true
+}

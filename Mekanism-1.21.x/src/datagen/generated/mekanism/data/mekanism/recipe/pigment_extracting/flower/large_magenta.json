@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "minecraft:lilac"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:magenta"
+  }
+}

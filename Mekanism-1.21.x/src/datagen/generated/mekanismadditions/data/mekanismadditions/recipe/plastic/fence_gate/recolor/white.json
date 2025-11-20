@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_fence_gates/normal"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:white_plastic_fence_gate"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/white"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:white_plastic_fence_gate"
+  }
+}

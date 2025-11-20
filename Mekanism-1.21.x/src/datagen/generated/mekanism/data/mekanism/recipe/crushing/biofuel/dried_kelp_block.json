@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:storage_blocks/dried_kelp"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:block_bio_fuel"
+  }
+}

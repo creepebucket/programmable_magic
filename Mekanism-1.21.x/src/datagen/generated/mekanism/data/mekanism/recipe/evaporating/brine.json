@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:evaporating",
+  "input": {
+    "amount": 10,
+    "tag": "minecraft:water"
+  },
+  "output": {
+    "amount": 1,
+    "id": "mekanism:brine"
+  }
+}

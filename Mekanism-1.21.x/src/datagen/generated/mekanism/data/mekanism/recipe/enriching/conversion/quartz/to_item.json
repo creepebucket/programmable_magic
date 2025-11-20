@@ -1,0 +1,25 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "minecraft:quartz_block"
+      },
+      {
+        "item": "minecraft:quartz_bricks"
+      },
+      {
+        "item": "minecraft:chiseled_quartz_block"
+      },
+      {
+        "item": "minecraft:quartz_pillar"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 4,
+    "id": "minecraft:quartz"
+  }
+}

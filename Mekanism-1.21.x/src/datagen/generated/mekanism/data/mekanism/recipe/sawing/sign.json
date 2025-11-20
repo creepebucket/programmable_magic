@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "tag": "minecraft:signs"
+  },
+  "main_output": {
+    "count": 3,
+    "id": "minecraft:stick"
+  },
+  "secondary_chance": 0.25,
+  "secondary_output": {
+    "count": 1,
+    "id": "mekanism:sawdust"
+  }
+}

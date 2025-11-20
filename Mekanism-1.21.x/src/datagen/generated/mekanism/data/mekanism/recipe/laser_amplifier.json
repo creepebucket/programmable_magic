@@ -1,0 +1,24 @@
+{
+  "type": "mekanism:mek_data",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:gems/diamond"
+    },
+    "E": {
+      "item": "mekanism:basic_energy_cube"
+    },
+    "S": {
+      "tag": "c:ingots/steel"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SE#",
+    "SSS"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:laser_amplifier"
+  }
+}

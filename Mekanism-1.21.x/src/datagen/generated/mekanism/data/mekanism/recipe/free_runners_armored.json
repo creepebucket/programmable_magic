@@ -1,0 +1,27 @@
+{
+  "type": "mekanism:mek_data",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:dusts/diamond"
+    },
+    "I": {
+      "tag": "c:ingots/bronze"
+    },
+    "P": {
+      "item": "mekanism:free_runners"
+    },
+    "S": {
+      "tag": "c:storage_blocks/steel"
+    }
+  },
+  "pattern": [
+    " S ",
+    "#P#",
+    "I I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:free_runners_armored"
+  }
+}

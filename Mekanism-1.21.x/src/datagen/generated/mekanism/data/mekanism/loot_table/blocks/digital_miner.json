@@ -1,0 +1,46 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "mekanism:eject",
+                "mekanism:filters",
+                "mekanism:inverse",
+                "mekanism:inverse_replace",
+                "mekanism:max_y",
+                "mekanism:min_y",
+                "mekanism:overflow",
+                "mekanism:owner",
+                "mekanism:pull",
+                "mekanism:radius",
+                "mekanism:redstone_control",
+                "mekanism:replace_stack",
+                "mekanism:security",
+                "mekanism:silk_touch",
+                "mekanism:upgrades",
+                "mekanism:energy",
+                "mekanism:items"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "mekanism:digital_miner"
+        }
+      ],
+      "name": "main",
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "mekanism:blocks/digital_miner"
+}

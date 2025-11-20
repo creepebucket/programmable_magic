@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:crushing",
+  "input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "item": "biomesoplenty:white_sandstone"
+      },
+      {
+        "item": "biomesoplenty:chiseled_white_sandstone"
+      },
+      {
+        "item": "biomesoplenty:cut_white_sandstone"
+      },
+      {
+        "item": "biomesoplenty:smooth_white_sandstone"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "count": 2,
+    "id": "biomesoplenty:white_sand"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/slick"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:cyan_slick_plastic"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/cyan"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:cyan_slick_plastic"
+  }
+}

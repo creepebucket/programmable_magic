@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "mekanismadditions:light_gray_plastic"
+    },
+    "R": {
+      "tag": "c:rods/plastic"
+    }
+  },
+  "pattern": [
+    "#R#",
+    "#R#"
+  ],
+  "result": {
+    "count": 3,
+    "id": "mekanismadditions:light_gray_plastic_fence"
+  }
+}

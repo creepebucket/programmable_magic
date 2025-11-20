@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:birch_trapdoor"
+  },
+  "main_output": {
+    "count": 3,
+    "id": "minecraft:birch_planks"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "feature": "mekanism:ore_tin_large_retrogen",
+  "placement": [
+    {
+      "type": "mekanism:disableable",
+      "ore_type": {
+        "type": "tin",
+        "index": 1
+      },
+      "retro_gen": true
+    },
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "mekanism:configurable_constant",
+        "ore_type": {
+          "type": "tin",
+          "index": 1
+        }
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:height_range",
+      "height": {
+        "type": "mekanism:configurable",
+        "ore_type": {
+          "type": "tin",
+          "index": 1
+        }
+      }
+    },
+    {
+      "type": "minecraft:biome"
+    }
+  ]
+}

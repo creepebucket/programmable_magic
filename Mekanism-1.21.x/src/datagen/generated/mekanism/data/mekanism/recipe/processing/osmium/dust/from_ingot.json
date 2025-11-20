@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "tag": "c:ingots/osmium"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:dust_osmium"
+  }
+}

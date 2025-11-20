@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "type": "neoforge:intersection",
+    "children": [
+      {
+        "tag": "mekanism:colorable/glass_panes"
+      },
+      {
+        "tag": "c:dyed/cyan"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 6,
+    "id": "mekanism:cyan"
+  }
+}

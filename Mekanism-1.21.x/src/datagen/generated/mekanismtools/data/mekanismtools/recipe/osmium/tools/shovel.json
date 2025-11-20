@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "c:ingots/osmium"
+    },
+    "R": {
+      "tag": "c:rods/wooden"
+    }
+  },
+  "pattern": [
+    "I",
+    "R",
+    "R"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:osmium_shovel"
+  }
+}

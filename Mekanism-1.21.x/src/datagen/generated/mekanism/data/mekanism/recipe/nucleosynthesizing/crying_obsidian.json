@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:antimatter"
+  },
+  "duration": 200,
+  "item_input": {
+    "count": 1,
+    "tag": "c:obsidians/normal"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:crying_obsidian"
+  },
+  "per_tick_usage": false
+}

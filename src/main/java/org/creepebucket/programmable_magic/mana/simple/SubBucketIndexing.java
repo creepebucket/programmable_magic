@@ -4,7 +4,14 @@ import net.minecraft.core.BlockPos;
 
 /**
  * 子桶索引工具：把一个区块 Section(16x16x16) 切成 2x2x2 个 8x8x8 子桶。
- * 仅提供索引转换，便于后续把朴素 BFS 替换为位集 flood fill。
+ *
+ * 目的：
+ * - 在连通性计算时尽可能“局部化”，一次只在 8x8x8 的小体积内做 Flood Fill；
+ * - 当越界到相邻子桶时，才把相邻子桶入队继续处理，避免扫整个 Section。
+ *
+ * 约定：
+ * - 子桶基坐标为 8 的倍数（向下取整）；
+ * - 子桶内的线性索引为 x*64 + y*8 + z，x/y/z ∈ [0,7]。
  */
 public final class SubBucketIndexing {
 
@@ -52,4 +59,3 @@ public final class SubBucketIndexing {
         @Override public String toString() { return "SectionKey{"+sx+","+sy+","+sz+"}"; }
     }
 }
-

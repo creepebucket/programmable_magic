@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:pink_plastic_slab"
+  },
+  "output": {
+    "amount": 24,
+    "id": "mekanism:pink"
+  }
+}

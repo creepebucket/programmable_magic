@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_stairs/normal"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:pink_plastic_stairs"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/pink"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:pink_plastic_stairs"
+  }
+}

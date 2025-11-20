@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:dusts/lapis"
+    },
+    {
+      "tag": "c:dusts/coal"
+    },
+    {
+      "tag": "c:silicon"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "enderio:photovoltaic_composite"
+  }
+}

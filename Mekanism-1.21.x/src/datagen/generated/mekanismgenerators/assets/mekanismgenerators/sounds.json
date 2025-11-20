@@ -1,0 +1,50 @@
+{
+  "tile.generator.bio": {
+    "sounds": [
+      "mekanismgenerators:generator/bio"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.bio"
+  },
+  "tile.generator.gas": {
+    "sounds": [
+      "mekanismgenerators:generator/gas_burning"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.gas"
+  },
+  "tile.generator.heat": {
+    "sounds": [
+      "mekanismgenerators:generator/heat"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.heat"
+  },
+  "tile.generator.solar": {
+    "sounds": [
+      {
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/solar"
+      }
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.solar"
+  },
+  "tile.generator.wind": {
+    "sounds": [
+      {
+        "attenuation_distance": 8,
+        "name": "mekanismgenerators:generator/wind"
+      }
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.generator.wind"
+  },
+  "tile.machine.fission_reactor": {
+    "sounds": [
+      "mekanismgenerators:fission_reactor"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.machine.fission_reactor"
+  },
+  "tile.machine.fusion_reactor": {
+    "sounds": [
+      "mekanismgenerators:fusion_reactor"
+    ],
+    "subtitle": "sound_event.mekanismgenerators.tile.machine.fusion_reactor"
+  }
+}

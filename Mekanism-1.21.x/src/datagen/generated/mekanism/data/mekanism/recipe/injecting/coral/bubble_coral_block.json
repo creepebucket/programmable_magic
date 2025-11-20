@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:injecting",
+  "chemical_input": {
+    "amount": 5,
+    "tag": "mekanism:water_vapor"
+  },
+  "item_input": {
+    "count": 1,
+    "item": "minecraft:dead_bubble_coral_block"
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:bubble_coral_block"
+  },
+  "per_tick_usage": true
+}

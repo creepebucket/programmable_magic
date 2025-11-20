@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": {
+      "tag": "c:gems/lapis"
+    },
+    "P": {
+      "item": "minecraft:shield"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "III",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanismtools:lapis_lazuli_shield"
+  }
+}

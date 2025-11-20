@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": {
+      "type": "neoforge:difference",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/slick"
+      },
+      "subtracted": {
+        "item": "mekanismadditions:purple_slick_plastic"
+      }
+    },
+    "D": {
+      "tag": "c:dyes/purple"
+    }
+  },
+  "pattern": [
+    " # ",
+    "#D#",
+    " # "
+  ],
+  "result": {
+    "count": 4,
+    "id": "mekanismadditions:purple_slick_plastic"
+  }
+}

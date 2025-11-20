@@ -1,0 +1,40 @@
+{
+  "parent": "mekanismtools:alternate_armor",
+  "criteria": {
+    "armor": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "mekanismtools:refined_glowstone_helmet",
+              "mekanismtools:refined_glowstone_chestplate",
+              "mekanismtools:refined_glowstone_leggings",
+              "mekanismtools:refined_glowstone_boots"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanismtools.loved_by_piglins.description"
+    },
+    "frame": "goal",
+    "icon": {
+      "count": 1,
+      "id": "mekanismtools:refined_glowstone_chestplate"
+    },
+    "title": {
+      "translate": "advancements.mekanismtools.loved_by_piglins.title"
+    }
+  },
+  "requirements": [
+    [
+      "armor"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

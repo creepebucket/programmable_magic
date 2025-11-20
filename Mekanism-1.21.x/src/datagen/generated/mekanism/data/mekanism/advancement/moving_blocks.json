@@ -1,0 +1,39 @@
+{
+  "parent": "mekanism:sawmill",
+  "criteria": {
+    "cardboard_box": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:cardboard_box"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "unbox": {
+      "trigger": "mekanism:unbox_cardboard_box"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.mekanism.moving_blocks.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:cardboard_box"
+    },
+    "title": {
+      "translate": "advancements.mekanism.moving_blocks.title"
+    }
+  },
+  "requirements": [
+    [
+      "cardboard_box"
+    ],
+    [
+      "unbox"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

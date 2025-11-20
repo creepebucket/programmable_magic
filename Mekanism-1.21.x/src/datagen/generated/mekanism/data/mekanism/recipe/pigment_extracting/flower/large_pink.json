@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "minecraft:peony"
+  },
+  "output": {
+    "amount": 1536,
+    "id": "mekanism:pink"
+  }
+}

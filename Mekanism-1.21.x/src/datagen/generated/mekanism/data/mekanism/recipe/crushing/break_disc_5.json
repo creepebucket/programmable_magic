@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:music_disc_5"
+  },
+  "output": {
+    "count": 9,
+    "id": "minecraft:disc_fragment_5"
+  }
+}

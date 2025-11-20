@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 32,
+    "chemical": "mekanism:red"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/concrete"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:red_concrete"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:red_concrete"
+  },
+  "per_tick_usage": false
+}

@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "biomesoplenty:blue_hydrangea"
+  },
+  "output": {
+    "amount": 768,
+    "id": "mekanism:light_blue"
+  }
+}

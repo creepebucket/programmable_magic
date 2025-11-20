@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "type": "neoforge:intersection",
+    "children": [
+      {
+        "tag": "mekanism:colorable/glass"
+      },
+      {
+        "tag": "c:dyed/pink"
+      }
+    ],
+    "count": 1
+  },
+  "output": {
+    "amount": 16,
+    "id": "mekanism:pink"
+  }
+}

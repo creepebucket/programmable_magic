@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:painting",
+  "chemical_input": {
+    "amount": 256,
+    "chemical": "mekanism:lime"
+  },
+  "item_input": {
+    "type": "neoforge:difference",
+    "base": {
+      "tag": "mekanism:colorable/candle"
+    },
+    "count": 1,
+    "subtracted": {
+      "item": "minecraft:lime_candle"
+    }
+  },
+  "output": {
+    "count": 1,
+    "id": "minecraft:lime_candle"
+  },
+  "per_tick_usage": false
+}

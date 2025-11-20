@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:reinforced_alloy",
+  "criteria": {
+    "laser": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:laser"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.laser.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:laser"
+    },
+    "title": {
+      "translate": "advancements.mekanism.laser.title"
+    }
+  },
+  "requirements": [
+    [
+      "laser"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

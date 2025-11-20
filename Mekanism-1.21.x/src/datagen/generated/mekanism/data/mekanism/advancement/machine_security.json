@@ -1,0 +1,34 @@
+{
+  "parent": "mekanism:elite_control_circuit",
+  "criteria": {
+    "security_desk": {
+      "conditions": {
+        "items": [
+          {
+            "items": "mekanism:security_desk"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "description": {
+      "translate": "advancements.mekanism.machine_security.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "mekanism:security_desk"
+    },
+    "title": {
+      "translate": "advancements.mekanism.machine_security.title"
+    }
+  },
+  "requirements": [
+    [
+      "security_desk"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

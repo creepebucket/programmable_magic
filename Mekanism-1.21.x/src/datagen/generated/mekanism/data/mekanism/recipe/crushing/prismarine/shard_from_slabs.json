@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "minecraft:prismarine_slab"
+  },
+  "output": {
+    "count": 2,
+    "id": "minecraft:prismarine_shard"
+  }
+}

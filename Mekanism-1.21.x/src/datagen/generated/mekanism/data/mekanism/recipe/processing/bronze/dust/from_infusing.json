@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "chemical_input": {
+    "amount": 10,
+    "tag": "mekanism:tin"
+  },
+  "item_input": {
+    "count": 3,
+    "tag": "c:dusts/copper"
+  },
+  "output": {
+    "count": 4,
+    "id": "mekanism:dust_bronze"
+  },
+  "per_tick_usage": false
+}

@@ -51,6 +51,12 @@ public class ManaCableBlock extends Block implements EntityBlock {
     }
 
     // 统一在 updateShape 钩子上处理邻居变化（1.21.8 签名）
+    /**
+     * 邻居变化时：
+     * - 仅当相邻方块也是线缆时才触发一次拓扑重建；
+     * - 若两端 simpleNetId 已经非 0 且相等（已收敛），则跳过重建，避免加载阶段重复刷；
+     * - 所有拓扑任务在同一 tick 尾部合并处理（见 SimpleNetManager）。
+     */
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess,
                                      BlockPos currentPos, Direction direction, BlockPos neighborPos,
@@ -58,7 +64,14 @@ public class ManaCableBlock extends Block implements EntityBlock {
         // 仅在相邻也是线缆时，触发一次邻接连通性刷新，避免无关更新导致的过度触发
         if (level instanceof ServerLevel sl && neighborState.getBlock() instanceof ManaCableBlock) {
             BlockEntity be = sl.getBlockEntity(currentPos);
-            if (be instanceof ManaCableBlockEntity cable) {
+            BlockEntity nbe = sl.getBlockEntity(neighborPos);
+            if (be instanceof ManaCableBlockEntity cable && nbe instanceof ManaCableBlockEntity neighbor) {
+                long a = cable.getSimpleNetId();
+                long b = neighbor.getSimpleNetId();
+                // 若两端已有非零且一致的网络ID，则视为已收敛，跳过拓扑重建，减少世界初次加载的开销
+                if (a != 0 && b != 0 && a == b) {
+                    return super.updateShape(state, level, scheduledTickAccess, currentPos, direction, neighborPos, neighborState, random);
+                }
                 cable.onNeighborChanged(direction);
             }
         }

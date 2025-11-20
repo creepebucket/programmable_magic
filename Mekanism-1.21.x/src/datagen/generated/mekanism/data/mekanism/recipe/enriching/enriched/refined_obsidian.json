@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "tag": "c:dusts/refined_obsidian"
+  },
+  "output": {
+    "count": 1,
+    "id": "mekanism:enriched_refined_obsidian"
+  }
+}

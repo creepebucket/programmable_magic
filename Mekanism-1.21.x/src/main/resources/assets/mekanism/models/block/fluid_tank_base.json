@@ -1,0 +1,84 @@
+{
+	"credit": "Made with love by CyanideX using Blockbench",
+	"render_type": "minecraft:cutout",
+	"textures": {
+		"ports_led": "mekanism:block/models/ports_large_led",
+		"tank_frame": "mekanism:block/models/fluid_tank",
+		"tank_frame_top": "mekanism:block/models/fluid_tank_top",
+		"particle": "#glass"
+	},
+	"elements": [
+		{
+			"name": "tank_frame",
+			"from": [2, 0, 2],
+			"to": [14, 16, 14],
+			"faces": {
+				"north": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
+				"east": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
+				"south": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
+				"west": {"uv": [14, 16, 2, 0], "texture": "#tank_frame"},
+				"up": {"uv": [14, 14, 2, 2], "texture": "#tank_frame_top", "cullface": "up"},
+				"down": {"uv": [14, 14, 2, 2], "texture": "#tank_frame_top", "cullface": "down"}
+			}
+		},
+		{
+			"name": "tank_frame inverted",
+			"from": [12.02, 14.02, 15],
+			"to": [3.98, 1.98, 1],
+			"faces": {
+				"east": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
+				"west": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
+				"up": {"uv": [1, 12, 15, 4], "rotation": 90, "texture": "#tank_frame_top", "cullface": "north"},
+				"down": {"uv": [1, 12, 15, 4], "rotation": 90, "texture": "#tank_frame_top", "cullface": "north"}
+			}
+		},
+		{
+			"name": "tank_frame inverted",
+			"from": [15, 14.02, 12.02],
+			"to": [1, 1.98, 3.98],
+			"faces": {
+				"north": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
+				"south": {"uv": [15, 2, 1, 14], "texture": "#tank_frame", "cullface": "north"},
+				"up": {"uv": [1, 14, 15, 6], "rotation": 180, "texture": "#tank_frame", "cullface": "north"},
+				"down": {"uv": [1, 14, 15, 6], "texture": "#tank_frame", "cullface": "north"}
+			}
+		},
+		{
+			"name": "glass",
+			"from": [2, 2, 2],
+			"to": [14, 14, 14],
+			"faces": {
+				"north": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1},
+				"east": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1},
+				"south": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1},
+				"west": {"uv": [2, 0, 14, 12], "texture": "#glass", "tintindex": 1}
+			}
+		},
+		{
+			"name": "port_top_led",
+			"from": [3, 14.02, 3],
+			"to": [13, 16, 13],
+			"faces": {
+				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led", "cullface": "up"},
+				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led"}
+			},
+			"neoforge_data": {
+					"block_light": 15,
+					"sky_light": 15
+			}
+		},
+		{
+			"name": "port_bottom_led",
+			"from": [3, 0, 3],
+			"to": [13, 1.98, 13],
+			"faces": {
+				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led"},
+				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led", "cullface": "down"}
+			},
+			"neoforge_data": {
+					"block_light": 15,
+					"sky_light": 15
+			}
+		}
+	]
+}

@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:reaction",
+  "chemical_input": {
+    "amount": 400,
+    "chemical": "mekanism:oxygen"
+  },
+  "chemical_output": {
+    "amount": 400,
+    "id": "mekanism:hydrogen"
+  },
+  "duration": 600,
+  "fluid_input": {
+    "amount": 400,
+    "tag": "minecraft:water"
+  },
+  "item_input": {
+    "type": "neoforge:compound",
+    "children": [
+      {
+        "tag": "minecraft:planks"
+      },
+      {
+        "item": "minecraft:bamboo_mosaic"
+      }
+    ],
+    "count": 20
+  },
+  "item_output": {
+    "count": 1,
+    "id": "mekanism:dust_charcoal"
+  }
+}

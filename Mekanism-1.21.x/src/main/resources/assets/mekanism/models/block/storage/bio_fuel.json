@@ -1,0 +1,9 @@
+{
+  "parent": "block/cube_bottom_top",
+  "textures": {
+    "particle": "mekanism:block/bio_fuel_block_top",
+    "top": "mekanism:block/bio_fuel_block_top",
+    "bottom": "mekanism:block/bio_fuel_block_bottom",
+    "side": "mekanism:block/bio_fuel_block_side"
+  }
+}

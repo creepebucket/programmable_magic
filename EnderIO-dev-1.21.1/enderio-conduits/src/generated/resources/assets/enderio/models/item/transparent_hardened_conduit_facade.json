@@ -1,0 +1,6 @@
+{
+  "loader": "enderio:facades_item",
+  "model": {
+    "parent": "enderio:block/transparent_hardened_conduit_facade"
+  }
+}

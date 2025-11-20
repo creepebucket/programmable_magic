@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "biomesoplenty"
+    }
+  ],
+  "type": "mekanism:sawing",
+  "input": {
+    "count": 1,
+    "item": "biomesoplenty:dead_chest_boat"
+  },
+  "main_output": {
+    "count": 1,
+    "id": "biomesoplenty:dead_boat"
+  },
+  "secondary_chance": 1.0,
+  "secondary_output": {
+    "count": 1,
+    "id": "minecraft:chest"
+  }
+}

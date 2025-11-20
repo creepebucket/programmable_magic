@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.6,
+  "ingredient": [
+    {
+      "item": "mekanism:osmium_ore"
+    },
+    {
+      "item": "mekanism:deepslate_osmium_ore"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "mekanism:ingot_osmium"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "count": 1,
+    "item": "mekanismadditions:blue_plastic"
+  },
+  "output": {
+    "amount": 48,
+    "id": "mekanism:blue"
+  }
+}
