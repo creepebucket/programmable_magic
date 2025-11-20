@@ -18,6 +18,8 @@ public class Programmable_magic {
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
 
         ModItems.register(modEventBus);
+        ModBlocks.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModDataComponents.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         SpellRegistry.registerSpells(modEventBus);
