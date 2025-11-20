@@ -1,7 +1,0 @@
-{
-    "parent": "mekanism:block/template/cube_all_led",
-    "textures": {
-        "all": "mekanism:block/superheating_element_on",
-        "led": "mekanism:block/superheating_element_on_led"
-    }
-}

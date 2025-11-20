@@ -1,7 +1,0 @@
-{
-  "parent": "create:block/bearing/block",
-  "textures": {
-    "back": "create:block/gearbox",
-    "side": "create:block/windmill_bearing_side"
-  }
-}

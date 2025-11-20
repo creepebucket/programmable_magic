@@ -1,6 +1,0 @@
-{
-  "parent": "mekanism:block/colored_cube",
-  "textures": {
-    "all": "mekanismadditions:block/plastic_road"
-  }
-}

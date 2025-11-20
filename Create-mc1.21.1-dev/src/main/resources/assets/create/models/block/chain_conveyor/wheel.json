@@ -1,6 +1,0 @@
-{
-	"parent": "create:block/chain_conveyor/textures",
-	"loader": "neoforge:obj",
-	"flip_v": true,
-	"model": "create:models/block/chain_conveyor/conveyor_wheel.obj"
-}

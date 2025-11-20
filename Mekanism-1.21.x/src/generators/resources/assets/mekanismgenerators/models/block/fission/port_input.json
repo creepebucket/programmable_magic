@@ -1,6 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "mekanismgenerators:block/fission_reactor_port_input"
-  }
-}

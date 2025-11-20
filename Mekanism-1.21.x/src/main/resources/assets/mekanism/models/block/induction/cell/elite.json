@@ -1,8 +1,0 @@
-{
-    "render_type": "minecraft:cutout",
-    "parent": "mekanism:block/induction/cell/basic",
-    "textures": {
-        "particle": "mekanism:block/elite_induction_cell",
-        "all": "mekanism:block/elite_induction_cell"
-    }
-}

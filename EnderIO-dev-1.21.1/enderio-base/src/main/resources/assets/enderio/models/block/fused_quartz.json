@@ -1,7 +1,0 @@
-{
-  "parent": "enderio:block/tinted_cube_all",
-  "render_type": "cutout",
-  "textures": {
-    "all": "enderio:block/fused_quartz"
-  }
-}

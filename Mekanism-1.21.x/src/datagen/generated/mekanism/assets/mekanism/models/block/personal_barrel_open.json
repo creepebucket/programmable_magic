@@ -1,6 +1,0 @@
-{
-  "parent": "mekanism:block/personal_barrel",
-  "textures": {
-    "top": "mekanism:block/personal_barrel/top_open"
-  }
-}

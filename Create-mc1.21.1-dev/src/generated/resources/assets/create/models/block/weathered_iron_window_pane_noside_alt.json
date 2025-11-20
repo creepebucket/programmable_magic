@@ -1,7 +1,0 @@
-{
-  "parent": "create:block/connected_glass_pane/noside_alt",
-  "textures": {
-    "edge": "create:block/palettes/weathered_iron_window_pane_top",
-    "pane": "create:block/palettes/weathered_iron_window"
-  }
-}

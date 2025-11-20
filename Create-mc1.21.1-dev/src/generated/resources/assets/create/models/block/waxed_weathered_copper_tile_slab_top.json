@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "create:block/copper/weathered_copper_roof_top",
-    "side": "create:block/copper/weathered_copper_tiles",
-    "top": "create:block/copper/weathered_copper_roof_top"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "create:block/copper/exposed_copper_roof_top",
-    "side": "create:block/copper/exposed_copper_shingles"
-  }
-}

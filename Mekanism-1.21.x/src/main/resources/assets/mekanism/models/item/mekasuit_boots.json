@@ -1,7 +1,0 @@
-{
-    "parent": "minecraft:item/generated",
-    "textures": { 
-        "layer0": "mekanism:item/mekasuit_boots",
-        "layer1": "mekanism:item/mekasuit_boots_tint_layer"
-    }
-}

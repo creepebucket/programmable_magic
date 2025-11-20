@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cube_column",
-  "textures": {
-    "end": "create:block/weathered_iron_block_top",
-    "side": "create:block/weathered_iron_block"
-  }
-}

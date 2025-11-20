@@ -1,6 +1,0 @@
-{
-	"parent": "create:block/toolbox/lid/brown",
-	"textures": {
-		"0": "create:block/toolbox/green"
-	}
-}

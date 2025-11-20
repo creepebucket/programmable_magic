@@ -1,8 +1,0 @@
-{
-    "parent": "mekanism:block/bin/active/basic",
-    "textures": {
-        "led": "mekanism:block/bin/creative_led",
-        "side": "mekanism:block/bin/creative_side",
-        "back": "mekanism:block/bin/creative_back"
-    }
-}

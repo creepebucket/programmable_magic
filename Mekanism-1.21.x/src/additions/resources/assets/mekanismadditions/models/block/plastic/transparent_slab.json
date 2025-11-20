@@ -1,9 +1,0 @@
-{
-  "render_type": "minecraft:translucent",
-  "parent": "mekanismadditions:block/colored/slab",
-  "textures": {
-    "bottom": "mekanismadditions:block/transparent_plastic_block",
-    "top": "mekanismadditions:block/transparent_plastic_block",
-    "side": "mekanismadditions:block/transparent_plastic_block"
-  }
-}

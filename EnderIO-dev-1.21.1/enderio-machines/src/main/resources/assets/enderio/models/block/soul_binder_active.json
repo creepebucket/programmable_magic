@@ -1,6 +1,0 @@
-{
-  "parent": "enderio:block/soul_binder",
-  "textures": {
-    "north": "enderio:block/soul_binder_front_active"
-  }
-}
