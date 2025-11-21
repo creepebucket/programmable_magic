@@ -28,13 +28,13 @@ public class WandMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess levelAccess;
     private final ItemStackHandler baseSpellItemInventory;
     private final ItemStackHandler spellModAdjustItemInventory;
-    private final ItemStackHandler spellModControlItemInventory;
+    private final ItemStackHandler spellModComputeItemInventory;
     private final ItemStackHandler spellModTargetItemInventory;
     private final ItemStackHandler spellStorageInventory;
 
     List<SpellDisplaySlot> listBaseSpellSlot = new ArrayList<>();
     List<SpellDisplaySlot> listSpellModAdjustSlot = new ArrayList<>();
-    List<SpellDisplaySlot> listSpellModControlSlot = new ArrayList<>();
+    List<SpellDisplaySlot> listSpellModComputeSlot = new ArrayList<>();
     List<SpellDisplaySlot> listSpellModTargetSlot = new ArrayList<>();
     List<SpellStorageSlot> listSpellStorageSlot = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class WandMenu extends AbstractContainerMenu {
 
         List<ItemStack> baseSpells = getItemsFromTag(ModTagKeys.SPELL_BASE_EFFECT);
         List<ItemStack> spellModAdjust = getItemsFromTag(ModTagKeys.SPELL_ADJUST_MOD);
-        List<ItemStack> spellModControl = getItemsFromTag(ModTagKeys.SPELL_CONTROL_MOD);
+        List<ItemStack> spellModCompute = getItemsFromTag(ModTagKeys.SPELL_COMPUTE_MOD);
         List<ItemStack> spellModTarget = getItemsFromTag(ModTagKeys.SPELL_TARGET_MOD);
 
         this.levelAccess = levelAccess;
@@ -81,7 +81,7 @@ public class WandMenu extends AbstractContainerMenu {
         //法术展示
         this.baseSpellItemInventory = new ItemStackHandler(baseSpells.size());
         this.spellModAdjustItemInventory = new ItemStackHandler(spellModAdjust.size());
-        this.spellModControlItemInventory = new ItemStackHandler(spellModControl.size());
+        this.spellModComputeItemInventory = new ItemStackHandler(spellModCompute.size());
         this.spellModTargetItemInventory = new ItemStackHandler(spellModTarget.size());
         this.spellStorageInventory = new ItemStackHandler(this.SLOTS);
 
@@ -92,9 +92,9 @@ public class WandMenu extends AbstractContainerMenu {
         addSlots(SpellDisplayRightX, SpellDisplayTopY, 10, spellModAdjust.size(), spellModAdjustItemInventory, this.listSpellModAdjustSlot,
                 (handler, slotIndex, x, y, menu) ->
                         new SpellDisplaySlot(handler, slotIndex, x, y, menu, spellModAdjust.get(slotIndex)));
-        addSlots(SpellDisplayLeftX, SpellDisplayBottomY, 10, spellModControl.size(), spellModControlItemInventory, this.listSpellModControlSlot,
+        addSlots(SpellDisplayLeftX, SpellDisplayBottomY, 10, spellModCompute.size(), spellModComputeItemInventory, this.listSpellModComputeSlot,
                 (handler, slotIndex, x, y, menu) ->
-                        new SpellDisplaySlot(handler, slotIndex, x, y, menu, spellModControl.get(slotIndex)));
+                        new SpellDisplaySlot(handler, slotIndex, x, y, menu, spellModCompute.get(slotIndex)));
         addSlots(SpellDisplayRightX, SpellDisplayBottomY, 10, spellModTarget.size(), spellModTargetItemInventory, this.listSpellModTargetSlot,
                 (handler, slotIndex, x, y, menu) ->
                         new SpellDisplaySlot(handler, slotIndex, x, y, menu, spellModTarget.get(slotIndex)));
@@ -184,7 +184,7 @@ public class WandMenu extends AbstractContainerMenu {
         ItemStack stack = slot.getItem();
         ItemStack originalStack = stack.copy();
 
-        int totalDisplaySlots = this.listBaseSpellSlot.size() + this.listSpellModAdjustSlot.size() + this.listSpellModControlSlot.size() + this.listSpellModTargetSlot.size();
+        int totalDisplaySlots = this.listBaseSpellSlot.size() + this.listSpellModAdjustSlot.size() + this.listSpellModComputeSlot.size() + this.listSpellModTargetSlot.size();
         int storageSlotsStart = totalDisplaySlots;
         int storageSlotsEnd = storageSlotsStart + this.SLOTS;
         int playerInvStart = storageSlotsEnd;
@@ -280,7 +280,7 @@ public class WandMenu extends AbstractContainerMenu {
 
     @Override
     protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
-        int displaySlotsEnd = this.listBaseSpellSlot.size() + this.listSpellModAdjustSlot.size() + this.listSpellModControlSlot.size() + this.listSpellModTargetSlot.size();
+        int displaySlotsEnd = this.listBaseSpellSlot.size() + this.listSpellModAdjustSlot.size() + this.listSpellModComputeSlot.size() + this.listSpellModTargetSlot.size();
 
         // 如果移动的目标范围开始于展示槽位区域内，则阻止本次移动，防止物品被放入展示槽。
         if (startIndex < displaySlotsEnd) {
@@ -297,7 +297,7 @@ public class WandMenu extends AbstractContainerMenu {
         // 每次数据同步时，重置所有展示槽位，确保它们不被意外修改
         this.listBaseSpellSlot.forEach(SpellDisplaySlot::resetToDefault);
         this.listSpellModAdjustSlot.forEach(SpellDisplaySlot::resetToDefault);
-        this.listSpellModControlSlot.forEach(SpellDisplaySlot::resetToDefault);
+        this.listSpellModComputeSlot.forEach(SpellDisplaySlot::resetToDefault);
         this.listSpellModTargetSlot.forEach(SpellDisplaySlot::resetToDefault);
     }
 

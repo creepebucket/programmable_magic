@@ -2,9 +2,7 @@ package org.creepebucket.programmable_magic.spells.control_mod;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,4 +46,5 @@ public class DelaySpell extends BaseControlModLogic {
         tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost_power_1.05"));
         return tooltip;
     }
-} 
+}
+

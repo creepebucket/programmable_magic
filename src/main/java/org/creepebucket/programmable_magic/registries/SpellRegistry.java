@@ -14,6 +14,14 @@ import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.AdditionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.DivisionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.MultiplicationSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.NumberComputeBase;
+import org.creepebucket.programmable_magic.spells.compute_mod.SubtractionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.ExponentSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.OpenParenSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.CloseParenSpell;
 import org.creepebucket.programmable_magic.spells.target_mod.ProjectileSpell;
 
 import java.util.HashMap;
@@ -35,6 +43,20 @@ public class SpellRegistry {
         registerSpell(DelaySpell::new);
         registerSpell(ProjectileSpell::new);
         registerSpell(PaintDataSpell::new);
+
+        // 计算类：数字（在父类文件内收集）
+        for (var supplier : NumberComputeBase.allNumberSuppliers()) {
+            registerSpell(supplier);
+        }
+
+        // 计算类：运算符（在父类外单独注册）
+        registerSpell(AdditionSpell::new);
+        registerSpell(SubtractionSpell::new);
+        registerSpell(MultiplicationSpell::new);
+        registerSpell(DivisionSpell::new);
+        registerSpell(ExponentSpell::new);
+        registerSpell(OpenParenSpell::new);
+        registerSpell(CloseParenSpell::new);
 
         ITEMS.register(eventBus);
     }

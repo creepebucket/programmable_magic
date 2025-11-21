@@ -29,8 +29,25 @@
       {
         "from_top_left": [48, 256],
         "from_bottom_right": [63, 271],
-        "target_img_path": "assets/programmable_magic/textures/spell/paint_data.png"
-      }
+        "target_img_path": "assets/programmable_magic/textures/item/spell/paint_data.png"
+      },
+      { "from_top_left": [256, 192], "from_bottom_right": [271, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png" },
+      { "from_top_left": [256, 208], "from_bottom_right": [271, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png" },
+      { "from_top_left": [256, 224], "from_bottom_right": [271, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png" },
+      { "from_top_left": [256, 240], "from_bottom_right": [271, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png" },
+      { "from_top_left": [256, 256], "from_bottom_right": [271, 271], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png" },
+      { "from_top_left": [256, 272], "from_bottom_right": [271, 287], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png" },
+      { "from_top_left": [256, 288], "from_bottom_right": [271, 303], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png" },
+      { "from_top_left": [256, 304], "from_bottom_right": [271, 319], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png" },
+      { "from_top_left": [256, 320], "from_bottom_right": [271, 335], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png" },
+      { "from_top_left": [256, 336], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png" },
+      { "from_top_left": [256, 352], "from_bottom_right": [271, 367], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png" },
+      { "from_top_left": [256, 368], "from_bottom_right": [271, 383], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png" },
+      { "from_top_left": [256, 384], "from_bottom_right": [271, 399], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png" },
+      { "from_top_left": [256, 400], "from_bottom_right": [271, 415], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png" },
+      { "from_top_left": [256, 416], "from_bottom_right": [271, 431], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png" },
+      { "from_top_left": [256, 432], "from_bottom_right": [271, 447], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png" },
+      { "from_top_left": [256, 448], "from_bottom_right": [271, 463], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png" }
     ]
   }
 ]

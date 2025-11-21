@@ -102,6 +102,11 @@ public class SpellEntity extends Entity {
             // 执行当前法术
             SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
             try {
+                // 向 SpellData 注入执行上下文：当前序列与索引，供计算类法术读取
+                if (spellData != null) {
+                    spellData.setCustomData("__seq", this.spellSequence);
+                    spellData.setCustomData("__idx", this.currentSpellIndex);
+                }
                 boolean shouldContinue = currentSpell.run(caster, spellData);
                 
                 if (shouldContinue) {

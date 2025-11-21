@@ -194,19 +194,26 @@ tasks.register('buildAssets', Exec) {
     outputs.dir(generatedAssetsDir)
 }
 
-// 在尽可能多的关键任务之前执行生成资产
-// 资源处理、客户端运行、资产下载、运行准备、编译、打包、构建等
-[tasks.named('processResources'),
- tasks.named('runClient'),
- tasks.named('downloadAssets'),
- tasks.named('prepareClientRun'),
- tasks.named('classes'),
- tasks.named('compileJava'),
- tasks.named('jar'),
- tasks.named('build')
-].each { provider ->
-    provider.configure { dependsOn 'buildAssets' }
+// 仅在 runClient / build 前生成 GUI 资产，避免与 runData 的依赖链形成环
+tasks.named('runClient') { dependsOn 'buildAssets' }
+tasks.named('build') { dependsOn 'buildAssets' }
+
+// 声明 processResources 明确依赖 buildAssets，消除 Gradle 关于隐式依赖的校验错误
+tasks.named('processResources') {
+    dependsOn 'buildAssets'
 }
+
+// 如需在更多任务前生成资产，可启用下方示例（可能导致 runData 环依赖，谨慎开启）
+// 示例：
+// [tasks.named('processResources'),
+//  tasks.named('classes'),
+//  tasks.named('compileJava'),
+//  tasks.named('jar')
+// ].each { provider ->
+//     provider.configure { dependsOn 'buildAssets' }
+// }
+// 注意：千万不要对 'downloadAssets' 或 'prepareClientRun' 添加 dependsOn 'buildAssets'，
+// 否则会出现 runData -> prepareDataRun -> downloadAssets -> buildAssets -> runData 的循环。
 
 // 将 datagen 产物合并进构建资源目录，避免环依赖（classes -> processResources -> runData -> classes）
 tasks.register('mergeGeneratedResources', Copy) {
@@ -218,7 +225,17 @@ tasks.register('mergeGeneratedResources', Copy) {
 }
 
 tasks.named('jar') { dependsOn 'mergeGeneratedResources' }
-tasks.named('build') { dependsOn 'mergeGeneratedResources' }
+tasks.named('build') {
+    dependsOn 'mergeGeneratedResources'
+    // 确保在 build 之前优先执行 runData
+    dependsOn 'runData'
+}
 
 // 开发环境：运行客户端前先生成数据，确保标签/模型等可用
-tasks.named('runClient') { dependsOn 'runData' }
+tasks.named('runClient') {
+    dependsOn 'runData'
+    dependsOn 'mergeGeneratedResources'
+}
+
+// 确保将 datagen 产物覆盖到 build/resources/main 发生在 processResources 之后，避免顺序不确定导致旧模型残留
+tasks.named('mergeGeneratedResources') { mustRunAfter tasks.named('processResources') }

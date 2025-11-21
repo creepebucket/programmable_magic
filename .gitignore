@@ -117,6 +117,7 @@ runs/
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 !gradle-wrapper.jar
-/src/generated/
 /.gradle-user/
 /.vscode/
+/neoforge_docs_1_21_8/
+src/generated

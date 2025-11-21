@@ -37,6 +37,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
                 case CONTROL_MOD:
                     tag(ModTagKeys.SPELL_CONTROL_MOD).add(itemSupplier.get());
                     break;
+                case COMPUTE_MOD:
+                    tag(ModTagKeys.SPELL_COMPUTE_MOD).add(itemSupplier.get());
+                    break;
                 case TARGET_MOD:
                     tag(ModTagKeys.SPELL_TARGET_MOD).add(itemSupplier.get());
                     break;
@@ -45,7 +48,7 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
         this.tag(ModTagKeys.SPELL_MOD)
                 .addTag(ModTagKeys.SPELL_ADJUST_MOD)
-                //.addTag(ModTagKeys.SPELL_COMPUTE_MOD)
+                .addTag(ModTagKeys.SPELL_COMPUTE_MOD)
                 .addTag(ModTagKeys.SPELL_CONTROL_MOD)
                 .addTag(ModTagKeys.SPELL_TARGET_MOD);
 
