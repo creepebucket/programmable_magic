@@ -11,6 +11,7 @@
   "item.programmable_magic.spell_display_delay_1s": "Spell: Delay (1s)",
   "item.programmable_magic.spell_display_mpx5": "Spell: Power x5",
   "item.programmable_magic.spell_display_explosion": "Spell: Explosion",
+  "item.programmable_magic.spell_display_paint_data": "Spell: Paint Data",
 
   "tooltip.programmable_magic.mana_stored": "Mana Stored:",
   "tooltip.programmable_magic.mana_radi": "Radiation:",

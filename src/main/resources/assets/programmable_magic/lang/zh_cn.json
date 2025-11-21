@@ -11,6 +11,7 @@
   "item.programmable_magic.spell_display_delay_1s": "法术：延时（1秒）",
   "item.programmable_magic.spell_display_mpx5": "法术：威力×5",
   "item.programmable_magic.spell_display_explosion": "法术：爆炸",
+  "item.programmable_magic.spell_display_paint_data": "法术：打印数据",
 
   "tooltip.programmable_magic.mana_stored": "魔力存储：",
   "tooltip.programmable_magic.mana_radi": "辐射：",

@@ -110,4 +110,9 @@ public class SpellData {
     public boolean hasCustomData(String key) {
         return customData.containsKey(key);
     }
+
+    // 只读地获取全部自定义数据的副本
+    public Map<String, Object> getAllCustomData() {
+        return new HashMap<>(customData);
+    }
 }

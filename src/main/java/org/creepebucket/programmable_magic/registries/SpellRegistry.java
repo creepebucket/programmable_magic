@@ -11,6 +11,7 @@ import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.adjust_mod.PowerMultiplierSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
 import org.creepebucket.programmable_magic.spells.target_mod.ProjectileSpell;
@@ -33,6 +34,7 @@ public class SpellRegistry {
         registerSpell(PowerMultiplierSpell::new);
         registerSpell(DelaySpell::new);
         registerSpell(ProjectileSpell::new);
+        registerSpell(PaintDataSpell::new);
 
         ITEMS.register(eventBus);
     }
