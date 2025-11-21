@@ -1,5 +1,9 @@
 {
   "item.programmable_magic.small_mana_cell": "小型魔力单元",
+  "item.programmable_magic.medium_mana_cell": "中型魔力单元",
+  "item.programmable_magic.large_mana_cell": "大型魔力单元",
+  "item.programmable_magic.huge_mana_cell": "超大型魔力单元",
+  "item.programmable_magic.colossal_mana_cell": "巨型魔力单元",
   "item.programmable_magic.test_wand": "测试魔杖",
 
   "item.programmable_magic.spell_display_projectile": "法术：投射物载体",

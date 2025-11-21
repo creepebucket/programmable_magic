@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ public class ProjectileSpell extends BaseTargetModLogic {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.translatable("tooltip.programmable_magic.spell_carrier"));
         tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Momentum: +1.0"));
+        tooltip.add(Component.literal("  Momentum: +" + ModUtils.FormattedManaString(1.0)));
         return tooltip;
     }
 } 

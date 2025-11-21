@@ -55,6 +55,7 @@ neoForge {
         }
 
         data {
+            // 使用 clientData 运行配置；具体生成内容由事件中注册的 Provider 决定
             clientData()
 
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
@@ -206,3 +207,18 @@ tasks.register('buildAssets', Exec) {
 ].each { provider ->
     provider.configure { dependsOn 'buildAssets' }
 }
+
+// 将 datagen 产物合并进构建资源目录，避免环依赖（classes -> processResources -> runData -> classes）
+tasks.register('mergeGeneratedResources', Copy) {
+    group = 'datagen'
+    description = '拷贝 src/generated/resources 到 build/resources/main 以包含在打包中'
+    dependsOn 'runData'
+    from 'src/generated/resources'
+    into "$buildDir/resources/main"
+}
+
+tasks.named('jar') { dependsOn 'mergeGeneratedResources' }
+tasks.named('build') { dependsOn 'mergeGeneratedResources' }
+
+// 开发环境：运行客户端前先生成数据，确保标签/模型等可用
+tasks.named('runClient') { dependsOn 'runData' }

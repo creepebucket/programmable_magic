@@ -13,8 +13,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.Map;
 import java.util.Objects;
-
-import static java.lang.Math.round;
+import org.creepebucket.programmable_magic.ModUtils;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
@@ -44,16 +43,18 @@ public class ManaCellTooltip {
                 String shortName = manaType.substring(0, 4);
 
                 event.getToolTip().add(Component.translatable("tooltip.programmable_magic.mana_" + shortName).withStyle(color)
-                        .append(Component.literal(" " + cell.getMana(cellStack, manaType) + " "))
-                        .append(progressBar(0, cell.getMaxMana(), cell.getMana(cellStack, manaType), 30, color))
-                        .append(Component.literal(" " + cell.getMaxMana())));
+                        .append(Component.literal(" " + ModUtils.FormattedManaString(cell.getMana(cellStack, manaType)) + " "))
+                        .append(progressBar(0.0, cell.getMaxMana(), cell.getMana(cellStack, manaType), 30, color))
+                        .append(Component.literal(" " + ModUtils.FormattedManaString(cell.getMaxMana()))));
             }
         }
     }
 
-    public static MutableComponent progressBar(int min, int max, int current, int length, ChatFormatting style) {
-        float fill_rate = (float) current / (max - min);
-        int filled = round(length * fill_rate);
+    public static MutableComponent progressBar(double min, double max, double current, int length, ChatFormatting style) {
+        double fill_rate = (max - min) == 0 ? 0.0 : current / (max - min);
+        int filled = (int) Math.round(length * fill_rate);
+        if (filled < 0) filled = 0;
+        if (filled > length) filled = length;
         int unfilled = length - filled;
 
         return Component.literal("|".repeat(filled)).withStyle(style).append(Component.literal("|".repeat(unfilled)).withStyle(ChatFormatting.GRAY));

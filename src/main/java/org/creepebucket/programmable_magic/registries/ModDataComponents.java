@@ -17,13 +17,13 @@ public class ModDataComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENTS =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Programmable_magic.MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<String, Integer>>> MANA =
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<String, Double>>> MANA =
             DATA_COMPONENTS.registerComponentType("mana", builder -> builder
-                    .persistent(Codec.unboundedMap(Codec.STRING, Codec.INT))
+                    .persistent(Codec.unboundedMap(Codec.STRING, Codec.DOUBLE))
                     .networkSynchronized(ByteBufCodecs.map(
                             HashMap::new,
                             ByteBufCodecs.STRING_UTF8,
-                            ByteBufCodecs.INT
+                            ByteBufCodecs.DOUBLE
                     )));
 
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}

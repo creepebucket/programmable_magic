@@ -1,5 +1,9 @@
 {
   "item.programmable_magic.small_mana_cell": "Small Mana Cell",
+  "item.programmable_magic.medium_mana_cell": "Medium Mana Cell",
+  "item.programmable_magic.large_mana_cell": "Large Mana Cell",
+  "item.programmable_magic.huge_mana_cell": "Huge Mana Cell",
+  "item.programmable_magic.colossal_mana_cell": "Colossal Mana Cell",
   "item.programmable_magic.test_wand": "Test Wand",
 
   "item.programmable_magic.spell_display_projectile": "Spell: Projectile Carrier",

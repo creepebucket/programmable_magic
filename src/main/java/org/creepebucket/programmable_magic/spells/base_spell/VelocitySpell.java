@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +47,14 @@ public class VelocitySpell extends BaseSpellEffectLogic {
     @Override
     public void calculateBaseMana(SpellData data) {
         // 速度法术消耗动量系魔力
-        data.setManaCost("momentum", 3.0);
+        data.setManaCost("momentum", 0.05);
     }
 
     @Override
     public List<Component> getTooltip() {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Momentum: 3.0"));
+        tooltip.add(Component.literal("  Momentum: " + ModUtils.FormattedManaString(0.05)));
         return tooltip;
     }
 } 

@@ -5,8 +5,9 @@ import org.creepebucket.programmable_magic.registries.ModBlockTagProvider;
 import org.creepebucket.programmable_magic.registries.ModItemTagProvider;
 
 public class ModDataGenerators {
+    // 使用 Client 子类（与 run config 的 clientData 匹配），保持原先可工作的行为
     public static void gatherData(GatherDataEvent.Client event) {
         event.createProvider(ModBlockTagProvider::new);
         event.createProvider(output -> new ModItemTagProvider(output, event.getLookupProvider()));
     }
-} 
+}

@@ -6,6 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,16 +44,16 @@ public class ExplosionSpell extends BaseSpellEffectLogic {
     @Override
     public void calculateBaseMana(SpellData data) {
         // 爆炸法术消耗压力系魔力
-        data.setManaCost("pressure", 5.0);
-        data.setManaCost("temperature", 2.0);
+        data.setManaCost("pressure", 250);
+        data.setManaCost("temperature", 200);
     }
 
     @Override
     public List<Component> getTooltip() {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Pressure: 5.0"));
-        tooltip.add(Component.literal("  Temperature: 2.0"));
+        tooltip.add(Component.literal("  Pressure: " + ModUtils.FormattedManaString(250)));
+        tooltip.add(Component.literal("  Temperature: " + ModUtils.FormattedManaString(200)));
         return tooltip;
     }
 } 

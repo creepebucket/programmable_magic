@@ -332,4 +332,6 @@ public class WandMenu extends AbstractContainerMenu {
     public int getSlots() {
         return SLOTS;
     }
+
+    
 }

@@ -161,7 +161,7 @@ public class SpellLogic {
             if (required > 0) {
                 LOGGER.debug("检查 {} 魔力类型，需要: {}", manaType, String.format("%.2f", required));
                 
-                int totalAvailable = 0;
+                double totalAvailable = 0.0;
                 for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
                     ItemStack stack = player.getInventory().getItem(i);
                     if (stack.getItem() instanceof BaseManaCell manaCell) {
@@ -169,12 +169,14 @@ public class SpellLogic {
                     }
                 }
                 
-                LOGGER.debug("{} 魔力类型可用: {}, 需要: {}", manaType, totalAvailable, String.format("%.2f", required));
+                LOGGER.debug("{} 魔力类型可用: {}, 需要: {}", manaType, String.format("%.2f", totalAvailable), String.format("%.2f", required));
                 
                 if (totalAvailable < required) {
-                    LOGGER.warn("{} 魔力类型不足: 需要 {}，可用 {}", manaType, String.format("%.2f", required), totalAvailable);
-                    insufficientTypes.add(String.format("%s: 需要%.1f, 可用%d", 
-                        getManaTypeDisplayName(manaType), required, totalAvailable));
+                    LOGGER.warn("{} 魔力类型不足: 需要 {}，可用 {}", manaType, String.format("%.2f", required), String.format("%.2f", totalAvailable));
+                    insufficientTypes.add(String.format("%s: 需要%s, 可用%s",
+                        getManaTypeDisplayName(manaType),
+                        org.creepebucket.programmable_magic.ModUtils.FormattedManaString(required),
+                        org.creepebucket.programmable_magic.ModUtils.FormattedManaString(totalAvailable)));
                 }
             }
         }
@@ -219,7 +221,7 @@ public class SpellLogic {
             double required = spellData.getManaCost(manaType);
             if (required > 0) {
                 LOGGER.debug("消耗 {} 魔力类型: {}", manaType, String.format("%.2f", required));
-                consumeManaType(manaType, (int) Math.ceil(required));
+                consumeManaType(manaType, required);
             }
         }
         
@@ -229,20 +231,20 @@ public class SpellLogic {
     /**
      * 消耗特定类型的魔力
      */
-    private void consumeManaType(String manaType, int amount) {
-        LOGGER.debug("开始消耗 {} 魔力类型，总量: {}", manaType, amount);
+    private void consumeManaType(String manaType, double amount) {
+        LOGGER.debug("开始消耗 {} 魔力类型，总量: {}", manaType, String.format("%.2f", amount));
         
-        int remaining = amount;
+        double remaining = amount;
         List<ItemStack> modifiedStacks = new ArrayList<>();
         
         for (int i = 0; i < player.getInventory().getContainerSize() && remaining > 0; i++) {
             ItemStack stack = player.getInventory().getItem(i);
             if (stack.getItem() instanceof BaseManaCell manaCell) {
-                int available = manaCell.getMana(stack, manaType);
-                int toConsume = Math.min(available, remaining);
+                double available = manaCell.getMana(stack, manaType);
+                double toConsume = Math.min(available, remaining);
                 
                 if (toConsume > 0) {
-                    LOGGER.debug("从槽位 {} 消耗 {} 魔力: {} -> {}", i, manaType, available, available - toConsume);
+                    LOGGER.debug("从槽位 {} 消耗 {} 魔力: {} -> {}", i, manaType, String.format("%.2f", available), String.format("%.2f", (available - toConsume)));
                     boolean success = manaCell.addMana(stack, manaType, -toConsume);
                     if (success) {
                         remaining -= toConsume;
@@ -250,7 +252,7 @@ public class SpellLogic {
                         // 强制标记物品栈已修改，确保同步到客户端
                         player.getInventory().setChanged();
                     } else {
-                        LOGGER.warn("魔力扣除失败: 槽位 {}, 类型 {}, 尝试扣除 {}", i, manaType, toConsume);
+                        LOGGER.warn("魔力扣除失败: 槽位 {}, 类型 {}, 尝试扣除 {}", i, manaType, String.format("%.2f", toConsume));
                     }
                 }
             }
@@ -263,8 +265,8 @@ public class SpellLogic {
             player.containerMenu.broadcastChanges();
         }
         
-        if (remaining > 0) {
-            LOGGER.warn("{} 魔力类型消耗不完整，剩余: {}", manaType, remaining);
+        if (remaining > 0.0) {
+            LOGGER.warn("{} 魔力类型消耗不完整，剩余: {}", manaType, String.format("%.2f", remaining));
         } else {
             LOGGER.debug("{} 魔力类型消耗完成", manaType);
         }

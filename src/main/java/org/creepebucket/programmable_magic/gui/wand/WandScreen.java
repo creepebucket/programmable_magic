@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
@@ -111,24 +112,25 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
-    private void drawManaLine(GuiGraphics g, int x, int y, String label, double need, int have, int labelColor) {
-        boolean ok = have >= Math.ceil(need);
+    private void drawManaLine(GuiGraphics g, int x, int y, String label, double need, double have, int labelColor) {
+        boolean ok = have >= need;
         int color = ok ? 0xFF55FF55 : 0xFFFF5555; // 绿/红
-        String text = String.format("%s: 需要 %.1f / 拥有 %d", label, need, have);
+        String text = String.format("%s: 需要 %s / 拥有 %s", label,
+                ModUtils.FormattedManaString(need), ModUtils.FormattedManaString(have));
         g.drawString(this.font, Component.literal(text), x, y, color, false);
     }
 
-    private record ManaInfo(Map<String, Double> required, Map<String, Integer> available) {}
+    private record ManaInfo(Map<String, Double> required, Map<String, Double> available) {}
 
     private ManaInfo computeManaInfo(Player player, List<ItemStack> spellStacks) {
         Map<String, Double> required = SpellCostCalculator.computeRequiredManaFromStacks(spellStacks, player);
 
         // 统计可用魔力（遍历玩家背包里的 BaseManaCell）
-        Map<String, Integer> available = new HashMap<>();
-        available.put("radiation", 0);
-        available.put("temperature", 0);
-        available.put("momentum", 0);
-        available.put("pressure", 0);
+        Map<String, Double> available = new HashMap<>();
+        available.put("radiation", 0.0);
+        available.put("temperature", 0.0);
+        available.put("momentum", 0.0);
+        available.put("pressure", 0.0);
 
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
             ItemStack stack = player.getInventory().getItem(i);
