@@ -201,6 +201,8 @@ tasks.named('build') { dependsOn 'buildAssets' }
 // 声明 processResources 明确依赖 buildAssets，消除 Gradle 关于隐式依赖的校验错误
 tasks.named('processResources') {
     dependsOn 'buildAssets'
+    // 避免资源重复（例如 datagen 与手写资源重名）导致失败
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
 // 如需在更多任务前生成资产，可启用下方示例（可能导致 runData 环依赖，谨慎开启）
