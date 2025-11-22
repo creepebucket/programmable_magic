@@ -125,6 +125,23 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
     private ManaInfo computeManaInfo(Player player, List<ItemStack> spellStacks) {
         Map<String, Double> required = SpellCostCalculator.computeRequiredManaFromStacks(spellStacks, player);
 
+        // 应用当前手持魔杖的魔力修正系数
+        double manaMult = 1.0;
+        try {
+            var main = player.getMainHandItem().getItem();
+            var off = player.getOffhandItem().getItem();
+            if (main instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w) {
+                manaMult = Math.max(0.0, w.getManaMult());
+            } else if (off instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w2) {
+                manaMult = Math.max(0.0, w2.getManaMult());
+            }
+        } catch (Exception ignored) {}
+        if (manaMult != 1.0) {
+            for (String k : required.keySet()) {
+                required.put(k, required.get(k) * manaMult);
+            }
+        }
+
         // 统计可用魔力（遍历玩家背包里的 BaseManaCell）
         Map<String, Double> available = new HashMap<>();
         available.put("radiation", 0.0);

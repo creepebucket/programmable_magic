@@ -12,5 +12,9 @@ public class ModDataGenerators {
         event.createProvider(output -> new ModItemTagProvider(output, event.getLookupProvider()));
         // 生成法术的模型 + client items（1.21+ 必需）
         event.createProvider(SpellItemModelProvider::new);
+        // 通用物品模型
+        event.createProvider(GeneralItemModelProvider::new);
+        // 方块/方块物品模型 + 方块状态
+        event.createProvider(BlockStateModelProvider::new);
     }
 }

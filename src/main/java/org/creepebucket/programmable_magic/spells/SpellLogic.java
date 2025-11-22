@@ -123,9 +123,21 @@ public class SpellLogic {
 
         Map<String, Double> totals = SpellCostCalculator.computeRequiredManaFromLogics(spellSequence, player);
 
+        // 叠加魔杖对魔力需求的修正
+        double manaMult = 1.0;
+        try {
+            var main = player.getMainHandItem().getItem();
+            var off = player.getOffhandItem().getItem();
+            if (main instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w) {
+                manaMult = Math.max(0.0, w.getManaMult());
+            } else if (off instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w2) {
+                manaMult = Math.max(0.0, w2.getManaMult());
+            }
+        } catch (Exception ignored) {}
+
         // 将 totals 写回 spellData
         for (String manaType : List.of("radiation", "temperature", "momentum", "pressure")) {
-            spellData.setManaCost(manaType, totals.getOrDefault(manaType, 0.0));
+            spellData.setManaCost(manaType, totals.getOrDefault(manaType, 0.0) * manaMult);
         }
 
         LOGGER.info("魔力消耗计算完成:");

@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.registries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.minecraft.tags.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -15,6 +16,8 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // 目前为空，如果需要添加块标签，可以在这里添加
+        // 偏好使用镐子开采
+        this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .add(ModBlocks.PRIMITIVE_ALLOY_SMELTER.get());
     }
 }

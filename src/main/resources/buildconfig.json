@@ -1,6 +1,51 @@
 [
   {
-    "packbig.png": [
+    "items_blocks_big.png": [
+      {
+        "from_top_left": [48, 256],
+        "from_bottom_right": [63, 271],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/paint_data.png"
+      },
+      { "from_top_left": [256, 192], "from_bottom_right": [271, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png" },
+      { "from_top_left": [256, 208], "from_bottom_right": [271, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png" },
+      { "from_top_left": [256, 224], "from_bottom_right": [271, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png" },
+      { "from_top_left": [256, 240], "from_bottom_right": [271, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png" },
+      { "from_top_left": [256, 256], "from_bottom_right": [271, 271], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png" },
+      { "from_top_left": [256, 272], "from_bottom_right": [271, 287], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png" },
+      { "from_top_left": [256, 288], "from_bottom_right": [271, 303], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png" },
+      { "from_top_left": [256, 304], "from_bottom_right": [271, 319], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png" },
+      { "from_top_left": [256, 320], "from_bottom_right": [271, 335], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png" },
+      { "from_top_left": [256, 336], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png" },
+      { "from_top_left": [256, 352], "from_bottom_right": [271, 367], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png" },
+      { "from_top_left": [256, 368], "from_bottom_right": [271, 383], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png" },
+      { "from_top_left": [256, 384], "from_bottom_right": [271, 399], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png" },
+      { "from_top_left": [256, 400], "from_bottom_right": [271, 415], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png" },
+      { "from_top_left": [256, 416], "from_bottom_right": [271, 431], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png" },
+      { "from_top_left": [256, 432], "from_bottom_right": [271, 447], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png" },
+      { "from_top_left": [256, 448], "from_bottom_right": [271, 463], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png" },
+
+      { "from_top_left": [480, 128], "from_bottom_right": [495, 143], "target_img_path": "assets/programmable_magic/textures/item/pure_redstone_dust.png" },
+      { "from_top_left": [480, 144], "from_bottom_right": [495, 159], "target_img_path": "assets/programmable_magic/textures/item/redstone_gold_alloy.png" },
+      { "from_top_left": [480, 160], "from_bottom_right": [495, 175], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wire.png" },
+      { "from_top_left": [480, 176], "from_bottom_right": [495, 191], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_rod.png" },
+      { "from_top_left": [480, 192], "from_bottom_right": [495, 207], "target_img_path": "assets/programmable_magic/textures/item/small_cell_shell.png" },
+
+      { "from_top_left": [544, 128], "from_bottom_right": [559, 143], "target_img_path": "assets/programmable_magic/textures/item/debris_dust.png" },
+      { "from_top_left": [544, 144], "from_bottom_right": [559, 159], "target_img_path": "assets/programmable_magic/textures/item/debris_clay.png" },
+      { "from_top_left": [544, 160], "from_bottom_right": [559, 175], "target_img_path": "assets/programmable_magic/textures/item/covered_rg_alloy_wire.png" },
+      { "from_top_left": [544, 176], "from_bottom_right": [559, 191], "target_img_path": "assets/programmable_magic/textures/item/small_cell_certidge.png" },
+
+      { "from_top_left": [208, 128], "from_bottom_right": [223, 143], "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png" },
+      { "from_top_left": [288, 128], "from_bottom_right": [303, 143], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand.png" },
+
+      { "from_top_left": [352, 128], "from_bottom_right": [367, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_empty.png" },
+      { "from_top_left": [368, 128], "from_bottom_right": [383, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_burn.png" },
+      { "from_top_left": [384, 128], "from_bottom_right": [399, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_blocked.png" },
+      { "from_top_left": [400, 128], "from_bottom_right": [415, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_empty.png" },
+      { "from_top_left": [416, 128], "from_bottom_right": [431, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_burn.png" },
+      { "from_top_left": [432, 128], "from_bottom_right": [447, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_blocked.png" }
+    ],
+    "gui_big.png": [
       {
         "from_top_left": [0, 0],
         "from_bottom_right": [265, 26],
@@ -25,29 +70,7 @@
         "from_top_left": [324, 2],
         "from_bottom_right": [501, 53],
         "target_img_path": "assets/programmable_magic/textures/gui/spell_display_slot.png"
-      },
-      {
-        "from_top_left": [48, 256],
-        "from_bottom_right": [63, 271],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/paint_data.png"
-      },
-      { "from_top_left": [256, 192], "from_bottom_right": [271, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png" },
-      { "from_top_left": [256, 208], "from_bottom_right": [271, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png" },
-      { "from_top_left": [256, 224], "from_bottom_right": [271, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png" },
-      { "from_top_left": [256, 240], "from_bottom_right": [271, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png" },
-      { "from_top_left": [256, 256], "from_bottom_right": [271, 271], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png" },
-      { "from_top_left": [256, 272], "from_bottom_right": [271, 287], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png" },
-      { "from_top_left": [256, 288], "from_bottom_right": [271, 303], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png" },
-      { "from_top_left": [256, 304], "from_bottom_right": [271, 319], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png" },
-      { "from_top_left": [256, 320], "from_bottom_right": [271, 335], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png" },
-      { "from_top_left": [256, 336], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png" },
-      { "from_top_left": [256, 352], "from_bottom_right": [271, 367], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png" },
-      { "from_top_left": [256, 368], "from_bottom_right": [271, 383], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png" },
-      { "from_top_left": [256, 384], "from_bottom_right": [271, 399], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png" },
-      { "from_top_left": [256, 400], "from_bottom_right": [271, 415], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png" },
-      { "from_top_left": [256, 416], "from_bottom_right": [271, 431], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png" },
-      { "from_top_left": [256, 432], "from_bottom_right": [271, 447], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png" },
-      { "from_top_left": [256, 448], "from_bottom_right": [271, 463], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png" }
+      }
     ]
   }
 ]

@@ -39,5 +39,29 @@
   "tooltip.programmable_magic.mana_cost": "魔力消耗：",
   "tooltip.programmable_magic.spell_carrier": "载体：投射物",
 
-  "gui.programmable_magic.wand_title": "魔杖"
+  "gui.programmable_magic.wand_title": "魔杖",
+
+  "item.programmable_magic.pure_redstone_dust": "纯净红石粉",
+  "item.programmable_magic.redstone_gold_alloy": "红石-金合金",
+  "item.programmable_magic.rg_alloy_wire": "红石-金合金线缆",
+  "item.programmable_magic.rg_alloy_rod": "红石-金合金棒",
+  "item.programmable_magic.small_cell_shell": "小型魔力单元外壳",
+  "item.programmable_magic.debris_dust": "残骸粉末",
+  "item.programmable_magic.debris_clay": "残骸复合粘土",
+  "item.programmable_magic.covered_rg_alloy_wire": "包层红石-金合金线缆",
+  "item.programmable_magic.small_cell_certidge": "小型魔力单元内芯",
+  "item.programmable_magic.rg_alloy_wand": "红石-金合金魔杖",
+
+  "block.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
+  "item.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
+  "itemGroup.programmable_magic.main": "Programmable Magic",
+
+  "tooltip.programmable_magic.pure_redstone_dust": "提纯过后的红石, 你拿在手里, 感知到了什么东西...",
+  "tooltip.programmable_magic.redstone_gold_alloy": "一种具有优秀魔力亲和的材料, 可用于初级魔法部件制作.",
+  "tooltip.programmable_magic.rg_alloy_wire": "传输魔力的好方法, 不过你需要绝缘...",
+  "tooltip.programmable_magic.rg_alloy_rod": "大体积适合用于承载和存储魔力",
+  "tooltip.programmable_magic.debris_clay": "具有高超的魔力绝缘性能, 可用于初级魔法部件制作.",
+  "tooltip.programmable_magic.covered_rg_alloy_wire": "已绝缘.",
+  "tooltip.programmable_magic.rg_alloy_wand": "年轻人的第一把魔杖",
+  "tooltip.programmable_magic.hold_lalt": "按住 LALT 查看详情"
 }

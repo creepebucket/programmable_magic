@@ -39,5 +39,29 @@
   "tooltip.programmable_magic.mana_cost": "Mana Cost:",
   "tooltip.programmable_magic.spell_carrier": "Carrier: Projectile",
 
-  "gui.programmable_magic.wand_title": "Wand"
-} 
+  "gui.programmable_magic.wand_title": "Wand",
+
+  "item.programmable_magic.pure_redstone_dust": "Pure Redstone Dust",
+  "item.programmable_magic.redstone_gold_alloy": "Redstone-Gold Alloy",
+  "item.programmable_magic.rg_alloy_wire": "RG Alloy Wire",
+  "item.programmable_magic.rg_alloy_rod": "RG Alloy Rod",
+  "item.programmable_magic.small_cell_shell": "Small Cell Shell",
+  "item.programmable_magic.debris_dust": "Debris Dust",
+  "item.programmable_magic.debris_clay": "Debris Composite Clay",
+  "item.programmable_magic.covered_rg_alloy_wire": "Covered RG Alloy Wire",
+  "item.programmable_magic.small_cell_certidge": "Small Cell Cartridge",
+  "item.programmable_magic.rg_alloy_wand": "RG Alloy Wand",
+
+  "block.programmable_magic.primitive_alloy_smelter": "Primitive Alloy Smelter",
+  "item.programmable_magic.primitive_alloy_smelter": "Primitive Alloy Smelter",
+  "itemGroup.programmable_magic.main": "Programmable Magic",
+
+  "tooltip.programmable_magic.pure_redstone_dust": "Purified redstone, you sense something...",
+  "tooltip.programmable_magic.redstone_gold_alloy": "Good mana affinity; used for basic magic parts.",
+  "tooltip.programmable_magic.rg_alloy_wire": "A way to transfer mana; needs insulation...",
+  "tooltip.programmable_magic.rg_alloy_rod": "Large volume for carrying/storing mana",
+  "tooltip.programmable_magic.debris_clay": "Excellent mana insulation; for basic magic parts.",
+  "tooltip.programmable_magic.covered_rg_alloy_wire": "Insulated.",
+  "tooltip.programmable_magic.rg_alloy_wand": "A beginner's first wand",
+  "tooltip.programmable_magic.hold_lalt": "Hold LALT for details"
+}

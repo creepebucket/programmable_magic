@@ -18,11 +18,16 @@ public abstract class SimpleComputeSpell extends BaseComputeModLogic {
 
     @Override
     public void calculateBaseMana(SpellData data) {
-        // 四系各 0.005
-        data.setManaCost("radiation", 0.005);
-        data.setManaCost("temperature", 0.005);
-        data.setManaCost("momentum", 0.005);
-        data.setManaCost("pressure", 0.005);
+        // 计算类法术作为修饰符参与计费，基础魔力不在此处计入
+    }
+
+    @Override
+    public void applyManaModification(SpellData data) {
+        // 计算类法术每个实例叠加固定耗魔：四系各 0.005
+        data.addManaCost("radiation", 0.005);
+        data.addManaCost("temperature", 0.005);
+        data.addManaCost("momentum", 0.005);
+        data.addManaCost("pressure", 0.005);
     }
 
     @Override
@@ -36,4 +41,3 @@ public abstract class SimpleComputeSpell extends BaseComputeModLogic {
         return tooltip;
     }
 }
-
