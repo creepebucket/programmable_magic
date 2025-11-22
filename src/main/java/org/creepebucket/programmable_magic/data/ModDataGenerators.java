@@ -16,5 +16,7 @@ public class ModDataGenerators {
         event.createProvider(GeneralItemModelProvider::new);
         // 方块/方块物品模型 + 方块状态
         event.createProvider(BlockStateModelProvider::new);
+        // 合成表（配方）
+        event.createProvider(ProgrammableMagicRecipeProvider.Runner::new);
     }
 }

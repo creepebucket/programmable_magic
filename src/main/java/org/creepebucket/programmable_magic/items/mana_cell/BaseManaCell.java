@@ -81,9 +81,9 @@ public abstract class BaseManaCell extends Item {
         boolean isCreative = player.getAbilities().instabuild;
 
         if (!level.isClientSide()) {
-            if (isCreative) {
+            //if (isCreative) {
                 refillAllTypesToMax(stack);
-            }
+            //} 暂时去掉
         }
 
         return isCreative ? InteractionResult.SUCCESS : InteractionResult.PASS;

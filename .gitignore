@@ -121,4 +121,6 @@ runs/
 /.vscode/
 /neoforge_docs_1_21_8/
 src/generated
-/src/main/resources/assets/programmable_magic/
+/src/main/resources/assets/programmable_magic/blockstates/
+/src/main/resources/assets/programmable_magic/models/
+/src/main/resources/assets/programmable_magic/textures/
