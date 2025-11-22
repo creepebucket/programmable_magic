@@ -64,7 +64,6 @@ public abstract class SpellItemLogic {
         BASE_SPELL,     // 基础法术效果
         ADJUST_MOD,     // 数值调整
         CONTROL_MOD,    // 控制调整
-        COMPUTE_MOD,    // 逻辑运算
-        TARGET_MOD      // 目标/载体
+        COMPUTE_MOD     // 逻辑运算
     }
 }

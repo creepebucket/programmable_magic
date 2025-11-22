@@ -16,7 +16,7 @@ public class SpellData {
     
     // 法术属性（可被法术修改）
     private double power = 1.0;
-    private double range = 10.0;
+    private double range = 999999999999999999.0;  // 暂时不动
     private int delay = 0; // 延时（tick）
     private boolean isActive = true;
     

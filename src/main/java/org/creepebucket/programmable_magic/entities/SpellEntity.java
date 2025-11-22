@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.entities;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -17,6 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.base_spell.BaseSpellEffectLogic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +123,11 @@ public class SpellEntity extends Entity {
                     delayTicks = Math.max(delayTicks, spellData.getDelay());
                     spellData.setDelay(0); // 重置延时
                 }
+
+                // 如果法术是base, 重置威力
+                if (currentSpell.getSpellType() == SpellItemLogic.SpellType.BASE_SPELL) {
+                    spellData.setPower(1);
+                }
                 
             } catch (Exception e) {
                 // 法术执行出错，终止法术
@@ -133,7 +140,7 @@ public class SpellEntity extends Entity {
         
         // 检查是否超出范围
         if (spellData != null && this.distanceToSqr(spellData.getCaster()) > spellData.getRange() * spellData.getRange()) {
-            this.discard();
+            // this.discard(); 暂时不要
         }
     }
 

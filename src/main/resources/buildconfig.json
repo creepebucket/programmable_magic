@@ -23,6 +23,16 @@
       { "from_top_left": [256, 416], "from_bottom_right": [271, 431], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png" },
       { "from_top_left": [256, 432], "from_bottom_right": [271, 447], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png" },
       { "from_top_left": [256, 448], "from_bottom_right": [271, 463], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png" },
+      
+      { "from_top_left": [48, 192], "from_bottom_right": [63, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/explosion.png" },
+      { "from_top_left": [48, 208], "from_bottom_right": [63, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/gain_velocity.png" },
+      { "from_top_left": [48, 224], "from_bottom_right": [63, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/ignite.png" },
+      { "from_top_left": [48, 240], "from_bottom_right": [63, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/glow.png" },
+
+      { "from_top_left": [144, 192], "from_bottom_right": [159, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png" },
+      { "from_top_left": [144, 208], "from_bottom_right": [159, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/power_boost.png" },
+      { "from_top_left": [384, 192], "from_bottom_right": [399, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png" },
+      { "from_top_left": [384, 208], "from_bottom_right": [399, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_entity.png" },
 
       { "from_top_left": [480, 128], "from_bottom_right": [495, 143], "target_img_path": "assets/programmable_magic/textures/item/pure_redstone_dust.png" },
       { "from_top_left": [480, 144], "from_bottom_right": [495, 159], "target_img_path": "assets/programmable_magic/textures/item/redstone_gold_alloy.png" },

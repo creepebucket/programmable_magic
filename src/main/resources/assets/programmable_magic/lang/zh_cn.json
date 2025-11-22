@@ -9,8 +9,14 @@
   "item.programmable_magic.spell_display_projectile": "法术：投射物载体",
   "item.programmable_magic.spell_display_gain_velocity": "法术：速度加成",
   "item.programmable_magic.spell_display_delay_1s": "法术：延时（1秒）",
+  "item.programmable_magic.spell_display_delay": "法术：延时",
   "item.programmable_magic.spell_display_mpx5": "法术：威力×5",
+  "item.programmable_magic.spell_display_power_boost": "法术：威力提升",
+  "item.programmable_magic.spell_display_trigger_touch_ground": "法术：触地触发",
+  "item.programmable_magic.spell_display_trigger_touch_entity": "法术：触实体触发",
   "item.programmable_magic.spell_display_explosion": "法术：爆炸",
+  "item.programmable_magic.spell_display_ignite": "法术：点燃",
+  "item.programmable_magic.spell_display_glow": "法术：萤光",
   "item.programmable_magic.spell_display_paint_data": "法术：打印数据",
   "item.programmable_magic.spell_display_compute_0": "法术：数字 0",
   "item.programmable_magic.spell_display_compute_1": "法术：数字 1",
@@ -38,6 +44,12 @@
 
   "tooltip.programmable_magic.mana_cost": "魔力消耗：",
   "tooltip.programmable_magic.spell_carrier": "载体：投射物",
+  "tooltip.programmable_magic.spell_modifier": "修饰符",
+  "tooltip.programmable_magic.delay_by_expression_seconds": "延时：由前面表达式结果（秒）",
+  "tooltip.programmable_magic.power_boost_by_expression": "威力按表达式结果倍增",
+  "tooltip.programmable_magic.mana_cost_multiplier_by_expression": "耗魔乘以表达式结果",
+  "tooltip.programmable_magic.trigger_touch_ground": "等待直到法术实体周围 0.3 格有方块",
+  "tooltip.programmable_magic.trigger_touch_entity": "等待直到法术实体周围 0.3 格有实体",
 
   "gui.programmable_magic.wand_title": "魔杖",
 

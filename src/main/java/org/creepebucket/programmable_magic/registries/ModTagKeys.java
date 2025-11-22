@@ -12,7 +12,6 @@ public class ModTagKeys {
     public static final TagKey<Item> SPELL_ADJUST_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier/adjust"));
     public static final TagKey<Item> SPELL_CONTROL_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier/control"));
     public static final TagKey<Item> SPELL_COMPUTE_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier/compute"));
-    public static final TagKey<Item> SPELL_TARGET_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier/target"));
 
     public static final TagKey<Item> SPELL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell"));
     public static final TagKey<Item> SPELL_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier"));

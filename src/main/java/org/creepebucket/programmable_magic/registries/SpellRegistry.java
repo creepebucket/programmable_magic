@@ -9,11 +9,15 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.adjust_mod.PowerMultiplierSpell;
+import org.creepebucket.programmable_magic.spells.adjust_mod.PowerBoostSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
-import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.base_spell.IgniteSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.GlowSpell;
+import org.creepebucket.programmable_magic.spells.adjust_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchGroundSpell;
+import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchEntitySpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.AdditionSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.DivisionSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.MultiplicationSpell;
@@ -22,7 +26,6 @@ import org.creepebucket.programmable_magic.spells.compute_mod.SubtractionSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ExponentSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.OpenParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.CloseParenSpell;
-import org.creepebucket.programmable_magic.spells.target_mod.ProjectileSpell;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +42,12 @@ public class SpellRegistry {
         // 在这里注册所有法术
         registerSpell(ExplosionSpell::new);
         registerSpell(VelocitySpell::new);
-        registerSpell(PowerMultiplierSpell::new);
+        registerSpell(IgniteSpell::new);
+        registerSpell(GlowSpell::new);
+        registerSpell(PowerBoostSpell::new);
         registerSpell(DelaySpell::new);
-        registerSpell(ProjectileSpell::new);
+        registerSpell(TriggerTouchGroundSpell::new);
+        registerSpell(TriggerTouchEntitySpell::new);
         registerSpell(PaintDataSpell::new);
 
         // 计算类：数字（在父类文件内收集）

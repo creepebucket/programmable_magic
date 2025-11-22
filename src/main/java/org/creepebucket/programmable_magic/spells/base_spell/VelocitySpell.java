@@ -25,12 +25,6 @@ public class VelocitySpell extends BaseSpellEffectLogic {
 
     @Override
     public boolean run(Player player, SpellData data) {
-        // 仅当载体为投射物时生效
-        Boolean isProjectile = data.getCustomData("isProjectile", Boolean.class);
-        if (isProjectile == null || !isProjectile) {
-            return true;
-        }
-
         // 给法术实体（载体）施加速度，而不是玩家
         Entity carrier = data.getTarget();
         if (carrier != null) {

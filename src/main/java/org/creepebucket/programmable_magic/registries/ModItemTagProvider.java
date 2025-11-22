@@ -21,7 +21,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // 自动为法术添加标签
+        boolean hasAdjust = false, hasControl = false, hasCompute = false;
+
+        // 自动为法术添加标签并记录是否存在对应类别
         for (var entry : SpellRegistry.getRegisteredSpells().entrySet()) {
             var itemSupplier = entry.getKey();
             var logicSupplier = entry.getValue();
@@ -33,27 +35,30 @@ public class ModItemTagProvider extends ItemTagsProvider {
                     break;
                 case ADJUST_MOD:
                     tag(ModTagKeys.SPELL_ADJUST_MOD).add(itemSupplier.get());
+                    hasAdjust = true;
                     break;
                 case CONTROL_MOD:
                     tag(ModTagKeys.SPELL_CONTROL_MOD).add(itemSupplier.get());
+                    hasControl = true;
                     break;
                 case COMPUTE_MOD:
                     tag(ModTagKeys.SPELL_COMPUTE_MOD).add(itemSupplier.get());
+                    hasCompute = true;
                     break;
-                case TARGET_MOD:
-                    tag(ModTagKeys.SPELL_TARGET_MOD).add(itemSupplier.get());
+                default:
                     break;
             }
         }
 
-        this.tag(ModTagKeys.SPELL_MOD)
-                .addTag(ModTagKeys.SPELL_ADJUST_MOD)
-                .addTag(ModTagKeys.SPELL_COMPUTE_MOD)
-                .addTag(ModTagKeys.SPELL_CONTROL_MOD)
-                .addTag(ModTagKeys.SPELL_TARGET_MOD);
+        var spellModTag = this.tag(ModTagKeys.SPELL_MOD);
+        if (hasAdjust) spellModTag.addTag(ModTagKeys.SPELL_ADJUST_MOD);
+        if (hasCompute) spellModTag.addTag(ModTagKeys.SPELL_COMPUTE_MOD);
+        if (hasControl) spellModTag.addTag(ModTagKeys.SPELL_CONTROL_MOD);
 
-        this.tag(ModTagKeys.SPELL)
-                .addTag(ModTagKeys.SPELL_MOD)
+        var spellRoot = this.tag(ModTagKeys.SPELL)
                 .addTag(ModTagKeys.SPELL_BASE_EFFECT);
+        if (hasAdjust || hasCompute || hasControl) {
+            spellRoot.addTag(ModTagKeys.SPELL_MOD);
+        }
     }
 }

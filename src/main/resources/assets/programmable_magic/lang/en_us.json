@@ -9,8 +9,14 @@
   "item.programmable_magic.spell_display_projectile": "Spell: Projectile Carrier",
   "item.programmable_magic.spell_display_gain_velocity": "Spell: Velocity",
   "item.programmable_magic.spell_display_delay_1s": "Spell: Delay (1s)",
+  "item.programmable_magic.spell_display_delay": "Spell: Delay",
   "item.programmable_magic.spell_display_mpx5": "Spell: Power x5",
+  "item.programmable_magic.spell_display_power_boost": "Spell: Power Boost",
+  "item.programmable_magic.spell_display_trigger_touch_ground": "Spell: Trigger on Touching Block",
+  "item.programmable_magic.spell_display_trigger_touch_entity": "Spell: Trigger on Touching Entity",
   "item.programmable_magic.spell_display_explosion": "Spell: Explosion",
+  "item.programmable_magic.spell_display_ignite": "Spell: Ignite",
+  "item.programmable_magic.spell_display_glow": "Spell: Glow",
   "item.programmable_magic.spell_display_paint_data": "Spell: Paint Data",
   "item.programmable_magic.spell_display_compute_0": "Spell: Number 0",
   "item.programmable_magic.spell_display_compute_1": "Spell: Number 1",
@@ -38,6 +44,12 @@
 
   "tooltip.programmable_magic.mana_cost": "Mana Cost:",
   "tooltip.programmable_magic.spell_carrier": "Carrier: Projectile",
+  "tooltip.programmable_magic.spell_modifier": "Modifier",
+  "tooltip.programmable_magic.delay_by_expression_seconds": "Delay: seconds from previous expression",
+  "tooltip.programmable_magic.power_boost_by_expression": "Power scales by expression result",
+  "tooltip.programmable_magic.mana_cost_multiplier_by_expression": "Mana scales by expression result",
+  "tooltip.programmable_magic.trigger_touch_ground": "Wait until a block is within 0.3 blocks of the spell entity",
+  "tooltip.programmable_magic.trigger_touch_entity": "Wait until an entity is within 0.3 blocks of the spell entity",
 
   "gui.programmable_magic.wand_title": "Wand",
 
