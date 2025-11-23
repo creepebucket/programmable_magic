@@ -19,13 +19,24 @@ import org.creepebucket.programmable_magic.spells.adjust_mod.DelaySpell;
 import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchGroundSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchEntitySpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.AdditionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.BuildXYZVectorSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.CasterEntitySpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.CasterPositionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.CloseParenSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeDelimiterSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.DivisionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.ExponentSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.GetStorageSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.MultiplicationSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.NumberComputeBase;
-import org.creepebucket.programmable_magic.spells.compute_mod.SubtractionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.ExponentSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.OpenParenSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.CloseParenSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.SetStorageSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.SpellEntityPositionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.SubtractionSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.UnitXVectorSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.UnitYVectorSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.UnitZVectorSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.ViewVectorSpell;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +74,19 @@ public class SpellRegistry {
         registerSpell(ExponentSpell::new);
         registerSpell(OpenParenSpell::new);
         registerSpell(CloseParenSpell::new);
+        // 表达式分隔符（占位）
+        registerSpell(ComputeDelimiterSpell::new);
+        // 计算类：上下文/向量/存储工具
+        registerSpell(CasterEntitySpell::new);
+        registerSpell(CasterPositionSpell::new);
+        registerSpell(SpellEntityPositionSpell::new);
+        registerSpell(ViewVectorSpell::new);
+        registerSpell(UnitXVectorSpell::new);
+        registerSpell(UnitYVectorSpell::new);
+        registerSpell(UnitZVectorSpell::new);
+        registerSpell(SetStorageSpell::new);
+        registerSpell(GetStorageSpell::new);
+        registerSpell(BuildXYZVectorSpell::new);
 
         ITEMS.register(eventBus);
     }

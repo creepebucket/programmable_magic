@@ -52,9 +52,10 @@ public class TriggerTouchEntitySpell extends BaseControlModLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> t = new ArrayList<>();
-        t.add(Component.translatable("tooltip.programmable_magic.spell_modifier"));
-        t.add(Component.translatable("tooltip.programmable_magic.trigger_touch_entity"));
-        return t;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = new java.util.ArrayList<>();
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER);
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER;
+        Component desc = Component.translatable("tooltip.programmable_magic.trigger_touch_entity");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 }

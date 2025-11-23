@@ -25,12 +25,13 @@ public class VelocitySpell extends BaseSpellEffectLogic {
 
     @Override
     public boolean run(Player player, SpellData data) {
-        // 给法术实体（载体）施加速度，而不是玩家
+        // 给法术实体（载体）施加速度：优先使用 Vector3 参数作为方向
         Entity carrier = data.getTarget();
         if (carrier != null) {
-            Vec3 direction = data.getDirection();
-            double force = 0.5 * data.getPower();
-            Vec3 velocity = direction.scale(force);
+            Vec3 v = data.getCustomData("vector_xyz", Vec3.class);
+            Vec3 dir = (v != null && v.lengthSqr() > 0) ? v.normalize() : data.getDirection();
+            double force = 0.5 * Math.max(0.0, data.getPower());
+            Vec3 velocity = dir.scale(force);
             carrier.setDeltaMovement(carrier.getDeltaMovement().add(velocity));
         }
         
@@ -46,9 +47,11 @@ public class VelocitySpell extends BaseSpellEffectLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Momentum: " + ModUtils.FormattedManaString(0.05)));
-        return tooltip;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = new java.util.ArrayList<>();
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER); // ...Modifier
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3);
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.SPELL;
+        var desc = net.minecraft.network.chat.Component.literal("为载体施加速度（方向取自向量）");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 } 

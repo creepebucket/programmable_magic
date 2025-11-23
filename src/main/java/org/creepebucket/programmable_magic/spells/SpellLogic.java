@@ -7,12 +7,19 @@ import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.compute_mod.NumberLiteralSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public class SpellLogic {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellLogic");
@@ -51,6 +58,11 @@ public class SpellLogic {
             LOGGER.info("步骤 1: 开始转换 ItemStack 到 SpellItemLogic");
         convertItemStacksToLogic();
             LOGGER.info("步骤 1 完成: 成功转换 {} 个法术逻辑", spellSequence.size());
+        
+        // 1.5 简化修饰-基础串中的计算表达式
+            LOGGER.info("步骤 1.5: 开始简化修饰-基础串中的计算表达式");
+        preprocessComputeForModifiers();
+            LOGGER.info("步骤 1.5 完成: 表达式已简化，序列长度 {}", spellSequence.size());
         
         // 2. 计算总魔力消耗
             LOGGER.info("步骤 2: 开始计算总魔力消耗");
@@ -113,6 +125,307 @@ public class SpellLogic {
         
         LOGGER.info("ItemStack 转换完成，成功转换 {} 个，失败 {} 个", 
             spellSequence.size(), spellStacks.size() - spellSequence.size());
+    }
+
+    /**
+     * 按照规则对法术序列进行预处理：
+     * - 以 BASE_SPELL 为边界，将前面的修饰串拆为若干「计算-修饰串」：按非 compute 切割
+     * - 对每个「计算串」，再按分隔符法术 compute_mod 切割为多个表达式
+     * - 每个表达式尝试计算，若得到整数或可表示为一串数字（含一元负号），则用结果的数字序列替换原表达式；否则保留原样
+     * - 分隔符 compute_mod 原样保留，用以分隔多个表达式（如向量）
+     */
+    private void preprocessComputeForModifiers() {
+        if (spellSequence.isEmpty()) return;
+
+        List<SpellItemLogic> original = new ArrayList<>(spellSequence);
+        List<SpellItemLogic> result = new ArrayList<>();
+
+        List<SpellItemLogic> bufferMods = new ArrayList<>();
+        for (SpellItemLogic s : original) {
+            if (s.getSpellType() == SpellItemLogic.SpellType.BASE_SPELL) {
+                // 处理前置修饰串
+                result.addAll(simplifyModifierChain(bufferMods));
+                bufferMods.clear();
+                // 加入基础法术
+                result.add(s);
+            } else {
+                bufferMods.add(s);
+            }
+        }
+        // 末尾剩余修饰串（若存在）
+        result.addAll(simplifyModifierChain(bufferMods));
+
+        spellSequence.clear();
+        spellSequence.addAll(result);
+        recordSequenceDebugInfo();
+    }
+
+    private List<SpellItemLogic> simplifyModifierChain(List<SpellItemLogic> mods) {
+        if (mods == null || mods.isEmpty()) return List.of();
+
+        List<SpellItemLogic> out = new ArrayList<>();
+        List<SpellItemLogic> computeBuf = new ArrayList<>();
+
+        for (SpellItemLogic s : mods) {
+            if (s.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) {
+                // 先把前面的计算部分按分隔符切割并简化后输出
+                out.addAll(simplifyComputeListByDelimiter(computeBuf));
+                computeBuf.clear();
+                // 再输出当前修饰法术
+                out.add(s);
+            } else {
+                computeBuf.add(s);
+            }
+        }
+        // 结尾残留的计算部分
+        out.addAll(simplifyComputeListByDelimiter(computeBuf));
+
+        return out;
+    }
+
+    private List<SpellItemLogic> simplifyComputeListByDelimiter(List<SpellItemLogic> computeList) {
+        if (computeList == null || computeList.isEmpty()) return List.of();
+
+        List<SpellItemLogic> out = new ArrayList<>();
+        List<SpellItemLogic> expr = new ArrayList<>();
+
+        for (int i = 0; i < computeList.size(); i++) {
+            SpellItemLogic s = computeList.get(i);
+            if (isDelimiter(s)) {
+                // 处理前一个表达式
+                out.addAll(replaceExpressionOrKeep(expr));
+                expr.clear();
+                // 保留分隔符
+                out.add(s);
+            } else if (isExpressionToken(s)) {
+                // 仍属于表达式的一部分
+                expr.add(s);
+            } else {
+                // 非表达式的 compute_mod（如：构建XYZ向量等）视为边界：先结清前面的表达式，再原样追加该法术
+                out.addAll(replaceExpressionOrKeep(expr));
+                expr.clear();
+                out.add(s);
+            }
+        }
+        // 末尾表达式
+        out.addAll(replaceExpressionOrKeep(expr));
+
+        return out;
+    }
+
+    private List<SpellItemLogic> replaceExpressionOrKeep(List<SpellItemLogic> expr) {
+        if (expr == null || expr.isEmpty()) return List.of();
+        Double v = evaluateExpression(expr);
+        if (v == null || v.isNaN() || v.isInfinite()) {
+            return new ArrayList<>(expr);
+        }
+        // 用数字字面量节点替换表达式，支持小数
+        List<SpellItemLogic> one = new ArrayList<>();
+        one.add(new org.creepebucket.programmable_magic.spells.compute_mod.NumberLiteralSpell(v));
+        return one;
+    }
+
+    private boolean isDelimiter(SpellItemLogic s) {
+        return s != null && s.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
+                && Objects.equals(s.getRegistryName(), "compute_mod");
+    }
+
+    // 不再需要将表达式展开为 digit token 序列
+
+    // ===== 计算表达式（从 SimpleCompute/NumberComputeBase 的逻辑抽取的等价实现） =====
+    private Double evaluateExpression(List<SpellItemLogic> expr) {
+        if (expr == null || expr.isEmpty()) return null;
+
+        List<String> tokens = new ArrayList<>();
+        for (int i = 0; i < expr.size(); ) {
+            SpellItemLogic s = expr.get(i);
+            String rn = s.getRegistryName();
+            if (isDigitToken(rn)) {
+                StringBuilder digits = new StringBuilder();
+                while (i < expr.size() && isDigitToken(expr.get(i).getRegistryName())) {
+                    digits.append(expr.get(i).getRegistryName().charAt(expr.get(i).getRegistryName().length() - 1));
+                    i++;
+                }
+                tokens.add(digits.toString());
+            } else {
+                String op = mapOperator(rn);
+                if (op != null) {
+                    tokens.add(op);
+                } else if (isExpressionToken(s)) {
+                    // 理论上不会到这里（已被 isDigitToken/mapOperator 捕捉），兜底忽略
+                } else {
+                    // 遇到非表达式的 compute_mod 或其他类型，视为表达式边界，中止解析
+                    break;
+                }
+                i++;
+            }
+        }
+
+        tokens = normalizeUnaryMinus(tokens);
+
+        if (tokens.isEmpty()) return null;
+        return evaluateTokens(tokens);
+    }
+
+    private boolean isDigitToken(String rn) {
+        if (rn == null) return false;
+        if (!rn.startsWith("compute_")) return false;
+        char c = rn.charAt(rn.length() - 1);
+        return c >= '0' && c <= '9';
+    }
+
+    private String mapOperator(String rn) {
+        if (rn == null) return null;
+        return switch (rn) {
+            case "compute_add" -> "+";
+            case "compute_sub" -> "-";
+            case "compute_mul" -> "*";
+            case "compute_div" -> "/";
+            case "compute_pow" -> "^";
+            case "compute_lparen" -> "(";
+            case "compute_rparen" -> ")";
+            default -> null;
+        };
+    }
+
+    private boolean isExpressionToken(SpellItemLogic s) {
+        if (s == null) return false;
+        if (s.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) return false;
+        String rn = s.getRegistryName();
+        return isDigitToken(rn) || mapOperator(rn) != null;
+    }
+
+    private List<String> normalizeUnaryMinus(List<String> tokens) {
+        if (tokens == null || tokens.isEmpty()) return tokens;
+        List<String> out = new ArrayList<>();
+        for (int i = 0; i < tokens.size(); i++) {
+            String t = tokens.get(i);
+            if ("-".equals(t)) {
+                String prev = out.isEmpty() ? null : out.get(out.size() - 1);
+                boolean unary = (out.isEmpty() || "(".equals(prev) || isBinaryOp(prev));
+                if (unary && i + 1 < tokens.size()) {
+                    String next = tokens.get(i + 1);
+                    if (next.matches("\\d+")) {
+                        out.add("-" + next);
+                        i++;
+                        continue;
+                    }
+                }
+            }
+            out.add(t);
+        }
+        return out;
+    }
+
+    private boolean isBinaryOp(String s) {
+        return s != null && (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("^") );
+    }
+
+    private int precedence(String op) {
+        return switch (op) {
+            case "^" -> 4;
+            case "*", "/" -> 3;
+            case "+", "-" -> 2;
+            default -> 0;
+        };
+    }
+
+    private boolean isRightAssoc(String op) { return "^".equals(op); }
+
+    private Double evaluateTokens(List<String> tokens) {
+        Deque<Double> values = new ArrayDeque<>();
+        Deque<String> ops = new ArrayDeque<>();
+        for (int i = 0; i < tokens.size(); i++) {
+            String t = tokens.get(i);
+            if (t.isEmpty()) continue;
+            if ("(".equals(t)) {
+                ops.push(t);
+            } else if (")".equals(t)) {
+                boolean matched = false;
+                while (!ops.isEmpty()) {
+                    if ("(".equals(ops.peek())) { ops.pop(); matched = true; break; }
+                    if (!applyTop(values, ops.pop())) return Double.NaN;
+                }
+                if (!matched) return Double.NaN;
+            } else if (isBinaryOp(t)) {
+                while (!ops.isEmpty() && !"(".equals(ops.peek()) &&
+                        (isRightAssoc(t) ? precedence(t) < precedence(ops.peek()) : precedence(t) <= precedence(ops.peek()))) {
+                    if (!applyTop(values, ops.pop())) return Double.NaN;
+                }
+                ops.push(t);
+            } else {
+                try {
+                    values.push(Double.parseDouble(t));
+                } catch (NumberFormatException e) {
+                    return Double.NaN;
+                }
+            }
+        }
+        while (!ops.isEmpty()) {
+            if ("(".equals(ops.peek())) return Double.NaN;
+            if (!applyTop(values, ops.pop())) return Double.NaN;
+        }
+        if (values.isEmpty()) return Double.NaN;
+        return values.pop();
+    }
+
+    private boolean applyTop(Deque<Double> values, String op) {
+        if (values.size() < 2) return false;
+        double b = values.pop();
+        double a = values.pop();
+        double r;
+        switch (op) {
+            case "+" -> r = a + b;
+            case "-" -> r = a - b;
+            case "*" -> r = a * b;
+            case "/" -> { if (b == 0.0) return false; r = a / b; }
+            case "^" -> r = Math.pow(a, b);
+            default -> { return false; }
+        }
+        values.push(r);
+        return true;
+    }
+
+    // 通过 registryName 创建对应的 SpellItemLogic 实例（从注册表的 supplier 映射）
+    private static Map<String, Supplier<SpellItemLogic>> NAME_TO_SUPPLIER;
+    private SpellItemLogic newLogicByRegistryName(String name) {
+        if (name == null) return null;
+        if (NAME_TO_SUPPLIER == null) {
+            NAME_TO_SUPPLIER = new HashMap<>();
+            for (Supplier<net.minecraft.world.item.Item> itemSup : SpellRegistry.getRegisteredSpells().keySet()) {
+                Supplier<SpellItemLogic> logicSup = SpellRegistry.getRegisteredSpells().get(itemSup);
+                try {
+                    SpellItemLogic inst = logicSup.get();
+                    if (inst != null) {
+                        NAME_TO_SUPPLIER.put(inst.getRegistryName(), logicSup);
+                    }
+                } catch (Exception ignored) {}
+            }
+        }
+        Supplier<SpellItemLogic> sup = NAME_TO_SUPPLIER.get(name);
+        return sup != null ? sup.get() : null;
+    }
+
+    private void recordSequenceDebugInfo() {
+        if (spellData == null) return;
+        List<String> summary = new ArrayList<>();
+        for (int idx = 0; idx < spellSequence.size(); idx++) {
+            summary.add(formatLogicEntry(idx, spellSequence.get(idx)));
+        }
+        spellData.setCustomData("__debug_sequence", summary);
+    }
+
+    private String formatLogicEntry(int index, SpellItemLogic logic) {
+        String name;
+        if (logic instanceof NumberLiteralSpell literal) {
+            name = String.format(Locale.ROOT, "literal %.4f", literal.getValue());
+        } else if (logic != null && logic.getRegistryName() != null) {
+            name = logic.getRegistryName();
+        } else {
+            name = "<null>";
+        }
+        String type = logic != null ? logic.getSpellType().name() : "?";
+        return String.format(Locale.ROOT, "%02d | %s [%s]", index, name, type);
     }
     
     /**

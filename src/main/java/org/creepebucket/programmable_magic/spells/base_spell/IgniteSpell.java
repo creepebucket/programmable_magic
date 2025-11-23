@@ -82,9 +82,10 @@ public class IgniteSpell extends BaseSpellEffectLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Temperature: " + ModUtils.FormattedManaString(500.0)));
-        return tooltip;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = new java.util.ArrayList<>();
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER);
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.SPELL;
+        var desc = net.minecraft.network.chat.Component.literal("点燃地面/附近可燃位置");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 }

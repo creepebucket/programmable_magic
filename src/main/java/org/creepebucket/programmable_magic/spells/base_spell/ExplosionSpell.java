@@ -50,10 +50,10 @@ public class ExplosionSpell extends BaseSpellEffectLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Pressure: " + ModUtils.FormattedManaString(250)));
-        tooltip.add(Component.literal("  Temperature: " + ModUtils.FormattedManaString(200)));
-        return tooltip;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = new java.util.ArrayList<>();
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER); // ...Modifier
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.SPELL;
+        var desc = net.minecraft.network.chat.Component.literal("在当前位置产生爆炸");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 } 

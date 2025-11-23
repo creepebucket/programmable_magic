@@ -81,9 +81,10 @@ public class GlowSpell extends BaseSpellEffectLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Radiation: " + ModUtils.FormattedManaString(1500.0)));
-        return tooltip;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = new java.util.ArrayList<>();
+        in.add(org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER);
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.SPELL;
+        var desc = net.minecraft.network.chat.Component.literal("放置夜光石照明");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 }

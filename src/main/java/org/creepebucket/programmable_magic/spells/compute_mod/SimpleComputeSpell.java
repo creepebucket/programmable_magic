@@ -2,8 +2,7 @@ package org.creepebucket.programmable_magic.spells.compute_mod;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.spells.SpellData;
+import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ public abstract class SimpleComputeSpell extends BaseComputeModLogic {
 
     @Override
     public boolean run(Player player, SpellData data) {
-        // 逻辑暂时不写，占位
+        // 缺省无行为（由具体实现或预处理生成的 NumberLiteralSpell 覆盖）
         return true;
     }
 
@@ -32,12 +31,31 @@ public abstract class SimpleComputeSpell extends BaseComputeModLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost"));
-        tooltip.add(Component.literal("  Radiation: " + ModUtils.FormattedManaString(0.005)));
-        tooltip.add(Component.literal("  Temperature: " + ModUtils.FormattedManaString(0.005)));
-        tooltip.add(Component.literal("  Momentum: " + ModUtils.FormattedManaString(0.005)));
-        tooltip.add(Component.literal("  Pressure: " + ModUtils.FormattedManaString(0.005)));
-        return tooltip;
+        String rn = getRegistryName();
+        List<SpellValueType> in = new ArrayList<>();
+        SpellValueType out = SpellValueType.NUMBER;
+        Component desc;
+        if (rn != null && rn.startsWith("compute_") && rn.length() > 8) {
+            char c = rn.charAt(rn.length() - 1);
+            if (c >= '0' && c <= '9') {
+                // 数字
+                desc = Component.literal("数字");
+                return SpellTooltipUtil.buildTooltip(in, out, desc, this);
+            }
+        }
+        switch (rn) {
+            case "compute_add": case "compute_sub": case "compute_mul": case "compute_div": case "compute_pow":
+                in.add(SpellValueType.NUMBER); in.add(SpellValueType.NUMBER);
+                desc = Component.literal("数学运算");
+                break;
+            case "compute_lparen": case "compute_rparen":
+                in.add(SpellValueType.NUMBER);
+                desc = Component.literal("表达式分组");
+                break;
+            default:
+                in.add(SpellValueType.NUMBER);
+                desc = Component.literal("计算组件");
+        }
+        return SpellTooltipUtil.buildTooltip(in, out, desc, this);
     }
 }

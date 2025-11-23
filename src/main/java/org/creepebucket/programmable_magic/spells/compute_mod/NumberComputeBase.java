@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.spells.compute_mod;
 
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,10 @@ public abstract class NumberComputeBase extends SimpleComputeSpell {
         Double result = evaluateTokens(tokens, err);
         if (result != null && !result.isNaN() && !result.isInfinite()) {
             data.setCustomData("compute_result", result);
+            Integer selfIdx = data.getCustomData("__idx", Integer.class);
+            if (selfIdx != null) {
+                data.recordComputeValue(selfIdx, new ComputeValue(SpellValueType.NUMBER, result));
+            }
         } else {
             // 错误：提示并给予 3 点真伤
             if (player != null) {
@@ -114,6 +119,10 @@ public abstract class NumberComputeBase extends SimpleComputeSpell {
             if (c >= '0' && c <= '9') return c - '0';
         }
         return 0;
+    }
+
+    public int digitValue() {
+        return numDigit(this);
     }
 
     protected boolean isCompute(org.creepebucket.programmable_magic.spells.SpellItemLogic s) {

@@ -4,6 +4,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellData;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeArgsHelper;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +38,9 @@ public class PowerBoostSpell extends BaseAdjustModLogic {
     @Override
     public void applyManaModification(SpellData data) {
         if (data == null) return;
-        Double result = data.getCustomData("compute_result", Double.class);
-        double f = result != null ? result : 0.0;
+        Integer idx = data.getCustomData("__idx", Integer.class);
+        ComputeValue arg = idx != null ? ComputeArgsHelper.collectSingleArg(data, idx) : null;
+        double f = arg != null && arg.value() instanceof Number num ? num.doubleValue() : 0.0;
         if (Double.isNaN(f) || Double.isInfinite(f)) f = 0.0;
         if (f < 0) f = 0.0;
 
@@ -51,10 +54,11 @@ public class PowerBoostSpell extends BaseAdjustModLogic {
 
     @Override
     public List<Component> getTooltip() {
-        List<Component> tooltip = new ArrayList<>();
-        tooltip.add(Component.translatable("tooltip.programmable_magic.spell_modifier"));
-        tooltip.add(Component.translatable("tooltip.programmable_magic.power_boost_by_expression"));
-        tooltip.add(Component.translatable("tooltip.programmable_magic.mana_cost_multiplier_by_expression"));
-        return tooltip;
+        java.util.List<org.creepebucket.programmable_magic.spells.SpellValueType> in = java.util.List.of(
+                org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER
+        );
+        org.creepebucket.programmable_magic.spells.SpellValueType out = org.creepebucket.programmable_magic.spells.SpellValueType.MODIFIER;
+        var desc = net.minecraft.network.chat.Component.translatable("tooltip.programmable_magic.power_boost_by_expression");
+        return org.creepebucket.programmable_magic.spells.SpellTooltipUtil.buildTooltip(new java.util.ArrayList<>(in), out, desc, this);
     }
 }

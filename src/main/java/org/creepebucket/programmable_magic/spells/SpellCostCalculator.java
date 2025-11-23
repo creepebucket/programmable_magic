@@ -5,6 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public final class SpellCostCalculator {
                     if (sj.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD) {
                         groupData.setCustomData("__idx", j);
                         sj.run(player, groupData);
+                        ComputeRuntime.recordProvidedValue(groupData, sj, j);
                     }
                 }
             } catch (Exception ignored) {}

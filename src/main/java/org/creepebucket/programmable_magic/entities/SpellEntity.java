@@ -19,6 +19,7 @@ import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseSpellEffectLogic;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +102,17 @@ public class SpellEntity extends Entity {
         if (delayTicks > 0) {
             delayTicks--;
         } else {
+            if (spellData != null) {
+                while (currentSpellIndex < spellSequence.size()
+                        && spellData.consumeSkippedIndex(currentSpellIndex)) {
+                    currentSpellIndex++;
+                }
+            }
+            if (currentSpellIndex >= spellSequence.size()) {
+                this.discard();
+                return;
+            }
+
             // 执行当前法术
             SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
             try {
@@ -110,6 +122,7 @@ public class SpellEntity extends Entity {
                     spellData.setCustomData("__idx", this.currentSpellIndex);
                 }
                 boolean shouldContinue = currentSpell.run(caster, spellData);
+                ComputeRuntime.recordProvidedValue(spellData, currentSpell, this.currentSpellIndex);
                 
                 if (shouldContinue) {
                     currentSpellIndex++;
