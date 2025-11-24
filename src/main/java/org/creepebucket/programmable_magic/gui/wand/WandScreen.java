@@ -45,23 +45,25 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
     protected void init() {
         super.init();
         final int CENTER_X = this.leftPos + 89;
-
-        // 创建一个按钮
-        this.addRenderableWidget(new ReleaseSpellButton(
-                CENTER_X - 54, this.topPos + 90, 108, 26,
-                Component.literal("Release Spell"),
-                (button) -> {
-                    // 在这里编写按钮被点击时执行的逻辑
-                    var spells = this.menu.getSpellsInStorage();
-                    if (!spells.isEmpty()) {
-                        ClientPacketDistributor.sendToServer(new SpellReleasePacket(spells));
-                    }
-                },
-                supplier -> supplier.get()
-        ));
+        // 普通界面保留按钮，小槽界面（潜行右键）不显示按钮
+        if (!isSmallMode()) {
+            this.addRenderableWidget(new ReleaseSpellButton(
+                    CENTER_X - 54, this.topPos + 90, 108, 26,
+                    Component.literal("Release Spell"),
+                    (button) -> {
+                        var spells = this.menu.getSpellsInStorage();
+                        if (!spells.isEmpty()) {
+                            ClientPacketDistributor.sendToServer(new SpellReleasePacket(spells));
+                        }
+                    },
+                    supplier -> supplier.get()
+            ));
+        }
 
         SLOTS = menu.getSlots();
     }
+
+    private boolean isSmallMode() { return this.menu.isSmallMode(); }
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {

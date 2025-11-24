@@ -4,4 +4,3 @@ public class OpenParenSpell extends OperatorComputeBase {
     @Override
     public String getRegistryName() { return "compute_lparen"; }
 }
-

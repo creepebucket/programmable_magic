@@ -33,17 +33,20 @@ public class BaseWand extends Item {
         return SLOTS;
     }
 
-    //右键打开gui
+    // 正常右键：打开完整界面；潜行右键：打开小槽位界面（SLOTS-5）
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            boolean isSmall = player.isShiftKeyDown();
+            int openSlots = isSmall ? Math.max(0, SLOTS - 5) : SLOTS;
             MenuProvider menuProvider = new SimpleMenuProvider(
-                    (containerId, inventory, p) -> new WandMenu(containerId, inventory, ContainerLevelAccess.create(level, player.blockPosition()), SLOTS, MANA_MULT),
+                    (containerId, inventory, p) -> new WandMenu(containerId, inventory, ContainerLevelAccess.create(level, player.blockPosition()), openSlots, MANA_MULT, isSmall),
                     Component.translatable("gui.programmable_magic.wand_title")
             );
             serverPlayer.openMenu(menuProvider, buf -> {
-                buf.writeInt(SLOTS);
+                buf.writeInt(openSlots);
                 buf.writeDouble(MANA_MULT);
+                buf.writeBoolean(isSmall);
             });
         }
 

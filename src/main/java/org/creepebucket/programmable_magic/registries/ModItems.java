@@ -91,7 +91,7 @@ public class ModItems {
     ;
 
     public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
-            "rg_alloy_wand", registryName -> new BaseWand(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)), 1.20, 8))
+            "rg_alloy_wand", registryName -> new BaseWand(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)), 1.00, 20))
     ;
 
     // 方块物品

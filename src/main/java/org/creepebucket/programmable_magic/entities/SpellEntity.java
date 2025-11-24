@@ -20,11 +20,14 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseSpellEffectLogic;
 import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpellEntity extends Entity {
+    private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
     private static final EntityDataAccessor<Boolean> DATA_ACTIVE = 
             SynchedEntityData.defineId(SpellEntity.class, EntityDataSerializers.BOOLEAN);
     
@@ -33,6 +36,8 @@ public class SpellEntity extends Entity {
     private int currentSpellIndex = 0;
     private int delayTicks = 0;
     private Player caster;
+    // 质量（kg），用于物理计算（默认 10kg）
+    private double weightKg = 10.0;
     
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -43,11 +48,6 @@ public class SpellEntity extends Entity {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
         this.caster = caster;
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
-        
-        // 设置初始速度
-        Vec3 lookDirection = caster.getLookAngle();
-        this.setDeltaMovement(lookDirection.scale(0.5));
-        this.setNoGravity(true);
     }
     
     @Override
@@ -81,6 +81,9 @@ public class SpellEntity extends Entity {
         
         // 服务端逻辑
         if (!isActive() || spellSequence.isEmpty() || currentSpellIndex >= spellSequence.size()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("丢弃法术实体: active={}, size={}, idx={}", isActive(), spellSequence.size(), currentSpellIndex);
+            }
             this.discard();
             return;
         }
@@ -122,6 +125,29 @@ public class SpellEntity extends Entity {
                     spellData.setCustomData("__idx", this.currentSpellIndex);
                 }
                 boolean shouldContinue = currentSpell.run(caster, spellData);
+                // 如果计算类在运行中构造了新序列，立即整体替换并校正索引
+                {
+                    java.util.List<?> replaced = spellData.getCustomData("__seq_replace", java.util.List.class);
+                    Integer idxReplace = spellData.getCustomData("__idx_replace", Integer.class);
+                    if (replaced instanceof java.util.List<?> list) {
+                        int prevSize = this.spellSequence == null ? 0 : this.spellSequence.size();
+                        this.spellSequence = new java.util.ArrayList<>((java.util.List<SpellItemLogic>) list);
+                        // 新序列生效前清空计算缓存，避免旧索引的值污染新序列
+                        if (this.spellData != null) this.spellData.clearComputeCache();
+                        spellData.setCustomData("__seq", this.spellSequence);
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("收到新序列替换: 长度 {} -> {}", prevSize, this.spellSequence.size());
+                        }
+                        if (idxReplace != null) {
+                            this.currentSpellIndex = Math.max(0, Math.min(idxReplace, this.spellSequence.size() - 1));
+                            if (LOGGER.isDebugEnabled()) {
+                                LOGGER.debug("替换后的当前索引校正为 {}", this.currentSpellIndex);
+                            }
+                        }
+                        spellData.clearCustomData("__seq_replace");
+                        spellData.clearCustomData("__idx_replace");
+                    }
+                }
                 ComputeRuntime.recordProvidedValue(spellData, currentSpell, this.currentSpellIndex);
                 
                 if (shouldContinue) {
@@ -143,7 +169,13 @@ public class SpellEntity extends Entity {
                 }
                 
             } catch (Exception e) {
-                // 法术执行出错，终止法术
+                // 法术执行出错，记录并终止法术
+                String rn = "<unknown>";
+                try {
+                    rn = (currentSpellIndex >= 0 && currentSpellIndex < spellSequence.size() && spellSequence.get(currentSpellIndex) != null)
+                            ? String.valueOf(spellSequence.get(currentSpellIndex).getRegistryName()) : rn;
+                } catch (Throwable ignored) {}
+                LOGGER.error("法术执行异常，实体将被丢弃: idx={}, name={}", currentSpellIndex, rn, e);
                 this.discard();
             }
         }
@@ -167,6 +199,7 @@ public class SpellEntity extends Entity {
         this.setActive(valueInput.getBooleanOr("Active", true));
         this.currentSpellIndex = valueInput.getIntOr("CurrentSpellIndex", 0);
         this.delayTicks = valueInput.getIntOr("DelayTicks", 0);
+        this.weightKg = valueInput.getDoubleOr("WeightKg", 10.0);
     }
 
     @Override
@@ -174,6 +207,7 @@ public class SpellEntity extends Entity {
         valueOutput.putBoolean("Active", this.isActive());
         valueOutput.putInt("CurrentSpellIndex", this.currentSpellIndex);
         valueOutput.putInt("DelayTicks", this.delayTicks);
+        valueOutput.putDouble("WeightKg", this.weightKg);
     }
     
     private void spawnParticles() {
@@ -201,4 +235,7 @@ public class SpellEntity extends Entity {
         this.entityData.set(DATA_ACTIVE, active);
     }
     
-} 
+    public double getWeightKg() { return weightKg; }
+    public void setWeightKg(double weightKg) { this.weightKg = Math.max(0.0, weightKg); }
+    
+}

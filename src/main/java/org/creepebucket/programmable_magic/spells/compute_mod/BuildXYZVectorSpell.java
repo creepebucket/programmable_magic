@@ -7,7 +7,6 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 将其左侧最近的按 compute_mod 分隔的最多三个数字构造成 XYZ 向量，写入 SpellData。
@@ -35,11 +34,6 @@ public class BuildXYZVectorSpell extends ComputeFunctionalSpell {
         double z = asNumber(args, 2, 0.0);
 
         Vec3 vec = new Vec3(x, y, z);
-        if (data != null) {
-            data.setCustomData("vector_xyz", vec);
-            data.setCustomData("vector_xyz_str",
-                    String.format(Locale.ROOT, "(%.2f, %.2f, %.2f)", x, y, z));
-        }
         return new ComputeValue(SpellValueType.VECTOR3, vec);
     }
 

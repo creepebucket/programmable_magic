@@ -38,16 +38,6 @@ public class ServerPacketHandler {
             spellLogic.execute();
                 LOGGER.info("法术执行完成");
 
-            // 清空服务端的法术存储
-            if (player.containerMenu instanceof WandMenu wandMenu) {
-                    LOGGER.info("检测到玩家正在使用 WandMenu，开始清空法术存储");
-                wandMenu.clearSpellStorage();
-                    LOGGER.info("法术存储已清空");
-                } else {
-                    LOGGER.warn("玩家容器菜单不是 WandMenu 类型: {}", 
-                        player.containerMenu != null ? player.containerMenu.getClass().getSimpleName() : "null");
-                }
-                
                 LOGGER.info("法术释放处理完成");
                 
             } catch (Exception e) {

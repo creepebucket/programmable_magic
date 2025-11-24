@@ -48,8 +48,12 @@ public final class ComputeArgsHelper {
     }
 
     static boolean isDelimiter(SpellItemLogic logic) {
-        return logic != null
-                && logic.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
-                && "compute_mod".equals(logic.getRegistryName());
+        if (logic == null) return false;
+        if (logic.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) return false;
+        String rn = logic.getRegistryName();
+        // 分隔符与括号都作为边界用于参数收集
+        return "compute_mod".equals(rn)
+                || "compute_lparen".equals(rn)
+                || "compute_rparen".equals(rn);
     }
 }

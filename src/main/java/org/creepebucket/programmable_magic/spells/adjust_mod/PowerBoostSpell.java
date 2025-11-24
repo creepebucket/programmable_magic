@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.compute_mod.ComputeArgsHelper;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
 import org.creepebucket.programmable_magic.spells.compute_mod.ComputeValue;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class PowerBoostSpell extends BaseAdjustModLogic {
     public void applyManaModification(SpellData data) {
         if (data == null) return;
         Integer idx = data.getCustomData("__idx", Integer.class);
-        ComputeValue arg = idx != null ? ComputeArgsHelper.collectSingleArg(data, idx) : null;
+        ComputeValue arg = idx != null ? ComputeRuntime.findLeftValue(null, data, idx, org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER) : null;
         double f = arg != null && arg.value() instanceof Number num ? num.doubleValue() : 0.0;
         if (Double.isNaN(f) || Double.isInfinite(f)) f = 0.0;
         if (f < 0) f = 0.0;

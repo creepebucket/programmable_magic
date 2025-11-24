@@ -53,31 +53,28 @@ public final class SpellCostCalculator {
 			Vec3 look = player.getLookAngle();
 			SpellData groupData = new SpellData(player, playerPos, look);
 
-            SpellItemLogic baseLogic = spellSequence.get(baseIndex);
-            if (baseLogic.getSpellType() == SpellItemLogic.SpellType.BASE_SPELL) {
-                baseLogic.calculateBaseMana(groupData);
-            }
-            // Only BASE_SPELL acts as boundary; modifiers can still transform zeros
+            // 构造当前组的工作副本 [i..baseIndex]，避免在计算中修改原序列
+            List<SpellItemLogic> working = new ArrayList<>(spellSequence.subList(i, baseIndex + 1));
+            // 为成本计算做一次“运行期等价折叠”：只执行 compute_mod，按其提供的 __seq_replace 折叠序列
+            working = normalizeComputeForCost(working, groupData, player);
+            // 基础法术是工作副本的最后一个元素
+            SpellItemLogic baseLogic = working.get(working.size() - 1);
 
-            // 预计算 compute_mod 表达式结果：从左到右模拟运行 compute 片段
+            // 计算基础耗魔：把工作副本作为序列传给计算逻辑
             try {
-                groupData.setCustomData("__seq", spellSequence);
-                for (int j = i; j < baseIndex; j++) {
-                    SpellItemLogic sj = spellSequence.get(j);
-                    if (sj.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD) {
-                        groupData.setCustomData("__idx", j);
-                        sj.run(player, groupData);
-                        ComputeRuntime.recordProvidedValue(groupData, sj, j);
-                    }
-                }
-            } catch (Exception ignored) {}
+                groupData.setCustomData("__seq", working);
+                groupData.setCustomData("__idx", working.size() - 1);
+                baseLogic.calculateBaseMana(groupData);
+            } finally {
+                groupData.clearCustomData("__idx");
+            }
 
-            for (int k = baseIndex - 1; k >= i; k--) {
-                SpellItemLogic mod = spellSequence.get(k);
-                if (mod.getSpellType() != SpellItemLogic.SpellType.BASE_SPELL) {
-                    mod.applyManaModification(groupData);
-                }
-			}
+            // 从右到左应用修正：对工作副本中 base 左侧的所有法术调用 applyManaModification
+            for (int k = working.size() - 2; k >= 0; k--) {
+                SpellItemLogic mod = working.get(k);
+                groupData.setCustomData("__idx", k);
+                mod.applyManaModification(groupData);
+            }
 
 			for (String manaType : List.of("radiation", "temperature", "momentum", "pressure")) {
 				double add = groupData.getManaCost(manaType);
@@ -89,4 +86,41 @@ public final class SpellCostCalculator {
 
 		return totals;
 	}
-} 
+
+    // 将工作序列中的 compute_mod 节点按运行期策略就地规约，得到稳定布局（例如 [ENTITY, VECTOR3, BASE]）。
+    private static List<SpellItemLogic> normalizeComputeForCost(List<SpellItemLogic> original, SpellData data, Player player) {
+        if (original == null || original.isEmpty()) return original;
+        // 工作副本，允许被替换
+        List<SpellItemLogic> work = new ArrayList<>(original);
+        int safety = 0;
+        boolean changed;
+        do {
+            changed = false;
+            // 逐个尝试执行 compute_mod，以驱动括号/运算符/向量构造等自我折叠
+            for (int idx = 0; idx < work.size(); idx++) {
+                SpellItemLogic node = work.get(idx);
+                if (node == null || node.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) continue;
+                data.setCustomData("__seq", work);
+                data.setCustomData("__idx", idx);
+                node.run(player, data);
+                // 若该节点给出整体替换，采纳之并清空缓存
+                Object rep = data.getCustomData("__seq_replace", Object.class);
+                Integer toIdx = data.getCustomData("__idx_replace", Integer.class);
+                if (rep instanceof List<?> newList) {
+                    //noinspection unchecked
+                    work = new ArrayList<>((List<SpellItemLogic>) newList);
+                    data.clearComputeCache();
+                    data.clearCustomData("__seq_replace");
+                    data.clearCustomData("__idx_replace");
+                    // 重启一次扫描；toIdx 作为起点有助于快速收敛
+                    if (toIdx != null) idx = Math.max(-1, toIdx - 1);
+                    changed = true;
+                }
+            }
+            safety++;
+        } while (changed && safety < 64);
+
+        data.clearCustomData("__idx");
+        return work;
+    }
+}

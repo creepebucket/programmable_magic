@@ -9,7 +9,6 @@ import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * 提供“无输入 -> Vector3 输出”的 compute_mod 基类。
@@ -25,11 +24,6 @@ public abstract class BaseVectorOutputSpell extends ComputeFunctionalSpell {
     protected ComputeValue compute(Player player, SpellData data, List<ComputeValue> args) {
         Vec3 vec = resolveVector(player, data);
         if (vec == null) return null;
-        if (data != null) {
-            data.setCustomData("vector_xyz", vec);
-            data.setCustomData("vector_xyz_str",
-                    String.format(Locale.ROOT, "(%.2f, %.2f, %.2f)", vec.x, vec.y, vec.z));
-        }
         return new ComputeValue(SpellValueType.VECTOR3, vec);
     }
 

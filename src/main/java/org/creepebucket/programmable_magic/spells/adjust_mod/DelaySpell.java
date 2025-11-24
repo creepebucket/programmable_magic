@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
-import org.creepebucket.programmable_magic.spells.compute_mod.ComputeArgsHelper;
+import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
 import org.creepebucket.programmable_magic.spells.compute_mod.ComputeValue;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class DelaySpell extends BaseAdjustModLogic {
     public boolean run(Player player, SpellData data) {
         // 依据前面表达式的运算结果设置延时（单位：秒）
         Integer idx = data.getCustomData("__idx", Integer.class);
-        ComputeValue arg = idx != null ? ComputeArgsHelper.collectSingleArg(data, idx) : null;
+        ComputeValue arg = idx != null ? ComputeRuntime.findLeftValue(player, data, idx, org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER) : null;
         double sec = extractNumber(arg, 0.0);
         if (Double.isNaN(sec) || Double.isInfinite(sec)) sec = 0.0;
         // 负数视为0，保留小数到tick

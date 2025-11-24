@@ -60,16 +60,18 @@ public class WandMenu extends AbstractContainerMenu {
 
     private int SLOTS;
     private double MANA_MULT;
+    private final boolean SMALL_MODE;
 
     public WandMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
-        this(containerId, playerInventory, ContainerLevelAccess.NULL, extraData.readInt(), extraData.readDouble());
+        this(containerId, playerInventory, ContainerLevelAccess.NULL, extraData.readInt(), extraData.readDouble(), extraData.readBoolean());
     }
 
-    public WandMenu(int containerId, Inventory playerInventory, ContainerLevelAccess levelAccess, int slots, double manaMult) {
+    public WandMenu(int containerId, Inventory playerInventory, ContainerLevelAccess levelAccess, int slots, double manaMult, boolean smallMode) {
         super(ModMenuTypes.WAND_MENU.get(), containerId);
 
         this.SLOTS = slots;
         this.MANA_MULT = manaMult;
+        this.SMALL_MODE = smallMode;
 
         List<ItemStack> baseSpells = getItemsFromTag(ModTagKeys.SPELL_BASE_EFFECT);
         List<ItemStack> spellModAdjust = getItemsFromTag(ModTagKeys.SPELL_ADJUST_MOD);
@@ -84,6 +86,9 @@ public class WandMenu extends AbstractContainerMenu {
         this.spellModComputeItemInventory = new ItemStackHandler(spellModCompute.size());
         this.spellModControlItemInventory = new ItemStackHandler(spellModControl.size());
         this.spellStorageInventory = new ItemStackHandler(this.SLOTS);
+
+        // 从魔杖读取已保存的法术，填充存储槽
+        loadSavedSpells(playerInventory);
 
         //添加法术槽位
         addSlots(SpellDisplayLeftX, SpellDisplayTopY, 10, baseSpells.size(), baseSpellItemInventory, this.listBaseSpellSlot,
@@ -108,6 +113,34 @@ public class WandMenu extends AbstractContainerMenu {
 
         addInventorySlot(playerInventory);
 
+    }
+
+    private void loadSavedSpells(Inventory playerInventory) {
+        var player = playerInventory.player;
+        if (player == null) return;
+        net.minecraft.world.item.ItemStack wand = getHeldWand(player);
+        if (wand.isEmpty()) return;
+        java.util.List<String> saved = SMALL_MODE
+                ? wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_SMALL.get())
+                : wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_BIG.get());
+        if (saved == null || saved.isEmpty()) return;
+        int idx = 0;
+        for (String key : saved) {
+            if (idx >= this.SLOTS) break;
+            net.minecraft.resources.ResourceLocation rl = net.minecraft.resources.ResourceLocation.tryParse(key);
+            net.minecraft.world.item.Item item = org.creepebucket.programmable_magic.util.WeightUtil.tryParseItem(rl);
+            if (item != null && item.builtInRegistryHolder().is(org.creepebucket.programmable_magic.registries.ModTagKeys.SPELL)) {
+                this.spellStorageInventory.setStackInSlot(idx++, new net.minecraft.world.item.ItemStack(item));
+            }
+        }
+    }
+
+    private static net.minecraft.world.item.ItemStack getHeldWand(Player player) {
+        var main = player.getMainHandItem();
+        if (main.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand) return main;
+        var off = player.getOffhandItem();
+        if (off.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand) return off;
+        return net.minecraft.world.item.ItemStack.EMPTY;
     }
 
     private void addInventorySlot(Inventory playerInventory) {
@@ -302,16 +335,13 @@ public class WandMenu extends AbstractContainerMenu {
     }
 
     public List<ItemStack> getSpellsInStorage() {
-        LOGGER.debug("获取法术存储中的法术");
         List<ItemStack> spells = new ArrayList<>();
         for (int i = 0; i < this.spellStorageInventory.getSlots(); i++) {
             ItemStack stack = this.spellStorageInventory.getStackInSlot(i);
             if (!stack.isEmpty()) {
                 spells.add(stack);
-                LOGGER.debug("槽位 {}: {} x{}", i, stack.getDisplayName().getString(), stack.getCount());
             }
         }
-        LOGGER.info("从法术存储中获取到 {} 个法术", spells.size());
         return spells;
     }
 
@@ -331,6 +361,29 @@ public class WandMenu extends AbstractContainerMenu {
 
     public int getSlots() {
         return SLOTS;
+    }
+
+    public boolean isSmallMode() { return SMALL_MODE; }
+
+    @Override
+    public void removed(Player player) {
+        super.removed(player);
+        // 关闭菜单时，将存储槽保存回魔杖
+        net.minecraft.world.item.ItemStack wand = getHeldWand(player);
+        if (wand.isEmpty()) return;
+        java.util.List<String> out = new java.util.ArrayList<>();
+        for (int i = 0; i < this.spellStorageInventory.getSlots(); i++) {
+            ItemStack st = this.spellStorageInventory.getStackInSlot(i);
+            if (!st.isEmpty() && st.is(org.creepebucket.programmable_magic.registries.ModTagKeys.SPELL)) {
+                var key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem());
+                if (key != null) out.add(key.toString());
+            }
+        }
+        if (SMALL_MODE) {
+            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_SMALL.get(), out);
+        } else {
+            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_BIG.get(), out);
+        }
     }
 
     

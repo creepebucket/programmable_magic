@@ -263,6 +263,9 @@ public class SpellLogic {
 
         tokens = normalizeUnaryMinus(tokens);
 
+        // 仅当表达式“自包含”时才尝试求值（避免跨段括号导致的未闭合报错）
+        if (!looksSelfContained(tokens)) return null;
+
         if (tokens.isEmpty()) return null;
         return evaluateTokens(tokens);
     }
@@ -292,6 +295,8 @@ public class SpellLogic {
         if (s == null) return false;
         if (s.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) return false;
         String rn = s.getRegistryName();
+        // 括号在预处理阶段视为边界，不参与数值化表达式
+        if ("compute_lparen".equals(rn) || "compute_rparen".equals(rn)) return false;
         return isDigitToken(rn) || mapOperator(rn) != null;
     }
 
@@ -367,6 +372,18 @@ public class SpellLogic {
         }
         if (values.isEmpty()) return Double.NaN;
         return values.pop();
+    }
+
+    private boolean looksSelfContained(List<String> tokens) {
+        if (tokens == null || tokens.isEmpty()) return false;
+        String last = tokens.get(tokens.size() - 1);
+        if (!(last.matches("-?\\d+") || ")".equals(last))) return false;
+        Deque<Character> st = new ArrayDeque<>();
+        for (String t : tokens) {
+            if ("(".equals(t)) st.push('(');
+            else if (")".equals(t)) { if (st.isEmpty()) return false; st.pop(); }
+        }
+        return st.isEmpty();
     }
 
     private boolean applyTop(Deque<Double> values, String op) {

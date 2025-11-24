@@ -139,6 +139,12 @@ public class SpellData {
         return computeValues.get(index);
     }
 
+    // 清空计算缓存（当运行期序列整体替换时必须调用，避免索引错位导致的脏读）
+    public void clearComputeCache() {
+        computeValues.clear();
+        computeSkipIndices.clear();
+    }
+
     // 计算存储槽
     public void putStorageValue(String key, ComputeValue value) {
         if (key == null || value == null) return;

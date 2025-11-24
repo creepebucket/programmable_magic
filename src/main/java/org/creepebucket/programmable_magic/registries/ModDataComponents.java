@@ -11,6 +11,8 @@ import org.creepebucket.programmable_magic.Programmable_magic;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModDataComponents {
 
@@ -25,6 +27,17 @@ public class ModDataComponents {
                             ByteBufCodecs.STRING_UTF8,
                             ByteBufCodecs.DOUBLE
                     )));
+
+    // 魔杖内置法术清单（分大/小两套）：按物品注册名存储
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> WAND_SPELLS_BIG =
+            DATA_COMPONENTS.registerComponentType("wand_spells_big", builder -> builder
+                    .persistent(Codec.list(Codec.STRING))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.STRING_UTF8)));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> WAND_SPELLS_SMALL =
+            DATA_COMPONENTS.registerComponentType("wand_spells_small", builder -> builder
+                    .persistent(Codec.list(Codec.STRING))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.STRING_UTF8)));
 
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }
