@@ -17,7 +17,13 @@ public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
 
     public static final DeferredBlock<ManaCableBlock> MANA_CABLE = BLOCKS.register("mana_cable",
-            registryName -> new ManaCableBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(1.0f).setId(ResourceKey.create(Registries.BLOCK, registryName))));
+            registryName -> new ManaCableBlock(
+                    BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.COLOR_PURPLE)
+                            .strength(1.0f)
+                            .noOcclusion() // 玻璃类：不剔除相邻方块面
+                            .setId(ResourceKey.create(Registries.BLOCK, registryName))
+            ));
 
     public static final DeferredBlock<PrimitiveAlloySmelterBlock> PRIMITIVE_ALLOY_SMELTER = BLOCKS.register("primitive_alloy_smelter",
             registryName -> new PrimitiveAlloySmelterBlock(
@@ -31,4 +37,3 @@ public class ModBlocks {
 
     public static void register(IEventBus bus) {BLOCKS.register(bus);}    
 }
-

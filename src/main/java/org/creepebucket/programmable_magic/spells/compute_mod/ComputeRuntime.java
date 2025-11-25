@@ -94,7 +94,10 @@ public final class ComputeRuntime {
         if (logic.getSpellType() != SpellItemLogic.SpellType.COMPUTE_MOD) return null;
 
         Integer previousIdx = data.getCustomData("__idx", Integer.class);
+        // 标记：仅为取参而求值，禁止构造 __seq_replace 以避免运行期重写导致循环
+        Boolean previousEvalOnly = data.getCustomData("__eval_only", Boolean.class);
         data.setCustomData("__idx", index);
+        data.setCustomData("__eval_only", Boolean.TRUE);
         try {
             LOGGER.debug("运行 compute_mod 节点: 索引={}, 名称={}", index, logic.getRegistryName());
             logic.run(player, data);
@@ -104,6 +107,11 @@ public final class ComputeRuntime {
                 data.setCustomData("__idx", previousIdx);
             } else {
                 data.clearCustomData("__idx");
+            }
+            if (previousEvalOnly != null) {
+                data.setCustomData("__eval_only", previousEvalOnly);
+            } else {
+                data.clearCustomData("__eval_only");
             }
         }
         ComputeValue got = data.getComputeValue(index);

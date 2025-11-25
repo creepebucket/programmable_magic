@@ -12,6 +12,8 @@ import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
 import org.creepebucket.programmable_magic.spells.compute_mod.ComputeValue;
 import org.creepebucket.programmable_magic.util.WeightUtil;
 
+import java.util.List;
+
 /**
  * 短途传送抽象基类：负责 Δpos 参数解析、耗魔与上限检查、以及通用位移/清速。
  * 能耗：E = m * (|Δ| * 20)^2；上限 10 MJ，超过则报错且不执行。
@@ -23,7 +25,7 @@ public abstract class AbstractBlinkBaseSpell extends BaseSpellEffectLogic {
 
     protected Vec3 resolveDelta(Player player, SpellData data, int idx) {
         // 不依赖 Player，上下文从 SpellData 提供
-        ComputeValue v = ComputeRuntime.findLeftValue(null, data, idx, SpellValueType.VECTOR3);
+        ComputeValue v = new ComputeValue(SpellValueType.VECTOR3, data.getCustomData("__seq", List.class).get(idx-1));
         return v != null && v.value() instanceof Vec3 delta ? delta : null;
     }
 

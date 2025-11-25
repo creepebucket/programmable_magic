@@ -90,6 +90,12 @@ public abstract class ComputeFunctionalSpell extends SimpleComputeSpell implemen
         }
         if (providedValue == null) return true;
 
+        // 若处于“只求值”模式（由 ComputeRuntime.ensureValueAt 设置），则不进行任何序列替换，避免参数求值引发重写与索引回退
+        Boolean evalOnly = data.getCustomData("__eval_only", Boolean.class);
+        if (Boolean.TRUE.equals(evalOnly)) {
+            return true;
+        }
+
         // KISS: 一次性重建 —— 若存在括号，用结果替换 [parenL .. parenR]；否则替换 [windowStart .. idx]
         int opIdx = seq.indexOf(this);
         if (opIdx < 0) return false;

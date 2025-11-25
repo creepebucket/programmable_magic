@@ -69,7 +69,9 @@
       { "from_top_left": [384, 128], "from_bottom_right": [399, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_blocked.png" },
       { "from_top_left": [400, 128], "from_bottom_right": [415, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_empty.png" },
       { "from_top_left": [416, 128], "from_bottom_right": [431, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_burn.png" },
-      { "from_top_left": [432, 128], "from_bottom_right": [447, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_blocked.png" }
+      { "from_top_left": [432, 128], "from_bottom_right": [447, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_blocked.png" },
+
+      { "from_top_left": [16, 16], "from_bottom_right": [31, 31], "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png" }
     ],
     "gui_big.png": [
       {
