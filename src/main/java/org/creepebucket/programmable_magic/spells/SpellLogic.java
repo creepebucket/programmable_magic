@@ -6,7 +6,10 @@ import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.compute_mod.LeftParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.NumberDigitSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
+import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
+
 public class SpellLogic {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellLogic");
     
     private final List<ItemStack> spellStacks;
     private final Player player;
-    private final SpellSequence spellSequence;
+    private SpellSequence spellSequence;
     private SpellData spellData;
     
     public SpellLogic(List<ItemStack> spellStacks, Player player) {
@@ -59,6 +64,11 @@ public class SpellLogic {
         LOGGER.info("步骤 2: 数字法术解析");
         convertNumberDigitsToValues();
         LOGGER.info("步骤 2 完成: 数字法术解析完成");
+
+        // 3. 计算法术序列
+        LOGGER.info("步骤 3: 计算法术序列");
+        spellSequence = calculateSpellSequence(spellSequence);
+        LOGGER.info("步骤 3 完成: 法术序列计算完成");
 
         // 5. 创建法术实体
         LOGGER.info("步骤 5: 开始创建法术实体");
@@ -97,15 +107,8 @@ public class SpellLogic {
         List<List<SpellItemLogic>> pairsNumberDigit = getPairsNumberDigit(spellSequence); // {{L1, R1}, {L2, R2}, ...}
 
         for (List<SpellItemLogic> pair : pairsNumberDigit) {
-            spellSequence.replaceSection(
-                    pair.get(0),
-                    pair.get(1),
-                    new SpellSequence(List.of(
-                            new org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell(
-                                    org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER,
-                                    pair.get(1).run(player, spellData, spellSequence, null, null).get("value"))
-                    ))
-            );
+            spellSequence.replaceSection(pair.get(0), pair.get(1), new SpellSequence(List.of(
+                    new ValueLiteralSpell(NUMBER, pair.get(1).run(player, spellData, spellSequence, null, null).get("value")))));
         }
 
         // 去除分隔符
@@ -116,6 +119,40 @@ public class SpellLogic {
     }
 
     /**
+     * 步骤3
+     * 计算法术序列
+     */
+    private SpellSequence calculateSpellSequence(SpellSequence seq) {
+        LOGGER.debug("开始计算法术序列");
+
+        // 先寻找括号, 对每个括号内的部分进行递归计算
+        List<List<SpellItemLogic>> pairs = getParenPairs(seq);
+        for (List<SpellItemLogic> pair : pairs) {
+            if (pair == null || pair.size() != 2) continue;
+            SpellItemLogic left = pair.get(0);
+            SpellItemLogic right = pair.get(1);
+
+            // 抽取区间 (left, right) 形成子序列
+            SpellSequence inner = new SpellSequence();
+            for (SpellItemLogic cur = left.getNextSpell(); cur != null && cur != right; ) {
+                SpellItemLogic next = cur.getNextSpell();
+                inner.addLast(cur);
+                cur = next;
+            }
+
+            // 递归计算子序列
+            inner = calculateSpellSequence(inner);
+
+            // 用递归结果替换整段 [left..right]
+            seq.replaceSection(left, right, inner);
+        }
+
+        LOGGER.debug("法术序列计算完成");
+        return seq;
+    }
+
+    /**
+     * 步骤5
      * 创建法术实体
      */
     private SpellEntity createSpellEntity() {
@@ -147,9 +184,7 @@ public class SpellLogic {
 
             SpellItemLogic left = it;
             SpellItemLogic right = it;
-            while (right.getNextSpell() instanceof NumberDigitSpell) {
-                right = right.getNextSpell();
-            }
+            while (right.getNextSpell() instanceof NumberDigitSpell) { right = right.getNextSpell(); }
 
             pairs.add(List.of(left, right));
             it = right.getNextSpell();
@@ -160,12 +195,23 @@ public class SpellLogic {
 
     private List<SpellItemLogic> getSeps(SpellSequence spellSequence) {
         List<SpellItemLogic> seps = new ArrayList<>();
-        for (SpellItemLogic it = spellSequence.getFirstSpell(); it != null; it = it.getNextSpell()) {
-            if (it.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD &&
-                    "compute_mod".equals(it.getRegistryName())) {
-                seps.add(it);
-            }
-        }
+        for (SpellItemLogic it = spellSequence.getFirstSpell(); it != null; it = it.getNextSpell()) { if (it instanceof SpellSeperator) { seps.add(it);} }
         return seps;
     }
+
+    private List<List<SpellItemLogic>> getParenPairs(SpellSequence spellSequence) {
+        SpellItemLogic i = spellSequence.getFirstSpell();
+        List<List<SpellItemLogic>> pairs = new ArrayList<>();
+        while (i != null) {
+            if (i instanceof LeftParenSpell) {
+                Object right = i.run(player, spellData, spellSequence, null, null).get("value");
+                if (right instanceof SpellItemLogic r) {
+                    pairs.add(List.of(i, r));
+                }
+            }
+            i = i.getNextSpell();
+        }
+        return pairs;
+    }
+
 }

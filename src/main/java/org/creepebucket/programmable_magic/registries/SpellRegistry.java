@@ -12,8 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
-import org.creepebucket.programmable_magic.spells.compute_mod.NumberDigitSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,12 +42,15 @@ public class SpellRegistry {
         registerSpell(() -> new NumberDigitSpell(9));
 
         // COMPUTE_MOD: 常量
-        registerSpell(() -> new ValueLiteralSpell(
-                SpellValueType.VECTOR3,
-                "compute_unit_x",
-                new Vec3(1.0, 0.0, 0.0),
-                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))
-        ));
+        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_x", new Vec3(1.0, 0.0, 0.0),
+                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))));
+
+        // COMPUTE_MOD: 分隔符
+        registerSpell(SpellSeperator::new);
+
+        // COMPUTE_MOD: 括号
+        registerSpell(LeftParenSpell::new);
+        registerSpell(RightParenSpell::new);
 
         ITEMS.register(eventBus);
     }

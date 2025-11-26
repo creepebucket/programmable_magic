@@ -60,15 +60,27 @@ public class SpellSequence {
         SpellItemLogic newHead = (section == null) ? null : section.head;
         SpellItemLogic newTail = (section == null) ? null : section.tail;
 
-        if (newHead != null) newHead._setPrev(prev);
-        if (prev != null) prev._setNext(newHead);
-        // 更新全局头
-        if (head == L) head = (newHead != null) ? newHead : next;
+        boolean inserting = (newHead != null && newTail != null);
 
-        if (newTail != null) newTail._setNext(next);
-        if (next != null) next._setPrev(newTail);
-        // 更新全局尾
-        if (tail == R) tail = (newTail != null) ? newTail : prev;
+        if (inserting) {
+            // 连接左侧
+            newHead._setPrev(prev);
+            if (prev != null) prev._setNext(newHead);
+            // 更新全局头
+            if (head == L) head = newHead;
+
+            // 连接右侧
+            newTail._setNext(next);
+            if (next != null) next._setPrev(newTail);
+            // 更新全局尾
+            if (tail == R) tail = newTail;
+        } else {
+            // 替换为空片段：直接桥接 prev 与 next，避免链表断裂
+            if (prev != null) prev._setNext(next);
+            if (next != null) next._setPrev(prev);
+            if (head == L) head = next;
+            if (tail == R) tail = prev;
+        }
 
         // 更新尺寸
         int addCount = (section == null) ? 0 : section.size;
