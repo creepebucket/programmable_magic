@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.compute_mod.NumberDigitSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 
 import java.util.HashMap;
@@ -28,6 +29,18 @@ public class SpellRegistry {
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
+
+        // COMPUTE_MOD: 0-9
+        registerSpell(() -> new NumberDigitSpell(0));
+        registerSpell(() -> new NumberDigitSpell(1));
+        registerSpell(() -> new NumberDigitSpell(2));
+        registerSpell(() -> new NumberDigitSpell(3));
+        registerSpell(() -> new NumberDigitSpell(4));
+        registerSpell(() -> new NumberDigitSpell(5));
+        registerSpell(() -> new NumberDigitSpell(6));
+        registerSpell(() -> new NumberDigitSpell(7));
+        registerSpell(() -> new NumberDigitSpell(8));
+        registerSpell(() -> new NumberDigitSpell(9));
 
         // COMPUTE_MOD: 常量
         registerSpell(() -> new ValueLiteralSpell(

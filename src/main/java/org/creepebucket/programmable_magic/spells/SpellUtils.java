@@ -38,17 +38,13 @@ public final class SpellUtils {
 
     /**
      * 执行当前索引的法术一步，并返回执行结果。
-     * 注意：保持与原 SpellEntity.tick() 一致的流程与行为（包含报错时丢弃实体的信号）。
      */
     public static StepResult executeCurrentSpell(Player caster,
-                                                SpellData spellData,
-                                                List<SpellItemLogic> spellSequence,
-                                                int currentSpellIndex) {
-        if (currentSpellIndex < 0 || currentSpellIndex >= spellSequence.size()) {
-            return new StepResult(true, false, 0);
-        }
+                                                 SpellData spellData,
+                                                 SpellSequence sequence,
+                                                 SpellItemLogic currentSpell) {
 
-        SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
+        if (currentSpell == null) return new StepResult(true, false, 0);
 
         // 收集法术参数和修饰法术
         List<SpellItemLogic> modifiers = new ArrayList<>();
@@ -56,55 +52,54 @@ public final class SpellUtils {
 
         if (currentSpell instanceof BaseBaseSpellLogic) {
             // 向左寻找修饰, 直到遇到上一个基础法术
-            for (int i = currentSpellIndex - 1; i >= 0; i--) {
-                if (i < 0) break;
-                SpellItemLogic spell = spellSequence.get(i);
-                if (spell instanceof BaseBaseSpellLogic) break;
-                if (!(spell instanceof BaseAdjustModLogic || spell instanceof BaseControlModLogic)) {
-                    continue;
+            for (SpellItemLogic p = currentSpell.getPrevSpell(); p != null; p = p.getPrevSpell()) {
+                if (p instanceof BaseBaseSpellLogic) break;
+                if (p instanceof BaseAdjustModLogic || p instanceof BaseControlModLogic) {
+                    modifiers.add(p);
                 }
-                modifiers.add(spell);
             }
         }
 
         List<Object> neededParamsType = currentSpell.getNeededParamsType();
+        int total = neededParamsType.size();
+        int right = Math.max(0, Math.min(currentSpell.RightParamsOffset, total));
+        int left = total - right;
 
-        // 收集法术参数然后检查类型（保留原实现的边界与类型检查逻辑）
-        for (int i = currentSpellIndex - spellSequence.size() + currentSpell.RightParamsOffset;
-             i < currentSpellIndex + currentSpell.RightParamsOffset; i++) {
-            int paramIndex = i - currentSpellIndex + currentSpell.RightParamsOffset;
-
-            if (i < 0 || i >= spellSequence.size()) {
-                LOGGER.error("[ProgrammableMagic:SpellEntity] 在搜索参数时突破边界: 当前法术: {}", currentSpell.getRegistryName());
-                sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.param_search_out_of_bound"), caster);
-                return new StepResult(true, false, 0);
+        // 先从左侧收集参数（远端到近端的顺序，确保与 neededParamsType 对齐）
+        if (left > 0) {
+            SpellItemLogic p = currentSpell;
+            // 移动到左侧最远那个参数位置
+            for (int i = 0; i < left; i++) {
+                p = (p == null) ? null : p.getPrevSpell();
             }
-            if (i == currentSpellIndex) continue;
-
-            SpellItemLogic paramSpell = spellSequence.get(i);
-            if (!(paramSpell instanceof ValueLiteralSpell)) {
-                LOGGER.error("[ProgrammableMagic:SpellEntity] 尝试收集参数时发现参数不是ValueLiteralSpell类型: 当前法术: {}", currentSpell.getRegistryName());
-                sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.internal_bug"), caster);
-                return new StepResult(true, false, 0);
+            for (int i = 0; i < left; i++) {
+                if (p == null) return paramOutOfBound(caster, currentSpell);
+                if (!(p instanceof ValueLiteralSpell v)) return paramTypeError(caster, currentSpell);
+                Object neededType = neededParamsType.get(i);
+                if (!v.VALUE_TYPE.equals(neededType) || neededType.equals(SpellValueType.ANY)) {
+                    return paramTypeMismatch(caster, currentSpell, v, neededType);
+                }
+                spellParams.add(v.VALUE);
+                p = p.getNextSpell(); // 逐个向右靠近当前法术
             }
-
-            ValueLiteralSpell param = (ValueLiteralSpell) paramSpell;
-            Object neededType = neededParamsType.get(paramIndex);
-            // 按原逻辑：不等或等于 ANY 时都视为错误（尽管看起来更合理的是允许 ANY）
-            if (!param.VALUE_TYPE.equals(neededType) || neededType.equals(SpellValueType.ANY)) {
-                LOGGER.error("[ProgrammableMagic:SpellEntity] 尝试收集参数时发现参数类型错误: 当前法术: {} 参数类型: {} 需要的类型: {}",
-                        currentSpell.getRegistryName(), param.VALUE_TYPE, neededParamsType.get(paramIndex));
-                sendErrorMessageToPlayer(Component.translatable(
-                        "message.programmable_magic.error.wand.param_type_error",
-                        currentSpell.getRegistryName(), param.VALUE_TYPE, neededParamsType.get(paramIndex)
-                ), caster);
-                return new StepResult(true, false, 0);
-            }
-
-            spellParams.add(param.VALUE);
         }
 
-        Map<String, Object> result = currentSpell.run(caster, spellData, spellSequence, currentSpellIndex, modifiers, spellParams);
+        // 再从右侧收集参数（从近到远，追加到末尾）
+        if (right > 0) {
+            SpellItemLogic n = currentSpell.getNextSpell();
+            for (int j = 0; j < right; j++) {
+                if (n == null) return paramOutOfBound(caster, currentSpell);
+                if (!(n instanceof ValueLiteralSpell v)) return paramTypeError(caster, currentSpell);
+                Object neededType = neededParamsType.get(left + j);
+                if (!v.VALUE_TYPE.equals(neededType) || neededType.equals(SpellValueType.ANY)) {
+                    return paramTypeMismatch(caster, currentSpell, v, neededType);
+                }
+                spellParams.add(v.VALUE);
+                n = n.getNextSpell();
+            }
+        }
+
+        Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
 
         int delayTicks = 0;
         if (result.containsKey("delay")) {
@@ -115,5 +110,36 @@ public final class SpellUtils {
 
         return new StepResult(false, successful, delayTicks);
     }
-}
 
+    // 简单的按索引取节点（从 head 线性前进）
+    private static SpellItemLogic at(SpellSequence seq, int index) {
+        int i = 0;
+        for (SpellItemLogic it = seq.getFirstSpell(); it != null; it = it.getNextSpell()) {
+            if (i == index) return it;
+            i++;
+        }
+        return null;
+    }
+
+    private static StepResult paramOutOfBound(Player caster, SpellItemLogic current) {
+        LOGGER.error("[ProgrammableMagic:SpellEntity] 在搜索参数时突破边界: 当前法术: {}", current.getRegistryName());
+        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.param_search_out_of_bound"), caster);
+        return new StepResult(true, false, 0);
+    }
+
+    private static StepResult paramTypeError(Player caster, SpellItemLogic current) {
+        LOGGER.error("[ProgrammableMagic:SpellEntity] 尝试收集参数时发现参数不是ValueLiteralSpell类型: 当前法术: {}", current.getRegistryName());
+        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.internal_bug"), caster);
+        return new StepResult(true, false, 0);
+    }
+
+    private static StepResult paramTypeMismatch(Player caster, SpellItemLogic current, ValueLiteralSpell v, Object neededType) {
+        LOGGER.error("[ProgrammableMagic:SpellEntity] 尝试收集参数时发现参数类型错误: 当前法术: {} 参数类型: {} 需要的类型: {}",
+                current.getRegistryName(), v.VALUE_TYPE, neededType);
+        sendErrorMessageToPlayer(Component.translatable(
+                "message.programmable_magic.error.wand.param_type_error",
+                current.getRegistryName(), v.VALUE_TYPE, neededType
+        ), caster);
+        return new StepResult(true, false, 0);
+    }
+}

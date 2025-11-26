@@ -16,11 +16,12 @@ public abstract class SpellItemLogic {
 
     /**
      * 执行法术逻辑
+     *
      * @param player 施法者
-     * @param data 法术数据（可修改）
+     * @param data   法术数据（可修改）
      * @return true 表示继续处理下一个法术，false 表示下一tick再处理这个法术
      */
-    public abstract Map<String, Object> run(Player player, SpellData data, List<SpellItemLogic> spellSequence, int currentSpellIndex, List<SpellItemLogic> modifiers, List<Object> spellParams);
+    public abstract Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
 
     /**
      * 获取法术类型

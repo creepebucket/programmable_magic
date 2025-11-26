@@ -16,6 +16,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
@@ -34,9 +35,9 @@ public class SpellEntity extends Entity {
     private static final EntityDataAccessor<Boolean> DATA_ACTIVE = 
             SynchedEntityData.defineId(SpellEntity.class, EntityDataSerializers.BOOLEAN);
     
-    private List<SpellItemLogic> spellSequence = new ArrayList<>();
+    private SpellSequence spellSequence = new SpellSequence();
     private SpellData spellData;
-    private int currentSpellIndex = 0;
+    private SpellItemLogic currentSpell;
     private int delayTicks = 0;
     private Player caster;
     
@@ -45,10 +46,11 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
     
-    public SpellEntity(Level level, Player caster, List<SpellItemLogic> spellSequence) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence) {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
         this.spellSequence = spellSequence;
         this.caster = caster;
+        this.currentSpell = spellSequence.getFirstSpell();
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
     }
     
@@ -62,37 +64,42 @@ public class SpellEntity extends Entity {
         super.tick();
         // 执行法术序列逻辑
 
-        // 检查法术序列长度
-        if (spellSequence.size() == 0) { this.discard(); }
-
         // 先检查法术执行完了吗
-        if (currentSpellIndex >= spellSequence.size()) { this.discard(); return; }
+        if (currentSpell == null) { this.discard(); return; }
 
         // 再判断延迟
         if (delayTicks > 0) { delayTicks--; return; }
 
         // 使用 SpellUtils 执行当前法术一步
-        SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
         var step = org.creepebucket.programmable_magic.spells.SpellUtils.executeCurrentSpell(
-                caster, spellData, spellSequence, currentSpellIndex);
+                caster, spellData, spellSequence, currentSpell);
 
         if (step.shouldDiscard) { this.discard(); return; }
 
         // 如果法术的 canExecute 判断不成立, 执行下一个法术
-        if (!currentSpell.canExecute(caster, spellData)) { currentSpellIndex++; this.tick(); return; }
+        if (!currentSpell.canExecute(caster, spellData)) { currentSpell = currentSpell.getNextSpell(); this.tick(); return; }
 
         // 如果法术设置了延时, 则设置
         if (step.delayTicks > 0) { delayTicks = step.delayTicks; return; }
 
         // 如果法术执行成功，则进入下一法术
         if (step.successful) {
-            currentSpellIndex++;
+            currentSpell = currentSpell.getNextSpell();
             this.tick();
             return;
         }
 
         if (!this.isNoGravity()) this.setNoGravity(true);
         if (this.level().isClientSide) { spawnParticles(); return; }
+    }
+
+    private static SpellItemLogic getAtIndex(SpellSequence seq, int idx) {
+        int i = 0;
+        for (SpellItemLogic it = seq.getFirstSpell(); it != null; it = it.getNextSpell()) {
+            if (i == idx) return it;
+            i++;
+        }
+        return null;
     }
 
     @Override
@@ -102,16 +109,10 @@ public class SpellEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(ValueInput valueInput) {
-        this.setActive(valueInput.getBooleanOr("Active", true));
-        this.currentSpellIndex = valueInput.getIntOr("CurrentSpellIndex", 0);
-        this.delayTicks = valueInput.getIntOr("DelayTicks", 0);
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput valueOutput) {
-        valueOutput.putBoolean("Active", this.isActive());
-        valueOutput.putInt("CurrentSpellIndex", this.currentSpellIndex);
-        valueOutput.putInt("DelayTicks", this.delayTicks);
     }
     
     private void spawnParticles() {
