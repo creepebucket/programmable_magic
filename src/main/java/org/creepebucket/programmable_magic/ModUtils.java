@@ -1,7 +1,10 @@
 package org.creepebucket.programmable_magic;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,5 +60,10 @@ public class ModUtils {
         }
 
         return num + " " + units[idx];
+    }
+
+    public static boolean sendErrorMessageToPlayer(Component message, Player player) {
+        // TODO: 实际实现待接入玩家上下文
+        return false;
     }
 }

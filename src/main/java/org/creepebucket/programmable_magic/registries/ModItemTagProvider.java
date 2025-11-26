@@ -23,6 +23,9 @@ public class ModItemTagProvider extends ItemTagsProvider {
     protected void addTags(HolderLookup.Provider provider) {
         boolean hasAdjust = false, hasControl = false, hasCompute = false;
 
+        // 始终创建基础法术标签（即使为空），避免被上层引用时缺失
+        this.tag(ModTagKeys.SPELL_BASE_EFFECT);
+
         // 自动为法术添加标签并记录是否存在对应类别
         for (var entry : SpellRegistry.getRegisteredSpells().entrySet()) {
             var itemSupplier = entry.getKey();
@@ -49,6 +52,11 @@ public class ModItemTagProvider extends ItemTagsProvider {
                     break;
             }
         }
+
+        // 若存在对应分类，则确保这些分类标签被创建（即使没有实际条目）
+        if (hasAdjust) this.tag(ModTagKeys.SPELL_ADJUST_MOD);
+        if (hasCompute) this.tag(ModTagKeys.SPELL_COMPUTE_MOD);
+        if (hasControl) this.tag(ModTagKeys.SPELL_CONTROL_MOD);
 
         var spellModTag = this.tag(ModTagKeys.SPELL_MOD);
         if (hasAdjust) spellModTag.addTag(ModTagKeys.SPELL_ADJUST_MOD);

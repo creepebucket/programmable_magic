@@ -7,4 +7,4 @@ public abstract class BaseAdjustModLogic extends SpellItemLogic {
     public SpellType getSpellType() {
         return SpellType.ADJUST_MOD;
     }
-} 
+}

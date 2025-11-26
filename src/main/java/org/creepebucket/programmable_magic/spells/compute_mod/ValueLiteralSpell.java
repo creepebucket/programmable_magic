@@ -3,31 +3,49 @@ package org.creepebucket.programmable_magic.spells.compute_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.spells.SpellData;
+import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * 运行期生成的通用字面量节点（可承载任意 ComputeValue）。
- * 不参与注册，仅作为序列中的中间结果。
- */
-public class ValueLiteralSpell extends SimpleComputeSpell implements ComputeValueProvider {
-    private final ComputeValue providedValue;
+public class ValueLiteralSpell extends BaseComputeModLogic{
 
-    public ValueLiteralSpell(ComputeValue value) {
-        this.providedValue = value;
+    public SpellValueType VALUE_TYPE;
+    public String REGISTRY_NAME;
+    public List<Component> TOOLTIP;
+    public Object VALUE;
+
+    public ValueLiteralSpell(SpellValueType valueType, Object value) {
+        this(valueType, "internal_value", value, List.of());
+    }
+
+    public ValueLiteralSpell(SpellValueType valueType, String registryName, Object value, List<Component> tooltip) {
+        VALUE_TYPE = valueType;
+        VALUE = value;
+        REGISTRY_NAME = registryName;
+        TOOLTIP = tooltip;
     }
 
     @Override
-    public String getRegistryName() { return "compute_lit"; }
+    public String getRegistryName() {return REGISTRY_NAME;}
 
     @Override
-    public boolean run(Player player, SpellData data) { return true; }
+    public Map<String, Object> run(Player player, SpellData data, List<SpellItemLogic> spellSequence, int currentSpellIndex, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return Map.of("successful", true);
+    }
 
     @Override
-    public ComputeValue getProvidedValue() { return providedValue; }
+    public void calculateBaseMana(SpellData data) {
+
+    }
 
     @Override
-    public List<Component> getTooltip() { return Collections.emptyList(); }
+    public List<Component> getTooltip() {return TOOLTIP;}
+
+    @Override
+    public List<Object> getNeededParamsType() {
+        return List.of();
+    }
 }
-

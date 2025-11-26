@@ -3,7 +3,6 @@ package org.creepebucket.programmable_magic.spells;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.creepebucket.programmable_magic.spells.compute_mod.ComputeValue;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,8 +27,6 @@ public class SpellData {
     
     // 自定义数据存储
     private Map<String, Object> customData;
-    private final Map<Integer, ComputeValue> computeValues;
-    private final Map<String, ComputeValue> computeStorage;
     private final Set<Integer> computeSkipIndices;
     
     public SpellData(Player caster, Vec3 position, Vec3 direction) {
@@ -38,8 +35,6 @@ public class SpellData {
         this.direction = direction;
         this.manaCosts = new HashMap<>();
         this.customData = new HashMap<>();
-        this.computeValues = new HashMap<>();
-        this.computeStorage = new HashMap<>();
         this.computeSkipIndices = new HashSet<>();
         
         // 初始化四种魔力类型的消耗为0
@@ -127,33 +122,6 @@ public class SpellData {
     // 只读地获取全部自定义数据的副本
     public Map<String, Object> getAllCustomData() {
         return new HashMap<>(customData);
-    }
-
-    // 计算值缓存（与法术槽索引对应）
-    public void recordComputeValue(int index, ComputeValue value) {
-        if (value == null) return;
-        computeValues.put(index, value);
-    }
-
-    public ComputeValue getComputeValue(int index) {
-        return computeValues.get(index);
-    }
-
-    // 清空计算缓存（当运行期序列整体替换时必须调用，避免索引错位导致的脏读）
-    public void clearComputeCache() {
-        computeValues.clear();
-        computeSkipIndices.clear();
-    }
-
-    // 计算存储槽
-    public void putStorageValue(String key, ComputeValue value) {
-        if (key == null || value == null) return;
-        computeStorage.put(key, value);
-    }
-
-    public ComputeValue getStorageValue(String key) {
-        if (key == null) return null;
-        return computeStorage.get(key);
     }
 
     public void markIndexSkipped(int index) {

@@ -1,8 +1,7 @@
 package org.creepebucket.programmable_magic.entities;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,17 +13,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.base_spell.BaseSpellEffectLogic;
-import org.creepebucket.programmable_magic.spells.compute_mod.ComputeRuntime;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
+import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
+import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
+import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
+import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SpellEntity extends Entity {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
@@ -36,16 +39,15 @@ public class SpellEntity extends Entity {
     private int currentSpellIndex = 0;
     private int delayTicks = 0;
     private Player caster;
-    // 质量（kg），用于物理计算（默认 10kg）
-    private double weightKg = 10.0;
     
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
     
-    public SpellEntity(Level level, Player caster) {
+    public SpellEntity(Level level, Player caster, List<SpellItemLogic> spellSequence) {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
+        this.spellSequence = spellSequence;
         this.caster = caster;
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
     }
@@ -54,139 +56,43 @@ public class SpellEntity extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(DATA_ACTIVE, true);
     }
-    
-    public void setSpellSequence(List<SpellItemLogic> spellSequence, SpellData spellData) {
-        this.spellSequence = new ArrayList<>(spellSequence);
-        this.spellData = spellData;
-        // 将自身作为载体赋给 SpellData，供载体相关法术使用
-        if (this.spellData != null) {
-            this.spellData.setTarget(this);
-        }
-    }
-    
+
     @Override
     public void tick() {
         super.tick();
-        
-        // 确保无重力
-        if (!this.isNoGravity()) {
-            this.setNoGravity(true);
-        }
-        
-        if (this.level().isClientSide) {
-            // 客户端粒子效果
-            spawnParticles();
+        // 执行法术序列逻辑
+
+        // 检查法术序列长度
+        if (spellSequence.size() == 0) { this.discard(); }
+
+        // 先检查法术执行完了吗
+        if (currentSpellIndex >= spellSequence.size()) { this.discard(); return; }
+
+        // 再判断延迟
+        if (delayTicks > 0) { delayTicks--; return; }
+
+        // 使用 SpellUtils 执行当前法术一步
+        SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
+        var step = org.creepebucket.programmable_magic.spells.SpellUtils.executeCurrentSpell(
+                caster, spellData, spellSequence, currentSpellIndex);
+
+        if (step.shouldDiscard) { this.discard(); return; }
+
+        // 如果法术的 canExecute 判断不成立, 执行下一个法术
+        if (!currentSpell.canExecute(caster, spellData)) { currentSpellIndex++; this.tick(); return; }
+
+        // 如果法术设置了延时, 则设置
+        if (step.delayTicks > 0) { delayTicks = step.delayTicks; return; }
+
+        // 如果法术执行成功，则进入下一法术
+        if (step.successful) {
+            currentSpellIndex++;
+            this.tick();
             return;
         }
-        
-        // 服务端逻辑
-        if (!isActive() || spellSequence.isEmpty() || currentSpellIndex >= spellSequence.size()) {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("丢弃法术实体: active={}, size={}, idx={}", isActive(), spellSequence.size(), currentSpellIndex);
-            }
-            this.discard();
-            return;
-        }
-        
-        // 维持恒定速度（取消空气阻力导致的速度衰减）
-        Vec3 velocity = this.getDeltaMovement();
-        if (velocity.lengthSqr() > 0) {
-            this.setDeltaMovement(velocity);
-        }
-        
-        // 更新法术数据位置与载体
-        if (spellData != null) {
-            spellData.setPosition(this.position());
-            spellData.setDirection(this.getDeltaMovement().normalize());
-            spellData.setTarget(this);
-        }
-        
-        // 如果处于延时，则仅递减延时，不执行法术，但仍然继续移动
-        if (delayTicks > 0) {
-            delayTicks--;
-        } else {
-            if (spellData != null) {
-                while (currentSpellIndex < spellSequence.size()
-                        && spellData.consumeSkippedIndex(currentSpellIndex)) {
-                    currentSpellIndex++;
-                }
-            }
-            if (currentSpellIndex >= spellSequence.size()) {
-                this.discard();
-                return;
-            }
 
-            // 执行当前法术
-            SpellItemLogic currentSpell = spellSequence.get(currentSpellIndex);
-            try {
-                // 向 SpellData 注入执行上下文：当前序列与索引，供计算类法术读取
-                if (spellData != null) {
-                    spellData.setCustomData("__seq", this.spellSequence);
-                    spellData.setCustomData("__idx", this.currentSpellIndex);
-                }
-                boolean shouldContinue = currentSpell.run(caster, spellData);
-                // 如果计算类在运行中构造了新序列，立即整体替换并校正索引
-                {
-                    java.util.List<?> replaced = spellData.getCustomData("__seq_replace", java.util.List.class);
-                    Integer idxReplace = spellData.getCustomData("__idx_replace", Integer.class);
-                    if (replaced instanceof java.util.List<?> list) {
-                        int prevSize = this.spellSequence == null ? 0 : this.spellSequence.size();
-                        this.spellSequence = new java.util.ArrayList<>((java.util.List<SpellItemLogic>) list);
-                        // 新序列生效前清空计算缓存，避免旧索引的值污染新序列
-                        if (this.spellData != null) this.spellData.clearComputeCache();
-                        spellData.setCustomData("__seq", this.spellSequence);
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("收到新序列替换: 长度 {} -> {}", prevSize, this.spellSequence.size());
-                        }
-                        if (idxReplace != null) {
-                            this.currentSpellIndex = Math.max(0, Math.min(idxReplace, this.spellSequence.size() - 1));
-                            if (LOGGER.isDebugEnabled()) {
-                                LOGGER.debug("替换后的当前索引校正为 {}", this.currentSpellIndex);
-                            }
-                        }
-                        spellData.clearCustomData("__seq_replace");
-                        spellData.clearCustomData("__idx_replace");
-                    }
-                }
-                ComputeRuntime.recordProvidedValue(spellData, currentSpell, this.currentSpellIndex);
-                
-                if (shouldContinue) {
-                    currentSpellIndex++;
-                } else {
-                    // 法术要求下一tick再处理
-                    delayTicks = 1;
-                }
-                
-                // 检查法术数据中的延时
-                if (spellData != null && spellData.getDelay() > 0) {
-                    delayTicks = Math.max(delayTicks, spellData.getDelay());
-                    spellData.setDelay(0); // 重置延时
-                }
-
-                // 如果法术是base, 重置威力
-                if (currentSpell.getSpellType() == SpellItemLogic.SpellType.BASE_SPELL) {
-                    spellData.setPower(1);
-                }
-                
-            } catch (Exception e) {
-                // 法术执行出错，记录并终止法术
-                String rn = "<unknown>";
-                try {
-                    rn = (currentSpellIndex >= 0 && currentSpellIndex < spellSequence.size() && spellSequence.get(currentSpellIndex) != null)
-                            ? String.valueOf(spellSequence.get(currentSpellIndex).getRegistryName()) : rn;
-                } catch (Throwable ignored) {}
-                LOGGER.error("法术执行异常，实体将被丢弃: idx={}, name={}", currentSpellIndex, rn, e);
-                this.discard();
-            }
-        }
-        
-        // 移动实体（不进行空气阻力减速）
-        this.move(net.minecraft.world.entity.MoverType.SELF, this.getDeltaMovement());
-        
-        // 检查是否超出范围
-        if (spellData != null && this.distanceToSqr(spellData.getCaster()) > spellData.getRange() * spellData.getRange()) {
-            // this.discard(); 暂时不要
-        }
+        if (!this.isNoGravity()) this.setNoGravity(true);
+        if (this.level().isClientSide) { spawnParticles(); return; }
     }
 
     @Override
@@ -199,7 +105,6 @@ public class SpellEntity extends Entity {
         this.setActive(valueInput.getBooleanOr("Active", true));
         this.currentSpellIndex = valueInput.getIntOr("CurrentSpellIndex", 0);
         this.delayTicks = valueInput.getIntOr("DelayTicks", 0);
-        this.weightKg = valueInput.getDoubleOr("WeightKg", 10.0);
     }
 
     @Override
@@ -207,7 +112,6 @@ public class SpellEntity extends Entity {
         valueOutput.putBoolean("Active", this.isActive());
         valueOutput.putInt("CurrentSpellIndex", this.currentSpellIndex);
         valueOutput.putInt("DelayTicks", this.delayTicks);
-        valueOutput.putDouble("WeightKg", this.weightKg);
     }
     
     private void spawnParticles() {
@@ -234,8 +138,4 @@ public class SpellEntity extends Entity {
     public void setActive(boolean active) {
         this.entityData.set(DATA_ACTIVE, active);
     }
-    
-    public double getWeightKg() { return weightKg; }
-    public void setWeightKg(double weightKg) { this.weightKg = Math.max(0.0, weightKg); }
-    
 }

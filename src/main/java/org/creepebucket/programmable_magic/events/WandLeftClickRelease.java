@@ -10,8 +10,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.creepebucket.programmable_magic.items.wand.BaseWand;
 import org.creepebucket.programmable_magic.network.wand.SpellReleasePacket;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.util.WeightUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +43,6 @@ public class WandLeftClickRelease {
         if (saved == null || saved.isEmpty()) return;
 
         List<ItemStack> stacks = new ArrayList<>();
-        for (String key : saved) {
-            var rl = net.minecraft.resources.ResourceLocation.tryParse(key);
-            Item item = WeightUtil.tryParseItem(rl);
-            if (item != null) stacks.add(new ItemStack(item));
-        }
-        if (stacks.isEmpty()) return;
 
         ClientPacketDistributor.sendToServer(new SpellReleasePacket(stacks));
     }

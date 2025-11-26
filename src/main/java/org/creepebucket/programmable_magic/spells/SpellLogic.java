@@ -7,7 +7,6 @@ import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
-import org.creepebucket.programmable_magic.spells.compute_mod.NumberLiteralSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -66,7 +64,7 @@ public class SpellLogic {
         
         // 2. 计算总魔力消耗
             LOGGER.info("步骤 2: 开始计算总魔力消耗");
-        calculateTotalManaCost();
+        // calculateTotalManaCost();
             LOGGER.info("步骤 2 完成: 魔力消耗计算完成");
         
         // 3. 检查魔力是否足够
@@ -89,7 +87,7 @@ public class SpellLogic {
         
         // 6. 将法术序列传递给实体
             LOGGER.info("步骤 6: 将法术序列传递给实体");
-        spellEntity.setSpellSequence(spellSequence, spellData);
+        // spellEntity.setSpellSequence(spellSequence, spellData);
             LOGGER.info("步骤 6 完成: 法术序列已设置到实体");
         
         // 7. 生成实体到世界
@@ -157,7 +155,6 @@ public class SpellLogic {
 
         spellSequence.clear();
         spellSequence.addAll(result);
-        recordSequenceDebugInfo();
     }
 
     private List<SpellItemLogic> simplifyModifierChain(List<SpellItemLogic> mods) {
@@ -221,7 +218,6 @@ public class SpellLogic {
         }
         // 用数字字面量节点替换表达式，支持小数
         List<SpellItemLogic> one = new ArrayList<>();
-        one.add(new org.creepebucket.programmable_magic.spells.compute_mod.NumberLiteralSpell(v));
         return one;
     }
 
@@ -422,62 +418,6 @@ public class SpellLogic {
         Supplier<SpellItemLogic> sup = NAME_TO_SUPPLIER.get(name);
         return sup != null ? sup.get() : null;
     }
-
-    private void recordSequenceDebugInfo() {
-        if (spellData == null) return;
-        List<String> summary = new ArrayList<>();
-        for (int idx = 0; idx < spellSequence.size(); idx++) {
-            summary.add(formatLogicEntry(idx, spellSequence.get(idx)));
-        }
-        spellData.setCustomData("__debug_sequence", summary);
-    }
-
-    private String formatLogicEntry(int index, SpellItemLogic logic) {
-        String name;
-        if (logic instanceof NumberLiteralSpell literal) {
-            name = String.format(Locale.ROOT, "literal %.4f", literal.getValue());
-        } else if (logic != null && logic.getRegistryName() != null) {
-            name = logic.getRegistryName();
-        } else {
-            name = "<null>";
-        }
-        String type = logic != null ? logic.getSpellType().name() : "?";
-        return String.format(Locale.ROOT, "%02d | %s [%s]", index, name, type);
-    }
-    
-    /**
-     * 计算总魔力消耗（按组计算：MMMM...MMB 为一组，组内右->左应用）
-     */
-    private void calculateTotalManaCost() {
-        LOGGER.debug("开始计算总魔力消耗，法术序列大小: {}", spellSequence.size());
-
-        Map<String, Double> totals = SpellCostCalculator.computeRequiredManaFromLogics(spellSequence, player);
-
-        // 叠加魔杖对魔力需求的修正
-        double manaMult = 1.0;
-        try {
-            var main = player.getMainHandItem().getItem();
-            var off = player.getOffhandItem().getItem();
-            if (main instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w) {
-                manaMult = Math.max(0.0, w.getManaMult());
-            } else if (off instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w2) {
-                manaMult = Math.max(0.0, w2.getManaMult());
-            }
-        } catch (Exception ignored) {}
-
-        // 将 totals 写回 spellData
-        for (String manaType : List.of("radiation", "temperature", "momentum", "pressure")) {
-            spellData.setManaCost(manaType, totals.getOrDefault(manaType, 0.0) * manaMult);
-        }
-
-        LOGGER.info("魔力消耗计算完成:");
-        for (String manaType : List.of("radiation", "temperature", "momentum", "pressure")) {
-            double cost = spellData.getManaCost(manaType);
-            if (cost > 0) {
-                LOGGER.info("  {}: {}", manaType, String.format("%.2f", cost));
-            }
-        }
-    }
     
     /**
      * 检查魔力是否足够
@@ -624,7 +564,7 @@ public class SpellLogic {
         LOGGER.debug(String.format("玩家朝向: (%.2f, %.2f, %.2f)",
                 player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z));
         
-        SpellEntity entity = new SpellEntity(player.level(), player);
+        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence);
         LOGGER.debug("法术实体创建成功，实体ID: {}", entity.getId());
         
         return entity;

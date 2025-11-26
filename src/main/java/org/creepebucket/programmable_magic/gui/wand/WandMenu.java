@@ -128,10 +128,6 @@ public class WandMenu extends AbstractContainerMenu {
         for (String key : saved) {
             if (idx >= this.SLOTS) break;
             net.minecraft.resources.ResourceLocation rl = net.minecraft.resources.ResourceLocation.tryParse(key);
-            net.minecraft.world.item.Item item = org.creepebucket.programmable_magic.util.WeightUtil.tryParseItem(rl);
-            if (item != null && item.builtInRegistryHolder().is(org.creepebucket.programmable_magic.registries.ModTagKeys.SPELL)) {
-                this.spellStorageInventory.setStackInSlot(idx++, new net.minecraft.world.item.ItemStack(item));
-            }
         }
     }
 

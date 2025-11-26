@@ -7,4 +7,4 @@ public abstract class BaseControlModLogic extends SpellItemLogic {
     public SpellType getSpellType() {
         return SpellType.CONTROL_MOD;
     }
-} 
+}

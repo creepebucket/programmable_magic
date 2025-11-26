@@ -2,47 +2,20 @@ package org.creepebucket.programmable_magic.registries;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.adjust_mod.PowerBoostSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
-import org.creepebucket.programmable_magic.spells.base_spell.IgniteSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.GlowSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.ImpulseEntitySpell;
-import org.creepebucket.programmable_magic.spells.base_spell.BlinkSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.BlinkEntitySpell;
-import org.creepebucket.programmable_magic.spells.base_spell.LaunchProjectileSpell;
-import org.creepebucket.programmable_magic.spells.adjust_mod.DelaySpell;
-import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchGroundSpell;
-import org.creepebucket.programmable_magic.spells.control_mod.TriggerTouchEntitySpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.AdditionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.BuildXYZVectorSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.CasterEntitySpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.CasterPositionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.CloseParenSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.ComputeDelimiterSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.DivisionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.ExponentSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.GetStorageSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.MultiplicationSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.NumberComputeBase;
-import org.creepebucket.programmable_magic.spells.compute_mod.OpenParenSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.SetStorageSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.SpellEntityPositionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.SubtractionSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.UnitXVectorSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.UnitYVectorSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.UnitZVectorSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.ViewVectorSpell;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -55,46 +28,14 @@ public class SpellRegistry {
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
-        registerSpell(ExplosionSpell::new);
-        registerSpell(VelocitySpell::new);
-        registerSpell(IgniteSpell::new);
-        registerSpell(GlowSpell::new);
-        registerSpell(ImpulseEntitySpell::new);
-        registerSpell(BlinkSpell::new);
-        registerSpell(BlinkEntitySpell::new);
-        registerSpell(LaunchProjectileSpell::new);
-        registerSpell(PowerBoostSpell::new);
-        registerSpell(DelaySpell::new);
-        registerSpell(TriggerTouchGroundSpell::new);
-        registerSpell(TriggerTouchEntitySpell::new);
-        registerSpell(PaintDataSpell::new);
 
-        // 计算类：数字（在父类文件内收集）
-        for (var supplier : NumberComputeBase.allNumberSuppliers()) {
-            registerSpell(supplier);
-        }
-
-        // 计算类：运算符（在父类外单独注册）
-        registerSpell(AdditionSpell::new);
-        registerSpell(SubtractionSpell::new);
-        registerSpell(MultiplicationSpell::new);
-        registerSpell(DivisionSpell::new);
-        registerSpell(ExponentSpell::new);
-        registerSpell(OpenParenSpell::new);
-        registerSpell(CloseParenSpell::new);
-        // 表达式分隔符（占位）
-        registerSpell(ComputeDelimiterSpell::new);
-        // 计算类：上下文/向量/存储工具
-        registerSpell(CasterEntitySpell::new);
-        registerSpell(CasterPositionSpell::new);
-        registerSpell(SpellEntityPositionSpell::new);
-        registerSpell(ViewVectorSpell::new);
-        registerSpell(UnitXVectorSpell::new);
-        registerSpell(UnitYVectorSpell::new);
-        registerSpell(UnitZVectorSpell::new);
-        registerSpell(SetStorageSpell::new);
-        registerSpell(GetStorageSpell::new);
-        registerSpell(BuildXYZVectorSpell::new);
+        // COMPUTE_MOD: 常量
+        registerSpell(() -> new ValueLiteralSpell(
+                SpellValueType.VECTOR3,
+                "compute_unit_x",
+                new Vec3(1.0, 0.0, 0.0),
+                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))
+        ));
 
         ITEMS.register(eventBus);
     }

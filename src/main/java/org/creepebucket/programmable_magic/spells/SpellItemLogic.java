@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class SpellItemLogic {
     public SpellItemLogic() {}
@@ -19,7 +20,7 @@ public abstract class SpellItemLogic {
      * @param data 法术数据（可修改）
      * @return true 表示继续处理下一个法术，false 表示下一tick再处理这个法术
      */
-    public abstract boolean run(Player player, SpellData data);
+    public abstract Map<String, Object> run(Player player, SpellData data, List<SpellItemLogic> spellSequence, int currentSpellIndex, List<SpellItemLogic> modifiers, List<Object> spellParams);
 
     /**
      * 获取法术类型
@@ -58,6 +59,19 @@ public abstract class SpellItemLogic {
     }
 
     /**
+     * 法术期望系统提供的参数类型
+     * @return 参数列表
+     */
+    public abstract List<Object> getNeededParamsType();
+
+    /**
+     * 右向参数偏移量 如offset=1 且 params = {a, b, c} 则
+     * 期望的法术序列: a, b, 自己, c
+     * 默认为0
+     */
+    public int RightParamsOffset = 0;
+
+    /**
      * 法术类型枚举
      */
     public enum SpellType {
@@ -66,4 +80,15 @@ public abstract class SpellItemLogic {
         CONTROL_MOD,    // 控制调整
         COMPUTE_MOD     // 逻辑运算
     }
+
+    // 指针
+    private SpellItemLogic _next;
+    private SpellItemLogic _prev;
+
+    public SpellItemLogic getNextSpell() { return _next; }
+    public SpellItemLogic getPrevSpell() { return _prev; }
+
+    // 供同包内的 SpellSequence 维护链表时使用
+    void _setNext(SpellItemLogic n) { this._next = n; }
+    void _setPrev(SpellItemLogic p) { this._prev = p; }
 }
