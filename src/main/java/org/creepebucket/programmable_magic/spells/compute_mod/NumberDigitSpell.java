@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.List;
 import java.util.Map;
@@ -29,11 +30,11 @@ public class NumberDigitSpell extends BaseComputeModLogic{
         // 如果当前法术的后一个法术不是数字, 递归调用下一个法术的 run 以确保对于任何法术的 run 调用都返回正确的结果
         if (this.getNextSpell() instanceof NumberDigitSpell) { return this.getNextSpell().run(player, data, spellSequence, modifiers, spellParams); }
 
-        return Map.of("successful", true, "value", combineDigit(0, 0));
+        return Map.of("successful", true, "value", combineDigit(0.0, 0));
     }
 
-    public int combineDigit(int currentValue, int combinedCount) {
-        int value = currentValue + (int) Math.pow(10, combinedCount) * this.DIGIT_NUMBER;
+    public Double combineDigit(Double currentValue, int combinedCount) {
+        Double value = currentValue + Math.pow(10, combinedCount) * this.DIGIT_NUMBER;
 
         SpellItemLogic prevSpell = this.getPrevSpell();
         // 如果上一个法术是数字, 递归调用上一个法术的 combineDigit
@@ -54,7 +55,7 @@ public class NumberDigitSpell extends BaseComputeModLogic{
     }
 
     @Override
-    public List<Object> getNeededParamsType() {
+    public List<List<SpellValueType>> getNeededParamsType() {
         return List.of();
     }
 }

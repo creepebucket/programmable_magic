@@ -44,13 +44,21 @@ public class SpellRegistry {
         // COMPUTE_MOD: 常量
         registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_x", new Vec3(1.0, 0.0, 0.0),
                 List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))));
+        registerSpell(ViewVectorSpell::new);
 
         // COMPUTE_MOD: 分隔符
         registerSpell(SpellSeperator::new);
 
         // COMPUTE_MOD: 括号
-        registerSpell(LeftParenSpell::new);
-        registerSpell(RightParenSpell::new);
+        registerSpell(ParenSpell.LeftParenSpell::new);
+        registerSpell(ParenSpell.RightParenSpell::new);
+
+        // COMPUTE_MOD: 加减乘除幂
+        registerSpell(MathOpreationsSpell.AdditionSpell::new);
+        registerSpell(MathOpreationsSpell.SubtractionSpell::new);
+        registerSpell(MathOpreationsSpell.MultiplicationSpell::new);
+        registerSpell(MathOpreationsSpell.DivisionSpell::new);
+        registerSpell(MathOpreationsSpell.PowerSpell::new);
 
         ITEMS.register(eventBus);
     }

@@ -4,22 +4,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
-import org.creepebucket.programmable_magic.spells.compute_mod.LeftParenSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.NumberDigitSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
-import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
@@ -136,7 +128,7 @@ public class SpellLogic {
             SpellSequence inner = new SpellSequence();
             for (SpellItemLogic cur = left.getNextSpell(); cur != null && cur != right; ) {
                 SpellItemLogic next = cur.getNextSpell();
-                inner.addLast(cur);
+                inner.addLast(cur.clone());
                 cur = next;
             }
 
@@ -146,6 +138,73 @@ public class SpellLogic {
             // 用递归结果替换整段 [left..right]
             seq.replaceSection(left, right, inner);
         }
+
+        // 若仍存在未消解的括号，递归继续处理，确保算符阶段前无括号残留
+        if (!getParenPairs(seq).isEmpty()) {
+            return calculateSpellSequence(seq);
+        }
+
+        // 再按计算顺序进行计算
+        final List<MathOpreationsSpell> ORDER = List.of(
+                new MathOpreationsSpell.PowerSpell(),
+                new MathOpreationsSpell.MultiplicationSpell(),
+                new MathOpreationsSpell.DivisionSpell(),
+                new MathOpreationsSpell.AdditionSpell(),
+                new MathOpreationsSpell.SubtractionSpell()
+        );
+
+        for (SpellItemLogic operator : ORDER) {
+            // 查找到每个运算符执行对应的run并替换区间
+
+            SpellItemLogic current = seq.getFirstSpell();
+            while (current != null) {
+                if (current.getClass() == operator.getClass()) {
+                    SpellItemLogic L = current.getPrevSpell();
+                    SpellItemLogic R = current.getNextSpell();
+                    SpellItemLogic nextAfter = (R != null) ? R.getNextSpell() : null;
+
+                    // 检测两边是否都是ValueLiteralSpell
+                    if (L instanceof ValueLiteralSpell && R instanceof ValueLiteralSpell) {
+                        Map<String, Object> result = operator.run(player, spellData, spellSequence, null, List.of(
+                                ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
+
+                        seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
+                    }
+
+                    current = nextAfter;
+                    continue;
+                }
+                current = current.getNextSpell();
+            }
+        }
+
+        boolean flag = false;
+        // 遍历每个法术, 执行剩下的COMPUTE_MOD
+
+        for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
+            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD) || spell instanceof ValueLiteralSpell || spell instanceof MathOpreationsSpell) continue;
+
+            flag = true;
+            Map<String, Object> result = SpellUtils.executeCurrentSpell(player, spellData, seq, spell).result;
+
+            SpellItemLogic L = spell;
+            for (int i = 0; i < spell.getNeededParamsType().get(0).size() - spell.RightParamsOffset; i++) {
+                L = L.getPrevSpell();
+            }
+
+            SpellItemLogic R = spell;
+            for (int i = 0; i < spell.RightParamsOffset; i++) {
+                R = R.getNextSpell();
+            }
+
+            seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
+
+            // TODO: 检查法术参数数量不同的重载
+        }
+
+
+        // 如果计算完成后, 还有剩余COMPUTE_MOD残留, 再次递归调用calculateSpellSequence确保计算干净
+        if (flag) return calculateSpellSequence(seq);
 
         LOGGER.debug("法术序列计算完成");
         return seq;
@@ -203,7 +262,7 @@ public class SpellLogic {
         SpellItemLogic i = spellSequence.getFirstSpell();
         List<List<SpellItemLogic>> pairs = new ArrayList<>();
         while (i != null) {
-            if (i instanceof LeftParenSpell) {
+            if (i instanceof ParenSpell.LeftParenSpell) {
                 Object right = i.run(player, spellData, spellSequence, null, null).get("value");
                 if (right instanceof SpellItemLogic r) {
                     pairs.add(List.of(i, r));

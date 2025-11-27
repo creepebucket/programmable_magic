@@ -45,7 +45,7 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
     public List<Component> getTooltip() {return TOOLTIP;}
 
     @Override
-    public List<Object> getNeededParamsType() {
+    public List<List<SpellValueType>> getNeededParamsType() {
         return List.of();
     }
 }

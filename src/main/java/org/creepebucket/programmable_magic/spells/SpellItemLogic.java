@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SpellItemLogic {
+public abstract class SpellItemLogic implements Cloneable {
     public SpellItemLogic() {}
 
     /**
@@ -61,9 +61,10 @@ public abstract class SpellItemLogic {
 
     /**
      * 法术期望系统提供的参数类型
+     *
      * @return 参数列表
      */
-    public abstract List<Object> getNeededParamsType();
+    public abstract List<List<SpellValueType>> getNeededParamsType();
 
     /**
      * 右向参数偏移量 如offset=1 且 params = {a, b, c} 则
@@ -71,6 +72,15 @@ public abstract class SpellItemLogic {
      * 默认为0
      */
     public int RightParamsOffset = 0;
+
+    @Override
+    public SpellItemLogic clone() {
+        try {
+            return (SpellItemLogic) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 
     /**
      * 法术类型枚举
