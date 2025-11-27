@@ -60,11 +60,12 @@ public abstract class SpellItemLogic implements Cloneable {
     }
 
     /**
-     * 法术期望系统提供的参数类型
+     * 法术的参数类型
      *
      * @return 参数列表
      */
     public abstract List<List<SpellValueType>> getNeededParamsType();
+    public abstract List<List<SpellValueType>> getReturnParamsType(); // 仅用于 tooltip
 
     /**
      * 右向参数偏移量 如offset=1 且 params = {a, b, c} 则

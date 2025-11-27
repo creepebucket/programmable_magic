@@ -9,7 +9,8 @@ public enum SpellValueType {
     VECTOR3("Vector3", ChatFormatting.AQUA),
     MODIFIER("Modifier", ChatFormatting.LIGHT_PURPLE),
     SPELL("Spell", ChatFormatting.GREEN),
-    ANY("Any", ChatFormatting.GRAY);
+    ANY("Any", ChatFormatting.GRAY),
+    EMPTY("", ChatFormatting.GRAY);
 
     private final String display;
     private final ChatFormatting color;

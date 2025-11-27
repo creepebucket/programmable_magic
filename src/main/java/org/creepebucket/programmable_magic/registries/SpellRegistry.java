@@ -12,6 +12,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
 
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class SpellRegistry {
         // COMPUTE_MOD: 常量
         registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_x", new Vec3(1.0, 0.0, 0.0),
                 List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))));
-        registerSpell(ViewVectorSpell::new);
+        registerSpell(DynamicConstantSpell.ViewVectorSpell::new);
 
         // COMPUTE_MOD: 分隔符
         registerSpell(SpellSeperator::new);
@@ -59,6 +60,9 @@ public class SpellRegistry {
         registerSpell(MathOpreationsSpell.MultiplicationSpell::new);
         registerSpell(MathOpreationsSpell.DivisionSpell::new);
         registerSpell(MathOpreationsSpell.PowerSpell::new);
+
+        // 基础法术
+        registerSpell(ExplosionSpell::new);
 
         ITEMS.register(eventBus);
     }

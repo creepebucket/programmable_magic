@@ -45,6 +45,11 @@ public class ParenSpell extends BaseComputeModLogic{
         return List.of();
     }
 
+    @Override
+    public List<List<SpellValueType>> getReturnParamsType() {
+        return List.of();
+    }
+
     public static class RightParenSpell extends ParenSpell{
         public RightParenSpell() { super("compute_rparen"); }
         private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");

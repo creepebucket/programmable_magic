@@ -56,6 +56,11 @@ public class NumberDigitSpell extends BaseComputeModLogic{
 
     @Override
     public List<List<SpellValueType>> getNeededParamsType() {
-        return List.of();
+        return List.of(List.of(SpellValueType.EMPTY));
+    }
+
+    @Override
+    public List<List<SpellValueType>> getReturnParamsType() {
+        return List.of(List.of(SpellValueType.NUMBER));
     }
 }

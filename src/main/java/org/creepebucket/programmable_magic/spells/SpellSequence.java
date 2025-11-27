@@ -87,4 +87,19 @@ public class SpellSequence {
         size = size - removeCount + addCount;
         return true;
     }
+
+    /*
+     * 获取当前序列中 [L..R]（不含端点）的子序列。
+     */
+    public SpellSequence subSequence(SpellItemLogic L, SpellItemLogic R) {
+        SpellSequence seq = new SpellSequence();
+
+        for (SpellItemLogic cur = L.getNextSpell(); cur != null && cur != R; ) {
+            SpellItemLogic next = cur.getNextSpell();
+            seq.addLast(cur.clone());
+            cur = next;
+        }
+
+        return seq;
+    }
 }

@@ -125,12 +125,7 @@ public class SpellLogic {
             SpellItemLogic right = pair.get(1);
 
             // 抽取区间 (left, right) 形成子序列
-            SpellSequence inner = new SpellSequence();
-            for (SpellItemLogic cur = left.getNextSpell(); cur != null && cur != right; ) {
-                SpellItemLogic next = cur.getNextSpell();
-                inner.addLast(cur.clone());
-                cur = next;
-            }
+            SpellSequence inner = seq.subSequence(left, right);
 
             // 递归计算子序列
             inner = calculateSpellSequence(inner);
@@ -221,7 +216,7 @@ public class SpellLogic {
         LOGGER.debug(String.format("玩家朝向: (%.2f, %.2f, %.2f)",
                 player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z));
 
-        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence);
+        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData);
         LOGGER.debug("法术实体创建成功，实体ID: {}", entity.getId());
         
         return entity;

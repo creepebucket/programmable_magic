@@ -64,6 +64,14 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
                     List.of(VECTOR3, VECTOR3)
             );
         }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(
+                    List.of(NUMBER),
+                    List.of(VECTOR3)
+            );
+        }
     }
 
     public static class SubtractionSpell extends MathOpreationsSpell {
@@ -88,6 +96,14 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
             return List.of(
                     List.of(NUMBER, NUMBER),
                     List.of(VECTOR3, VECTOR3)
+            );
+        }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(
+                    List.of(NUMBER),
+                    List.of(VECTOR3)
             );
         }
     }
@@ -123,6 +139,15 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
                     List.of(NUMBER, VECTOR3)
             );
         }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(
+                    List.of(NUMBER),
+                    List.of(VECTOR3),
+                    List.of(VECTOR3)
+            );
+        }
     }
 
     public static class DivisionSpell extends MathOpreationsSpell {
@@ -156,6 +181,15 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
                     List.of(NUMBER, VECTOR3)
             );
         }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(
+                    List.of(NUMBER),
+                    List.of(VECTOR3),
+                    List.of(VECTOR3)
+            );
+        }
     }
 
     public static class PowerSpell extends MathOpreationsSpell {
@@ -170,6 +204,13 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         public List<List<SpellValueType>> getNeededParamsType() {
             return List.of(
                     List.of(NUMBER, NUMBER)
+            );
+        }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(
+                    List.of(NUMBER)
             );
         }
     }

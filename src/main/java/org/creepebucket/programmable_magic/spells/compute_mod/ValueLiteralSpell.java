@@ -48,4 +48,9 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
     public List<List<SpellValueType>> getNeededParamsType() {
         return List.of();
     }
+
+    @Override
+    public List<List<SpellValueType>> getReturnParamsType() {
+        return List.of();
+    }
 }

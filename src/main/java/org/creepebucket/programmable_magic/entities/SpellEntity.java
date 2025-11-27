@@ -46,10 +46,11 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
     
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData) {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
         this.spellSequence = spellSequence;
         this.caster = caster;
+        this.spellData = spellData;
         this.currentSpell = spellSequence.getFirstSpell();
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
     }
