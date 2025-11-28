@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.creepebucket.programmable_magic.spells.SpellUtils.getSeps;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
 public class SpellLogic {
@@ -45,34 +46,16 @@ public class SpellLogic {
      * 执行法术逻辑的主入口
      */
     public void execute() {
-        LOGGER.info("=== 开始执行法术逻辑 ===");
-
         // 1. 将ItemStack转换为SpellItemLogic
-        LOGGER.info("步骤 1: 开始转换 ItemStack 到 SpellItemLogic");
         convertItemStacksToLogic();
-        LOGGER.info("步骤 1 完成: 成功转换 {} 个法术逻辑", spellSequence.size());
-
         // 2. 转换NumberDigitSpell -> ValueLiteralSpell 并去除分隔符
-        LOGGER.info("步骤 2: 数字法术解析");
         convertNumberDigitsToValues();
-        LOGGER.info("步骤 2 完成: 数字法术解析完成");
-
-        // 3. 计算法术序列
-        LOGGER.info("步骤 3: 计算法术序列");
-        spellSequence = calculateSpellSequence(spellSequence);
-        LOGGER.info("步骤 3 完成: 法术序列计算完成");
-
-        // 5. 创建法术实体
-        LOGGER.info("步骤 5: 开始创建法术实体");
+        // BUGFIX: 在法术序列之前加一个占位ValueLiteralSpell, 防止第一次简化序列的lastBoundarySpell.getNextSpell()未包含实际序列的第一个法术
+        spellSequence.addFirst(new ValueLiteralSpell(SpellValueType.EMPTY, 0));
+        // 3. 创建法术实体
         SpellEntity spellEntity = createSpellEntity();
-        LOGGER.info("步骤 5 完成: 法术实体创建成功");
-
-        // 6. 生成实体到世界
-        LOGGER.info("步骤 6: 将法术实体添加到世界");
+        // 4. 生成实体到世界
         player.level().addFreshEntity(spellEntity);
-        LOGGER.info("步骤 6 完成: 法术实体已添加到世界");
-
-        LOGGER.info("=== 法术逻辑执行完成 ===");
     }
     
     /**
@@ -108,101 +91,6 @@ public class SpellLogic {
         for (SpellItemLogic sep : seps) {
             spellSequence.replaceSection(sep, sep, new SpellSequence());
         }
-    }
-
-    /**
-     * 步骤3
-     * 计算法术序列
-     */
-    private SpellSequence calculateSpellSequence(SpellSequence seq) {
-        LOGGER.debug("开始计算法术序列");
-
-        // 先寻找括号, 对每个括号内的部分进行递归计算
-        List<List<SpellItemLogic>> pairs = getParenPairs(seq);
-        for (List<SpellItemLogic> pair : pairs) {
-            if (pair == null || pair.size() != 2) continue;
-            SpellItemLogic left = pair.get(0);
-            SpellItemLogic right = pair.get(1);
-
-            // 抽取区间 (left, right) 形成子序列
-            SpellSequence inner = seq.subSequence(left, right);
-
-            // 递归计算子序列
-            inner = calculateSpellSequence(inner);
-
-            // 用递归结果替换整段 [left..right]
-            seq.replaceSection(left, right, inner);
-        }
-
-        // 若仍存在未消解的括号，递归继续处理，确保算符阶段前无括号残留
-        if (!getParenPairs(seq).isEmpty()) {
-            return calculateSpellSequence(seq);
-        }
-
-        // 再按计算顺序进行计算
-        final List<MathOpreationsSpell> ORDER = List.of(
-                new MathOpreationsSpell.PowerSpell(),
-                new MathOpreationsSpell.MultiplicationSpell(),
-                new MathOpreationsSpell.DivisionSpell(),
-                new MathOpreationsSpell.AdditionSpell(),
-                new MathOpreationsSpell.SubtractionSpell()
-        );
-
-        for (SpellItemLogic operator : ORDER) {
-            // 查找到每个运算符执行对应的run并替换区间
-
-            SpellItemLogic current = seq.getFirstSpell();
-            while (current != null) {
-                if (current.getClass() == operator.getClass()) {
-                    SpellItemLogic L = current.getPrevSpell();
-                    SpellItemLogic R = current.getNextSpell();
-                    SpellItemLogic nextAfter = (R != null) ? R.getNextSpell() : null;
-
-                    // 检测两边是否都是ValueLiteralSpell
-                    if (L instanceof ValueLiteralSpell && R instanceof ValueLiteralSpell) {
-                        Map<String, Object> result = operator.run(player, spellData, spellSequence, null, List.of(
-                                ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
-
-                        seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
-                    }
-
-                    current = nextAfter;
-                    continue;
-                }
-                current = current.getNextSpell();
-            }
-        }
-
-        boolean flag = false;
-        // 遍历每个法术, 执行剩下的COMPUTE_MOD
-
-        for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
-            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD) || spell instanceof ValueLiteralSpell || spell instanceof MathOpreationsSpell) continue;
-
-            flag = true;
-            Map<String, Object> result = SpellUtils.executeCurrentSpell(player, spellData, seq, spell).result;
-
-            SpellItemLogic L = spell;
-            for (int i = 0; i < spell.getNeededParamsType().get(0).size() - spell.RightParamsOffset; i++) {
-                L = L.getPrevSpell();
-            }
-
-            SpellItemLogic R = spell;
-            for (int i = 0; i < spell.RightParamsOffset; i++) {
-                R = R.getNextSpell();
-            }
-
-            seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
-
-            // TODO: 检查法术参数数量不同的重载
-        }
-
-
-        // 如果计算完成后, 还有剩余COMPUTE_MOD残留, 再次递归调用calculateSpellSequence确保计算干净
-        if (flag) return calculateSpellSequence(seq);
-
-        LOGGER.debug("法术序列计算完成");
-        return seq;
     }
 
     /**
@@ -244,27 +132,6 @@ public class SpellLogic {
             it = right.getNextSpell();
         }
 
-        return pairs;
-    }
-
-    private List<SpellItemLogic> getSeps(SpellSequence spellSequence) {
-        List<SpellItemLogic> seps = new ArrayList<>();
-        for (SpellItemLogic it = spellSequence.getFirstSpell(); it != null; it = it.getNextSpell()) { if (it instanceof SpellSeperator) { seps.add(it);} }
-        return seps;
-    }
-
-    private List<List<SpellItemLogic>> getParenPairs(SpellSequence spellSequence) {
-        SpellItemLogic i = spellSequence.getFirstSpell();
-        List<List<SpellItemLogic>> pairs = new ArrayList<>();
-        while (i != null) {
-            if (i instanceof ParenSpell.LeftParenSpell) {
-                Object right = i.run(player, spellData, spellSequence, null, null).get("value");
-                if (right instanceof SpellItemLogic r) {
-                    pairs.add(List.of(i, r));
-                }
-            }
-            i = i.getNextSpell();
-        }
         return pairs;
     }
 

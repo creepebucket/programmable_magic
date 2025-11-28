@@ -13,7 +13,9 @@ import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
+import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +47,16 @@ public class SpellRegistry {
         // COMPUTE_MOD: 常量
         registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_x", new Vec3(1.0, 0.0, 0.0),
                 List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))));
+        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_y", new Vec3(0.0, 1.0, 0.0),
+                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_y"))));
+        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_z", new Vec3(0.0, 0.0, 1.0),
+                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_z"))));
+
         registerSpell(DynamicConstantSpell.ViewVectorSpell::new);
+        registerSpell(DynamicConstantSpell.CasterEntitySpell::new);
+        registerSpell(DynamicConstantSpell.CasterPosSpell::new);
+        registerSpell(DynamicConstantSpell.SpellPosSpell::new);
+        registerSpell(DynamicConstantSpell.SpellEntitySpell::new);
 
         // COMPUTE_MOD: 分隔符
         registerSpell(SpellSeperator::new);
@@ -63,6 +74,10 @@ public class SpellRegistry {
 
         // 基础法术
         registerSpell(ExplosionSpell::new);
+        registerSpell(VelocitySpell::new);
+
+        // CONTROL_MOD
+        registerSpell(DelaySpell::new);
 
         ITEMS.register(eventBus);
     }

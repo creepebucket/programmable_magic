@@ -2,6 +2,7 @@ package org.creepebucket.programmable_magic.spells.compute_mod;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 import static org.creepebucket.programmable_magic.spells.SpellValueType.EMPTY;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3;
+import static org.creepebucket.programmable_magic.spells.SpellValueType.ENTITY;
 
 public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     /*
@@ -64,6 +66,62 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
 
         public List<Component> getTooltip() {
             return List.of(Component.translatable("item.programmable_magic.spell_display_compute_caster_pos"));
+        }
+    }
+
+    public static class CasterEntitySpell extends DynamicConstantSpell {
+        public String getRegistryName() {
+            return "compute_caster";
+        }
+
+        public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+            return Map.of("successful", true, "type", ENTITY, "value", player);
+        }
+
+        public List<Component> getTooltip() {
+            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_caster"));
+        }
+
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(List.of(ENTITY));
+        }
+    }
+
+    public static class SpellPosSpell extends DynamicConstantSpell {
+        public String getRegistryName() {
+            return "compute_spell_pos";
+        }
+
+        public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+            Vec3 pos = data.getPosition();
+            return Map.of("successful", true, "type", VECTOR3, "value", pos);
+        }
+
+        public List<Component> getTooltip() {
+            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_spell_pos"));
+        }
+
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(List.of(VECTOR3));
+        }
+    }
+
+    public static class SpellEntitySpell extends DynamicConstantSpell {
+        public String getRegistryName() {
+            return "compute_spell";
+        }
+
+        public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+            Entity self = data.getCustomData("spell_entity", Entity.class);
+            return Map.of("successful", true, "type", ENTITY, "value", self);
+        }
+
+        public List<Component> getTooltip() {
+            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_spell"));
+        }
+
+        public List<List<SpellValueType>> getReturnParamsType() {
+            return List.of(List.of(ENTITY));
         }
     }
 }

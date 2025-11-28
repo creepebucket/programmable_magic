@@ -39,6 +39,7 @@
   "item.programmable_magic.spell_display_compute_caster": "法术：施法者实体",
   "item.programmable_magic.spell_display_compute_caster_pos": "法术：施法者位置",
   "item.programmable_magic.spell_display_compute_spell_pos": "法术：法术实体位置",
+  "item.programmable_magic.spell_display_compute_spell": "法术：法术实体",
   "item.programmable_magic.spell_display_compute_view_vec": "法术：视角向量",
   "item.programmable_magic.spell_display_compute_unit_x": "法术：X 轴单位向量",
   "item.programmable_magic.spell_display_compute_unit_y": "法术：Y 轴单位向量",

@@ -1,5 +1,7 @@
 package org.creepebucket.programmable_magic.spells;
 
+import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
+
 import java.util.List;
 
 /**
@@ -23,6 +25,21 @@ public class SpellSequence {
     public SpellItemLogic getLastSpell() { return tail; }
     public int size() { return size; }
     public boolean isEmpty() { return head == null; }
+
+    public void addFirst(SpellItemLogic s) {
+        if (s == null) return;
+        if (tail == null) {
+            head = tail = s;
+            s._setPrev(null);
+            s._setNext(null);
+        } else {
+            head._setPrev(s);
+            s._setNext(head);
+            s._setPrev(null);
+            head = s;
+        }
+        size++;
+    }
 
     public void addLast(SpellItemLogic s) {
         if (s == null) return;

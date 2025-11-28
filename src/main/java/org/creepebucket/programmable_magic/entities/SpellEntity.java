@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.entities;
 
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -10,25 +9,18 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
-import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
-import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
-import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
-import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
-import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class SpellEntity extends Entity {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
@@ -38,6 +30,8 @@ public class SpellEntity extends Entity {
     private SpellSequence spellSequence = new SpellSequence();
     private SpellData spellData;
     private SpellItemLogic currentSpell;
+    // 记录上一个已执行完成的“边界”法术，用于动态截取待折叠的表达式区间
+    private SpellItemLogic lastBoundarySpell = spellSequence.getFirstSpell();
     private int delayTicks = 0;
     private Player caster;
     
@@ -51,7 +45,9 @@ public class SpellEntity extends Entity {
         this.spellSequence = spellSequence;
         this.caster = caster;
         this.spellData = spellData;
+        this.spellData.setCustomData("spell_entity", this);
         this.currentSpell = spellSequence.getFirstSpell();
+        this.lastBoundarySpell = spellSequence.getFirstSpell();
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
     }
     
@@ -65,42 +61,51 @@ public class SpellEntity extends Entity {
         super.tick();
         // 执行法术序列逻辑
 
-        // 先检查法术执行完了吗
-        if (currentSpell == null) { this.discard(); return; }
+        if (this.level().isClientSide) { spawnParticles(); return; }
 
-        // 再判断延迟
+        // 应用速度推动实体移动
+        this.move(MoverType.SELF, this.getDeltaMovement());
+
+        // 先判断延迟
         if (delayTicks > 0) { delayTicks--; return; }
 
+        // 再检查法术执行完了吗
+        if (currentSpell == null) {
+            this.discard();
+            return;
+        }
+
+        if (currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD && currentSpell.getNextSpell() != null) {
+            currentSpell = currentSpell.getNextSpell();
+            this.tick(); // 递归执行下一个法术
+            return;
+        }
+
+        // 进入 modifier/base/控制法术之前，先把前段表达式折叠为字面量，确保参数一致
+        simplifyPendingExpressions(currentSpell);
+        lastBoundarySpell = currentSpell;
+
+        // 更新SpellData
+        spellData.setPosition(new Vec3(this.getX(), this.getY(), this.getZ()));
+
         // 使用 SpellUtils 执行当前法术一步
-        var step = org.creepebucket.programmable_magic.spells.SpellUtils.executeCurrentSpell(
-                caster, spellData, spellSequence, currentSpell);
+        var step = SpellUtils.executeCurrentSpell(caster, spellData, spellSequence, currentSpell);
 
         if (step.shouldDiscard) { this.discard(); return; }
 
         // 如果法术的 canExecute 判断不成立, 执行下一个法术
-        if (!currentSpell.canExecute(caster, spellData)) { currentSpell = currentSpell.getNextSpell(); this.tick(); return; }
+        // if (!currentSpell.canExecute(caster, spellData)) { currentSpell = currentSpell.getNextSpell(); this.tick(); return; }
 
         // 如果法术设置了延时, 则设置
-        if (step.delayTicks > 0) { delayTicks = step.delayTicks; return; }
+        if (step.delayTicks > 0) { delayTicks = step.delayTicks; }
 
         // 如果法术执行成功，则进入下一法术
-        if (step.successful) {
-            currentSpell = currentSpell.getNextSpell();
-            this.tick();
+        if (!step.successful) {
             return;
         }
 
-        if (!this.isNoGravity()) this.setNoGravity(true);
-        if (this.level().isClientSide) { spawnParticles(); return; }
-    }
-
-    private static SpellItemLogic getAtIndex(SpellSequence seq, int idx) {
-        int i = 0;
-        for (SpellItemLogic it = seq.getFirstSpell(); it != null; it = it.getNextSpell()) {
-            if (i == idx) return it;
-            i++;
-        }
-        return null;
+        currentSpell = currentSpell.getNextSpell();
+        this.tick();
     }
 
     @Override
@@ -139,5 +144,26 @@ public class SpellEntity extends Entity {
     
     public void setActive(boolean active) {
         this.entityData.set(DATA_ACTIVE, active);
+    }
+
+    // 将上一个边界后至当前边界前的表达式区间抽出并简化
+    private void simplifyPendingExpressions(SpellItemLogic boundary) {
+        SpellItemLogic start = lastBoundarySpell.getNextSpell();
+        SpellItemLogic end = boundary.getPrevSpell();
+        SpellSequence slice = cloneRange(start, end);
+        SpellSequence simplified = SpellUtils.calculateSpellSequence(caster, spellData, slice);
+        spellSequence.replaceSection(start, end, simplified);
+    }
+
+    private SpellSequence cloneRange(SpellItemLogic start, SpellItemLogic end) {
+        // 克隆当前区间，避免直接在原序列上递归求值造成链表错乱
+        SpellSequence seq = new SpellSequence();
+        SpellItemLogic cursor = start;
+        while (cursor != null) {
+            seq.addLast(cursor.clone());
+            if (cursor == end) break;
+            cursor = cursor.getNextSpell();
+        }
+        return seq;
     }
 }

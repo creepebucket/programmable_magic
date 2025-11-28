@@ -1,0 +1,48 @@
+package org.creepebucket.programmable_magic.spells.base_spell;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import org.creepebucket.programmable_magic.spells.SpellData;
+import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.SpellSequence;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
+
+import java.util.List;
+import java.util.Map;
+
+public class VelocitySpell extends BaseBaseSpellLogic{
+    @Override
+    public String getRegistryName() {
+        return "gain_velocity";
+    }
+
+    @Override
+    public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        // 给予实体速度
+        ((Entity) spellParams.get(0)).push(((Vec3) spellParams.get(1)));
+
+        return Map.of("successful", true);
+    }
+
+    @Override
+    public void calculateBaseMana(SpellData data) {
+
+    }
+
+    @Override
+    public List<Component> getTooltip() {
+        return List.of();
+    }
+
+    @Override
+    public List<List<SpellValueType>> getNeededParamsType() {
+        return List.of(List.of(SpellValueType.ENTITY, SpellValueType.VECTOR3));
+    }
+
+    @Override
+    public List<List<SpellValueType>> getReturnParamsType() {
+        return List.of(List.of(SpellValueType.SPELL));
+    }
+}

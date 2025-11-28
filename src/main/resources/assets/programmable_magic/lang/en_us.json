@@ -39,6 +39,7 @@
   "item.programmable_magic.spell_display_compute_caster": "Spell: Caster Entity",
   "item.programmable_magic.spell_display_compute_caster_pos": "Spell: Caster Position",
   "item.programmable_magic.spell_display_compute_spell_pos": "Spell: Spell Entity Position",
+  "item.programmable_magic.spell_display_compute_spell": "Spell: Spell Entity",
   "item.programmable_magic.spell_display_compute_view_vec": "Spell: View Vector",
   "item.programmable_magic.spell_display_compute_unit_x": "Spell: Unit Vector X",
   "item.programmable_magic.spell_display_compute_unit_y": "Spell: Unit Vector Y",
