@@ -63,8 +63,8 @@ public class SpellEntity extends Entity {
 
         if (this.level().isClientSide) { spawnParticles(); return; }
 
-        // 应用速度推动实体移动
-        this.move(MoverType.SELF, this.getDeltaMovement());
+        // 应用速度（直接更新位置，不做碰撞解析以便穿过方块）
+        this.setPos(this.getX() + this.getDeltaMovement().x, this.getY() + this.getDeltaMovement().y, this.getZ() + this.getDeltaMovement().z);
 
         // 先判断延迟
         if (delayTicks > 0) { delayTicks--; return; }
@@ -150,6 +150,7 @@ public class SpellEntity extends Entity {
     private void simplifyPendingExpressions(SpellItemLogic boundary) {
         SpellItemLogic start = lastBoundarySpell.getNextSpell();
         SpellItemLogic end = boundary.getPrevSpell();
+        if (start == null || end == null || start == boundary) return; // 空区间或起点即边界，直接跳过
         SpellSequence slice = cloneRange(start, end);
         SpellSequence simplified = SpellUtils.calculateSpellSequence(caster, spellData, slice);
         spellSequence.replaceSection(start, end, simplified);

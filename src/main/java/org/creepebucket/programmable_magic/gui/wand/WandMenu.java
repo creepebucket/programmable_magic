@@ -125,9 +125,12 @@ public class WandMenu extends AbstractContainerMenu {
                 : wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_BIG.get());
         if (saved == null || saved.isEmpty()) return;
         int idx = 0;
+        
         for (String key : saved) {
             if (idx >= this.SLOTS) break;
             net.minecraft.resources.ResourceLocation rl = net.minecraft.resources.ResourceLocation.tryParse(key);
+            var h = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(rl);
+            if (h.isPresent()) this.spellStorageInventory.setStackInSlot(idx++, new net.minecraft.world.item.ItemStack(h.get()));
         }
     }
 

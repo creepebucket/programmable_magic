@@ -21,7 +21,10 @@ public class VelocitySpell extends BaseBaseSpellLogic{
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 给予实体速度
-        ((Entity) spellParams.get(0)).push(((Vec3) spellParams.get(1)));
+        Entity target = (Entity) spellParams.get(0);
+
+        target.push((Vec3) spellParams.get(1));
+        target.hurtMarked = true;
 
         return Map.of("successful", true);
     }

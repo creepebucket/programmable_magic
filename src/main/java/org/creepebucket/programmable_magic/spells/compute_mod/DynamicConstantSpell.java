@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.spells.compute_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
@@ -108,7 +109,7 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
 
     public static class SpellEntitySpell extends DynamicConstantSpell {
         public String getRegistryName() {
-            return "compute_spell";
+            return "compute_spell_entity";
         }
 
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
@@ -123,5 +124,30 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
         public List<List<SpellValueType>> getReturnParamsType() {
             return List.of(List.of(ENTITY));
         }
+    }
+
+    public static class NearestEntitySpell extends DynamicConstantSpell {
+        public String getRegistryName() { return "compute_nearest_entity"; }
+
+        public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+            var pos = data.getPosition();
+            var self = data.getCustomData("spell_entity", Entity.class);
+            double r = 16.0; // 简单范围
+            AABB box = new net.minecraft.world.phys.AABB(pos.x - r, pos.y - r, pos.z - r, pos.x + r, pos.y + r, pos.z + r);
+            List<Entity> list = player.level().getEntities((Entity) null, box, e -> e != null && e != self && e != player);
+
+            Entity nearest = null;
+            double best = Double.POSITIVE_INFINITY;
+            for (Entity e : list) {
+                double d = e.distanceToSqr(pos.x, pos.y, pos.z);
+                if (d < best) { best = d; nearest = e; }
+            }
+            if (nearest == null) nearest = self;
+            return Map.of("successful", true, "type", ENTITY, "value", nearest);
+        }
+
+        public List<Component> getTooltip() { return List.of(); }
+
+        public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(ENTITY)); }
     }
 }

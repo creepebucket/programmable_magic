@@ -16,6 +16,7 @@ import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
 import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.control_mod.TriggerSpell;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +58,7 @@ public class SpellRegistry {
         registerSpell(DynamicConstantSpell.CasterPosSpell::new);
         registerSpell(DynamicConstantSpell.SpellPosSpell::new);
         registerSpell(DynamicConstantSpell.SpellEntitySpell::new);
+        registerSpell(DynamicConstantSpell.NearestEntitySpell::new);
 
         // COMPUTE_MOD: 分隔符
         registerSpell(SpellSeperator::new);
@@ -78,6 +80,10 @@ public class SpellRegistry {
 
         // CONTROL_MOD
         registerSpell(DelaySpell::new);
+
+        // CONTROL_MOD: 触发器
+        registerSpell(TriggerSpell.TriggerTouchGround::new);
+        registerSpell(TriggerSpell.TriggerTouchEntity::new);
 
         ITEMS.register(eventBus);
     }

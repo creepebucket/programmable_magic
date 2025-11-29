@@ -43,6 +43,11 @@ public class WandLeftClickRelease {
         if (saved == null || saved.isEmpty()) return;
 
         List<ItemStack> stacks = new ArrayList<>();
+        for (String key : saved) {
+            var rl = net.minecraft.resources.ResourceLocation.tryParse(key);
+            var h = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(rl);
+            h.ifPresent(holder -> stacks.add(new ItemStack(holder)));
+        }
 
         ClientPacketDistributor.sendToServer(new SpellReleasePacket(stacks));
     }
