@@ -1,9 +1,11 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,7 +16,7 @@ import org.creepebucket.programmable_magic.ModUtils;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+ 
 import org.creepebucket.programmable_magic.items.wand.BaseWand;
 import org.creepebucket.programmable_magic.network.wand.SpellReleasePacket;
 
@@ -43,7 +45,7 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
                     (button) -> {
                         var spells = this.menu.getSpellsInStorage();
                         if (!spells.isEmpty()) {
-                            ClientPacketDistributor.sendToServer(new SpellReleasePacket(spells));
+                            Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SpellReleasePacket(spells)));
                         }
                     },
                     supplier -> supplier.get()

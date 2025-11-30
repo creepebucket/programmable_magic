@@ -1,11 +1,12 @@
 package org.creepebucket.programmable_magic.events;
 
-import net.minecraft.world.item.Item;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+ 
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.creepebucket.programmable_magic.items.wand.BaseWand;
 import org.creepebucket.programmable_magic.network.wand.SpellReleasePacket;
@@ -49,7 +50,7 @@ public class WandLeftClickRelease {
             h.ifPresent(holder -> stacks.add(new ItemStack(holder)));
         }
 
-        ClientPacketDistributor.sendToServer(new SpellReleasePacket(stacks));
+        Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SpellReleasePacket(stacks)));
     }
 
     private static ItemStack getHeldWand(net.minecraft.world.entity.player.Player player) {

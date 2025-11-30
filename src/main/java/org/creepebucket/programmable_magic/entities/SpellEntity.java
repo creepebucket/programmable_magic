@@ -129,11 +129,11 @@ public class SpellEntity extends Entity {
             double offsetZ = (this.random.nextDouble() - 0.5) * 0.5;
             
             this.level().addParticle(
-                    ParticleTypes.ENCHANT,
+                    ParticleTypes.EFFECT,
                     this.getX() + offsetX,
                     this.getY() + offsetY,
                     this.getZ() + offsetZ,
-                    0.0, 0.05, 0.0
+                    0.0, 0.0, 0.0
             );
         }
     }
