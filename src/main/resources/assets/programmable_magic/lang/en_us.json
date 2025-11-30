@@ -87,5 +87,62 @@
   "tooltip.programmable_magic.debris_clay": "Excellent mana insulation; for basic magic parts.",
   "tooltip.programmable_magic.covered_rg_alloy_wire": "Insulated.",
   "tooltip.programmable_magic.rg_alloy_wand": "A beginner's first wand",
-  "tooltip.programmable_magic.hold_lalt": "Hold LALT for details"
+  "tooltip.programmable_magic.hold_lalt": "Hold LALT for details",
+
+  "item.programmable_magic.spell_display_apply_potion": "Spell: Apply Potion",
+  "item.programmable_magic.spell_display_projectile_attach": "Spell: Projectile Attach",
+
+  "tooltip.programmable_magic.spell.velocity.desc1": "Applies velocity to an entity.",
+  "tooltip.programmable_magic.spell.velocity.desc2": "Input the target entity and the velocity vector to add.",
+  "tooltip.programmable_magic.spell.velocity.desc3": "The vector length is the speed.",
+
+  "tooltip.programmable_magic.spell.apply_potion.desc1": "Applies potion effects to the target.",
+  "tooltip.programmable_magic.spell.apply_potion.desc2": "Input the target and a potion/splash/lingering/arrow stack; applies all effects.",
+
+  "tooltip.programmable_magic.spell.projectile_attach.desc1": "Deals damage on hit based on relative speed.",
+  "tooltip.programmable_magic.spell.projectile_attach.desc2": "Input a metal nugget (Tags.Items.NUGGETS). Activates a projectile mark; handled per tick on hit.",
+  "tooltip.programmable_magic.spell.projectile_attach.desc3": "Damage = relative speed × item count; cleared after a hit.",
+
+  "tooltip.programmable_magic.spell.explosion.desc1": "Creates an explosion at the current position.",
+  "tooltip.programmable_magic.spell.explosion.desc2": "Input a number as strength; cube root used as radius baseline.",
+  "tooltip.programmable_magic.spell.explosion.desc3": "Warning: very large values are expensive.",
+
+  "tooltip.programmable_magic.spell.delay.desc1": "Delays before continuing execution.",
+  "tooltip.programmable_magic.spell.delay.desc2": "Input duration (seconds).",
+  "tooltip.programmable_magic.spell.delay.desc3": "No other parameters.",
+
+  "tooltip.programmable_magic.spell.trigger_touch_ground.desc1": "Waits until the spell entity touches a block.",
+  "tooltip.programmable_magic.spell.trigger_touch_ground.desc2": "No input; checks within 0.3 blocks.",
+
+  "tooltip.programmable_magic.spell.trigger_touch_entity.desc1": "Waits until the spell entity touches an entity.",
+  "tooltip.programmable_magic.spell.trigger_touch_entity.desc2": "No input; checks within 0.3 blocks.",
+
+  "tooltip.programmable_magic.spell.number_digit.desc1": "A single digit used to build numbers.",
+  "tooltip.programmable_magic.spell.number_digit.desc2": "No input; concatenates with adjacent digits.",
+  "tooltip.programmable_magic.spell.number_digit.desc3": "Place multiple digits in sequence to form larger numbers.",
+
+  "tooltip.programmable_magic.spell.addition.desc1": "Adds two numbers or two vectors.",
+  "tooltip.programmable_magic.spell.addition.desc2": "Input two numbers or two vectors; returns the sum.",
+
+  "tooltip.programmable_magic.spell.subtraction.desc1": "Subtracts numbers or vectors.",
+  "tooltip.programmable_magic.spell.subtraction.desc2": "Input minuend and subtrahend, or two vectors; returns the difference.",
+
+  "tooltip.programmable_magic.spell.multiplication.desc1": "Multiplies numbers or scales a vector.",
+  "tooltip.programmable_magic.spell.multiplication.desc2": "Input number×number, vector×number, or number×vector.",
+  "tooltip.programmable_magic.spell.multiplication.desc3": "Vector scaling multiplies each component by the scalar.",
+
+  "tooltip.programmable_magic.spell.division.desc1": "Divides numbers or divides a vector by a number.",
+  "tooltip.programmable_magic.spell.division.desc2": "Input number÷number, vector÷number, or number÷vector.",
+
+  "tooltip.programmable_magic.spell.power.desc1": "Exponentiation.",
+  "tooltip.programmable_magic.spell.power.desc2": "Input base and exponent; returns base^exponent.",
+
+  "tooltip.programmable_magic.spell.paren.desc1": "Groups parts of an expression (parentheses).",
+  "tooltip.programmable_magic.spell.paren.desc2": "No input; use matching left and right parentheses.",
+
+  "tooltip.programmable_magic.spell.separator.desc1": "Separates expression segments.",
+  "tooltip.programmable_magic.spell.separator.desc2": "No input; only for separation and parameter collection.",
+
+  "tooltip.programmable_magic.spell.nearest_entity.desc1": "Gets the nearest entity around the spell entity.",
+  "tooltip.programmable_magic.spell.nearest_entity.desc2": "No input; searches within a range and returns the nearest."
 }

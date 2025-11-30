@@ -51,7 +51,11 @@ public class NumberDigitSpell extends BaseComputeModLogic{
 
     @Override
     public List<Component> getTooltip() {
-        return List.of();
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.number_digit.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.number_digit.desc2"),
+                Component.translatable("tooltip.programmable_magic.spell.number_digit.desc3")
+        );
     }
 
     @Override

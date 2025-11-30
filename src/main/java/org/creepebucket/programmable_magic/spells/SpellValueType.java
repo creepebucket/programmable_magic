@@ -10,6 +10,7 @@ public enum SpellValueType {
     MODIFIER("Modifier", ChatFormatting.LIGHT_PURPLE),
     SPELL("Spell", ChatFormatting.GREEN),
     ANY("Any", ChatFormatting.GRAY),
+    ITEM("Item", ChatFormatting.RED),
     EMPTY("", ChatFormatting.GRAY);
 
     private final String display;

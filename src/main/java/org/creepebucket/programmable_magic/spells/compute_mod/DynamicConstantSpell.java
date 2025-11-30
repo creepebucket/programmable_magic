@@ -146,7 +146,13 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return Map.of("successful", true, "type", ENTITY, "value", nearest);
         }
 
-        public List<Component> getTooltip() { return List.of(); }
+        @Override
+        public List<Component> getTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc2")
+            );
+        }
 
         public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(ENTITY)); }
     }

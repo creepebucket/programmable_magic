@@ -15,4 +15,7 @@ public class ModTagKeys {
 
     public static final TagKey<Item> SPELL = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell"));
     public static final TagKey<Item> SPELL_MOD = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "spell/modifier"));
+
+    // 金属粒标签：用于“弹丸附加”法术的参数校验
+    public static final TagKey<Item> METAL_PELLET = ItemTags.create(ResourceLocation.fromNamespaceAndPath(MODID, "pellet/metal"));
 }

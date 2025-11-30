@@ -22,7 +22,6 @@ public class VelocitySpell extends BaseBaseSpellLogic{
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 给予实体速度
         Entity target = (Entity) spellParams.get(0);
-
         target.push((Vec3) spellParams.get(1));
         target.hurtMarked = true;
 
@@ -36,7 +35,11 @@ public class VelocitySpell extends BaseBaseSpellLogic{
 
     @Override
     public List<Component> getTooltip() {
-        return List.of();
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.velocity.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.velocity.desc2"),
+                Component.translatable("tooltip.programmable_magic.spell.velocity.desc3")
+        );
     }
 
     @Override

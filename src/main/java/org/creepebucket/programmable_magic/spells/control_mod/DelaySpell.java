@@ -28,7 +28,11 @@ public class DelaySpell extends BaseControlModLogic{
 
     @Override
     public List<Component> getTooltip() {
-        return List.of();
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.delay.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.delay.desc2"),
+                Component.translatable("tooltip.programmable_magic.spell.delay.desc3")
+        );
     }
 
     @Override

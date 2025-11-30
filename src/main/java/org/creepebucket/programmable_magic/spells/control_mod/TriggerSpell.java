@@ -67,7 +67,10 @@ public abstract class TriggerSpell extends BaseControlModLogic{
 
         @Override
         public List<Component> getTooltip() {
-            return List.of();
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.trigger_touch_ground.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.trigger_touch_ground.desc2")
+            );
         }
     }
 
@@ -91,7 +94,10 @@ public abstract class TriggerSpell extends BaseControlModLogic{
 
         @Override
         public List<Component> getTooltip() {
-            return List.of();
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.trigger_touch_entity.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.trigger_touch_entity.desc2")
+            );
         }
     }
 }

@@ -41,7 +41,10 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
 
 
     public static class AdditionSpell extends MathOpreationsSpell {
-        public AdditionSpell() { super("compute_add", List.of(Component.translatable("spell.programmable_magic.addition"))); }
+        public AdditionSpell() { super("compute_add", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.addition.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.addition.desc2")
+        )); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
@@ -75,7 +78,10 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
     }
 
     public static class SubtractionSpell extends MathOpreationsSpell {
-        public SubtractionSpell() { super("compute_sub", List.of(Component.translatable("spell.programmable_magic.subtraction"))); }
+        public SubtractionSpell() { super("compute_sub", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.subtraction.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.subtraction.desc2")
+        )); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
@@ -109,7 +115,11 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
     }
 
     public static class MultiplicationSpell extends MathOpreationsSpell {
-        public MultiplicationSpell() { super("compute_mul", List.of(Component.translatable("spell.programmable_magic.multiplication"))); }
+        public MultiplicationSpell() { super("compute_mul", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.multiplication.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.multiplication.desc2"),
+                Component.translatable("tooltip.programmable_magic.spell.multiplication.desc3")
+        )); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
@@ -151,7 +161,10 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
     }
 
     public static class DivisionSpell extends MathOpreationsSpell {
-        public DivisionSpell() { super("compute_div", List.of(Component.translatable("spell.programmable_magic.division"))); }
+        public DivisionSpell() { super("compute_div", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.division.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.division.desc2")
+        )); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
@@ -193,7 +206,10 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
     }
 
     public static class PowerSpell extends MathOpreationsSpell {
-        public PowerSpell() { super("compute_pow", List.of(Component.translatable("spell.programmable_magic.power"))); }
+        public PowerSpell() { super("compute_pow", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.power.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.power.desc2")
+        )); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {

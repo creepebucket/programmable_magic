@@ -45,6 +45,9 @@
       { "from_top_left": [48, 304], "from_bottom_right": [63, 319], "target_img_path": "assets/programmable_magic/textures/item/spell/blink_spell.png" },
       { "from_top_left": [48, 320], "from_bottom_right": [63, 335], "target_img_path": "assets/programmable_magic/textures/item/spell/blink_entity.png" },
 
+      { "from_top_left": [48, 336], "from_bottom_right": [63, 351], "target_img_path": "assets/programmable_magic/textures/item/spell/apply_potion.png" },
+      { "from_top_left": [48, 352], "from_bottom_right": [63, 367], "target_img_path": "assets/programmable_magic/textures/item/spell/projectile_attach.png" },
+
       { "from_top_left": [144, 192], "from_bottom_right": [159, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png" },
       { "from_top_left": [144, 208], "from_bottom_right": [159, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/power_boost.png" },
       { "from_top_left": [384, 192], "from_bottom_right": [399, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png" },

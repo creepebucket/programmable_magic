@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.spells;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -68,7 +69,7 @@ public class SpellLogic {
             if (logic != null) {
                 spellSequence.addLast(logic);
             } else {
-                LOGGER.warn("无法为物品创建法术逻辑: {}", stack);
+                spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, stack));
             }
         }
     }

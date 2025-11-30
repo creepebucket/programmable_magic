@@ -63,6 +63,9 @@ public class SpellEntity extends Entity {
 
         if (this.level().isClientSide) { spawnParticles(); return; }
 
+        // 若已附加“弹丸附加”效果，则先进行严格命中检测并结算伤害（严格：沿速度向量扫掠）
+        handleProjectileAttachHit();
+
         // 应用速度（直接更新位置，不做碰撞解析以便穿过方块）
         this.setPos(this.getX() + this.getDeltaMovement().x, this.getY() + this.getDeltaMovement().y, this.getZ() + this.getDeltaMovement().z);
 
@@ -135,6 +138,43 @@ public class SpellEntity extends Entity {
                     this.getZ() + offsetZ,
                     0.0, 0.0, 0.0
             );
+        }
+    }
+
+    private void handleProjectileAttachHit() {
+        if (this.level().isClientSide) return;
+        if (this.spellData == null) return;
+        if (!this.spellData.hasCustomData("projectile_attach_active")) return;
+        var caster = this.caster;
+
+        // 前后位置（更新位置前，因此用当前 pos 与 pos + v）
+        var v = this.getDeltaMovement();
+        var start = this.position();
+        var end = start.add(v);
+
+        // 使用包围盒扫掠查找命中的最近实体
+        net.minecraft.world.phys.AABB pathBox = this.getBoundingBox().expandTowards(v).inflate(0.25);
+        java.util.List<net.minecraft.world.entity.Entity> list = this.level().getEntities(this, pathBox, e -> e instanceof net.minecraft.world.entity.LivingEntity && e != this && e != caster);
+        net.minecraft.world.entity.LivingEntity closest = null;
+        double bestDist = Double.MAX_VALUE;
+        for (net.minecraft.world.entity.Entity e : list) {
+            net.minecraft.world.phys.AABB box = e.getBoundingBox().inflate(0.1);
+            var clip = box.clip(start, end);
+            if (clip.isPresent()) {
+                double d = start.distanceTo(clip.get());
+                if (d < bestDist) { bestDist = d; closest = (net.minecraft.world.entity.LivingEntity) e; }
+            }
+        }
+
+        if (closest != null) {
+            // 相对速度
+            double speed = this.getDeltaMovement().subtract(closest.getDeltaMovement()).length();
+            float damage = (float) speed;
+            closest.hurt(closest.damageSources().playerAttack(caster), damage);
+
+            // 清除标记，避免多次命中重复结算
+            this.spellData.clearCustomData("projectile_attach_active");
+            this.spellData.clearCustomData("projectile_attach_item");
         }
     }
     

@@ -37,7 +37,10 @@ public class ParenSpell extends BaseComputeModLogic{
 
     @Override
     public List<Component> getTooltip() {
-        return List.of();
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.paren.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.paren.desc2")
+        );
     }
 
     @Override
@@ -116,4 +119,3 @@ public class ParenSpell extends BaseComputeModLogic{
         }
     }
 }
-

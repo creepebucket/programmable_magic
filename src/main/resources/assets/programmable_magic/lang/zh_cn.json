@@ -15,6 +15,8 @@
   "item.programmable_magic.spell_display_trigger_touch_ground": "法术：触地触发",
   "item.programmable_magic.spell_display_trigger_touch_entity": "法术：触实体触发",
   "item.programmable_magic.spell_display_explosion": "法术：爆炸",
+  "item.programmable_magic.spell_display_apply_potion": "法术：药水附加",
+  "item.programmable_magic.spell_display_projectile_attach": "法术：弹丸附加",
   "item.programmable_magic.spell_display_ignite": "法术：点燃",
   "item.programmable_magic.spell_display_glow": "法术：萤光",
   "item.programmable_magic.spell_display_paint_data": "法术：打印数据",
@@ -62,6 +64,60 @@
   "tooltip.programmable_magic.mana_cost_multiplier_by_expression": "耗魔乘以表达式结果",
   "tooltip.programmable_magic.trigger_touch_ground": "等待直到法术实体周围 0.3 格有方块",
   "tooltip.programmable_magic.trigger_touch_entity": "等待直到法术实体周围 0.3 格有实体",
+
+  "tooltip.programmable_magic.spell.delay.desc1": "用于延迟后再继续执行后续法术.",
+  "tooltip.programmable_magic.spell.delay.desc2": "输入延时时长(刻), 达到时长后继续.",
+  "tooltip.programmable_magic.spell.delay.desc3": "无需其他输入参数.",
+
+  "tooltip.programmable_magic.spell.trigger_touch_ground.desc1": "用于等待法术实体接触方块.",
+  "tooltip.programmable_magic.spell.trigger_touch_ground.desc2": "无需输入参数, 在周围 0.3 格内检测方块后继续.",
+
+  "tooltip.programmable_magic.spell.trigger_touch_entity.desc1": "用于等待法术实体触碰实体.",
+  "tooltip.programmable_magic.spell.trigger_touch_entity.desc2": "无需输入参数, 在周围 0.3 格内检测到实体后继续.",
+
+  "tooltip.programmable_magic.spell.number_digit.desc1": "用于构造数字的单个数字位.",
+  "tooltip.programmable_magic.spell.number_digit.desc2": "无需输入参数, 与相邻数字位按顺序拼接成完整数值.",
+  "tooltip.programmable_magic.spell.number_digit.desc3": "多个数字位连写可组成更大的数.",
+
+  "tooltip.programmable_magic.spell.addition.desc1": "用于将两个数值或两个向量相加.",
+  "tooltip.programmable_magic.spell.addition.desc2": "输入两个数值或两个向量, 返回相加结果.",
+
+  "tooltip.programmable_magic.spell.subtraction.desc1": "用于将两个数值或两个向量相减.",
+  "tooltip.programmable_magic.spell.subtraction.desc2": "输入被减数与减数, 或两个向量, 返回相减结果.",
+
+  "tooltip.programmable_magic.spell.multiplication.desc1": "用于相乘或向量数乘.",
+  "tooltip.programmable_magic.spell.multiplication.desc2": "输入数×数, 或向量×数, 或数×向量, 返回结果.",
+  "tooltip.programmable_magic.spell.multiplication.desc3": "向量数乘按分量分别乘以标量.",
+
+  "tooltip.programmable_magic.spell.division.desc1": "用于相除或向量数除.",
+  "tooltip.programmable_magic.spell.division.desc2": "输入数÷数, 或向量÷数, 或数÷向量, 返回结果.",
+
+  "tooltip.programmable_magic.spell.power.desc1": "用于幂运算.",
+  "tooltip.programmable_magic.spell.power.desc2": "输入底数与指数, 返回底数的指数次幂.",
+
+  "tooltip.programmable_magic.spell.paren.desc1": "用于在表达式中进行分组(括号).",
+  "tooltip.programmable_magic.spell.paren.desc2": "无需输入参数, 左右括号需配对使用.",
+
+  "tooltip.programmable_magic.spell.separator.desc1": "用于分隔表达式片段.",
+  "tooltip.programmable_magic.spell.separator.desc2": "无需输入参数, 仅用于语义分隔与参数收集.",
+
+  "tooltip.programmable_magic.spell.nearest_entity.desc1": "用于获取法术实体附近最近的实体.",
+  "tooltip.programmable_magic.spell.nearest_entity.desc2": "无需输入参数, 在一定范围内搜索并返回最近实体.",
+
+  "tooltip.programmable_magic.spell.velocity.desc1": "用于给予任意实体速度.",
+  "tooltip.programmable_magic.spell.velocity.desc2": "输入被影响的实体和你期望为该实体附加的速度向量, 为实体附加速度.",
+  "tooltip.programmable_magic.spell.velocity.desc3": "向量模长即为速度大小.",
+
+  "tooltip.programmable_magic.spell.apply_potion.desc1": "用于将药水效果附加到给定实体.",
+  "tooltip.programmable_magic.spell.apply_potion.desc2": "输入目标实体与一瓶药水/喷溅/滞留/药箭的物品栈, 应用其中的所有效果.",
+
+  "tooltip.programmable_magic.spell.projectile_attach.desc1": "用于在弹丸命中活体时按相对速度造成伤害.",
+  "tooltip.programmable_magic.spell.projectile_attach.desc2": "输入一个金属粒(Items.NUGGETS 标签任一项). 生效后为法术实体附加弹丸标记.",
+  "tooltip.programmable_magic.spell.projectile_attach.desc3": "伤害 = 相对速度; 命中一次后清除标记.",
+
+  "tooltip.programmable_magic.spell.explosion.desc1": "用于在当前位置产生爆炸.",
+  "tooltip.programmable_magic.spell.explosion.desc2": "输入一个数字作为强度, 以其立方根作为半径基准.",
+  "tooltip.programmable_magic.spell.explosion.desc3": "注意: 过大数值计算量极高, 谨慎使用.",
 
   "gui.programmable_magic.wand_title": "魔杖",
 

@@ -28,7 +28,10 @@ public class SpellSeperator extends BaseComputeModLogic{
 
     @Override
     public List<Component> getTooltip() {
-        return List.of();
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.separator.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.separator.desc2")
+        );
     }
 
     @Override
