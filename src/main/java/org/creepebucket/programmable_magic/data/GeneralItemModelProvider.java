@@ -41,7 +41,8 @@ public class GeneralItemModelProvider implements DataProvider {
                 "covered_rg_alloy_wire",
                 "small_cell_certidge",
                 "small_mana_cell",
-                "rg_alloy_wand"
+                "rg_alloy_wand",
+                "wand_item_placeholder"
         )) {
             // models/item/<name>.json
             JsonObject model = new JsonObject();

@@ -63,7 +63,10 @@ public class ModUtils {
     }
 
     public static boolean sendErrorMessageToPlayer(Component message, Player player) {
-        // TODO: 实际实现待接入玩家上下文
+        if (player instanceof ServerPlayer sp) {
+            sp.sendSystemMessage(message);
+            return true;
+        }
         return false;
     }
 }

@@ -40,15 +40,10 @@ public class WandLeftClickRelease {
 
         ItemStack wand = getHeldWand(player);
         if (wand.isEmpty() || !(wand.getItem() instanceof BaseWand)) return;
-        List<String> saved = wand.get(ModDataComponents.WAND_SPELLS_SMALL.get());
-        if (saved == null || saved.isEmpty()) return;
 
-        List<ItemStack> stacks = new ArrayList<>();
-        for (String key : saved) {
-            var rl = net.minecraft.resources.ResourceLocation.tryParse(key);
-            var h = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(rl);
-            h.ifPresent(holder -> stacks.add(new ItemStack(holder)));
-        }
+        // 仅读取完整 ItemStack 列表
+        List<ItemStack> stacks = wand.get(ModDataComponents.WAND_STACKS_SMALL.get());
+        if (stacks == null || stacks.isEmpty()) return;
 
         Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SpellReleasePacket(stacks)));
     }

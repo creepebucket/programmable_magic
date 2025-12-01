@@ -120,17 +120,15 @@ public class WandMenu extends AbstractContainerMenu {
         if (player == null) return;
         net.minecraft.world.item.ItemStack wand = getHeldWand(player);
         if (wand.isEmpty()) return;
-        java.util.List<String> saved = SMALL_MODE
-                ? wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_SMALL.get())
-                : wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_BIG.get());
-        if (saved == null || saved.isEmpty()) return;
+        java.util.List<net.minecraft.world.item.ItemStack> savedStacks = SMALL_MODE
+                ? wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_STACKS_SMALL.get())
+                : wand.get(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_STACKS_BIG.get());
+
         int idx = 0;
-        
-        for (String key : saved) {
+        if (savedStacks == null || savedStacks.isEmpty()) return;
+        for (net.minecraft.world.item.ItemStack st : savedStacks) {
             if (idx >= this.SLOTS) break;
-            net.minecraft.resources.ResourceLocation rl = net.minecraft.resources.ResourceLocation.tryParse(key);
-            var h = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(rl);
-            if (h.isPresent()) this.spellStorageInventory.setStackInSlot(idx++, new net.minecraft.world.item.ItemStack(h.get()));
+            this.spellStorageInventory.setStackInSlot(idx++, st.copy());
         }
     }
 
@@ -370,18 +368,15 @@ public class WandMenu extends AbstractContainerMenu {
         // 关闭菜单时，将存储槽保存回魔杖
         net.minecraft.world.item.ItemStack wand = getHeldWand(player);
         if (wand.isEmpty()) return;
-        java.util.List<String> out = new java.util.ArrayList<>();
+        java.util.List<net.minecraft.world.item.ItemStack> out = new java.util.ArrayList<>();
         for (int i = 0; i < this.spellStorageInventory.getSlots(); i++) {
             ItemStack st = this.spellStorageInventory.getStackInSlot(i);
-            if (!st.isEmpty() && st.is(org.creepebucket.programmable_magic.registries.ModTagKeys.SPELL)) {
-                var key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.getItem());
-                if (key != null) out.add(key.toString());
-            }
+            if (!st.isEmpty()) out.add(st.copy());
         }
         if (SMALL_MODE) {
-            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_SMALL.get(), out);
+            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_STACKS_SMALL.get(), out);
         } else {
-            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_SPELLS_BIG.get(), out);
+            wand.set(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_STACKS_BIG.get(), out);
         }
     }
 

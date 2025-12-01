@@ -67,6 +67,8 @@
       { "from_top_left": [208, 128], "from_bottom_right": [223, 143], "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png" },
       { "from_top_left": [288, 128], "from_bottom_right": [303, 143], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand.png" },
 
+      { "from_top_left": [96,160], "from_bottom_right": [111,175], "target_img_path": "assets/programmable_magic/textures/item/wand_item_placeholder.png" },
+
       { "from_top_left": [352, 128], "from_bottom_right": [367, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_empty.png" },
       { "from_top_left": [368, 128], "from_bottom_right": [383, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_burn.png" },
       { "from_top_left": [384, 128], "from_bottom_right": [399, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_blocked.png" },

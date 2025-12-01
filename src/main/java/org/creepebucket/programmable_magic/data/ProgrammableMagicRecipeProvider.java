@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.world.item.Items;
 import org.creepebucket.programmable_magic.registries.ModItems;
 
@@ -99,6 +100,10 @@ public class ProgrammableMagicRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_small_cell_shell", this.has(ModItems.SMALL_CELL_SHELL.get()))
                 .unlockedBy("has_small_cell_certidge", this.has(ModItems.SMALL_CELL_CERTIDGE.get()))
                 .save(this.output);
+
+        // 特殊合成：占位符 + 任意物品 → 绑定该物品的占位符
+        SpecialRecipeBuilder.special(org.creepebucket.programmable_magic.recipes.BindWandItemPlaceholderRecipe::new)
+                .save(this.output, "programmable_magic:bind_wand_item_placeholder");
     }
 
     // Runner：注册到 GatherDataEvent 使用

@@ -14,7 +14,7 @@ import org.creepebucket.programmable_magic.items.mana_cell.HugeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.ColossalManaCell;
 import org.creepebucket.programmable_magic.items.wand.TestWand;
 import org.creepebucket.programmable_magic.items.wand.BaseWand;
-import net.minecraft.world.item.Item;
+import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -92,6 +92,14 @@ public class ModItems {
 
     public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
             "rg_alloy_wand", registryName -> new BaseWand(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)), 0.00, 20))
+    ;
+
+    // 魔杖物品占位符
+    public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
+            "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
+                    .stacksTo(64)
+                    .component(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
+                    .setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
     // 方块物品

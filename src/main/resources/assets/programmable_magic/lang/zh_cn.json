@@ -143,5 +143,11 @@
   "tooltip.programmable_magic.debris_clay": "具有高超的魔力绝缘性能, 可用于初级魔法部件制作.",
   "tooltip.programmable_magic.covered_rg_alloy_wire": "已绝缘.",
   "tooltip.programmable_magic.rg_alloy_wand": "年轻人的第一把魔杖",
-  "tooltip.programmable_magic.hold_lalt": "按住 LALT 查看详情"
+  "tooltip.programmable_magic.hold_lalt": "按住 LALT 查看详情",
+
+  "message.programmable_magic.error.wand.param_search_out_of_bound": "法术参数搜索越界，请检查参数数量与顺序",
+  "message.programmable_magic.error.wand.internal_bug": "法术内部错误：参数收集异常",
+  "message.programmable_magic.error.wand.param_type_error": "参数类型不匹配：法术 %s 实际为 %s，需要 %s",
+  "message.programmable_magic.error.wand.placeholder_consume_failed": "占位符绑定物品不足，无法释放法术",
+  "error.programmable_magic.no_matching_paren": "表达式括号不匹配"
 }

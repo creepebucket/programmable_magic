@@ -8,6 +8,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.Programmable_magic;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,16 +29,22 @@ public class ModDataComponents {
                             ByteBufCodecs.DOUBLE
                     )));
 
-    // 魔杖内置法术清单（分大/小两套）：按物品注册名存储
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> WAND_SPELLS_BIG =
-            DATA_COMPONENTS.registerComponentType("wand_spells_big", builder -> builder
-                    .persistent(Codec.list(Codec.STRING))
-                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.STRING_UTF8)));
+    // 占位符绑定：存储被绑定物品的注册名（ResourceLocation.toString）
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> WAND_PLACEHOLDER_ITEM_ID =
+            DATA_COMPONENTS.registerComponentType("wand_placeholder_item_id", builder -> builder
+                    .persistent(Codec.STRING)
+                    .networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> WAND_SPELLS_SMALL =
-            DATA_COMPONENTS.registerComponentType("wand_spells_small", builder -> builder
-                    .persistent(Codec.list(Codec.STRING))
-                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ByteBufCodecs.STRING_UTF8)));
+    // 直接存储完整 ItemStack（含数据组件/自定义状态）
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_BIG =
+            DATA_COMPONENTS.registerComponentType("wand_stacks_big", builder -> builder
+                    .persistent(Codec.list(ItemStack.CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC)));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_SMALL =
+            DATA_COMPONENTS.registerComponentType("wand_stacks_small", builder -> builder
+                    .persistent(Codec.list(ItemStack.CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC)));
 
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }

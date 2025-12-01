@@ -22,6 +22,7 @@ public class Programmable_magic {
         ModCreativeTabs.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModDataComponents.register(modEventBus);
+        ModRecipeSerializers.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         SpellRegistry.registerSpells(modEventBus);
         ModEntityTypes.register(modEventBus);

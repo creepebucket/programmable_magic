@@ -1,10 +1,15 @@
 package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
+import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
 import org.slf4j.Logger;
@@ -12,8 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
 import static org.creepebucket.programmable_magic.spells.SpellUtils.getSeps;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
@@ -24,6 +29,7 @@ public class SpellLogic {
     private final Player player;
     private SpellSequence spellSequence;
     private SpellData spellData;
+    private List<ItemStack> pending; // 待从背包扣除的真实物品（由占位符绑定）
     
     public SpellLogic(List<ItemStack> spellStacks, Player player) {
         this.spellStacks = spellStacks;
@@ -37,6 +43,7 @@ public class SpellLogic {
         Vec3 playerPos = player.position().add(0, player.getEyeHeight(), 0);
         Vec3 lookDirection = player.getLookAngle();
         this.spellData = new SpellData(player, playerPos, lookDirection);
+        this.pending = new ArrayList<>();
         
         LOGGER.info(String.format("法术数据初始化完成 - 位置: (%.2f, %.2f, %.2f), 方向: (%.2f, %.2f, %.2f)",
                 playerPos.x, playerPos.y, playerPos.z, lookDirection.x, lookDirection.y, lookDirection.z));
@@ -53,9 +60,16 @@ public class SpellLogic {
         convertNumberDigitsToValues();
         // BUGFIX: 在法术序列之前加一个占位ValueLiteralSpell, 防止第一次简化序列的lastBoundarySpell.getNextSpell()未包含实际序列的第一个法术
         spellSequence.addFirst(new ValueLiteralSpell(SpellValueType.EMPTY, 0));
-        // 3. 创建法术实体
+        // 3. 在背包中删除 WandItemPlaceholder 绑定的物品
+        boolean r = consumePendingItemsFromInventory();
+        if (!r) {
+            // 未能按预期扣除物品
+            sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.placeholder_consume_failed"), player);
+            return;
+        }
+        // 4. 创建法术实体
         SpellEntity spellEntity = createSpellEntity();
-        // 4. 生成实体到世界
+        // 5. 生成实体到世界
         player.level().addFreshEntity(spellEntity);
     }
     
@@ -68,7 +82,15 @@ public class SpellLogic {
             SpellItemLogic logic = SpellRegistry.createSpellLogic(stack.getItem());
             if (logic != null) {
                 spellSequence.addLast(logic);
+            } else if (stack.getItem() instanceof WandItemPlaceholder){
+                // 源头已默认绑定 AIR；直接读取并解析绑定物品
+                String key = stack.get(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get());
+                ResourceLocation rl = ResourceLocation.tryParse(key);
+                ItemStack real = new ItemStack(BuiltInRegistries.ITEM.get(rl).get());
+                spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, real));
+                if (!real.isEmpty()) pending.add(real.copy());
             } else {
+                // 普通物品直接作为字面量值
                 spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, stack));
             }
         }
@@ -92,6 +114,31 @@ public class SpellLogic {
         for (SpellItemLogic sep : seps) {
             spellSequence.replaceSection(sep, sep, new SpellSequence());
         }
+    }
+
+    /**
+     * 从玩家背包中扣除由占位符绑定的真实物品（每个占位符扣 1 个）。
+     */
+    private boolean consumePendingItemsFromInventory() {
+        boolean flag = false;
+        boolean success = true;
+        var inv = player.getInventory();
+        for (ItemStack need : pending) {
+            Item targetItem = need.getItem();
+            int size = inv.getContainerSize();
+            flag = false;
+            for (int i = 0; i < size; i++) {
+                ItemStack cur = inv.getItem(i);
+                if (cur.isEmpty()) continue;
+                if (cur.is(targetItem)) {
+                    cur.shrink(1);
+                    if (cur.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
+                    flag = true;
+                }
+            }
+            if (!flag) success = false;
+        }
+        return success;
     }
 
     /**
