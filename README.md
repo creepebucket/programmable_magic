@@ -1,7 +1,5 @@
 # Programmable Magic
 
-认证一下开发者哈 我用creepebucket@qq.com给百科发了邮件 在readme说明一下
-
 > AI写的, 将就看吧, 比没有好
 
 [![Gradle Package](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml)
