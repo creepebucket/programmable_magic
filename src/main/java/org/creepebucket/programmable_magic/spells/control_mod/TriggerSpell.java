@@ -23,7 +23,7 @@ public abstract class TriggerSpell extends BaseControlModLogic{
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 触发器: 只有条件满足时才执行下一个法术
 
-        if (condition(player, data, spellSequence, modifiers, spellParams)) {
+        if (this.getPrevSpell() instanceof ConditionInverter ^ condition(player, data, spellSequence, modifiers, spellParams)) {
             return Map.of("successful", true);
         } else {
             return Map.of("successful", false);

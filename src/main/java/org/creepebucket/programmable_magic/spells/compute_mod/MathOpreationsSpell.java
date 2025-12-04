@@ -85,7 +85,11 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-            // 检查参数
+            // 一元负号: (Number) -> (Number)
+            if (spellParams.size() == 1 && spellParams.get(0) instanceof Double) {
+                return Map.of("successful", true, "type", NUMBER, "value", -((Double) spellParams.get(0)));
+            }
+            // 二元减法
             if (spellParams.get(0) instanceof Double) {
                 return Map.of("successful", true, "type", NUMBER, "value", (Double) spellParams.get(0) - (Double) spellParams.get(1));
             } else {
@@ -101,7 +105,8 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         public List<List<SpellValueType>> getNeededParamsType() {
             return List.of(
                     List.of(NUMBER, NUMBER),
-                    List.of(VECTOR3, VECTOR3)
+                    List.of(VECTOR3, VECTOR3),
+                    List.of(NUMBER)
             );
         }
 
@@ -109,7 +114,8 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         public List<List<SpellValueType>> getReturnParamsType() {
             return List.of(
                     List.of(NUMBER),
-                    List.of(VECTOR3)
+                    List.of(VECTOR3),
+                    List.of(NUMBER)
             );
         }
     }

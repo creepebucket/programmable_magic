@@ -10,12 +10,17 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
 import org.creepebucket.programmable_magic.registries.*;
 import org.creepebucket.programmable_magic.data.ModDataGenerators;
+import org.creepebucket.programmable_magic.mananet.NetworkNodeRegistrar;
+import org.creepebucket.programmable_magic.mananet.nodes.ExampleRadiGeneratorNode;
 
 @Mod(Programmable_magic.MODID)
 public class Programmable_magic {
     public static final String MODID = "programmable_magic";
 
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
+
+        // 注册示例网络节点（在注册表挂载前收集条目）
+        NetworkNodeRegistrar.register(new ExampleRadiGeneratorNode());
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);

@@ -16,7 +16,10 @@ import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ApplyPotionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ProjectileAttachSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.PlaceBlockSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
+import org.creepebucket.programmable_magic.spells.compute_mod.EntityVelocitySpell;
+import org.creepebucket.programmable_magic.spells.control_mod.ConditionInverter;
 import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
 import org.creepebucket.programmable_magic.spells.control_mod.TriggerSpell;
 
@@ -76,14 +79,19 @@ public class SpellRegistry {
         registerSpell(MathOpreationsSpell.DivisionSpell::new);
         registerSpell(MathOpreationsSpell.PowerSpell::new);
 
+        // COMPUTE_MOD: 一般运算
+        registerSpell(EntityVelocitySpell::new);
+
         // 基础法术
         registerSpell(ExplosionSpell::new);
         registerSpell(VelocitySpell::new);
         registerSpell(ApplyPotionSpell::new);
         registerSpell(ProjectileAttachSpell::new);
+        registerSpell(PlaceBlockSpell::new);
 
         // CONTROL_MOD
         registerSpell(DelaySpell::new);
+        registerSpell(ConditionInverter::new);
 
         // CONTROL_MOD: 触发器
         registerSpell(TriggerSpell.TriggerTouchGround::new);

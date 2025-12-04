@@ -207,6 +207,12 @@ public final class SpellUtils {
                                 ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
 
                         seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
+                    } else if (operator instanceof MathOpreationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
+                        // 一元减号：仅右侧存在数字时，将当前运算符与右值折叠
+
+                        // TODO: 这里的特判并不好, 应该复用下面的处理方法
+                        Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
+                        seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
                     }
 
                     current = nextAfter;
@@ -229,20 +235,57 @@ public final class SpellUtils {
             SpellItemLogic L = spell;
             SpellItemLogic R = spell;
 
-            if (!Objects.equals(spell.getNeededParamsType().get(0), List.of(SpellValueType.EMPTY))) { // EMPTY特判
-                for (int i = 0; i < spell.getNeededParamsType().get(0).size() - spell.RightParamsOffset; i++) {
-                    L = L.getPrevSpell();
+            // 根据实际匹配到的重载，计算需要替换的区间
+            List<List<SpellValueType>> overloads = spell.getNeededParamsType();
+            if (!(overloads.isEmpty() || Objects.equals(overloads.get(0), List.of(SpellValueType.EMPTY)))) {
+                int matchedLeft = -1;
+                int matchedRight = -1;
+
+                for (List<SpellValueType> types : overloads) {
+                    if (Objects.equals(types, List.of(SpellValueType.EMPTY))) continue;
+
+                    int total = types.size();
+                    int right = Math.max(0, Math.min(spell.RightParamsOffset, total));
+                    int left = total - right;
+
+                    boolean ok = true;
+
+                    // 校验左侧参数类型（从远到近）
+                    SpellItemLogic p = spell;
+                    for (int i = 0; i < left; i++) { p = (p == null) ? null : p.getPrevSpell(); }
+                    for (int i = 0; i < left; i++) {
+                        if (!(p instanceof ValueLiteralSpell v)) { ok = false; break; }
+                        SpellValueType need = types.get(i);
+                        if (!v.VALUE_TYPE.equals(need) && !need.equals(SpellValueType.ANY)) { ok = false; break; }
+                        p = p.getNextSpell();
+                    }
+
+                    if (!ok) continue;
+
+                    // 校验右侧参数类型（从近到远）
+                    SpellItemLogic n = spell.getNextSpell();
+                    for (int j = 0; j < right; j++) {
+                        if (!(n instanceof ValueLiteralSpell v)) { ok = false; break; }
+                        SpellValueType need = types.get(left + j);
+                        if (!v.VALUE_TYPE.equals(need) && !need.equals(SpellValueType.ANY)) { ok = false; break; }
+                        n = n.getNextSpell();
+                    }
+
+                    if (!ok) continue;
+
+                    matchedLeft = left;
+                    matchedRight = right;
+                    break;
                 }
 
-                for (int i = 0; i < spell.RightParamsOffset; i++) {
-                    R = R.getNextSpell();
+                if (matchedLeft >= 0) {
+                    for (int i = 0; i < matchedLeft; i++) { L = L.getPrevSpell(); }
+                    for (int i = 0; i < matchedRight; i++) { R = R.getNextSpell(); }
                 }
             }
 
             seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
             flag = true;
-
-            // TODO: 检查法术参数数量不同的重载
         }
 
 

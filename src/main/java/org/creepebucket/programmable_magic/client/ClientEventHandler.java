@@ -18,5 +18,6 @@ public class ClientEventHandler {
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
+        // 无 BER 批量注册：如需调试渲染请在自定义处注册
     }
 }

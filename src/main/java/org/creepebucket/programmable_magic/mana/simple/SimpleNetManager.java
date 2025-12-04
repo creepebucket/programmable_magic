@@ -280,12 +280,11 @@ public final class SimpleNetManager {
 
     /**
      * 应用 netId 到世界中的方块实体。
-     * 说明：直接调用 ManaCableBlockEntity#setSimpleNetId(long)，不做旧代码兼容。
      */
     private void applyNetId(BlockPos pos, long netId) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof org.creepebucket.programmable_magic.blockentity.ManaCableBlockEntity cable) {
-            cable.setSimpleNetId(netId);
+        if (be instanceof org.creepebucket.programmable_magic.mananet.AbstractNetNodeBlockEntity node) {
+            node.setSimpleNetId(netId);
         }
     }
 

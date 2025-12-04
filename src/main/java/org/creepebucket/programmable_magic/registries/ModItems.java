@@ -52,14 +52,6 @@ public class ModItems {
                     .setId(ResourceKey.create(Registries.ITEM, registryName)))
     );
 
-    // 线缆方块物品，便于测试与发布
-    public static final DeferredItem<BlockItem> MANA_CABLE_ITEM = ITEMS.register(
-            "mana_cable", registryName -> new BlockItem(
-                    ModBlocks.MANA_CABLE.get(),
-                    new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))
-            )
-    );
-
     // 通用材料与工具
     public static final DeferredItem<Item> PURE_REDSTONE_DUST = ITEMS.register(
             "pure_redstone_dust", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
@@ -91,7 +83,7 @@ public class ModItems {
     ;
 
     public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
-            "rg_alloy_wand", registryName -> new BaseWand(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)), 0.00, 20))
+            "rg_alloy_wand", registryName -> new BaseWand(new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)), 0.00, 25))
     ;
 
     // 魔杖物品占位符

@@ -42,6 +42,7 @@
   "item.programmable_magic.spell_display_compute_caster_pos": "法术：施法者位置",
   "item.programmable_magic.spell_display_compute_spell_pos": "法术：法术实体位置",
   "item.programmable_magic.spell_display_compute_spell": "法术：法术实体",
+  "item.programmable_magic.spell_display_compute_spell_entity": "法术：法术实体",
   "item.programmable_magic.spell_display_compute_view_vec": "法术：视角向量",
   "item.programmable_magic.spell_display_compute_unit_x": "法术：X 轴单位向量",
   "item.programmable_magic.spell_display_compute_unit_y": "法术：Y 轴单位向量",
@@ -49,6 +50,9 @@
   "item.programmable_magic.spell_display_compute_set_storage": "法术：写入存储",
   "item.programmable_magic.spell_display_compute_get_storage": "法术：读取存储",
   "item.programmable_magic.spell_display_compute_vec_xyz": "法术：构建向量",
+  "item.programmable_magic.spell_display_compute_entity_velocity": "法术：实体速度",
+  "item.programmable_magic.spell_display_condition_inverter": "法术：条件取反",
+  "item.programmable_magic.spell_display_place_block": "法术：放置方块",
 
   "tooltip.programmable_magic.mana_stored": "魔力存储：",
   "tooltip.programmable_magic.mana_radi": "辐射：",
@@ -103,6 +107,33 @@
 
   "tooltip.programmable_magic.spell.nearest_entity.desc1": "用于获取法术实体附近最近的实体.",
   "tooltip.programmable_magic.spell.nearest_entity.desc2": "无需输入参数, 在一定范围内搜索并返回最近实体.",
+
+  "tooltip.programmable_magic.spell.dynamic_constant.desc1": "动态常量：从当前环境读取数据",
+  "tooltip.programmable_magic.spell.dynamic_constant.desc2": "无需输入参数，直接产生一个可参与表达式的值",
+
+  "tooltip.programmable_magic.spell.view_vector.desc1": "返回施法者的视线单位向量",
+  "tooltip.programmable_magic.spell.view_vector.desc2": "方向指向玩家当前注视的方向",
+
+  "tooltip.programmable_magic.spell.caster_pos.desc1": "返回施法者的位置（含眼高）",
+  "tooltip.programmable_magic.spell.caster_pos.desc2": "可用于构造位移、发射方向等",
+
+  "tooltip.programmable_magic.spell.caster_entity.desc1": "返回施法者实体",
+  "tooltip.programmable_magic.spell.caster_entity.desc2": "配合同类法术可查询其属性",
+
+  "tooltip.programmable_magic.spell.spell_pos.desc1": "返回法术实体当前位置",
+  "tooltip.programmable_magic.spell.spell_pos.desc2": "常用于以弹丸位置为基准的计算",
+
+  "tooltip.programmable_magic.spell.spell_entity.desc1": "返回法术实体本体",
+  "tooltip.programmable_magic.spell.spell_entity.desc2": "可用于查询速度、位置等",
+
+  "tooltip.programmable_magic.spell.entity_velocity.desc1": "获取实体的速度向量（方向与大小）",
+  "tooltip.programmable_magic.spell.entity_velocity.desc2": "输入一个实体，返回其当前速度（单位方块/刻）",
+
+  "tooltip.programmable_magic.spell.place_block.desc1": "在法术实体当前位置放置一个方块",
+  "tooltip.programmable_magic.spell.place_block.desc2": "输入一个方块物品栈，使用其默认状态进行放置",
+
+  "tooltip.programmable_magic.spell.condition_inverter.desc1": "条件修饰：将随后的条件结果取反",
+  "tooltip.programmable_magic.spell.condition_inverter.desc2": "无需输入，将其置于基础/控制法术左侧作为修饰",
 
   "tooltip.programmable_magic.spell.velocity.desc1": "用于给予任意实体速度.",
   "tooltip.programmable_magic.spell.velocity.desc2": "输入被影响的实体和你期望为该实体附加的速度向量, 为实体附加速度.",

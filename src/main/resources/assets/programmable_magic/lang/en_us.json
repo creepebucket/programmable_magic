@@ -40,6 +40,7 @@
   "item.programmable_magic.spell_display_compute_caster_pos": "Spell: Caster Position",
   "item.programmable_magic.spell_display_compute_spell_pos": "Spell: Spell Entity Position",
   "item.programmable_magic.spell_display_compute_spell": "Spell: Spell Entity",
+  "item.programmable_magic.spell_display_compute_spell_entity": "Spell: Spell Entity",
   "item.programmable_magic.spell_display_compute_view_vec": "Spell: View Vector",
   "item.programmable_magic.spell_display_compute_unit_x": "Spell: Unit Vector X",
   "item.programmable_magic.spell_display_compute_unit_y": "Spell: Unit Vector Y",
@@ -47,6 +48,9 @@
   "item.programmable_magic.spell_display_compute_set_storage": "Spell: Set Storage",
   "item.programmable_magic.spell_display_compute_get_storage": "Spell: Get Storage",
   "item.programmable_magic.spell_display_compute_vec_xyz": "Spell: Build Vector",
+  "item.programmable_magic.spell_display_compute_entity_velocity": "Spell: Entity Velocity",
+  "item.programmable_magic.spell_display_condition_inverter": "Spell: Condition Inverter",
+  "item.programmable_magic.spell_display_place_block": "Spell: Place Block",
 
   "tooltip.programmable_magic.mana_stored": "Mana Stored:",
   "tooltip.programmable_magic.mana_radi": "Radiation:",
@@ -144,5 +148,32 @@
   "tooltip.programmable_magic.spell.separator.desc2": "No input; only for separation and parameter collection.",
 
   "tooltip.programmable_magic.spell.nearest_entity.desc1": "Gets the nearest entity around the spell entity.",
-  "tooltip.programmable_magic.spell.nearest_entity.desc2": "No input; searches within a range and returns the nearest."
+  "tooltip.programmable_magic.spell.nearest_entity.desc2": "No input; searches within a range and returns the nearest.",
+
+  "tooltip.programmable_magic.spell.dynamic_constant.desc1": "Dynamic constant: reads data from the environment",
+  "tooltip.programmable_magic.spell.dynamic_constant.desc2": "No input; directly produces a value for expressions",
+
+  "tooltip.programmable_magic.spell.view_vector.desc1": "Returns the caster's view unit vector",
+  "tooltip.programmable_magic.spell.view_vector.desc2": "Points toward where the player is looking",
+
+  "tooltip.programmable_magic.spell.caster_pos.desc1": "Returns the caster position (with eye height)",
+  "tooltip.programmable_magic.spell.caster_pos.desc2": "Useful for building offsets or launch vectors",
+
+  "tooltip.programmable_magic.spell.caster_entity.desc1": "Returns the caster entity",
+  "tooltip.programmable_magic.spell.caster_entity.desc2": "Combine with other spells to query attributes",
+
+  "tooltip.programmable_magic.spell.spell_pos.desc1": "Returns the spell entity position",
+  "tooltip.programmable_magic.spell.spell_pos.desc2": "Useful when computing from projectile position",
+
+  "tooltip.programmable_magic.spell.spell_entity.desc1": "Returns the spell entity",
+  "tooltip.programmable_magic.spell.spell_entity.desc2": "Use to query its velocity, position, etc.",
+
+  "tooltip.programmable_magic.spell.entity_velocity.desc1": "Gets the entity's velocity vector (direction and magnitude)",
+  "tooltip.programmable_magic.spell.entity_velocity.desc2": "Input an entity; returns its current velocity (blocks/tick)",
+
+  "tooltip.programmable_magic.spell.place_block.desc1": "Places a block at the spell entity's current position",
+  "tooltip.programmable_magic.spell.place_block.desc2": "Input a block item stack; uses its default state",
+
+  "tooltip.programmable_magic.spell.condition_inverter.desc1": "Condition modifier: invert subsequent condition results",
+  "tooltip.programmable_magic.spell.condition_inverter.desc2": "No input; place left of a base/control spell as a modifier"
 }

@@ -29,7 +29,24 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     @Override
-    public void calculateBaseMana(SpellData data) {
+    public void calculateBaseMana(SpellData data) { }
+
+    // 通用提示：动态常量
+    protected static List<Component> baseDynamicTooltip() {
+        return List.of(
+                Component.translatable("tooltip.programmable_magic.spell.dynamic_constant.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.dynamic_constant.desc2")
+        );
+    }
+
+    // 子类专属说明，默认空
+    protected List<Component> getSpecificTooltip() { return List.of(); }
+
+    @Override
+    public List<Component> getTooltip() {
+        var tip = new java.util.ArrayList<Component>(baseDynamicTooltip());
+        tip.addAll(getSpecificTooltip());
+        return tip;
     }
 
     public static class ViewVectorSpell extends DynamicConstantSpell {
@@ -42,8 +59,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return Map.of("successful", true, "type", VECTOR3, "value", viewDirection);
         }
 
-        public List<Component> getTooltip() {
-            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_view_vec"));
+        protected List<Component> getSpecificTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.view_vector.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.view_vector.desc2")
+            );
         }
 
         public List<List<SpellValueType>> getReturnParamsType() {
@@ -65,8 +85,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return List.of(List.of(VECTOR3));
         }
 
-        public List<Component> getTooltip() {
-            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_caster_pos"));
+        protected List<Component> getSpecificTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.caster_pos.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.caster_pos.desc2")
+            );
         }
     }
 
@@ -79,8 +102,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return Map.of("successful", true, "type", ENTITY, "value", player);
         }
 
-        public List<Component> getTooltip() {
-            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_caster"));
+        protected List<Component> getSpecificTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.caster_entity.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.caster_entity.desc2")
+            );
         }
 
         public List<List<SpellValueType>> getReturnParamsType() {
@@ -98,8 +124,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return Map.of("successful", true, "type", VECTOR3, "value", pos);
         }
 
-        public List<Component> getTooltip() {
-            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_spell_pos"));
+        protected List<Component> getSpecificTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.spell_pos.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.spell_pos.desc2")
+            );
         }
 
         public List<List<SpellValueType>> getReturnParamsType() {
@@ -117,8 +146,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
             return Map.of("successful", true, "type", ENTITY, "value", self);
         }
 
-        public List<Component> getTooltip() {
-            return List.of(Component.translatable("item.programmable_magic.spell_display_compute_spell"));
+        protected List<Component> getSpecificTooltip() {
+            return List.of(
+                    Component.translatable("tooltip.programmable_magic.spell.spell_entity.desc1"),
+                    Component.translatable("tooltip.programmable_magic.spell.spell_entity.desc2")
+            );
         }
 
         public List<List<SpellValueType>> getReturnParamsType() {
@@ -147,7 +179,7 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
         }
 
         @Override
-        public List<Component> getTooltip() {
+        protected List<Component> getSpecificTooltip() {
             return List.of(
                     Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc1"),
                     Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc2")
