@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.spells.control_mod;
+package org.creepebucket.programmable_magic.spells.adjust_mod;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -11,11 +11,12 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
 
 import java.util.List;
 import java.util.Map;
 
-public abstract class TriggerSpell extends BaseControlModLogic{
+public abstract class TriggerSpell extends BaseAdjustModLogic {
 
     public abstract boolean condition(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
 

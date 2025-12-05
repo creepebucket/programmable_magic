@@ -16,6 +16,7 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
     public String REGISTRY_NAME;
     public List<Component> TOOLTIP;
     public Object VALUE;
+    public SpellType spellType = SpellType.COMPUTE_MOD;
 
     public ValueLiteralSpell(SpellValueType valueType, Object value) {
         this(valueType, "internal_value", value, List.of());
@@ -26,6 +27,19 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
         VALUE = value;
         REGISTRY_NAME = registryName;
         TOOLTIP = tooltip;
+    }
+
+    public ValueLiteralSpell(SpellValueType valueType, String registryName, Object value, List<Component> tooltip, SpellType spellType) {
+        VALUE_TYPE = valueType;
+        VALUE = value;
+        REGISTRY_NAME = registryName;
+        TOOLTIP = tooltip;
+        this.spellType = spellType;
+    }
+
+    @Override
+    public SpellType getSpellType() {
+        return spellType;
     }
 
     @Override

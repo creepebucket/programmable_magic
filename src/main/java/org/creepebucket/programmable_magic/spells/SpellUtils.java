@@ -9,6 +9,7 @@ import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
+import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,49 +69,87 @@ public final class SpellUtils {
 
         List<List<SpellValueType>> neededParamsType = currentSpell.getNeededParamsType();
 
-        // 对于每个法术的重载, 都需要尝试匹配 FUCK
-        for (int k = 0; k < neededParamsType.size(); k++ ) {
-            // 空参数特判
-            if (Objects.equals(neededParamsType.get(k), List.of(SpellValueType.EMPTY))) { continue; }
+        // 按重载顺序逐一尝试，命中一个即采用并停止
+        List<Object> matchedParams = null;
+        boolean matched = false;
+        ValueLiteralSpell firstMismatchV = null;
+        SpellValueType firstNeededType = null;
+        boolean seenOutOfBound = false;
+        boolean seenNonLiteral = false;
 
-            int total = neededParamsType.get(k).size();
+        // 无重载定义，视为无需参数
+        if (neededParamsType == null || neededParamsType.isEmpty()) {
+            matched = true;
+            matchedParams = List.of();
+        }
+
+        // 对于每个法术的重载, 都需要尝试匹配 FUCK
+        for (int k = 0; !matched && k < neededParamsType.size(); k++) {
+            List<SpellValueType> types = neededParamsType.get(k);
+
+            // 空参数重载：直接命中
+            if (Objects.equals(types, List.of(SpellValueType.EMPTY))) {
+                matchedParams = List.of();
+                matched = true;
+                break;
+            }
+
+            int total = types.size();
             int right = Math.max(0, Math.min(currentSpell.RightParamsOffset, total));
             int left = total - right;
 
-            // 先从左侧收集参数（远端到近端的顺序，确保与 neededParamsType 对齐）
+            boolean ok = true;
+            List<Object> attemptParams = new ArrayList<>();
+
+            // 先从左侧收集参数（远端到近端）
             if (left > 0) {
                 SpellItemLogic p = currentSpell;
-                // 移动到左侧最远那个参数位置
+                for (int i = 0; i < left; i++) { p = (p == null) ? null : p.getPrevSpell(); }
                 for (int i = 0; i < left; i++) {
-                    p = (p == null) ? null : p.getPrevSpell();
-                }
-                for (int i = 0; i < left; i++) {
-                    if (p == null) return paramOutOfBound(caster, currentSpell);
-                    if (!(p instanceof ValueLiteralSpell v)) return paramTypeError(caster, currentSpell);
-                    Object neededType = neededParamsType.get(k).get(i);
-                    if (!v.VALUE_TYPE.equals(neededType) && !neededType.equals(SpellValueType.ANY)) {
-                        return paramTypeMismatch(caster, currentSpell, v, (SpellValueType) neededType);
+                    if (p == null) { ok = false; seenOutOfBound = true; break; }
+                    if (!(p instanceof ValueLiteralSpell v)) { ok = false; seenNonLiteral = true; break; }
+                    SpellValueType need = types.get(i);
+                    if (!v.VALUE_TYPE.equals(need) && !need.equals(SpellValueType.ANY)) {
+                        if (firstMismatchV == null) { firstMismatchV = v; firstNeededType = need; }
+                        ok = false; break;
                     }
-                    spellParams.add(v.VALUE);
-                    p = p.getNextSpell(); // 逐个向右靠近当前法术
+                    attemptParams.add(v.VALUE);
+                    p = p.getNextSpell();
                 }
             }
 
-            // 再从右侧收集参数（从近到远，追加到末尾）
-            if (right > 0) {
+            // 再从右侧收集参数（从近到远）
+            if (ok && right > 0) {
                 SpellItemLogic n = currentSpell.getNextSpell();
                 for (int j = 0; j < right; j++) {
-                    if (n == null) return paramOutOfBound(caster, currentSpell);
-                    if (!(n instanceof ValueLiteralSpell v)) return paramTypeError(caster, currentSpell);
-                    Object neededType = neededParamsType.get(k).get(left + j);
-                    if (!v.VALUE_TYPE.equals(neededType) && !neededType.equals(SpellValueType.ANY)) {
-                        return paramTypeMismatch(caster, currentSpell, v, (SpellValueType) neededType);
+                    if (n == null) { ok = false; seenOutOfBound = true; break; }
+                    if (!(n instanceof ValueLiteralSpell v)) { ok = false; seenNonLiteral = true; break; }
+                    SpellValueType need = types.get(left + j);
+                    if (!v.VALUE_TYPE.equals(need) && !need.equals(SpellValueType.ANY)) {
+                        if (firstMismatchV == null) { firstMismatchV = v; firstNeededType = need; }
+                        ok = false; break;
                     }
-                    spellParams.add(v.VALUE);
+                    attemptParams.add(v.VALUE);
                     n = n.getNextSpell();
                 }
             }
+
+            if (ok) {
+                matchedParams = attemptParams;
+                matched = true;
+                break;
+            }
         }
+
+        if (!matched) {
+            if (seenOutOfBound) return paramOutOfBound(caster, currentSpell);
+            if (firstMismatchV != null && firstNeededType != null) return paramTypeMismatch(caster, currentSpell, firstMismatchV, firstNeededType);
+            if (seenNonLiteral) return paramTypeError(caster, currentSpell);
+            return paramTypeError(caster, currentSpell);
+        }
+
+        // 使用匹配到的参数执行
+        spellParams = matchedParams;
 
         Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
 
@@ -183,12 +222,14 @@ public final class SpellUtils {
         }
 
         // 再按计算顺序进行计算
-        final List<MathOpreationsSpell> ORDER = List.of(
+        final List<SpellItemLogic> ORDER = List.of(
                 new MathOpreationsSpell.PowerSpell(),
                 new MathOpreationsSpell.MultiplicationSpell(),
                 new MathOpreationsSpell.DivisionSpell(),
                 new MathOpreationsSpell.AdditionSpell(),
-                new MathOpreationsSpell.SubtractionSpell()
+                new MathOpreationsSpell.SubtractionSpell(),
+                new LogicalOperationsSpell.AndSpell(),
+                new LogicalOperationsSpell.OrSpell()
         );
 
         for (SpellItemLogic operator : ORDER) {
@@ -208,8 +249,6 @@ public final class SpellUtils {
 
                         seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
                     } else if (operator instanceof MathOpreationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
-                        // 一元减号：仅右侧存在数字时，将当前运算符与右值折叠
-
                         // TODO: 这里的特判并不好, 应该复用下面的处理方法
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
                         seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
@@ -226,7 +265,17 @@ public final class SpellUtils {
         // 遍历每个法术, 执行剩下的COMPUTE_MOD
 
         for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
-            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD) || spell instanceof ValueLiteralSpell || spell instanceof MathOpreationsSpell) continue;
+            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD || spell instanceof LogicalOperationsSpell) || spell instanceof ValueLiteralSpell || spell instanceof MathOpreationsSpell) continue;
+
+            if ((spell instanceof LogicalOperationsSpell.EqualSpell
+                    || spell instanceof LogicalOperationsSpell.NotEqualSpell
+                    || spell instanceof LogicalOperationsSpell.GreaterSpell
+                    || spell instanceof LogicalOperationsSpell.GreaterEqualSpell
+                    || spell instanceof LogicalOperationsSpell.LessSpell
+                    || spell instanceof LogicalOperationsSpell.LessEqualSpell
+                    || spell instanceof LogicalOperationsSpell.AndSpell
+                    || spell instanceof LogicalOperationsSpell.OrSpell)
+                    && (!(spell.getPrevSpell() instanceof ValueLiteralSpell) || !(spell.getNextSpell() instanceof ValueLiteralSpell))) continue;
 
             var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell);
             if (!step.successful) continue;
@@ -316,4 +365,9 @@ public final class SpellUtils {
         }
         return pairs;
     }
+
+    public static boolean isExecutable(SpellItemLogic currentSpell) { return
+            !(currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
+            || currentSpell instanceof LogicalOperationsSpell
+            || currentSpell instanceof ValueLiteralSpell); }
 }

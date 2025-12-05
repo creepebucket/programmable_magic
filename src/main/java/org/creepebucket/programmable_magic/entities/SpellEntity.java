@@ -19,8 +19,13 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
+import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.creepebucket.programmable_magic.spells.SpellUtils.isExecutable;
 
 public class SpellEntity extends Entity {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
@@ -78,7 +83,8 @@ public class SpellEntity extends Entity {
             return;
         }
 
-        if (currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD && currentSpell.getNextSpell() != null) {
+        if (!isExecutable(currentSpell)) {
+
             currentSpell = currentSpell.getNextSpell();
             this.tick(); // 递归执行下一个法术
             return;
@@ -102,12 +108,16 @@ public class SpellEntity extends Entity {
         // 如果法术设置了延时, 则设置
         if (step.delayTicks > 0) { delayTicks = step.delayTicks; }
 
+        currentSpell = currentSpell.getNextSpell();
+
+        // 如果法术重置了当前法术指针，则设置指针
+        if (step.result.containsKey("current_spell")) { currentSpell = (SpellItemLogic) step.result.get("current_spell"); }
+
         // 如果法术执行成功，则进入下一法术
         if (!step.successful) {
             return;
         }
 
-        currentSpell = currentSpell.getNextSpell();
         this.tick();
     }
 
@@ -189,6 +199,7 @@ public class SpellEntity extends Entity {
     // 将上一个边界后至当前边界前的表达式区间抽出并简化
     private void simplifyPendingExpressions(SpellItemLogic boundary) {
         SpellItemLogic start = lastBoundarySpell.getNextSpell();
+        while (start instanceof ParenSpell) { lastBoundarySpell = start; start = start.getNextSpell(); }
         SpellItemLogic end = boundary.getPrevSpell();
         if (start == null || end == null || start == boundary) return; // 空区间或起点即边界，直接跳过
         SpellSequence slice = cloneRange(start, end);

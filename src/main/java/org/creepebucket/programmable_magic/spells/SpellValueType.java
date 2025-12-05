@@ -11,6 +11,7 @@ public enum SpellValueType {
     SPELL("Spell", ChatFormatting.GREEN),
     ANY("Any", ChatFormatting.GRAY),
     ITEM("Item", ChatFormatting.RED),
+    BOOLEAN("Boolean", ChatFormatting.BLUE),
     EMPTY("", ChatFormatting.GRAY);
 
     private final String display;

@@ -14,14 +14,16 @@ import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
+import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ApplyPotionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ProjectileAttachSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.PlaceBlockSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
 import org.creepebucket.programmable_magic.spells.compute_mod.EntityVelocitySpell;
-import org.creepebucket.programmable_magic.spells.control_mod.ConditionInverter;
-import org.creepebucket.programmable_magic.spells.control_mod.DelaySpell;
-import org.creepebucket.programmable_magic.spells.control_mod.TriggerSpell;
+import org.creepebucket.programmable_magic.spells.adjust_mod.ConditionInverter;
+import org.creepebucket.programmable_magic.spells.adjust_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.adjust_mod.TriggerSpell;
+import org.creepebucket.programmable_magic.spells.control_mod.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -88,14 +90,43 @@ public class SpellRegistry {
         registerSpell(ApplyPotionSpell::new);
         registerSpell(ProjectileAttachSpell::new);
         registerSpell(PlaceBlockSpell::new);
+        registerSpell(PaintDataSpell::new);
 
-        // CONTROL_MOD
+        // ADJUST_MOD
         registerSpell(DelaySpell::new);
         registerSpell(ConditionInverter::new);
-
-        // CONTROL_MOD: 触发器
         registerSpell(TriggerSpell.TriggerTouchGround::new);
         registerSpell(TriggerSpell.TriggerTouchEntity::new);
+
+        // CONTROL_MOD: 逻辑/比较
+        registerSpell(LogicalOperationsSpell.EqualSpell::new);
+        registerSpell(LogicalOperationsSpell.NotEqualSpell::new);
+        registerSpell(LogicalOperationsSpell.GreaterSpell::new);
+        registerSpell(LogicalOperationsSpell.GreaterEqualSpell::new);
+        registerSpell(LogicalOperationsSpell.LessSpell::new);
+        registerSpell(LogicalOperationsSpell.LessEqualSpell::new);
+        registerSpell(LogicalOperationsSpell.AndSpell::new);
+        registerSpell(LogicalOperationsSpell.OrSpell::new);
+        registerSpell(LogicalOperationsSpell.NotSpell::new);
+
+        // CONTROL_MOD: 常量
+        registerSpell(() -> new ValueLiteralSpell(SpellValueType.BOOLEAN, "true", true,
+                List.of(
+                        Component.translatable("tooltip.programmable_magic.spell.boolean_true.desc1"),
+                        Component.translatable("tooltip.programmable_magic.spell.boolean_true.desc2")
+                ), SpellItemLogic.SpellType.CONTROL_MOD));
+        registerSpell(() -> new ValueLiteralSpell(SpellValueType.BOOLEAN, "false", false,
+                List.of(
+                        Component.translatable("tooltip.programmable_magic.spell.boolean_false.desc1"),
+                        Component.translatable("tooltip.programmable_magic.spell.boolean_false.desc2")
+                ), SpellItemLogic.SpellType.CONTROL_MOD));
+
+        // CONTROL_MOD: 条件分支/循环
+        registerSpell(LoopStartSpell::new);
+        registerSpell(LoopEndSpell::new);
+        registerSpell(IfSpell::new);
+        registerSpell(LoopBreakSpell::new);
+        registerSpell(LoopContinueSpell::new);
 
         ITEMS.register(eventBus);
     }

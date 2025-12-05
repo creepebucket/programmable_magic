@@ -226,17 +226,30 @@ tasks.named('processResources') {
 // 否则会出现 runData -> prepareDataRun -> downloadAssets -> buildAssets -> runData 的循环。
 
 // 将 datagen 产物合并进构建资源目录，避免环依赖（classes -> processResources -> runData -> classes）
-tasks.register('mergeGeneratedResources', Copy) {
+// 注意：仅对 data 子目录使用 Sync（覆盖并清理过期标签等），assets 用 Copy（避免误删非 datagen 资源）
+tasks.register('syncGeneratedData', Sync) {
     group = 'datagen'
-    description = '拷贝 src/generated/resources 到 build/resources/main 以包含在打包中'
+    description = '同步 src/generated/resources/data 到 build/resources/main/data（清理过期数据）'
     dependsOn 'runData'
-    from 'src/generated/resources'
-    into "$buildDir/resources/main"
+    from 'src/generated/resources/data'
+    into "$buildDir/resources/main/data"
 }
 
-tasks.named('jar') { dependsOn 'mergeGeneratedResources' }
+tasks.register('copyGeneratedAssets', Copy) {
+    group = 'datagen'
+    description = '拷贝 src/generated/resources/assets 到 build/resources/main/assets'
+    dependsOn 'runData'
+    from 'src/generated/resources/assets'
+    into "$buildDir/resources/main/assets"
+}
+
+tasks.named('jar') {
+    dependsOn 'syncGeneratedData'
+    dependsOn 'copyGeneratedAssets'
+}
 tasks.named('build') {
-    dependsOn 'mergeGeneratedResources'
+    dependsOn 'syncGeneratedData'
+    dependsOn 'copyGeneratedAssets'
     // 确保在 build 之前优先执行 runData
     dependsOn 'runData'
 }
@@ -244,8 +257,10 @@ tasks.named('build') {
 // 开发环境：运行客户端前先生成数据，确保标签/模型等可用
 tasks.named('runClient') {
     dependsOn 'runData'
-    dependsOn 'mergeGeneratedResources'
+    dependsOn 'syncGeneratedData'
+    dependsOn 'copyGeneratedAssets'
 }
 
-// 确保将 datagen 产物覆盖到 build/resources/main 发生在 processResources 之后，避免顺序不确定导致旧模型残留
-tasks.named('mergeGeneratedResources') { mustRunAfter tasks.named('processResources') }
+// 顺序约束：数据同步在处理资源后执行，避免不确定顺序
+tasks.named('syncGeneratedData') { mustRunAfter tasks.named('processResources') }
+tasks.named('copyGeneratedAssets') { mustRunAfter tasks.named('processResources') }

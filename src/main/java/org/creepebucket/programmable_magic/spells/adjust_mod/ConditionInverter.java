@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.spells.control_mod;
+package org.creepebucket.programmable_magic.spells.adjust_mod;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -6,11 +6,12 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
 
 import java.util.List;
 import java.util.Map;
 
-public class ConditionInverter extends BaseControlModLogic{
+public class ConditionInverter extends BaseAdjustModLogic {
     @Override
     public String getRegistryName() {
         return "condition_inverter";
