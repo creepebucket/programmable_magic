@@ -3,6 +3,11 @@
 > AI写的, 将就看吧, 比没有好
 
 [![Gradle Package](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml)
+[![mc_version](https://img.shields.io/badge/minecraft-1.21.6~.8-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
+[![last_commit](https://img.shields.io/github/last-commit/creepebucket/programmable_magic?logo=github)](https://github.com/creepebucket/programmable_magic/commits)
+[![release](https://img.shields.io/github/v/release/creepebucket/programmable_magic?include_prereleases&logo=github)](https://github.com/creepebucket/programmable_magic/releases)
+[![bilibili](https://img.shields.io/badge/bilibili-点击观看-00A1D6?logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1mHS8BWE9u)
+[![repo](https://img.shields.io/badge/repo-programmable_magic-181717?logo=github&logoColor=white)](https://github.com/creepebucket/programmable_magic)
 
 一个“可编排法术”为核心的魔法模组（NeoForge 1.21.8）。玩家用“法术卡片（物品）”在魔杖界面拼接序列来施法，配合四系魔力与未来的魔法科技，做出既有表达力又能工程化的玩法体系。
 
