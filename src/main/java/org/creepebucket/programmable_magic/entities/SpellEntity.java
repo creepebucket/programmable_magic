@@ -199,7 +199,7 @@ public class SpellEntity extends Entity {
     // 将上一个边界后至当前边界前的表达式区间抽出并简化
     private void simplifyPendingExpressions(SpellItemLogic boundary) {
         SpellItemLogic start = lastBoundarySpell.getNextSpell();
-        while (start instanceof ParenSpell) { lastBoundarySpell = start; start = start.getNextSpell(); }
+        while (start instanceof ParenSpell.RightParenSpell) { lastBoundarySpell = start; start = start.getNextSpell(); }
         SpellItemLogic end = boundary.getPrevSpell();
         if (start == null || end == null || start == boundary) return; // 空区间或起点即边界，直接跳过
         SpellSequence slice = cloneRange(start, end);

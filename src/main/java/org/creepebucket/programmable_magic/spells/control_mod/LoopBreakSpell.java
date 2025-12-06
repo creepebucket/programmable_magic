@@ -33,7 +33,10 @@ public class LoopBreakSpell extends BaseControlModLogic{
             pointer = pointer.getNextSpell();
         }
 
-        return Map.of("successful", true, "current_spell",  pointer.getNextSpell());
+        SpellItemLogic next = pointer.getNextSpell();
+        return (next == null)
+                ? Map.of("successful", true, "should_discard", true)
+                : Map.of("successful", true, "current_spell", next);
     }
 
     @Override

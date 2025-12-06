@@ -83,6 +83,8 @@ public class SpellRegistry {
 
         // COMPUTE_MOD: 一般运算
         registerSpell(EntityVelocitySpell::new);
+        registerSpell(StorageSpell.StoreInputSpell::new);
+        registerSpell(StorageSpell.StoreOutputSpell::new);
 
         // 基础法术
         registerSpell(ExplosionSpell::new);

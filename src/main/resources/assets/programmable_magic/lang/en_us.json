@@ -188,6 +188,11 @@
   "tooltip.programmable_magic.spell.entity_velocity.desc1": "Gets the entity's velocity vector (direction and magnitude)",
   "tooltip.programmable_magic.spell.entity_velocity.desc2": "Input an entity; returns its current velocity (blocks/tick)",
 
+  "tooltip.programmable_magic.spell.set_storage.desc1": "Writes a value into the current cast storage.",
+  "tooltip.programmable_magic.spell.set_storage.desc2": "Inputs (value, index); index is a number, value is any type.",
+  "tooltip.programmable_magic.spell.get_storage.desc1": "Reads a value from the current cast storage.",
+  "tooltip.programmable_magic.spell.get_storage.desc2": "Input (index); returns the value at that index (original type).",
+
   "tooltip.programmable_magic.spell.place_block.desc1": "Places a block at the spell entity's current position",
   "tooltip.programmable_magic.spell.place_block.desc2": "Input a block item stack; uses its default state",
 

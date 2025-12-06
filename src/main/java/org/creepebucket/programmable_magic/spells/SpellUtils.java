@@ -159,8 +159,10 @@ public final class SpellUtils {
         }
         boolean successful = false;
         try { successful = Boolean.TRUE.equals(result.get("successful")); } catch (Exception ignored) { successful = false; }
+        boolean shouldDiscard = false;
+        try { shouldDiscard = Boolean.TRUE.equals(result.get("should_discard")); } catch (Exception ignored) { shouldDiscard = false; }
 
-        return new StepResult(false, successful, delayTicks, result);
+        return new StepResult(shouldDiscard, successful, delayTicks, result);
     }
 
     // 简单的按索引取节点（从 head 线性前进）
@@ -333,6 +335,7 @@ public final class SpellUtils {
                 }
             }
 
+            if (!result.containsKey("type")) { seq.replaceSection(L, R, new SpellSequence()); flag = true; continue; }
             seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
             flag = true;
         }

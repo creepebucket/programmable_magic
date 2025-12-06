@@ -146,6 +146,11 @@
   "tooltip.programmable_magic.spell.entity_velocity.desc1": "获取实体的速度向量（方向与大小）",
   "tooltip.programmable_magic.spell.entity_velocity.desc2": "输入一个实体，返回其当前速度（单位方块/刻）",
 
+  "tooltip.programmable_magic.spell.set_storage.desc1": "用于将一个值写入当前施法存储表.",
+  "tooltip.programmable_magic.spell.set_storage.desc2": "输入(值, 索引); 索引为数值, 值类型任意.",
+  "tooltip.programmable_magic.spell.get_storage.desc1": "用于从当前施法存储表读取一个值.",
+  "tooltip.programmable_magic.spell.get_storage.desc2": "输入(索引); 返回该索引处的值(按原类型).",
+
   "tooltip.programmable_magic.spell.place_block.desc1": "在法术实体当前位置放置一个方块",
   "tooltip.programmable_magic.spell.place_block.desc2": "输入一个方块物品栈，使用其默认状态进行放置",
 

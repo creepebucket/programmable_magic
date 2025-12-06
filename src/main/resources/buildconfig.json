@@ -119,7 +119,7 @@
       },
       {
         "from_top_left": [324, 2],
-        "from_bottom_right": [501, 53],
+        "from_bottom_right": [502, 53],
         "target_img_path": "assets/programmable_magic/textures/gui/spell_display_slot.png"
       },
 

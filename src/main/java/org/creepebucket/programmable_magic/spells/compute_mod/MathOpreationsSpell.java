@@ -49,8 +49,10 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
             // 检查参数
-            if (spellParams.get(0) instanceof Number) {
-                return Map.of("successful", true, "type", NUMBER, "value", (Double) spellParams.get(0) + (Double) spellParams.get(1));
+            if (spellParams.get(0) instanceof Double) {
+                double a = (Double) spellParams.get(0);
+                double b = (Double) spellParams.get(1);
+                return Map.of("successful", true, "type", NUMBER, "value", a + b);
             } else {
                 return Map.of("successful", true, "type", VECTOR3, "value", new Vec3(
                         ((Vec3) spellParams.get(0)).x + ((Vec3) spellParams.get(1)).x,
