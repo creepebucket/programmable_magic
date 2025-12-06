@@ -4,10 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
 import java.util.Map;
@@ -35,8 +32,8 @@ public class ExplosionSpell extends BaseBaseSpellLogic{
     }
 
     @Override
-    public void calculateBaseMana(SpellData data) {
-
+    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new Mana(0.0, (Double) spellParams.get(0) / 2, 0.0, (Double) spellParams.get(0) / 2);
     }
 
     @Override

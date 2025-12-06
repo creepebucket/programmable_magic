@@ -49,11 +49,6 @@ public class LoopStartSpell extends BaseControlModLogic{
     }
 
     @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
-
-    @Override
     public List<Component> getTooltip() { return List.of(
             Component.translatable("tooltip.programmable_magic.spell.loop_start.desc1"),
             Component.translatable("tooltip.programmable_magic.spell.loop_start.desc2")

@@ -35,8 +35,7 @@ public class LoopContinueSpell extends BaseControlModLogic {
 
         return Map.of("successful", true, "current_spell",  pointer.getNextSpell());
     }
-    @Override
-    public void calculateBaseMana(SpellData data) {}
+    
 
     @Override
     public List<Component> getTooltip() { return List.of(

@@ -7,10 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
-import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +38,9 @@ public class ApplyPotionSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public void calculateBaseMana(SpellData data) {}
+    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new Mana(0.0, 0.0, 0.3, 0.3);
+    }
 
     @Override
     public List<Component> getTooltip() {

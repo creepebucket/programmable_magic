@@ -75,11 +75,11 @@ public class SpellRegistry {
         registerSpell(ParenSpell.RightParenSpell::new);
 
         // COMPUTE_MOD: 加减乘除幂
-        registerSpell(MathOpreationsSpell.AdditionSpell::new);
-        registerSpell(MathOpreationsSpell.SubtractionSpell::new);
-        registerSpell(MathOpreationsSpell.MultiplicationSpell::new);
-        registerSpell(MathOpreationsSpell.DivisionSpell::new);
-        registerSpell(MathOpreationsSpell.PowerSpell::new);
+        registerSpell(MathOperationsSpell.AdditionSpell::new);
+        registerSpell(MathOperationsSpell.SubtractionSpell::new);
+        registerSpell(MathOperationsSpell.MultiplicationSpell::new);
+        registerSpell(MathOperationsSpell.DivisionSpell::new);
+        registerSpell(MathOperationsSpell.PowerSpell::new);
 
         // COMPUTE_MOD: 一般运算
         registerSpell(EntityVelocitySpell::new);

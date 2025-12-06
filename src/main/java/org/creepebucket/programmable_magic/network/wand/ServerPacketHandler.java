@@ -20,6 +20,7 @@ public class ServerPacketHandler {
             try {
             Player player = context.player();
             List<ItemStack> spells = packet.spells();
+            double charge = packet.charge();
 
                 LOGGER.info("处理法术释放请求 - 玩家: {}, 法术数量: {}", 
                     player.getName().getString(), spells.size());
@@ -32,7 +33,7 @@ public class ServerPacketHandler {
                 
                 LOGGER.info("开始创建 SpellLogic 实例");
             // 创建法术逻辑实例并执行
-            SpellLogic spellLogic = new SpellLogic(spells, player);
+            SpellLogic spellLogic = new SpellLogic(spells, player, charge);
                 LOGGER.info("SpellLogic 实例创建成功，开始执行法术");
                 
             spellLogic.execute();

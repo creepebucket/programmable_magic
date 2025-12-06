@@ -16,12 +16,13 @@ public class BaseWand extends Item {
 
     private final double MANA_MULT;
     private final int SLOTS;
-
-    public BaseWand(Properties properties, double manaMult, int slots) {
+    private final double CHARGE_RATE; // 充能速率（W：mana/s）
+    public BaseWand(Properties properties, double manaMult, int slots, double chargeRate) {
         super(properties);
 
         MANA_MULT = manaMult;
         SLOTS = slots;
+        CHARGE_RATE = chargeRate;
     }
 
     //常量getter
@@ -32,6 +33,9 @@ public class BaseWand extends Item {
     public int getSlots() {
         return SLOTS;
     }
+
+    // 充能速率（mana 每秒）
+    public double getChargeRate() { return CHARGE_RATE; }
 
     // 正常右键：打开完整界面；潜行右键：打开小槽位界面（SLOTS-5）
     @Override
@@ -52,6 +56,8 @@ public class BaseWand extends Item {
 
         return InteractionResult.SUCCESS;
     }
+
+    
 
     //TODO: 做个小的预定义法术槽位瞬发
 }

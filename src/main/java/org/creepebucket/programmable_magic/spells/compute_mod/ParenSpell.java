@@ -30,10 +30,7 @@ public class ParenSpell extends BaseComputeModLogic{
         return Map.of("successful", true);
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() {

@@ -30,9 +30,12 @@ public abstract class SpellItemLogic implements Cloneable {
 
     /**
      * 计算基础魔力消耗
-     * @param data 法术数据
+     *
+     * @param data          法术数据
+     * @param spellSequence
+     * @param modifiers
+     * @param spellParams
      */
-    public abstract void calculateBaseMana(SpellData data);
 
     /**
      * 应用魔力修正（用于adjust_mod等）

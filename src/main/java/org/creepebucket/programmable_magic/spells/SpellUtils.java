@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
-import org.creepebucket.programmable_magic.spells.compute_mod.MathOpreationsSpell;
+import org.creepebucket.programmable_magic.spells.compute_mod.MathOperationsSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
@@ -34,12 +34,14 @@ public final class SpellUtils {
         public final boolean successful;
         public final int delayTicks;
         public final Map<String, Object> result;
+        public final Mana mana;
 
-        public StepResult(boolean shouldDiscard, boolean successful, int delayTicks, Map<String, Object> result) {
+        public StepResult(boolean shouldDiscard, boolean successful, int delayTicks, Map<String, Object> result, Mana mana) {
             this.shouldDiscard = shouldDiscard;
             this.successful = successful;
             this.delayTicks = delayTicks;
             this.result = result;
+            this.mana = mana;
         }
     }
 
@@ -49,9 +51,10 @@ public final class SpellUtils {
     public static StepResult executeCurrentSpell(Player caster,
                                                  SpellData spellData,
                                                  SpellSequence sequence,
-                                                 SpellItemLogic currentSpell) {
+                                                 SpellItemLogic currentSpell,
+                                                 Mana myMana) {
 
-        if (currentSpell == null) return new StepResult(true, false, 0,  Map.of());
+        if (currentSpell == null) return new StepResult(true, false, 0,  Map.of(), new Mana());
 
         // 收集法术参数和修饰法术
         List<SpellItemLogic> modifiers = new ArrayList<>();
@@ -151,7 +154,19 @@ public final class SpellUtils {
         // 使用匹配到的参数执行
         spellParams = matchedParams;
 
+        // 检查魔力是否足够（任一系不足即判定不足）
+        if (currentSpell instanceof BaseBaseSpellLogic && ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams).anyGreaterThan(myMana)) {
+            return notEnoughMana(caster, currentSpell);
+        }
+
         Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
+
+        Mana mana = new Mana();
+        if (currentSpell instanceof BaseBaseSpellLogic) {
+            mana = ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams);
+        } else {
+            mana = new Mana();
+        }
 
         int delayTicks = 0;
         if (result.containsKey("delay")) {
@@ -162,7 +177,7 @@ public final class SpellUtils {
         boolean shouldDiscard = false;
         try { shouldDiscard = Boolean.TRUE.equals(result.get("should_discard")); } catch (Exception ignored) { shouldDiscard = false; }
 
-        return new StepResult(shouldDiscard, successful, delayTicks, result);
+        return new StepResult(shouldDiscard, successful, delayTicks, result, mana);
     }
 
     // 简单的按索引取节点（从 head 线性前进）
@@ -178,13 +193,13 @@ public final class SpellUtils {
     private static StepResult paramOutOfBound(Player caster, SpellItemLogic current) {
         LOGGER.error("在搜索参数时突破边界: 当前法术: {}", current.getRegistryName());
         sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.param_search_out_of_bound"), caster);
-        return new StepResult(true, false, 0, Map.of());
+        return new StepResult(true, false, 0, Map.of(), new Mana());
     }
 
     private static StepResult paramTypeError(Player caster, SpellItemLogic current) {
         LOGGER.error("尝试收集参数时发现参数不是ValueLiteralSpell类型: 当前法术: {}", current.getRegistryName());
         sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.internal_bug"), caster);
-        return new StepResult(true, false, 0, Map.of());
+        return new StepResult(true, false, 0, Map.of(), new Mana());
     }
 
     private static StepResult paramTypeMismatch(Player caster, SpellItemLogic current, ValueLiteralSpell v, SpellValueType neededType) {
@@ -194,7 +209,13 @@ public final class SpellUtils {
                 "message.programmable_magic.error.wand.param_type_error",
                 current.getRegistryName(), v.VALUE_TYPE.display(), neededType.display()
         ), caster);
-        return new StepResult(true, false, 0, Map.of());
+        return new StepResult(true, false, 0, Map.of(), new Mana());
+    }
+
+    private static StepResult notEnoughMana(Player caster, SpellItemLogic current) {
+        LOGGER.error("法术 {} 的魔力不足", current.getRegistryName());
+        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.not_enough_mana"), caster);
+        return new StepResult(true, false, 0, Map.of(), new Mana());
     }
 
 
@@ -225,11 +246,11 @@ public final class SpellUtils {
 
         // 再按计算顺序进行计算
         final List<SpellItemLogic> ORDER = List.of(
-                new MathOpreationsSpell.PowerSpell(),
-                new MathOpreationsSpell.MultiplicationSpell(),
-                new MathOpreationsSpell.DivisionSpell(),
-                new MathOpreationsSpell.AdditionSpell(),
-                new MathOpreationsSpell.SubtractionSpell(),
+                new MathOperationsSpell.PowerSpell(),
+                new MathOperationsSpell.MultiplicationSpell(),
+                new MathOperationsSpell.DivisionSpell(),
+                new MathOperationsSpell.AdditionSpell(),
+                new MathOperationsSpell.SubtractionSpell(),
                 new LogicalOperationsSpell.AndSpell(),
                 new LogicalOperationsSpell.OrSpell()
         );
@@ -250,7 +271,7 @@ public final class SpellUtils {
                                 ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
 
                         seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
-                    } else if (operator instanceof MathOpreationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
+                    } else if (operator instanceof MathOperationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
                         // TODO: 这里的特判并不好, 应该复用下面的处理方法
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
                         seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
@@ -267,7 +288,7 @@ public final class SpellUtils {
         // 遍历每个法术, 执行剩下的COMPUTE_MOD
 
         for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
-            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD || spell instanceof LogicalOperationsSpell) || spell instanceof ValueLiteralSpell || spell instanceof MathOpreationsSpell) continue;
+            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD || spell instanceof LogicalOperationsSpell) || spell instanceof ValueLiteralSpell || spell instanceof MathOperationsSpell) continue;
 
             if ((spell instanceof LogicalOperationsSpell.EqualSpell
                     || spell instanceof LogicalOperationsSpell.NotEqualSpell
@@ -279,7 +300,7 @@ public final class SpellUtils {
                     || spell instanceof LogicalOperationsSpell.OrSpell)
                     && (!(spell.getPrevSpell() instanceof ValueLiteralSpell) || !(spell.getNextSpell() instanceof ValueLiteralSpell))) continue;
 
-            var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell);
+            var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell, new Mana());
             if (!step.successful) continue;
             Map<String, Object> result = step.result;
 

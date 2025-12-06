@@ -62,10 +62,7 @@ public class LoopEndSpell extends BaseControlModLogic{
         }
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() { return List.of(

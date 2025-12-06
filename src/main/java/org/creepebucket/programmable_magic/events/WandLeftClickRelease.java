@@ -33,19 +33,8 @@ public class WandLeftClickRelease {
     }
 
     private static void tryRelease(PlayerInteractEvent event) {
-        var player = event.getEntity();
-        if (player == null) return;
-        // 潜行用于打开小界面，不在潜行时释放
-        if (player.isShiftKeyDown()) return;
-
-        ItemStack wand = getHeldWand(player);
-        if (wand.isEmpty() || !(wand.getItem() instanceof BaseWand)) return;
-
-        // 仅读取完整 ItemStack 列表
-        List<ItemStack> stacks = wand.get(ModDataComponents.WAND_STACKS_SMALL.get());
-        if (stacks == null || stacks.isEmpty()) return;
-
-        Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SpellReleasePacket(stacks)));
+        // 左键释放改由 ClientChargeHandler 在按键抬起时发送，避免与充能冲突
+        return;
     }
 
     private static ItemStack getHeldWand(net.minecraft.world.entity.player.Player player) {

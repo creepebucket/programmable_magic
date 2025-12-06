@@ -49,8 +49,7 @@ public class StorageSpell {
             return Map.of("successful", true);
         }
 
-        @Override
-        public void calculateBaseMana(SpellData data) { }
+        
 
         @Override
         public List<Component> getTooltip() {
@@ -85,8 +84,7 @@ public class StorageSpell {
             return Map.of("successful", true, "type", deduceType(v), "value", v);
         }
 
-        @Override
-        public void calculateBaseMana(SpellData data) { }
+        
 
         @Override
         public List<Component> getTooltip() {

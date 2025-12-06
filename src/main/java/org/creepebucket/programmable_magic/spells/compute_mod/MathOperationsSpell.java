@@ -14,11 +14,11 @@ import java.util.Map;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3;
 
-public abstract class MathOpreationsSpell extends BaseComputeModLogic{
+public abstract class MathOperationsSpell extends BaseComputeModLogic{
     public String registryName = "";
     public List<Component> tooltip;
 
-    public MathOpreationsSpell(String registryName, List<Component> tooltip) {
+    public MathOperationsSpell(String registryName, List<Component> tooltip) {
         this.registryName = registryName;
         this.tooltip = tooltip;
         this.RightParamsOffset = 1;
@@ -29,10 +29,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         return registryName;
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() {
@@ -40,7 +37,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
     }
 
 
-    public static class AdditionSpell extends MathOpreationsSpell {
+    public static class AdditionSpell extends MathOperationsSpell {
         public AdditionSpell() { super("compute_add", List.of(
                 Component.translatable("tooltip.programmable_magic.spell.addition.desc1"),
                 Component.translatable("tooltip.programmable_magic.spell.addition.desc2")
@@ -79,7 +76,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         }
     }
 
-    public static class SubtractionSpell extends MathOpreationsSpell {
+    public static class SubtractionSpell extends MathOperationsSpell {
         public SubtractionSpell() { super("compute_sub", List.of(
                 Component.translatable("tooltip.programmable_magic.spell.subtraction.desc1"),
                 Component.translatable("tooltip.programmable_magic.spell.subtraction.desc2")
@@ -122,7 +119,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         }
     }
 
-    public static class MultiplicationSpell extends MathOpreationsSpell {
+    public static class MultiplicationSpell extends MathOperationsSpell {
         public MultiplicationSpell() { super("compute_mul", List.of(
                 Component.translatable("tooltip.programmable_magic.spell.multiplication.desc1"),
                 Component.translatable("tooltip.programmable_magic.spell.multiplication.desc2"),
@@ -168,7 +165,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         }
     }
 
-    public static class DivisionSpell extends MathOpreationsSpell {
+    public static class DivisionSpell extends MathOperationsSpell {
         public DivisionSpell() { super("compute_div", List.of(
                 Component.translatable("tooltip.programmable_magic.spell.division.desc1"),
                 Component.translatable("tooltip.programmable_magic.spell.division.desc2")
@@ -213,7 +210,7 @@ public abstract class MathOpreationsSpell extends BaseComputeModLogic{
         }
     }
 
-    public static class PowerSpell extends MathOpreationsSpell {
+    public static class PowerSpell extends MathOperationsSpell {
         public PowerSpell() { super("compute_pow", List.of(
                 Component.translatable("tooltip.programmable_magic.spell.power.desc1"),
                 Component.translatable("tooltip.programmable_magic.spell.power.desc2")

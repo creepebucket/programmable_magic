@@ -6,7 +6,6 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
-import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
 
 import java.util.List;
 import java.util.Map;
@@ -22,10 +21,7 @@ public class DelaySpell extends BaseAdjustModLogic {
         return Map.of("successful",  true, "delay", ((Double) spellParams.get(0)).intValue());
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() {

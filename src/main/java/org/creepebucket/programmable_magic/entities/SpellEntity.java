@@ -15,10 +15,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
-import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.spells.*;
+import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
@@ -39,13 +37,14 @@ public class SpellEntity extends Entity {
     private SpellItemLogic lastBoundarySpell = spellSequence.getFirstSpell();
     private int delayTicks = 0;
     private Player caster;
+    private Mana mana;
     
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
     
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, Mana mana) {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
         this.spellSequence = spellSequence;
         this.caster = caster;
@@ -54,6 +53,7 @@ public class SpellEntity extends Entity {
         this.currentSpell = spellSequence.getFirstSpell();
         this.lastBoundarySpell = spellSequence.getFirstSpell();
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
+        this.mana = mana;
     }
     
     @Override
@@ -98,7 +98,10 @@ public class SpellEntity extends Entity {
         spellData.setPosition(new Vec3(this.getX(), this.getY(), this.getZ()));
 
         // 使用 SpellUtils 执行当前法术一步
-        var step = SpellUtils.executeCurrentSpell(caster, spellData, spellSequence, currentSpell);
+        var step = SpellUtils.executeCurrentSpell(caster, spellData, spellSequence, currentSpell, mana);
+
+        // 扣蓝
+        mana.add(step.mana.negative());
 
         if (step.shouldDiscard) { this.discard(); return; }
 
@@ -128,10 +131,22 @@ public class SpellEntity extends Entity {
 
     @Override
     protected void readAdditionalSaveData(ValueInput valueInput) {
+        // 持久化蓝量（四系）
+        double r = valueInput.getDoubleOr("mana_radiation", this.mana != null ? this.mana.getRadiation() : 0.0);
+        double t = valueInput.getDoubleOr("mana_temperature", this.mana != null ? this.mana.getTemperature() : 0.0);
+        double m = valueInput.getDoubleOr("mana_momentum", this.mana != null ? this.mana.getMomentum() : 0.0);
+        double p = valueInput.getDoubleOr("mana_pressure", this.mana != null ? this.mana.getPressure() : 0.0);
+        this.mana = new Mana(r, t, m, p);
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput valueOutput) {
+        if (this.mana != null) {
+            valueOutput.putDouble("mana_radiation", this.mana.getRadiation());
+            valueOutput.putDouble("mana_temperature", this.mana.getTemperature());
+            valueOutput.putDouble("mana_momentum", this.mana.getMomentum());
+            valueOutput.putDouble("mana_pressure", this.mana.getPressure());
+        }
     }
     
     private void spawnParticles() {

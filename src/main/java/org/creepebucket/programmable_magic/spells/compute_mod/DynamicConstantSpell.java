@@ -28,8 +28,7 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
         return List.of(List.of(EMPTY));
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) { }
+    
 
     // 通用提示：动态常量
     protected static List<Component> baseDynamicTooltip() {

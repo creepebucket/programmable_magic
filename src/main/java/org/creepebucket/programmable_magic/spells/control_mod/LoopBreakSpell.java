@@ -39,10 +39,7 @@ public class LoopBreakSpell extends BaseControlModLogic{
                 : Map.of("successful", true, "current_spell", next);
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() { return List.of(

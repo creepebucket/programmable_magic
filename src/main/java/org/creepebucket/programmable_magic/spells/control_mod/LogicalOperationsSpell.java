@@ -14,10 +14,7 @@ import java.util.Map;
 public abstract class LogicalOperationsSpell extends BaseControlModLogic {
     public LogicalOperationsSpell() { this.RightParamsOffset = 1; }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<List<SpellValueType>> getReturnParamsType() {

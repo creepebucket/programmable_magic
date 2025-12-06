@@ -49,8 +49,13 @@ public class CommonItemTooltipHandler {
         if (event.getItemStack().getItem() instanceof BaseWand wand) {
             String mult = String.format("%.2f", wand.getManaMult());
             String slots = String.valueOf(wand.getSlots());
+            // 充能速率（用 FormattedManaString，单位每秒）
+            double manaPerSec = wand.getChargeRate() / 1000.0; // 1 mana = 1 kJ
+            String energyPerSec = org.creepebucket.programmable_magic.ModUtils.FormattedManaString(manaPerSec);
+
             event.getToolTip().add(Component.literal("魔力修正 x" + mult).withStyle(ChatFormatting.BLUE));
             event.getToolTip().add(Component.literal("槽位数 " + slots).withStyle(ChatFormatting.YELLOW));
+            event.getToolTip().add(Component.literal("充能速率 " + energyPerSec + "/s").withStyle(ChatFormatting.GREEN));
         }
     }
 }

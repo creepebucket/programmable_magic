@@ -27,8 +27,7 @@ public class EntityVelocitySpell extends BaseComputeModLogic {
         return Map.of("successful", true, "type", VECTOR3, "value", dir);
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) { }
+    
 
     @Override
     public List<Component> getTooltip() {

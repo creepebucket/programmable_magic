@@ -11,7 +11,6 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
-import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
 
 import java.util.List;
 import java.util.Map;
@@ -31,10 +30,7 @@ public abstract class TriggerSpell extends BaseAdjustModLogic {
         }
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<List<SpellValueType>> getNeededParamsType() {

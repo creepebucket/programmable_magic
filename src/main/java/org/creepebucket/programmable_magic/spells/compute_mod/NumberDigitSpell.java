@@ -44,10 +44,7 @@ public class NumberDigitSpell extends BaseComputeModLogic{
         return value;
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() {

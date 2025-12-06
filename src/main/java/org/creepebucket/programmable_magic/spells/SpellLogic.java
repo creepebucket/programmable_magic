@@ -30,6 +30,7 @@ public class SpellLogic {
     private SpellSequence spellSequence;
     private SpellData spellData;
     private List<ItemStack> pending; // 待从背包扣除的真实物品（由占位符绑定）
+    private double chargeSeconds = 0.0; // 按压时长（秒）
     
     public SpellLogic(List<ItemStack> spellStacks, Player player) {
         this.spellStacks = spellStacks;
@@ -48,6 +49,11 @@ public class SpellLogic {
         LOGGER.info(String.format("法术数据初始化完成 - 位置: (%.2f, %.2f, %.2f), 方向: (%.2f, %.2f, %.2f)",
                 playerPos.x, playerPos.y, playerPos.z, lookDirection.x, lookDirection.y, lookDirection.z));
         LOGGER.info("=== SpellLogic 构造函数完成 ===");
+    }
+
+    public SpellLogic(List<ItemStack> spellStacks, Player player, double chargeSeconds) {
+        this(spellStacks, player);
+        this.chargeSeconds = Math.max(0.0, chargeSeconds);
     }
     
     /**
@@ -152,7 +158,24 @@ public class SpellLogic {
         LOGGER.debug(String.format("玩家朝向: (%.2f, %.2f, %.2f)",
                 player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z));
 
-        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData);
+        // 依据充能秒数与魔杖功率（W）换算魔力：W * s = J；1 mana = 1 kJ
+        double manaMult = 1.0;
+        double chargeRateW = 0.0;
+        net.minecraft.world.item.ItemStack heldMain = player.getMainHandItem();
+        net.minecraft.world.item.ItemStack heldOff = player.getOffhandItem();
+        if (heldMain.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w) {
+            manaMult = w.getManaMult();
+            chargeRateW = w.getChargeRate();
+        } else if (heldOff.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w2) {
+            manaMult = w2.getManaMult();
+            chargeRateW = w2.getChargeRate();
+        }
+        double energyJ = chargeRateW * this.chargeSeconds; // 焦耳
+        double chargedMana = energyJ / 1000.0; // 转换为 mana（1 mana = 1 kJ）
+        double supply = (manaMult == 0.0) ? chargedMana : chargedMana / manaMult; // 发射时除以魔杖倍率
+        Mana initialMana = new Mana(supply, supply, supply, supply);
+
+        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData, initialMana);
         LOGGER.debug("法术实体创建成功，实体ID: {}", entity.getId());
         
         return entity;

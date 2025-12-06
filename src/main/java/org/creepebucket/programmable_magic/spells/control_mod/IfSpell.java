@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
-import static org.creepebucket.programmable_magic.spells.SpellUtils.isExecutable;
 
 public class IfSpell extends BaseControlModLogic{
 
@@ -54,10 +53,7 @@ public class IfSpell extends BaseControlModLogic{
         );
     }
 
-    @Override
-    public void calculateBaseMana(SpellData data) {
-
-    }
+    
 
     @Override
     public List<Component> getTooltip() { return List.of(

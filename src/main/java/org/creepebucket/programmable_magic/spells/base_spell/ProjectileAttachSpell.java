@@ -4,10 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.Tags;
-import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
 import java.util.Map;
@@ -36,7 +33,9 @@ public class ProjectileAttachSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public void calculateBaseMana(SpellData data) {}
+    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new Mana(0.1, 0.1, 0.1, 0.1);
+    }
 
     @Override
     public List<Component> getTooltip() {
