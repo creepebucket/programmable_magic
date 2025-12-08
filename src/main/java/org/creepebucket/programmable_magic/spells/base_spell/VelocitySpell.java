@@ -27,7 +27,7 @@ public class VelocitySpell extends BaseBaseSpellLogic{
 
     @Override
     public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.0, 0.0, (Double) spellParams.get(1), 0.0);
+        return new Mana(0.0, 0.0, ((Vec3) spellParams.get(1)).length(), 0.0);
     }
 
     @Override

@@ -32,11 +32,11 @@
 ## 构建与开发
 - 要求：JDK 21（Gradle Toolchain 自动处理）、NeoForge 1.21.8。
 - 常用命令：
-  - 构建：`./gradlew build`
-  - 运行客户端：`./gradlew runClient`
-  - 数据生成：`./gradlew runData`
+  - 构建：`./gradlew build`（Windows 使用 `gradlew.bat build`）
+  - 运行客户端：`./gradlew runClient`（Windows 使用 `gradlew.bat runClient`）
+  - 数据生成：`./gradlew runData`（Windows 使用 `gradlew.bat runData`）
 - 流水线：
-  - 贴图切片：`src/main/resources/buildassets.sh`（依赖 Pillow），构建前自动生成 UI/物品/方块贴图切片。
+  - 贴图切片：`src/main/resources/buildassets.sh`（Windows 使用 `buildassets.ps1`，依赖 Pillow），构建前自动生成 UI/物品/方块贴图切片。
   - 数据生成：datagen 产物在打包前自动合并到构建资源目录，无需手工维护 `generated` JSON。
 
 ## 代码结构（概览）

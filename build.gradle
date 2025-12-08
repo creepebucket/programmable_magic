@@ -179,14 +179,22 @@ tasks.register('cleanGeneratedAssets', Delete) {
 
 tasks.register('buildAssets', Exec) {
     group = 'assets'
-    description = '运行 src/main/resources/buildassets.sh 以生成资源'
+    description = '生成 GUI 资产（Windows 使用 PowerShell，其他平台使用 bash）'
     workingDir file('src/main/resources')
-    commandLine 'bash', 'buildassets.sh'
     dependsOn 'cleanGeneratedAssets'
+
+    // 根据操作系统选择脚本
+    def osName = System.getProperty('os.name').toLowerCase()
+    if (osName.contains('windows')) {
+        commandLine 'powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'buildassets.ps1'
+    } else {
+        commandLine 'bash', 'buildassets.sh'
+    }
 
     // 增量构建：声明输入与输出，确保变更时会重新运行
     inputs.files(
             file('src/main/resources/buildassets.sh'),
+            file('src/main/resources/buildassets.ps1'),
             file('src/main/resources/build_assets.py'),
             file('src/main/resources/buildconfig.json'),
             file('src/main/resources/packbig.png')
