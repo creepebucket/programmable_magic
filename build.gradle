@@ -208,7 +208,9 @@ if (!isWindows) {
 
 // 声明 processResources 明确依赖 buildAssets，消除 Gradle 关于隐式依赖的校验错误
 tasks.named('processResources') {
-    dependsOn 'buildAssets'
+    if (!isWindows) {
+        dependsOn 'buildAssets'
+    }
     // 不直接依赖 runData，避免与 classes/compile 形成隐式环
     // 避免资源重复（例如 datagen 与手写资源重名）导致失败
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -216,6 +218,7 @@ tasks.named('processResources') {
     exclude('.venv-assets/**')
     exclude('build_assets.py')
     exclude('buildassets.sh')
+    exclude('buildassets.ps1')
     exclude('buildconfig.json')
     exclude('gui_big.png')
     exclude('items_blocks_big.png')
