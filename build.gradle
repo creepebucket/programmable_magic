@@ -170,41 +170,41 @@ idea {
 // 生成资产目录（供清理与输出声明使用）
 def generatedAssetsDir = file("src/main/resources/assets/${project.mod_id}/textures/gui")
 
-// 清理已生成资产（可选）
-tasks.register('cleanGeneratedAssets', Delete) {
-    group = 'assets'
-    description = '删除由构建脚本生成的资源目录（textures/gui）'
-    delete generatedAssetsDir
-}
+// 操作系统检测
+def osName = System.getProperty('os.name').toLowerCase()
+def isWindows = osName.contains('windows')
 
-tasks.register('buildAssets', Exec) {
-    group = 'assets'
-    description = '生成 GUI 资产（Windows 使用 PowerShell，其他平台使用 bash）'
-    workingDir file('src/main/resources')
-    dependsOn 'cleanGeneratedAssets'
-
-    // 根据操作系统选择脚本
-    def osName = System.getProperty('os.name').toLowerCase()
-    if (osName.contains('windows')) {
-        commandLine 'powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', 'buildassets.ps1'
-    } else {
-        commandLine 'bash', 'buildassets.sh'
+// 非 Windows 平台才进行资产切片
+if (!isWindows) {
+    // 清理已生成资产（可选）
+    tasks.register('cleanGeneratedAssets', Delete) {
+        group = 'assets'
+        description = '删除由构建脚本生成的资源目录（textures/gui）'
+        delete generatedAssetsDir
     }
 
-    // 增量构建：声明输入与输出，确保变更时会重新运行
-    inputs.files(
-            file('src/main/resources/buildassets.sh'),
-            file('src/main/resources/buildassets.ps1'),
-            file('src/main/resources/build_assets.py'),
-            file('src/main/resources/buildconfig.json'),
-            file('src/main/resources/packbig.png')
-    )
-    outputs.dir(generatedAssetsDir)
-}
+    tasks.register('buildAssets', Exec) {
+        group = 'assets'
+        description = '生成 GUI 资产（通过 bash 执行切片脚本）'
+        workingDir file('src/main/resources')
+        dependsOn 'cleanGeneratedAssets'
 
-// 仅在 runClient / build 前生成 GUI 资产，避免与 runData 的依赖链形成环
-tasks.named('runClient') { dependsOn 'buildAssets' }
-tasks.named('build') { dependsOn 'buildAssets' }
+        commandLine 'bash', 'buildassets.sh'
+
+        // 增量构建：声明输入与输出，确保变更时会重新运行
+        inputs.files(
+                file('src/main/resources/buildassets.sh'),
+                file('src/main/resources/build_assets.py'),
+                file('src/main/resources/buildconfig.json'),
+                file('src/main/resources/packbig.png')
+        )
+        outputs.dir(generatedAssetsDir)
+    }
+
+    // 仅在 runClient / build 前生成 GUI 资产，避免与 runData 的依赖链形成环
+    tasks.named('runClient') { dependsOn 'buildAssets' }
+    tasks.named('build') { dependsOn 'buildAssets' }
+}
 
 // 声明 processResources 明确依赖 buildAssets，消除 Gradle 关于隐式依赖的校验错误
 tasks.named('processResources') {
