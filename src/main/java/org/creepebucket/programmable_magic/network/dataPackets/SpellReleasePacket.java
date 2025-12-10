@@ -1,6 +1,5 @@
-package org.creepebucket.programmable_magic.network.wand;
+package org.creepebucket.programmable_magic.network.dataPackets;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

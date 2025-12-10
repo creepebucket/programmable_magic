@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.network.wand;
+package org.creepebucket.programmable_magic.network.dataPackets;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,5 +47,13 @@ public class ServerPacketHandler {
         });
         
         LOGGER.debug("法术释放处理任务已加入服务端工作队列");
+    }
+
+    public static void handleWandMenuKV(final GuiDataPacket packet, final IPayloadContext context) {
+        context.enqueueWork(() -> {
+            if (context.player().containerMenu instanceof WandMenu menu) {
+                menu.setClientData(packet.key(), packet.value());
+            }
+        });
     }
 } 

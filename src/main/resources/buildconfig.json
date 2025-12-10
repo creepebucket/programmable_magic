@@ -97,31 +97,24 @@
       { "from_top_left": [16, 16], "from_bottom_right": [31, 31], "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png" }
     ],
     "gui_big.png": [
-      {
-        "from_top_left": [0, 0],
-        "from_bottom_right": [265, 26],
-        "target_img_path": "assets/programmable_magic/textures/gui/release_spell_button_normal.png"
-      },
-      {
-        "from_top_left": [0, 28],
-        "from_bottom_right": [265, 54],
-        "target_img_path": "assets/programmable_magic/textures/gui/release_spell_button_hover.png"
-      },
-      {
-        "from_top_left": [0, 56],
-        "from_bottom_right": [321, 89],
-        "target_img_path": "assets/programmable_magic/textures/gui/inventory_slot.png"
-      },
-      {
-        "from_top_left": [0, 92],
-        "from_bottom_right": [447, 107],
-        "target_img_path": "assets/programmable_magic/textures/gui/used_spell_slot.png"
-      },
-      {
-        "from_top_left": [324, 2],
-        "from_bottom_right": [502, 53],
-        "target_img_path": "assets/programmable_magic/textures/gui/spell_display_slot.png"
-      },
+      { "from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_prev.png" },
+      { "from_top_left": [16, 0], "from_bottom_right": [31, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_next.png" },
+      { "from_top_left": [32, 0], "from_bottom_right": [47, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_clear.png" },
+      { "from_top_left": [48, 0], "from_bottom_right": [63, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_save.png" },
+      { "from_top_left": [64, 0], "from_bottom_right": [79, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_slot.png" },
+      { "from_top_left": [80, 0], "from_bottom_right": [82, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_0.png" },
+      { "from_top_left": [84, 0], "from_bottom_right": [86, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_1.png" },
+      { "from_top_left": [88, 0], "from_bottom_right": [90, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_2.png" },
+      { "from_top_left": [92, 0], "from_bottom_right": [94, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_3.png" },
+      { "from_top_left": [96, 0], "from_bottom_right": [98, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_4.png" },
+      { "from_top_left": [100, 0], "from_bottom_right": [102, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_5.png" },
+      { "from_top_left": [104, 0], "from_bottom_right": [106, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_6.png" },
+      { "from_top_left": [108, 0], "from_bottom_right": [110, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_7.png" },
+      { "from_top_left": [112, 0], "from_bottom_right": [114, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_8.png" },
+      { "from_top_left": [116, 0], "from_bottom_right": [118, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_9.png" },
+      { "from_top_left": [128, 0], "from_bottom_right": [143, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_inventory.png" },
+      { "from_top_left": [144, 0], "from_bottom_right": [159, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_hotbar.png" },
+      { "from_top_left": [0, 16], "from_bottom_right": [111, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_release.png" },
 
       { "from_top_left": [0, 176], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/gui/machine_bg.png" },
       { "from_top_left": [192, 112], "from_bottom_right": [225, 126], "target_img_path": "assets/programmable_magic/textures/gui/button_red.png" },

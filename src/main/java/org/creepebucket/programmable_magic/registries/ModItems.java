@@ -12,9 +12,8 @@ import org.creepebucket.programmable_magic.items.mana_cell.MediumManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.LargeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.HugeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.ColossalManaCell;
-import org.creepebucket.programmable_magic.items.wand.TestWand;
-import org.creepebucket.programmable_magic.items.wand.BaseWand;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
+import org.creepebucket.programmable_magic.items.wand.BaseWand;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -44,11 +43,6 @@ public class ModItems {
 
     public static final DeferredItem<ColossalManaCell> COLOSSAL_MANA_CELL = ITEMS.register(
             "colossal_mana_cell", registryName -> new ColossalManaCell(new Item.Properties()
-                    .setId(ResourceKey.create(Registries.ITEM, registryName)))
-    );
-
-    public static final DeferredItem<TestWand> TEST_WAND_DEFERRED_ITEM = ITEMS.register(
-            "test_wand", registryName -> new TestWand(new Item.Properties()
                     .setId(ResourceKey.create(Registries.ITEM, registryName)))
     );
 
@@ -82,15 +76,6 @@ public class ModItems {
             "small_cell_certidge", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
-    public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
-            "rg_alloy_wand", registryName -> new BaseWand(
-                    new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
-                    1.00,   // 魔力倍率（除数：发射时将充能魔力除以该倍率）
-                    25,     // 槽位
-                    10000.0 // 充能速率（W）= 10 kW = 10 mana/s
-            ))
-    ;
-
     // 魔杖物品占位符
     public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
@@ -98,6 +83,16 @@ public class ModItems {
                     .component(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
                     .setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
+
+    // 最小魔杖（RG 合金魔杖）
+    public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
+            "rg_alloy_wand", registryName -> new BaseWand(
+                    new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
+                    1.0,   // mana 倍率
+                    4,     // 槽位数
+                    4000.0 // 充能功率（W）
+            )
+    );
 
     // 方块物品
     public static final DeferredItem<BlockItem> PRIMITIVE_ALLOY_SMELTER_ITEM = ITEMS.register(
