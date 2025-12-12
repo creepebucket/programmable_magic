@@ -20,6 +20,9 @@ public abstract class TriggerSpell extends BaseAdjustModLogic {
     public abstract boolean condition(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
 
     @Override
+    public net.minecraft.network.chat.Component getSubCategory() { return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.trigger"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 触发器: 只有条件满足时才执行下一个法术
 

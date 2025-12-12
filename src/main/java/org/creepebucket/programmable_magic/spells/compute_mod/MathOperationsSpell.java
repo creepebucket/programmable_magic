@@ -29,6 +29,11 @@ public abstract class MathOperationsSpell extends BaseComputeModLogic{
         return registryName;
     }
 
+    @Override
+    public Component getSubCategory() {
+        return Component.translatable("subcategory.programmable_magic.math_operation");
+    }
+
     
 
     @Override

@@ -17,6 +17,9 @@ public class DelaySpell extends BaseAdjustModLogic {
     }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.timing"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         return Map.of("successful",  true, "delay", ((Double) spellParams.get(0)).intValue());
     }

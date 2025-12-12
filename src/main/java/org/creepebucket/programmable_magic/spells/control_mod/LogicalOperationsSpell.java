@@ -14,6 +14,9 @@ import java.util.Map;
 public abstract class LogicalOperationsSpell extends BaseControlModLogic {
     public LogicalOperationsSpell() { this.RightParamsOffset = 1; }
 
+    @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.logical_operation"); }
+
     
 
     @Override

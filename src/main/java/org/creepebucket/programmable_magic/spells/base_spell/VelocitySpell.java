@@ -16,6 +16,9 @@ public class VelocitySpell extends BaseBaseSpellLogic{
     }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.motion"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 给予实体速度
         Entity target = (Entity) spellParams.get(0);

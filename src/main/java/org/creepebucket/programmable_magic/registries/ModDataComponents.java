@@ -39,12 +39,12 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_BIG =
             DATA_COMPONENTS.registerComponentType("wand_stacks_big", builder -> builder
                     .persistent(Codec.list(ItemStack.CODEC))
-                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC)));
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_SMALL =
             DATA_COMPONENTS.registerComponentType("wand_stacks_small", builder -> builder
                     .persistent(Codec.list(ItemStack.CODEC))
-                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC)));
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }

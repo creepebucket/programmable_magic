@@ -41,6 +41,9 @@ public class StorageSpell {
         public String getRegistryName() { return "compute_set_storage"; }
 
         @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.storage"); }
+
+        @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
             Object value = spellParams.get(0);
             Double index = (Double) spellParams.get(1);
@@ -71,6 +74,9 @@ public class StorageSpell {
     public static class StoreOutputSpell extends BaseComputeModLogic {
         @Override
         public String getRegistryName() { return "compute_get_storage"; }
+
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.storage"); }
 
         @Override
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {

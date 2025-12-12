@@ -17,6 +17,11 @@ public class SpellSeperator extends BaseComputeModLogic{
     }
 
     @Override
+    public Component getSubCategory() {
+        return Component.translatable("subcategory.programmable_magic.separator");
+    }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         return Map.of("successful", true);
     }

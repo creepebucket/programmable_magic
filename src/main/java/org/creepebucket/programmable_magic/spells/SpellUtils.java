@@ -2,6 +2,8 @@ package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
 import org.creepebucket.programmable_magic.spells.compute_mod.MathOperationsSpell;
@@ -13,10 +15,7 @@ import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsS
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
 
@@ -394,4 +393,24 @@ public final class SpellUtils {
             !(currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
             || currentSpell instanceof LogicalOperationsSpell
             || currentSpell instanceof ValueLiteralSpell); }
+
+    public static Map<Component, List<ItemStack>> getSpellsGroupedBySubCategory(SpellItemLogic.SpellType type) {
+        var map = new LinkedHashMap<Component, List<ItemStack>>();
+        for (var entry : SpellRegistry.getRegisteredSpells().entrySet()) {
+            var logic = entry.getValue().get();
+            if (logic.getSpellType() != type) continue;
+            var sub = logic.getSubCategory();
+            var list = map.get(sub);
+            if (list == null) { list = new ArrayList<>(); map.put(sub, list); }
+            list.add(new ItemStack(entry.getKey().get()));
+        }
+        return map;
+    }
+
+    public static final Map<String, SpellItemLogic.SpellType> stringSpellTypeMap = Map.of(
+            "compute", SpellItemLogic.SpellType.COMPUTE_MOD,
+            "adjust", SpellItemLogic.SpellType.ADJUST_MOD,
+            "control", SpellItemLogic.SpellType.CONTROL_MOD,
+            "base", SpellItemLogic.SpellType.BASE_SPELL
+    );
 }

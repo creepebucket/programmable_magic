@@ -16,6 +16,9 @@ public class PlaceBlockSpell extends BaseBaseSpellLogic {
     public String getRegistryName() { return "place_block"; }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.block_action"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         ItemStack stack = (ItemStack) spellParams.get(0);
         if (!(stack.getItem() instanceof BlockItem bi)) return Map.of("successful", true);
@@ -44,4 +47,3 @@ public class PlaceBlockSpell extends BaseBaseSpellLogic {
     @Override
     public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(SpellValueType.SPELL)); }
 }
-

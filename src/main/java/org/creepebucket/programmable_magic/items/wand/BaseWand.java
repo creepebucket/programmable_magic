@@ -38,10 +38,10 @@ public class BaseWand extends Item {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(
                     new SimpleMenuProvider(
-                            (containerId, inventory, p) -> new WandMenu(containerId, inventory),
+                            (containerId, inventory, p) -> new WandMenu(containerId, inventory, hand),
                             Component.literal("")
                     ),
-                    buf -> {}
+                    buf -> buf.writeVarInt(hand.ordinal())
             );
         }
         return InteractionResult.SUCCESS;

@@ -21,6 +21,9 @@ public class LoopStartSpell extends BaseControlModLogic{
     }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.loop_control"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 首次在 LoopStart 处捕获循环体模板（不含边界），以便每次 LoopEnd 重置
         if (!loopTemplateCaptured) {

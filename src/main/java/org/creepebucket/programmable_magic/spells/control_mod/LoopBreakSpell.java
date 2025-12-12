@@ -19,6 +19,9 @@ public class LoopBreakSpell extends BaseControlModLogic{
     }
 
     @Override
+    public net.minecraft.network.chat.Component getSubCategory() { return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.loop_control"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 跳出循环
         SpellItemLogic pointer = this.getNextSpell();

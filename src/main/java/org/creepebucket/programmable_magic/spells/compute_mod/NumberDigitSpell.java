@@ -24,6 +24,11 @@ public class NumberDigitSpell extends BaseComputeModLogic{
     }
 
     @Override
+    public Component getSubCategory() {
+        return Component.translatable("subcategory.programmable_magic.number_digit");
+    }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 数字法术会自己与相邻的数字组成ValueLiteralSpell
 

@@ -13,7 +13,11 @@ import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 public class ClientEventHandler {
     @SubscribeEvent
     public static void registerScreen(RegisterMenuScreensEvent event) {
-        event.register(ModMenuTypes.WAND_MENU.get(), WandScreen::new);
+        event.register(
+                ModMenuTypes.WAND_MENU.get(),
+                (net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor<WandMenu, WandScreen>)
+                        (menu, inv, title) -> new WandScreen(menu, inv, title)
+        );
     }
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {

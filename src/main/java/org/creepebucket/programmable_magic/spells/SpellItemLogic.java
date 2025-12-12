@@ -29,6 +29,14 @@ public abstract class SpellItemLogic implements Cloneable {
     public abstract SpellType getSpellType();
 
     /**
+     * 获取法术的子类别（用于侧栏/列表分组展示）
+     * 默认返回 "general"，子类可按需要覆盖。
+     */
+    public Component getSubCategory() {
+        return Component.translatable("subcategory.programmable_magic.general");
+    }
+
+    /**
      * 计算基础魔力消耗
      *
      * @param data          法术数据

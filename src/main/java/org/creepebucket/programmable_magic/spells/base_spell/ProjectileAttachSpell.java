@@ -14,6 +14,9 @@ public class ProjectileAttachSpell extends BaseBaseSpellLogic {
     public String getRegistryName() { return "projectile_attach"; }
 
     @Override
+    public net.minecraft.network.chat.Component getSubCategory() { return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.projectile"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 参数：一个金属粒（使用 NeoForge 通用粒标签校验）
         if (spellParams == null || spellParams.isEmpty()) return Map.of("successful", true);

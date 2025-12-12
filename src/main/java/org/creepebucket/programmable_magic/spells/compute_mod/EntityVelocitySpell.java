@@ -21,6 +21,9 @@ public class EntityVelocitySpell extends BaseComputeModLogic {
     public String getRegistryName() { return "compute_entity_velocity"; }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.entity_query"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         Entity e = (Entity) spellParams.get(0);
         Vec3 dir = e.getDeltaMovement();

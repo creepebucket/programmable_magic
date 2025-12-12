@@ -21,6 +21,9 @@ public class LoopEndSpell extends BaseControlModLogic{
     }
 
     @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.loop_control"); }
+
+    @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
         // 循环到配对的LoopStartSpell
         int count = 0;

@@ -48,6 +48,11 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
         return tip;
     }
 
+    @Override
+    public Component getSubCategory() {
+        return Component.translatable("subcategory.programmable_magic.dynamic_constant");
+    }
+
     public static class ViewVectorSpell extends DynamicConstantSpell {
         public String getRegistryName() {
             return "compute_view_vec";

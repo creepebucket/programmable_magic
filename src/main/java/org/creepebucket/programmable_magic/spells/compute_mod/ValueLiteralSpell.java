@@ -43,6 +43,14 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
     }
 
     @Override
+    public net.minecraft.network.chat.Component getSubCategory() {
+        if (this.spellType == SpellType.CONTROL_MOD) {
+            return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.control_constant");
+        }
+        return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.compute_constant");
+    }
+
+    @Override
     public String getRegistryName() {return REGISTRY_NAME;}
 
     @Override
