@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.items.wand;
+package org.creepebucket.programmable_magic.items.mana_cell;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -7,7 +7,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 
@@ -22,6 +21,13 @@ public class BaseWand extends Item {
     private final int slots;
     private final double chargeRate;
 
+    /**
+     * 构造一个魔杖实例。
+     * @param properties 物品属性
+     * @param manaMult 魔力倍率（>1 提高消耗，<1 降低消耗）
+     * @param slots 法术槽位数量
+     * @param chargeRate 充能功率（W）
+     */
     public BaseWand(Properties properties, double manaMult, int slots, double chargeRate) {
         super(properties);
         this.manaMult = manaMult;
@@ -29,11 +35,23 @@ public class BaseWand extends Item {
         this.chargeRate = chargeRate;
     }
 
+    /**
+     * 获取魔力倍率。
+     */
     public double getManaMult() { return manaMult; }
+    /**
+     * 获取法术槽位数量。
+     */
     public int getSlots() { return slots; }
+    /**
+     * 获取充能功率（W）。
+     */
     public double getChargeRate() { return chargeRate; }
 
     @Override
+    /**
+     * 右键使用：仅在服务端打开菜单容器（Screen 由客户端绑定）。
+     */
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(

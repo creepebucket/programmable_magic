@@ -219,6 +219,7 @@
   "item.programmable_magic.covered_rg_alloy_wire": "包层红石-金合金线缆",
   "item.programmable_magic.small_cell_certidge": "小型魔力单元内芯",
   "item.programmable_magic.rg_alloy_wand": "红石-金合金魔杖",
+  "item.programmable_magic.spell_scroll": "法术卷轴",
 
   "block.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
   "item.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
@@ -232,6 +233,9 @@
   "tooltip.programmable_magic.covered_rg_alloy_wire": "已绝缘.",
   "tooltip.programmable_magic.rg_alloy_wand": "年轻人的第一把魔杖",
   "tooltip.programmable_magic.hold_lalt": "按住 LALT 查看详情",
+  "tooltip.programmable_magic.spell_scroll_header": "卷轴内容：",
+  "tooltip.programmable_magic.spell_scroll_empty": "卷轴为空",
+  "tooltip.programmable_magic.and_more": "以及 %s 个...",
 
   "message.programmable_magic.error.wand.param_search_out_of_bound": "法术参数搜索越界，请检查参数数量与顺序",
   "message.programmable_magic.error.wand.internal_bug": "法术内部错误：参数收集异常",

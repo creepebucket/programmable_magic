@@ -9,6 +9,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
+import org.creepebucket.programmable_magic.items.SpellScrollItem;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
@@ -22,6 +24,12 @@ import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPla
 import static org.creepebucket.programmable_magic.spells.SpellUtils.getSeps;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
+/**
+ * 法术执行入口：
+ * - 将输入的物品堆栈展开为法术序列（支持卷轴/占位符）。
+ * - 将数字法术段合并为数值字面量并移除分隔符。
+ * - 按占位符扣除真实物品，计算充能后创建法术实体并生成到世界。
+ */
 public class SpellLogic {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellLogic");
     
@@ -32,6 +40,9 @@ public class SpellLogic {
     private List<ItemStack> pending; // 待从背包扣除的真实物品（由占位符绑定）
     private double chargeSeconds = 0.0; // 按压时长（秒）
     
+    /**
+     * 基础构造：传入法术物品与玩家。
+     */
     public SpellLogic(List<ItemStack> spellStacks, Player player) {
         this.spellStacks = spellStacks;
         this.player = player;
@@ -51,6 +62,9 @@ public class SpellLogic {
         LOGGER.info("=== SpellLogic 构造函数完成 ===");
     }
 
+    /**
+     * 含充能时间的构造。
+     */
     public SpellLogic(List<ItemStack> spellStacks, Player player, double chargeSeconds) {
         this(spellStacks, player);
         this.chargeSeconds = Math.max(0.0, chargeSeconds);
@@ -64,7 +78,7 @@ public class SpellLogic {
         convertItemStacksToLogic();
         // 2. 转换NumberDigitSpell -> ValueLiteralSpell 并去除分隔符
         convertNumberDigitsToValues();
-        // BUGFIX: 在法术序列之前加一个占位ValueLiteralSpell, 防止第一次简化序列的lastBoundarySpell.getNextSpell()未包含实际序列的第一个法术
+        // 在序列开头添加一个值占位，确保首次简化时存在稳定的起点，避免首个法术被跳过
         spellSequence.addFirst(new ValueLiteralSpell(SpellValueType.EMPTY, 0));
         // 3. 在背包中删除 WandItemPlaceholder 绑定的物品
         boolean r = consumePendingItemsFromInventory();
@@ -84,27 +98,36 @@ public class SpellLogic {
      * 将ItemStack转换为SpellItemLogic
      */
     private void convertItemStacksToLogic() {
-        for (ItemStack stack : spellStacks) {
-            SpellItemLogic logic = SpellRegistry.createSpellLogic(stack.getItem());
-            if (logic != null) {
-                spellSequence.addLast(logic);
-            } else if (stack.getItem() instanceof WandItemPlaceholder){
-                // 源头已默认绑定 AIR；直接读取并解析绑定物品
-                String key = stack.get(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get());
-                ResourceLocation rl = ResourceLocation.tryParse(key);
-                ItemStack real = new ItemStack(BuiltInRegistries.ITEM.get(rl).get());
-                spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, real));
-                if (!real.isEmpty()) pending.add(real.copy());
-            } else {
-                // 普通物品直接作为字面量值
-                spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, stack));
-            }
-        }
+        for (ItemStack stack : spellStacks) { appendStackToSequence(stack); }
     }
 
     /**
-     * 步骤2
-     * 将NumberDigitSpell转换为ValueLiteralSpell并去除分隔符
+     * 将一个物品（含卷轴或占位符）展开并追加到法术序列。
+     */
+    private void appendStackToSequence(ItemStack stack) {
+        SpellItemLogic logic = SpellRegistry.createSpellLogic(stack.getItem());
+        if (logic != null) { spellSequence.addLast(logic); return; }
+
+        if (stack.getItem() instanceof SpellScrollItem) {
+            java.util.List<ItemStack> inner = stack.get(ModDataComponents.SPELL_SCROLL_STACKS.get());
+            if (inner != null) { for (ItemStack i : inner) appendStackToSequence(i); }
+            return;
+        }
+
+        if (stack.getItem() instanceof WandItemPlaceholder) {
+            String key = stack.get(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get());
+            ResourceLocation rl = ResourceLocation.tryParse(key);
+            ItemStack real = new ItemStack(BuiltInRegistries.ITEM.get(rl).get());
+            spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, real));
+            if (!real.isEmpty()) pending.add(real.copy());
+            return;
+        }
+
+        spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, stack));
+    }
+
+    /**
+     * 步骤2：将数字法术段合并为字面量并去除分隔符。
      */
     private void convertNumberDigitsToValues() {
         LOGGER.debug("开始将数字法术转换为值法术");
@@ -126,30 +149,33 @@ public class SpellLogic {
      * 从玩家背包中扣除由占位符绑定的真实物品（每个占位符扣 1 个）。
      */
     private boolean consumePendingItemsFromInventory() {
-        boolean flag = false;
-        boolean success = true;
+        boolean found = false;
+        boolean allSucceeded = true;
         var inv = player.getInventory();
         for (ItemStack need : pending) {
             Item targetItem = need.getItem();
             int size = inv.getContainerSize();
-            flag = false;
+            found = false;
             for (int i = 0; i < size; i++) {
                 ItemStack cur = inv.getItem(i);
                 if (cur.isEmpty()) continue;
                 if (cur.is(targetItem)) {
                     cur.shrink(1);
                     if (cur.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
-                    flag = true;
+                    found = true;
                 }
             }
-            if (!flag) success = false;
+            if (!found) allSucceeded = false;
         }
-        return success;
+        return allSucceeded;
     }
 
     /**
      * 步骤5
      * 创建法术实体
+     */
+    /**
+     * 步骤5：依据充能与魔杖功率计算供给并创建法术实体。
      */
     private SpellEntity createSpellEntity() {
         LOGGER.debug("开始创建法术实体");
@@ -163,10 +189,10 @@ public class SpellLogic {
         double chargeRateW = 0.0;
         net.minecraft.world.item.ItemStack heldMain = player.getMainHandItem();
         net.minecraft.world.item.ItemStack heldOff = player.getOffhandItem();
-        if (heldMain.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w) {
+        if (heldMain.getItem() instanceof BaseWand w) {
             manaMult = w.getManaMult();
             chargeRateW = w.getChargeRate();
-        } else if (heldOff.getItem() instanceof org.creepebucket.programmable_magic.items.wand.BaseWand w2) {
+        } else if (heldOff.getItem() instanceof BaseWand w2) {
             manaMult = w2.getManaMult();
             chargeRateW = w2.getChargeRate();
         }
@@ -186,6 +212,9 @@ public class SpellLogic {
      * 在法术逻辑主函数中使用的工具函数
      */
 
+    /**
+     * 工具：扫描连续数字法术区间，返回每段的左右端点。
+     */
     private List<List<SpellItemLogic>> getPairsNumberDigit(SpellSequence seq) {
         List<List<SpellItemLogic>> pairs = new ArrayList<>();
         for (SpellItemLogic it = seq.getFirstSpell(); it != null; ) {

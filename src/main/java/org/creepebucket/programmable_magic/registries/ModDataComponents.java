@@ -45,6 +45,18 @@ public class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("wand_stacks_small", builder -> builder
                     .persistent(Codec.list(ItemStack.CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
+    
+    // 隐藏保存：供左键释放读取
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_SAVED_STACKS =
+            DATA_COMPONENTS.registerComponentType("wand_saved_stacks", builder -> builder
+                    .persistent(Codec.list(ItemStack.CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
+
+    // 法术卷轴：存储一个条目列表，用于在解析法术时展开为实际条目
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> SPELL_SCROLL_STACKS =
+            DATA_COMPONENTS.registerComponentType("spell_scroll_stacks", builder -> builder
+                    .persistent(Codec.list(ItemStack.CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }

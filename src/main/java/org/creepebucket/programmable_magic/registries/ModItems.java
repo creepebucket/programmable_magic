@@ -13,7 +13,8 @@ import org.creepebucket.programmable_magic.items.mana_cell.LargeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.HugeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.ColossalManaCell;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
-import org.creepebucket.programmable_magic.items.wand.BaseWand;
+import org.creepebucket.programmable_magic.items.SpellScrollItem;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -76,6 +77,13 @@ public class ModItems {
             "small_cell_certidge", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
+    // 法术卷轴
+    public static final DeferredItem<SpellScrollItem> SPELL_SCROLL = ITEMS.register(
+            "spell_scroll", registryName -> new SpellScrollItem(new Item.Properties()
+                    .stacksTo(1)
+                    .setId(ResourceKey.create(Registries.ITEM, registryName))))
+    ;
+
     // 魔杖物品占位符
     public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
@@ -89,7 +97,7 @@ public class ModItems {
             "rg_alloy_wand", registryName -> new BaseWand(
                     new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
                     1.0,   // mana 倍率
-                    4,     // 槽位数
+                    1000,     // 槽位数
                     4000.0 // 充能功率（W）
             )
     );

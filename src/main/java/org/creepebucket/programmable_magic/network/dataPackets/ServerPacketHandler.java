@@ -5,6 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.spells.SpellLogic;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,20 +20,32 @@ public class ServerPacketHandler {
         context.enqueueWork(() -> {
             try {
             Player player = context.player();
-            List<ItemStack> spells = packet.spells();
             double charge = packet.charge();
 
-                LOGGER.info("处理法术释放请求 - 玩家: {}, 法术数量: {}", 
-                    player.getName().getString(), spells.size());
-                
-                // 记录每个法术的详细信息
-                for (int i = 0; i < spells.size(); i++) {
-                    ItemStack spell = spells.get(i);
-                    LOGGER.info("法术 {}: {} x{}", i + 1, spell.getDisplayName().getString(), spell.getCount());
+                // 从服务端读取“隐藏保存”优先，其次读取普通存储
+                List<ItemStack> spells = new java.util.ArrayList<>();
+                ItemStack held = player.getMainHandItem();
+                List<ItemStack> saved = held.get(ModDataComponents.WAND_SAVED_STACKS.get());
+                if (saved == null || saved.isEmpty()) {
+                    saved = held.get(ModDataComponents.WAND_STACKS_SMALL.get());
                 }
-                
+                if (saved == null || saved.isEmpty()) {
+                    held = player.getOffhandItem();
+                    saved = held.get(ModDataComponents.WAND_SAVED_STACKS.get());
+                    if (saved == null || saved.isEmpty()) saved = held.get(ModDataComponents.WAND_STACKS_SMALL.get());
+                }
+                if (saved != null) for (ItemStack it : saved) {
+                    if (it == null || it.isEmpty()) continue;
+                    ItemStack cp = it.copy();
+                    cp.setCount(1);
+                    spells.add(cp);
+                }
+
+                LOGGER.info("处理法术释放请求 - 玩家: {}, 服务端读取法术数量: {}", 
+                    player.getName().getString(), spells.size());
+
                 LOGGER.info("开始创建 SpellLogic 实例");
-            // 创建法术逻辑实例并执行
+            // 创建法术逻辑实例并执行（服务端构造序列）
             SpellLogic spellLogic = new SpellLogic(spells, player, charge);
                 LOGGER.info("SpellLogic 实例创建成功，开始执行法术");
                 

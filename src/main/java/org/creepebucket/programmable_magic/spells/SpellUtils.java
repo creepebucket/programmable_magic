@@ -28,6 +28,8 @@ public final class SpellUtils {
 
     private SpellUtils() {}
 
+    
+
     public static class StepResult {
         public final boolean shouldDiscard;
         public final boolean successful;

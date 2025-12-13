@@ -2,7 +2,6 @@ package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -13,12 +12,11 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
 import org.creepebucket.programmable_magic.network.dataPackets.GuiDataPacket;
 import net.minecraft.util.Mth;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.List;
 import java.util.Map;
@@ -26,35 +24,50 @@ import java.util.Map;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 /**
- * 最小界面：仅展示一个按钮，点击后发送法术释放数据包。
+ * 魔杖界面：
+ * - 提供法术栏视窗、物品栏绘制、左侧法术供应选择与滚动、卷轴制作位、充能/释放按钮。
+ * - 将界面关键数据（坐标、偏移、侧栏、滚动等）上报给对应的 Menu 进行布局与存储。
  */
 public class WandScreen extends AbstractContainerScreen<WandMenu> {
 
     private int spellIndexOffset = 0;
-    int time;
+    int chargeTicks;
     int spellSlots;
     private String sidebar = "compute";
     private int supplyScrollRow = 0;
+
+    private boolean isCharging = false;
 
     private SidebarToggleWidget sidebarCompute;
     private SidebarToggleWidget sidebarAdjust;
     private SidebarToggleWidget sidebarControl;
     private SidebarToggleWidget sidebarBase;
+    private double chargeRate;
 
-    public WandScreen(WandMenu menu, Inventory playerInv, Component title, int spellSlots) {
+    /**
+     * 全参构造：用于显式传入法术槽容量与充能功率。
+     */
+    public WandScreen(WandMenu menu, Inventory playerInv, Component title, int spellSlots, double chargeRate) {
         super(menu, playerInv, title);
         this.spellSlots = spellSlots;
+        this.chargeRate = chargeRate;
     }
 
+    /**
+     * 便捷构造：从 Menu 读取容量与功率。
+     */
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
-        this(menu, playerInv, title, menu.getSpellSlotCapacity());
+        this(menu, playerInv, title, menu.getSpellSlotCapacity(), menu.getChargeRate());
     }
 
     @Override
+    /**
+     * 初始化界面控件并同步屏幕边界数据到 Menu。
+     */
     protected void init() {
         super.init();
 
-        time = 0;
+        chargeTicks = 0;
 
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -62,39 +75,41 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
 
         int CENTER_X = sw / 2;
 
-        var prevTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png");
-        var nextTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png");
-        var clearTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png");
-        var saveTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png");
-
         int spellSlotCount = Math.floorDiv(sw - 200, 16) - 4;
         int compactModeYOffset = spellSlotCount <= 16 ? 18 : 0; // 当物品栏与法术侧栏重叠时调整位置
 
         // 法术控制
-        this.addRenderableWidget(new ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 34, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16, prevTex, prevTex, () -> {
+        this.addRenderableWidget(new ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 34, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"), () -> {
             int step = computeStep();
             updateSpellIndex(-step);
             sendMenuData(WandMenu.KEY_SPELL_OFFSET, this.spellIndexOffset);
         }));
-        this.addRenderableWidget(new ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 18, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16, clearTex, clearTex, () -> {
+        this.addRenderableWidget(new ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 18, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"), () -> {
             sendMenuData(WandMenu.KEY_CLEAN, true);
         }));
-        this.addRenderableWidget(new ImageButtonWidget(CENTER_X + 8 * spellSlotCount + 16, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16, nextTex, nextTex, () -> {
+        this.addRenderableWidget(new ImageButtonWidget(CENTER_X + 8 * spellSlotCount + 16, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"), () -> {
             int step = computeStep();
             updateSpellIndex(step);
             sendMenuData(WandMenu.KEY_SPELL_OFFSET, this.spellIndexOffset);
         }));
-        this.addRenderableWidget(new ImageButtonWidget(CENTER_X + 8 * spellSlotCount, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16, saveTex, saveTex, () -> {
+        this.addRenderableWidget(new ImageButtonWidget(CENTER_X + 8 * spellSlotCount, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"), () -> {
+            // 将当前屏幕中的法术存入“隐藏”数据组件，由服务端菜单处理
+            sendMenuData(WandMenu.KEY_SAVE, true);
         }));
 
         // 法术释放
         var releaseTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
         this.addRenderableWidget(new ImageButtonWidget(CENTER_X - 112 / 2, sh - 100 - compactModeYOffset, 112, 16, releaseTex, releaseTex, () -> {
-            var payload = new SpellReleasePacket(List.of(), 0.0);
-            var connection = Minecraft.getInstance().getConnection();
-            if (connection != null) {
-                connection.send(new ServerboundCustomPayloadPacket(payload));
-            }
+            this.isCharging = true;
+            this.chargeTicks = 0; // 充能开始时重置到0，由 containerTick 每tick自增
         }));
 
         // 上报当前容器在屏幕中的上下左右坐标（用于响应式布局）
@@ -124,6 +139,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         setSidebar(this.sidebar);
     }
 
+    /**
+     * 计算法术视窗步进（支持修饰键）。
+     */
     private int computeStep() {
         if (Screen.hasControlDown()) return 100;
         if (Screen.hasAltDown()) return 25;
@@ -131,13 +149,19 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         return 1;
     }
 
+    /**
+     * 更新法术偏移并同步给 Menu。
+     */
     private void updateSpellIndex(int delta) {
         int prev = this.spellIndexOffset;
-        int next = Mth.clamp(prev + delta, 0, 999);
+        int next = Mth.clamp(prev + delta, 0, this.spellSlots);
         this.spellIndexOffset = next;
         sendMenuData(WandMenu.KEY_SPELL_OFFSET, this.spellIndexOffset);
     }
 
+    /**
+     * 向本地与服务端 Menu 发送界面数据。
+     */
     private void sendMenuData(String key, Object value) {
         // 本地先写入客户端 Menu，确保 Screen 侧立即可见
         this.menu.setClientData(key, value);
@@ -150,12 +174,18 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 上报当前容器在屏幕中的左上角坐标。
+     */
     private void report_screen_bounds() {
         // 上报容器原点（Screen 的 leftPos/topPos），供 Menu 进行屏幕→容器坐标转换
         sendMenuData(WandMenu.KEY_GUI_LEFT, this.leftPos);
         sendMenuData(WandMenu.KEY_GUI_TOP, this.topPos);
     }
 
+    /**
+     * 设置左侧法术类别（互斥切换），并重置滚动行。
+     */
     private void setSidebar(String v) {
         this.sidebar = v;
         if (this.sidebarCompute != null) this.sidebarCompute.setSelected("compute".equals(v));
@@ -169,32 +199,52 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
     }
 
     @Override
+    /**
+     * 窗口尺寸变化时重新上报容器坐标。
+     */
     public void resize(Minecraft mc, int width, int height) {
         super.resize(mc, width, height);
         report_screen_bounds();
     }
 
     @Override
+    /**
+     * 常规渲染：交给父类并绘制提示。
+     */
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.time++;
-
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
+    /**
+     * 每 tick 自增充能计数（当按下发射按钮后）。
+     */
+    protected void containerTick() {
+        super.containerTick();
+        this.chargeTicks++;
+    }
+
+    @Override
+    /**
+     * 背景层不绘制（由各自纹理负责）。
+     */
     public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
     }
 
     @Override
+    /**
+     * 容器背景不绘制，避免与界面职责混淆。
+     */
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         // 背景层此处不绘制，避免与容器背景职责混淆
     }
 
     @Override
+    /**
+     * 绘制各元素：侧栏边框、法术槽、物品栏、侧栏分组、充能读数、卷轴制作。
+     */
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
-
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
         int sh = win.getGuiScaledHeight();
@@ -246,16 +296,28 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
 
             y += Math.floorDiv(entry.getValue().size() - 1, 5) * 16 + 32;
         }
+
+        // 发射按钮能量显示
+        if (isCharging) graphics.drawString(font,
+                ModUtils.FormattedManaString(((double) this.chargeTicks / 20.0) * (this.chargeRate / 1000.0)),
+                CENTER_X - 20, BOTTOM_Y - 94, 0xFFFFFFFF);
+
+        // 法术卷轴制作菜单
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_paper_slot.png"),
+                sw - 80 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_arrow.png"),
+                sw - 64 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_scroll_slot.png"),
+                sw - 48 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
+    /**
+     * 鼠标滚动：当在左侧栏区域内时按行滚动并同步给 Menu。
+     */
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
         int sh = win.getGuiScaledHeight();
-
-        int CENTER_X = this.width / 2 - 1 - this.leftPos;
-        int BOTTOM_Y = sh - this.topPos;
 
         // 左侧法术列表区域（与 renderLabels 中的侧栏外框一致）
         int sideX0 = 17 - this.leftPos;
@@ -285,6 +347,30 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
+    @Override
+    /**
+     * 鼠标释放：若处于充能状态，则计算充能时长并发送释放数据包。
+     */
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean ret = super.mouseReleased(mouseX, mouseY, button);
+        if (this.isCharging) {
+            double chargeSec = Math.max(0, this.chargeTicks) / 20.0;
+
+            // 由服务端重建当前魔杖中的法术清单，这里只传递充能时间
+            java.util.List<ItemStack> spells = java.util.List.of();
+            var payload = new SpellReleasePacket(spells, chargeSec);
+            var connection = Minecraft.getInstance().getConnection();
+            if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
+
+            this.isCharging = false;
+            return true;
+        }
+        return ret;
+    }
+
+    /**
+     * 绘制一个法术视窗槽位：索引在容量内绘制普通槽，否则绘制越界槽。
+     */
     public void drawSpellSlot(GuiGraphics guiGraphics, int index, int x, int y) {
         List<ResourceLocation> numbers = List.of(
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_0.png"),
@@ -321,6 +407,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 纹理按钮：悬停/按下两态，回调触发。
+     */
     private static class ImageButtonWidget extends AbstractWidget {
         private final ResourceLocation normal;
         private final ResourceLocation pressed;
@@ -356,6 +445,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 侧栏互斥开关按钮。
+     */
     private static class SidebarToggleWidget extends AbstractWidget {
         private final ResourceLocation normal;
         private final ResourceLocation selectedTex;

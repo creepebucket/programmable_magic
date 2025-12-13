@@ -9,7 +9,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.items.spell.BaseSpellItem;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;

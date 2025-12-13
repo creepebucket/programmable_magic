@@ -1,10 +1,8 @@
-package org.creepebucket.programmable_magic.items.mana_cell;
+package org.creepebucket.programmable_magic.client.events;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -12,8 +10,10 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 import java.util.Map;
-import java.util.Objects;
+
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseManaCell;
+
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)

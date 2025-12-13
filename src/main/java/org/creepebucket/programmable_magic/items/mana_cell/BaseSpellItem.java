@@ -1,13 +1,7 @@
-package org.creepebucket.programmable_magic.items.spell;
+package org.creepebucket.programmable_magic.items.mana_cell;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-
-import java.util.List;
 
 public class BaseSpellItem extends Item {
     private final SpellItemLogic logic;

@@ -11,7 +11,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.glfw.GLFW;
-import org.creepebucket.programmable_magic.items.wand.BaseWand;
+import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 
 import java.util.Set;
 
@@ -50,12 +51,11 @@ public class CommonItemTooltipHandler {
             String mult = String.format("%.2f", wand.getManaMult());
             String slots = String.valueOf(wand.getSlots());
             // 充能速率（用 FormattedManaString，单位每秒）
-            double manaPerSec = wand.getChargeRate() / 1000.0; // 1 mana = 1 kJ
-            String energyPerSec = org.creepebucket.programmable_magic.ModUtils.FormattedManaString(manaPerSec);
+            String energyPerSec = ModUtils.formattedNumber(wand.getChargeRate());
 
             event.getToolTip().add(Component.literal("魔力修正 x" + mult).withStyle(ChatFormatting.BLUE));
             event.getToolTip().add(Component.literal("槽位数 " + slots).withStyle(ChatFormatting.YELLOW));
-            event.getToolTip().add(Component.literal("充能速率 " + energyPerSec + "/s").withStyle(ChatFormatting.GREEN));
+            event.getToolTip().add(Component.literal("充能速率 " + energyPerSec + "W").withStyle(ChatFormatting.GREEN));
         }
     }
 }
