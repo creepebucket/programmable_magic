@@ -4,6 +4,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
+import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
+import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.adjust_mod.BaseAdjustModLogic;
 import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
 import org.creepebucket.programmable_magic.spells.compute_mod.MathOperationsSpell;
@@ -45,6 +48,26 @@ public final class SpellUtils {
             this.mana = mana;
         }
     }
+
+    /**
+     * 从 SpellEntity 携带的插件物品构造插件实例列表（服务端）。
+     */
+    public static java.util.List<BasePlugin> getInstalledPlugins(SpellEntity entity) {
+        java.util.ArrayList<BasePlugin> list = new java.util.ArrayList<>();
+        if (entity == null) return list;
+        java.util.List<ItemStack> stacks = entity.getPluginItems();
+        if (stacks == null) return list;
+        for (ItemStack st : stacks) {
+            if (st == null || st.isEmpty()) continue;
+            var item = st.getItem();
+            if (!WandPluginRegistry.isPlugin(item)) continue;
+            var p = WandPluginRegistry.createPlugin(item);
+            if (p != null) list.add(p);
+        }
+        return list;
+    }
+
+    
 
     /**
      * 执行当前索引的法术一步，并返回执行结果。
@@ -155,6 +178,15 @@ public final class SpellUtils {
         // 使用匹配到的参数执行
         spellParams = matchedParams;
 
+        // 如果来自实体执行阶段（SpellEntity 已写入到 spellData），则触发插件回调
+        SpellEntity spellEntityRef = spellData.getCustomData("spell_entity", SpellEntity.class);
+        java.util.List<BasePlugin> plugins = java.util.List.of();
+        boolean enablePlugin = (spellEntityRef != null) && isExecutable(currentSpell);
+        if (enablePlugin) {
+            plugins = getInstalledPlugins(spellEntityRef);
+            for (BasePlugin p : plugins) { p.beforeSpellExecution(spellEntityRef, currentSpell, spellData, sequence, modifiers, spellParams); }
+        }
+
         // 检查魔力是否足够（任一系不足即判定不足）
         if (currentSpell instanceof BaseBaseSpellLogic && ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams).anyGreaterThan(myMana)) {
             return notEnoughMana(caster, currentSpell);
@@ -178,7 +210,13 @@ public final class SpellUtils {
         boolean shouldDiscard = false;
         try { shouldDiscard = Boolean.TRUE.equals(result.get("should_discard")); } catch (Exception ignored) { shouldDiscard = false; }
 
-        return new StepResult(shouldDiscard, successful, delayTicks, result, mana);
+        StepResult step = new StepResult(shouldDiscard, successful, delayTicks, result, mana);
+
+        if (enablePlugin) {
+            for (BasePlugin p : plugins) { p.afterSpellExecution(step, spellEntityRef, currentSpell, spellData, sequence, modifiers, spellParams); }
+        }
+
+        return step;
     }
 
     // 简单的按索引取节点（从 head 线性前进）

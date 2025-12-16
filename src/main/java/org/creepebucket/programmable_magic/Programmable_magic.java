@@ -30,6 +30,7 @@ public class Programmable_magic {
         ModRecipeSerializers.register(modEventBus);
         ModMenuTypes.register(modEventBus);
         SpellRegistry.registerSpells(modEventBus);
+        WandPluginRegistry.registerPlugins(modEventBus);
         ModEntityTypes.register(modEventBus);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {

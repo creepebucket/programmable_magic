@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.entities;
 
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -11,6 +12,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.ItemStack;
+import java.util.List;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -38,6 +41,7 @@ public class SpellEntity extends Entity {
     private int delayTicks = 0;
     private Player caster;
     private Mana mana;
+    private List<ItemStack> pluginItems = List.of();
     
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -55,6 +59,14 @@ public class SpellEntity extends Entity {
         this.setPos(caster.getX(), caster.getEyeY(), caster.getZ());
         this.mana = mana;
     }
+
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, Mana mana,
+                       List<ItemStack> plugins) {
+        this(level, caster, spellSequence, spellData, mana);
+        if (plugins != null) this.pluginItems = plugins;
+    }
+
+    public List<ItemStack> getPluginItems() { return pluginItems; }
     
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
@@ -97,13 +109,19 @@ public class SpellEntity extends Entity {
         // 更新SpellData
         spellData.setPosition(new Vec3(this.getX(), this.getY(), this.getZ()));
 
-        // 使用 SpellUtils 执行当前法术一步
+        // 使用 SpellUtils 执行当前法术一步（回调在 SpellUtils 内部处理）
         var step = SpellUtils.executeCurrentSpell(caster, spellData, spellSequence, currentSpell, mana);
+
 
         // 扣蓝
         mana.add(step.mana.negative());
 
         if (step.shouldDiscard) { this.discard(); return; }
+
+        // 如果法术执行成功，则进入下一法术
+        if (!step.successful) {
+            return;
+        }
 
         // 如果法术的 canExecute 判断不成立, 执行下一个法术
         // if (!currentSpell.canExecute(caster, spellData)) { currentSpell = currentSpell.getNextSpell(); this.tick(); return; }
@@ -116,10 +134,6 @@ public class SpellEntity extends Entity {
         // 如果法术重置了当前法术指针，则设置指针
         if (step.result.containsKey("current_spell")) { currentSpell = (SpellItemLogic) step.result.get("current_spell"); }
 
-        // 如果法术执行成功，则进入下一法术
-        if (!step.successful) {
-            return;
-        }
 
         this.tick();
     }
@@ -151,19 +165,28 @@ public class SpellEntity extends Entity {
     
     private void spawnParticles() {
         // 生成附魔台粒子效果
-        for (int i = 0; i < 3; i++) {
-            double offsetX = (this.random.nextDouble() - 0.5) * 0.5;
-            double offsetY = (this.random.nextDouble() - 0.5) * 0.5;
-            double offsetZ = (this.random.nextDouble() - 0.5) * 0.5;
-            
-            this.level().addParticle(
-                    ParticleTypes.EFFECT,
-                    this.getX() + offsetX,
-                    this.getY() + offsetY,
-                    this.getZ() + offsetZ,
-                    0.0, 0.0, 0.0
-            );
+        for (int i = 0; i < Math.floor(this.getDeltaMovement().length() * 3); i++) {
+            randomParticles(ParticleTypes.END_ROD, 3, 50, (double) i / 3);
+            randomParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, 3, 10, (double) i / 3);
         }
+    }
+
+    private void randomParticles(ParticleOptions options, double a, double b, double particleTick) {
+        // 依据随机方向与实体速度方向的夹角调整速度（越接近实体速度方向，粒子自身速度越低），并叠加实体自身速度
+        Vec3 v = this.getDeltaMovement();
+        Vec3 vDir = v.normalize();
+        Vec3 randDir = new Vec3(this.random.nextGaussian(), this.random.nextGaussian(), this.random.nextGaussian()).normalize();
+        double dot = randDir.dot(vDir); // [-1, 1]
+        double scale = Math.pow((1.0 - dot) / 2, a) / b; // 接近同向时趋近 0，反向时最大
+        Vec3 pv = randDir.scale(scale);
+
+        this.level().addParticle(
+                options,
+                this.getX() + this.getDeltaMovement().x * particleTick,
+                this.getY() + this.getDeltaMovement().y * particleTick,
+                this.getZ() + this.getDeltaMovement().z * particleTick,
+                pv.x, pv.y, pv.z
+        );
     }
 
     private void handleProjectileAttachHit() {

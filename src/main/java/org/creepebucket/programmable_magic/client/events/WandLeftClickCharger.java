@@ -11,6 +11,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.lwjgl.glfw.GLFW;
 
@@ -65,7 +66,13 @@ public class WandLeftClickCharger {
         } else if (charging) {
             double chargeSec = Math.max(0, chargeTicks) / 20.0;
             java.util.List<net.minecraft.world.item.ItemStack> spells = java.util.List.of();
-            var payload = new SpellReleasePacket(spells, chargeSec);
+            java.util.List<net.minecraft.world.item.ItemStack> plugins = new java.util.ArrayList<>();
+            {
+                net.minecraft.world.item.ItemStack wand = main.getItem() instanceof BaseWand ? main : off;
+                java.util.List<net.minecraft.world.item.ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
+                if (saved != null) for (var it : saved) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
+            }
+            var payload = new SpellReleasePacket(spells, chargeSec, plugins);
             var connection = mc.getConnection();
             if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
             charging = false;

@@ -45,8 +45,9 @@ public class ServerPacketHandler {
                     player.getName().getString(), spells.size());
 
                 LOGGER.info("开始创建 SpellLogic 实例");
-            // 创建法术逻辑实例并执行（服务端构造序列）
-            SpellLogic spellLogic = new SpellLogic(spells, player, charge);
+            // 创建法术逻辑实例并执行（服务端构造序列），附带插件列表
+            java.util.List<ItemStack> plugins = packet.plugins();
+            SpellLogic spellLogic = new SpellLogic(spells, player, charge, plugins);
                 LOGGER.info("SpellLogic 实例创建成功，开始执行法术");
                 
             spellLogic.execute();

@@ -52,10 +52,12 @@ public class CommonItemTooltipHandler {
             String slots = String.valueOf(wand.getSlots());
             // 充能速率（用 FormattedManaString，单位每秒）
             String energyPerSec = ModUtils.formattedNumber(wand.getChargeRate());
+            String pluginSlots = String.valueOf(wand.getPluginSlots());
 
             event.getToolTip().add(Component.literal("魔力修正 x" + mult).withStyle(ChatFormatting.BLUE));
             event.getToolTip().add(Component.literal("槽位数 " + slots).withStyle(ChatFormatting.YELLOW));
             event.getToolTip().add(Component.literal("充能速率 " + energyPerSec + "W").withStyle(ChatFormatting.GREEN));
+            event.getToolTip().add(Component.literal("插件槽位 " + pluginSlots).withStyle(ChatFormatting.AQUA));
         }
     }
 }

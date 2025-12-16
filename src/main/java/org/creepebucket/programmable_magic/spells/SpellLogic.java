@@ -39,6 +39,7 @@ public class SpellLogic {
     private SpellData spellData;
     private List<ItemStack> pending; // 待从背包扣除的真实物品（由占位符绑定）
     private double chargeSeconds = 0.0; // 按压时长（秒）
+    private List<ItemStack> pluginStacks = java.util.List.of();
     
     /**
      * 基础构造：传入法术物品与玩家。
@@ -68,6 +69,15 @@ public class SpellLogic {
     public SpellLogic(List<ItemStack> spellStacks, Player player, double chargeSeconds) {
         this(spellStacks, player);
         this.chargeSeconds = Math.max(0.0, chargeSeconds);
+    }
+
+    /**
+     * 含充能时间与插件列表的构造。
+     */
+    public SpellLogic(List<ItemStack> spellStacks, Player player, double chargeSeconds, List<ItemStack> pluginStacks) {
+        this(spellStacks, player);
+        this.chargeSeconds = Math.max(0.0, chargeSeconds);
+        this.pluginStacks = (pluginStacks != null) ? pluginStacks : java.util.List.of();
     }
     
     /**
@@ -201,7 +211,7 @@ public class SpellLogic {
         double supply = (manaMult == 0.0) ? chargedMana : chargedMana / manaMult; // 发射时除以魔杖倍率
         Mana initialMana = new Mana(supply, supply, supply, supply);
 
-        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData, initialMana);
+        SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData, initialMana, this.pluginStacks);
         LOGGER.debug("法术实体创建成功，实体ID: {}", entity.getId());
         
         return entity;

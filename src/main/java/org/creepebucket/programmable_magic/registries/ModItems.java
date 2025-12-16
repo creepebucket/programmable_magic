@@ -88,7 +88,7 @@ public class ModItems {
     public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
                     .stacksTo(64)
-                    .component(org.creepebucket.programmable_magic.registries.ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
+                    .component(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
                     .setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
@@ -98,7 +98,8 @@ public class ModItems {
                     new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
                     1.0,   // mana 倍率
                     1000,     // 槽位数
-                    4000.0 // 充能功率（W）
+                    4000.0, // 充能功率（W）
+                    3 // 插件槽位
             )
     );
 

@@ -20,6 +20,7 @@ public class BaseWand extends Item {
     private final double manaMult;
     private final int slots;
     private final double chargeRate;
+    private final int pluginSlots;
 
     /**
      * 构造一个魔杖实例。
@@ -28,11 +29,12 @@ public class BaseWand extends Item {
      * @param slots 法术槽位数量
      * @param chargeRate 充能功率（W）
      */
-    public BaseWand(Properties properties, double manaMult, int slots, double chargeRate) {
+    public BaseWand(Properties properties, double manaMult, int slots, double chargeRate, int pluginSlots) {
         super(properties);
         this.manaMult = manaMult;
         this.slots = slots;
         this.chargeRate = chargeRate;
+        this.pluginSlots = pluginSlots;
     }
 
     /**
@@ -47,6 +49,10 @@ public class BaseWand extends Item {
      * 获取充能功率（W）。
      */
     public double getChargeRate() { return chargeRate; }
+    /**
+     * 获取插件槽位数量。
+     */
+    public int getPluginSlots() { return pluginSlots; }
 
     @Override
     /**

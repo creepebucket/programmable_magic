@@ -58,5 +58,11 @@ public class ModDataComponents {
                     .persistent(Codec.list(ItemStack.CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
+    // 魔杖插件：玩家装配的插件物品列表（顺序即槽位顺序）
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_PLUGINS =
+            DATA_COMPONENTS.registerComponentType("wand_plugins", builder -> builder
+                    .persistent(Codec.list(ItemStack.CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
+
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }

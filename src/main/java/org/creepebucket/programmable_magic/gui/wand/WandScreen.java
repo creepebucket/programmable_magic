@@ -17,6 +17,9 @@ import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacke
 import org.creepebucket.programmable_magic.network.dataPackets.GuiDataPacket;
 import net.minecraft.util.Mth;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -137,6 +140,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
 
         // 初始化互斥状态并同步给 menu
         setSidebar(this.sidebar);
+
+        // 调用已安装插件的屏幕启动逻辑（传入各自渲染坐标）
+        invokePluginsScreenStartup();
     }
 
     /**
@@ -214,6 +220,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         this.renderTooltip(graphics, mouseX, mouseY);
+
+        // 插件自绘制逻辑
+        invokePluginsScreenRender(graphics);
     }
 
     @Override
@@ -309,6 +318,53 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
                 sw - 64 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
         graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_scroll_slot.png"),
                 sw - 48 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
+
+        // 插件槽可视化（使用统一槽纹理）
+        int pluginCount = this.menu.getPluginSlotCapacity();
+        int pluginX = sw - 24 - this.leftPos;
+        int pluginStartY = 10 - this.topPos;
+        for (int i = 0; i < pluginCount; i++) {
+            int yy = pluginStartY + i * 18;
+            graphics.blit(RenderPipelines.GUI_TEXTURED,
+                    ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
+                    pluginX - 1, yy, 0, 0, 16, 16, 16, 16);
+        }
+    }
+
+    private void invokePluginsScreenStartup() {
+        var win = Minecraft.getInstance().getWindow();
+        int sw = win.getGuiScaledWidth();
+        int x = sw - 24;
+        int startY = 10;
+        int n = this.menu.getPluginSlotCapacity();
+        for (int i = 0; i < n; i++) {
+            var st = this.menu.getPluginItem(i);
+            if (st == null || st.isEmpty()) continue;
+            var item = st.getItem();
+            if (!WandPluginRegistry.isPlugin(item)) continue;
+            var plugin = WandPluginRegistry.createPlugin(item);
+            if (plugin == null) continue;
+            int y = startY + i * 18;
+            plugin.screenStartupLogic(x, y, this);
+        }
+    }
+
+    private void invokePluginsScreenRender(GuiGraphics graphics) {
+        var win = Minecraft.getInstance().getWindow();
+        int sw = win.getGuiScaledWidth();
+        int x = sw - 24;
+        int startY = 10;
+        int n = this.menu.getPluginSlotCapacity();
+        for (int i = 0; i < n; i++) {
+            var st = this.menu.getPluginItem(i);
+            if (st == null || st.isEmpty()) continue;
+            var item = st.getItem();
+            if (!WandPluginRegistry.isPlugin(item)) continue;
+            var plugin = WandPluginRegistry.createPlugin(item);
+            if (plugin == null) continue;
+            int y = startY + i * 18;
+            plugin.screenRenderLogic(graphics, x, y, this);
+        }
     }
 
     @Override
@@ -358,7 +414,16 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
 
             // 由服务端重建当前魔杖中的法术清单，这里只传递充能时间
             java.util.List<ItemStack> spells = java.util.List.of();
-            var payload = new SpellReleasePacket(spells, chargeSec);
+            // 附带插件列表（从当前持有魔杖的数据组件读取）
+            java.util.List<net.minecraft.world.item.ItemStack> plugins = new java.util.ArrayList<>();
+            {
+                net.minecraft.world.item.ItemStack main = this.minecraft.player.getMainHandItem();
+                net.minecraft.world.item.ItemStack off = this.minecraft.player.getOffhandItem();
+                net.minecraft.world.item.ItemStack wand = main.getItem() instanceof BaseWand ? main : off;
+                java.util.List<net.minecraft.world.item.ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
+                if (saved != null) for (var it : saved) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
+            }
+            var payload = new SpellReleasePacket(spells, chargeSec, plugins);
             var connection = Minecraft.getInstance().getConnection();
             if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
 
