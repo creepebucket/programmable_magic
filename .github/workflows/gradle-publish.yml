@@ -8,18 +8,22 @@
 name: Gradle Package
 
 on:
-  [push]
+  push:
+    branches: [ "master" ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
     - name: Set up JDK 21
       uses: actions/setup-java@v4
       with:
@@ -27,12 +31,16 @@ jobs:
         distribution: 'temurin'
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
+        cache: gradle
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
+    - name: Make gradlew executable
+      run: chmod +x gradlew
+
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew --no-daemon --stacktrace build
 
     # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
     # the publishing section of your build.gradle
@@ -41,3 +49,24 @@ jobs:
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 计算_tag_与版本信息
+      id: meta
+      run: |
+        short_sha="${GITHUB_SHA::7}"
+        echo "short_sha=${short_sha}" >> "$GITHUB_OUTPUT"
+        echo "tag_name=auto-${short_sha}" >> "$GITHUB_OUTPUT"
+        echo "release_name=auto_build_${{ github.ref_name }}_${short_sha}" >> "$GITHUB_OUTPUT"
+
+    - name: 创建_发布并上传_构建产物
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.meta.outputs.tag_name }}
+        name: ${{ steps.meta.outputs.release_name }}
+        target_commitish: ${{ github.sha }}
+        prerelease: true
+        generate_release_notes: true
+        files: |
+          build/libs/*.jar
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
