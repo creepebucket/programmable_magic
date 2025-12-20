@@ -16,13 +16,18 @@ public class PluginSlot extends Slot {
     }
 
     @Override
+    /**
+     * 仅允许注册过的插件物品放入。
+     */
     public boolean mayPlace(ItemStack stack) {
-        return stack != null && WandPluginRegistry.isPlugin(stack.getItem()) && this.container.canPlaceItem(this.getSlotIndex(), stack);
+        return WandPluginRegistry.isPlugin(stack.getItem()) && this.container.canPlaceItem(this.getSlotIndex(), stack);
     }
 
     @Override
+    /**
+     * 默认允许拾取。
+     */
     public boolean mayPickup(Player player) {
         return super.mayPickup(player);
     }
 }
-

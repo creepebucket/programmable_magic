@@ -13,7 +13,7 @@ import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 /**
  * 最小魔杖基类：
  * - 右键（use）在服务端打开菜单，客户端由已注册的 Screen 渲染。
- * - 暴露法术倍率、槽位数、充能功率（W）三个属性供工具提示与法术逻辑使用。
+ * - 暴露法术倍率、法术槽位数、充能功率（W）、插件槽位数四个属性供工具提示与法术逻辑使用。
  */
 public class Wand extends Item {
 
@@ -28,6 +28,7 @@ public class Wand extends Item {
      * @param manaMult 魔力倍率（>1 提高消耗，<1 降低消耗）
      * @param slots 法术槽位数量
      * @param chargeRate 充能功率（W）
+     * @param pluginSlots 插件槽位数量
      */
     public Wand(Properties properties, double manaMult, int slots, double chargeRate, int pluginSlots) {
         super(properties);

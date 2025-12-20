@@ -16,15 +16,27 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
+/**
+ * 插件：法术槽视窗与控制按钮（左右翻页/清空/保存）。
+ * - screenStartupLogic：添加翻页/清除/保存按钮。
+ * - screenRenderLogic：绘制法术槽视窗格与序号。
+ * - menuLogic：在菜单中构建可偏移映射的法术槽位。
+ */
 public class SpellSlots extends BasePlugin{
-    public SpellSlots() { this.name = "spell_slots"; }
+    public SpellSlots() { this.pluginName = "spell_slots"; }
 
     @Override
+    /**
+     * 实体 tick：本插件无实体侧行为。
+     */
     public void onEntityTick(SpellEntity spellEntity) {
 
     }
 
     @Override
+    /**
+     * 屏幕初始化：添加法术槽控制按钮（上一页/清空/下一页/保存）。
+     */
     public void screenStartupLogic(int x, int y, WandScreen screen) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -39,8 +51,7 @@ public class SpellSlots extends BasePlugin{
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 34, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"),
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"), () -> {
-            int step = screen.computeStep();
-            screen.updateSpellIndex(-step);
+            screen.updateSpellIndex(-screen.computeStep());
             screen.sendMenuData(WandMenu.KEY_SPELL_OFFSET, screen.spellIndexOffset);
         }));
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 18, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
@@ -51,8 +62,7 @@ public class SpellSlots extends BasePlugin{
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X + 8 * spellSlotCount + 16, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"),
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"), () -> {
-            int step = screen.computeStep();
-            screen.updateSpellIndex(step);
+            screen.updateSpellIndex(screen.computeStep());
             screen.sendMenuData(WandMenu.KEY_SPELL_OFFSET, screen.spellIndexOffset);
         }));
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X + 8 * spellSlotCount, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
@@ -64,6 +74,9 @@ public class SpellSlots extends BasePlugin{
     }
 
     @Override
+    /**
+     * 屏幕渲染：按当前偏移绘制一行法术槽与其编号。
+     */
     public void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -82,6 +95,9 @@ public class SpellSlots extends BasePlugin{
     }
 
     @Override
+    /**
+     * 菜单布局：创建与屏幕长度相适配的一排 OffsetSlot（映射 wandInv）。
+     */
     public void menuLogic(int x, int y, WandMenu menu) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -97,16 +113,25 @@ public class SpellSlots extends BasePlugin{
     }
 
     @Override
+    /**
+     * 菜单 tick：本插件无菜单侧持续行为。
+     */
     public void menuTick(int x, int y, WandMenu menu) {
 
     }
 
     @Override
+    /**
+     * 执行前：不更改法术参数。
+     */
     public void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }
 
     @Override
+    /**
+     * 执行后：不更改执行结果。
+     */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }

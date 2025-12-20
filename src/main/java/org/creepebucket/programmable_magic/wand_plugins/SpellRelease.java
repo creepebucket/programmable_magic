@@ -16,17 +16,26 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
+/**
+ * 插件：法术释放（按下释放按钮进入充能，松开后发送释放数据包）。
+ * - screenStartupLogic：添加发射按钮并进入充能态。
+ * - screenRenderLogic：在充能时绘制能量读数。
+ */
 public class SpellRelease extends BasePlugin{
-    public SpellRelease() {
-        this.name = "spell_release";
-    }
+    public SpellRelease() { this.pluginName = "spell_release"; }
 
     @Override
+    /**
+     * 实体 tick：本插件无实体侧行为。
+     */
     public void onEntityTick(SpellEntity spellEntity) {
 
     }
 
     @Override
+    /**
+     * 屏幕初始化：添加发射按钮，按下进入充能状态。
+     */
     public void screenStartupLogic(int x, int y, WandScreen screen) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -46,6 +55,9 @@ public class SpellRelease extends BasePlugin{
     }
 
     @Override
+    /**
+     * 屏幕渲染：若处于充能态，绘制实时能量数值。
+     */
     public void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -61,21 +73,33 @@ public class SpellRelease extends BasePlugin{
     }
 
     @Override
+    /**
+     * 菜单布局：本插件不参与菜单侧布局。
+     */
     public void menuLogic(int x, int y, WandMenu menu) {
 
     }
 
     @Override
+    /**
+     * 菜单 tick：本插件无菜单侧持续行为。
+     */
     public void menuTick(int x, int y, WandMenu menu) {
 
     }
 
     @Override
+    /**
+     * 执行前：不更改法术参数。
+     */
     public void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }
 
     @Override
+    /**
+     * 执行后：不更改执行结果。
+     */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }

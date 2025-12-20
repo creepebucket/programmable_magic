@@ -67,7 +67,7 @@ public class WandMenu extends AbstractContainerMenu {
     private final java.util.List<Slot> pluginSlots = new java.util.ArrayList<>();
 
     // 卷轴制作：左纸右出卷轴
-    private final SimpleContainer scrollInv = new SimpleContainer(2);
+    private final SimpleContainer scrollInventory = new SimpleContainer(2);
     private Slot scrollInputSlot;
     private Slot scrollOutputSlot;
     
@@ -78,8 +78,7 @@ public class WandMenu extends AbstractContainerMenu {
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         super(ModMenuTypes.WAND_MENU.get(), containerId);
         this.playerInv = playerInv;
-        int ord = 0;
-        try { ord = extra.readVarInt(); } catch (Exception ignored) {}
+        int ord = extra.readVarInt();
         this.wandHand = (ord >= 0 && ord < InteractionHand.values().length) ? InteractionHand.values()[ord] : InteractionHand.MAIN_HAND;
         this.wandInv = new SimpleContainer(resolveWandSlots());
         this.pluginInv = new SimpleContainer(resolvePluginSlots());
@@ -119,7 +118,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     public void slotsChanged(Container container) {
         super.slotsChanged(container);
-        if (container == this.wandInv || container == this.scrollInv) {
+        if (container == this.wandInv || container == this.scrollInventory) {
             updateScrollOutput();
             if (container == this.wandInv) saveWandInvToStack(this.playerInv.player);
         } else if (container == this.pluginInv) {
@@ -147,11 +146,10 @@ public class WandMenu extends AbstractContainerMenu {
                 slot.set(ItemStack.EMPTY);
             } else if (slot instanceof SupplySlot) {
                 // 供应槽：只向法术存储中“最左侧”的空位放入 1 个并立即返回
-                ItemStack one = in.copy();
-                one.setCount(1);
-                int n = this.wandInv.getContainerSize();
-                for (int i = 0; i < n; i++) {
+                for (int i = 0; i < this.wandInv.getContainerSize(); i++) {
                     if (this.wandInv.getItem(i).isEmpty()) {
+                        ItemStack one = in.copy();
+                        one.setCount(1);
                         this.wandInv.setItem(i, one);
                         this.slotsChanged(this.wandInv);
                         return ItemStack.EMPTY;
@@ -159,9 +157,10 @@ public class WandMenu extends AbstractContainerMenu {
                 }
                 return ItemStack.EMPTY;
             } else {
-                int start = this.spellStartIndex >= 0 ? this.spellStartIndex : 36;
-                int end = this.spellEndIndex >= 0 ? this.spellEndIndex : this.slots.size();
-                if (!this.moveItemStackTo(in, start, end, false)) return ItemStack.EMPTY;
+                if (!this.moveItemStackTo(in,
+                        this.spellStartIndex >= 0 ? this.spellStartIndex : 36,
+                        this.spellEndIndex >= 0 ? this.spellEndIndex : this.slots.size(),
+                        false)) return ItemStack.EMPTY;
             }
 
             if (in.isEmpty()) slot.set(ItemStack.EMPTY); else slot.setChanged();
@@ -182,8 +181,8 @@ public class WandMenu extends AbstractContainerMenu {
     public void setClientData(String key, Object value) {
         clientData.put(key, value);
 
-        if (KEY_GUI_LEFT.equals(key)) { this.guiLeft = (Integer) value; if (slotsBuilt) refreshSupplySlots(true); }
-        else if (KEY_GUI_TOP.equals(key)) { this.guiTop = (Integer) value; if (slotsBuilt) refreshSupplySlots(true); }
+        if (KEY_GUI_LEFT.equals(key)) { this.guiLeft = (Integer) value; if (slotsBuilt) refreshSupplySlots(); }
+        else if (KEY_GUI_TOP.equals(key)) { this.guiTop = (Integer) value; if (slotsBuilt) refreshSupplySlots(); }
         else if (KEY_SPELL_OFFSET.equals(key)) {
             int visible = (this.spellSlots != null) ? this.spellSlots.size() : 25;
             int maxOffset = Math.max(0, this.wandInv.getContainerSize() - visible);
@@ -197,10 +196,10 @@ public class WandMenu extends AbstractContainerMenu {
         } else if (KEY_SPELL_SIDEBAR.equals(key)) {
             this.selectedSidebar = (String) value;
             this.supplyScrollRow = 0;
-            if (slotsBuilt) refreshSupplySlots(true);
+            if (slotsBuilt) refreshSupplySlots();
         } else if (KEY_SUPPLY_SCROLL.equals(key)) {
-            try { this.supplyScrollRow = (Integer) value; } catch (Exception ignored) {}
-            if (slotsBuilt) refreshSupplySlots(true);
+            this.supplyScrollRow = (Integer) value;
+            if (slotsBuilt) refreshSupplySlots();
         } else if (KEY_SAVE.equals(key)) {
             saveWandInvToSavedStacks(this.playerInv.player);
         }
@@ -237,11 +236,10 @@ public class WandMenu extends AbstractContainerMenu {
 
             // 在法术槽右侧添加两个槽位：左输入纸，右输出卷轴
             int spellY = sh + MathUtils.SPELL_SLOT_OFFSET - (compactMode ? 18 : 0);
-            int rightMostX = centerX - spellSlotCount * 8 + (spellSlotCount - 1) * 16 - 1;
             int inputX = sw - 80;
             int outputX = sw - 48;
-            this.scrollInputSlot = this.addSlot(new ScrollInputSlot(this.scrollInv, 0, inputX - this.guiLeft, spellY - this.guiTop));
-            this.scrollOutputSlot = this.addSlot(new ScrollOutputSlot(this, this.scrollInv, 1, outputX - this.guiLeft, spellY - this.guiTop));
+            this.scrollInputSlot = this.addSlot(new ScrollInputSlot(this.scrollInventory, 0, inputX - this.guiLeft, spellY - this.guiTop));
+            this.scrollOutputSlot = this.addSlot(new ScrollOutputSlot(this, this.scrollInventory, 1, outputX - this.guiLeft, spellY - this.guiTop));
             updateScrollOutput();
 
             slotsBuilt = true;
@@ -292,7 +290,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     public double getChargeRate() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof Wand bw) return bw.getChargeRate();
+        if (st.getItem() instanceof Wand bw) return bw.getChargeRate();
         return 0.0;
     }
 
@@ -301,7 +299,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private int resolveWandSlots() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof Wand bw) return bw.getSlots();
+        if (st.getItem() instanceof Wand bw) return bw.getSlots();
         return 25;
     }
 
@@ -310,7 +308,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private int resolvePluginSlots() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof Wand bw) return bw.getPluginSlots();
+        if (st.getItem() instanceof Wand bw) return bw.getPluginSlots();
         return 0;
     }
 
@@ -327,7 +325,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private void loadWandInvFromStack() {
         ItemStack st = getWandStack();
-        List<ItemStack> saved = st != null ? st.get(ModDataComponents.WAND_STACKS_SMALL.get()) : null;
+        List<ItemStack> saved = st.get(ModDataComponents.WAND_STACKS_SMALL.get());
         int n = this.wandInv.getContainerSize();
         for (int i = 0; i < n; i++) {
             ItemStack it = (saved != null && i < saved.size()) ? saved.get(i) : ItemStack.EMPTY;
@@ -340,7 +338,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private void loadPluginsFromStack() {
         ItemStack st = getWandStack();
-        List<ItemStack> saved = st != null ? st.get(ModDataComponents.WAND_PLUGINS.get()) : null;
+        List<ItemStack> saved = st.get(ModDataComponents.WAND_PLUGINS.get());
         int n = this.pluginInv.getContainerSize();
         for (int i = 0; i < n; i++) {
             ItemStack it = (saved != null && i < saved.size()) ? saved.get(i) : ItemStack.EMPTY;
@@ -354,7 +352,7 @@ public class WandMenu extends AbstractContainerMenu {
     private void saveWandInvToStack(Player player) {
         if (player.level().isClientSide) return;
         ItemStack st = getWandStack();
-        if (st == null || st.isEmpty()) return;
+        if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
         var list = new ArrayList<ItemStack>(n);
         for (int i = 0; i < n; i++) if (!this.wandInv.getItem(i).isEmpty()) list.add(this.wandInv.getItem(i));
@@ -367,7 +365,7 @@ public class WandMenu extends AbstractContainerMenu {
     private void savePluginsToStack(Player player) {
         if (player.level().isClientSide) return;
         ItemStack st = getWandStack();
-        if (st == null || st.isEmpty()) return;
+        if (st.isEmpty()) return;
         int n = this.pluginInv.getContainerSize();
         var list = new ArrayList<ItemStack>(n);
         for (int i = 0; i < n; i++) if (!this.pluginInv.getItem(i).isEmpty()) list.add(this.pluginInv.getItem(i));
@@ -380,7 +378,7 @@ public class WandMenu extends AbstractContainerMenu {
     private void saveWandInvToSavedStacks(Player player) {
         if (player.level().isClientSide) return;
         ItemStack st = getWandStack();
-        if (st == null || st.isEmpty()) return;
+        if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
         var list = new ArrayList<ItemStack>(n);
         for (int i = 0; i < n; i++) if (!this.wandInv.getItem(i).isEmpty()) list.add(this.wandInv.getItem(i).copy());
@@ -452,11 +450,17 @@ public class WandMenu extends AbstractContainerMenu {
     /**
      * 刷新供应槽：禁用旧槽并重建可见区域。
      */
-    private void refreshSupplySlots(boolean rebuildLayout) {
+    /**
+     * 刷新供应槽：重算当前侧栏物品并更新映射。
+     */
+    private void refreshSupplySlots() {
         supplyItems = computeSupplyItemsForCurrentSidebar();
         updateSupplySlotMapping();
     }
 
+    /**
+     * 将可见网格行列映射到实际数据索引，并设置槽位激活状态。
+     */
     public void updateSupplySlotMapping() {
         int visibleRows;
         {
@@ -514,15 +518,14 @@ public class WandMenu extends AbstractContainerMenu {
     public SupplySlot addSupplySlotConverted(int supplyIndex, int screenX, int screenY) {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
-        var s = new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems);
-        return (SupplySlot) this.addSlot(s);
+        return (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
     }
 
     /**
      * 生成卷轴输出：当左侧为纸张时，将 wandInv 非空项复制到右侧卷轴。
      */
     private void updateScrollOutput() {
-        ItemStack in = this.scrollInv.getItem(0);
+        ItemStack in = this.scrollInventory.getItem(0);
         if (in != null && !in.isEmpty() && in.is(Items.PAPER)) {
             // 构建一个卷轴，内含当前 wandInv 非空条目
             java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
@@ -533,9 +536,9 @@ public class WandMenu extends AbstractContainerMenu {
             }
             ItemStack scroll = ModItems.SPELL_SCROLL.get().getDefaultInstance();
             scroll.set(ModDataComponents.SPELL_SCROLL_STACKS.get(), list);
-            this.scrollInv.setItem(1, scroll);
+            this.scrollInventory.setItem(1, scroll);
         } else {
-            this.scrollInv.setItem(1, ItemStack.EMPTY);
+            this.scrollInventory.setItem(1, ItemStack.EMPTY);
         }
         this.broadcastChanges();
     }
@@ -552,16 +555,15 @@ public class WandMenu extends AbstractContainerMenu {
         int startY = 10; // 顶部内边距
         for (int i = 0; i < count; i++) {
             int y = startY + i * 18; // 竖向排列
-            pluginSlots.add(addPluginSlotConverted(i, x, y));
+            int cx = x - this.guiLeft;
+            int cy = y - this.guiTop;
+            pluginSlots.add(this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy)));
         }
     }
 
-    private Slot addPluginSlotConverted(int index, int screenX, int screenY) {
-        int cx = screenX - this.guiLeft;
-        int cy = screenY - this.guiTop;
-        return this.addSlot(new PluginSlot(this.pluginInv, index, cx, cy));
-    }
-
+    /**
+     * 供 Screen 调用：返回指定插件槽位的当前物品。
+     */
     /**
      * 供 Screen 调用：返回指定插件槽位的当前物品。
      */

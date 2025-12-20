@@ -21,30 +21,45 @@ import java.util.Map;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
+/**
+ * 插件：左侧法术供应栏（分类选择 + 内容滚动）。
+ * - screenStartupLogic：创建四个互斥侧栏切换按钮。
+ * - screenRenderLogic：按分类绘制分组标题与 5 列网格槽背景。
+ * - menuLogic：在菜单中构建可滚动映射的供应槽位并初始化映射。
+ */
 public class SpellSupply extends BasePlugin{
-    public SpellSupply() { this.name = "spell_supply"; }
+    public SpellSupply() { this.pluginName = "spell_supply"; }
 
     @Override
+    /**
+     * 实体 tick：本插件无实体侧行为。
+     */
     public void onEntityTick(SpellEntity spellEntity) {
 
     }
 
     @Override
+    /**
+     * 屏幕初始化：创建四个互斥的侧栏切换按钮。
+     */
     public void screenStartupLogic(int x, int y, WandScreen screen) {
         // 侧栏（互斥）
-        var computeTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute.png");
-        var computePressedTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute_pressed.png");
-        var adjustTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust.png");
-        var adjustPressedTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust_pressed.png");
-        var controlTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control.png");
-        var controlPressedTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control_pressed.png");
-        var baseTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base.png");
-        var basePressedTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base_pressed.png");
-
-        screen.sidebarCompute = new WandScreen.SidebarToggleWidget(0, 8, 16, 48, computeTex, computePressedTex, () -> screen.setSidebar("compute"));
-        screen.sidebarAdjust = new WandScreen.SidebarToggleWidget(0, 48 + 8, 16, 48, adjustTex, adjustPressedTex, () -> screen.setSidebar("adjust"));
-        screen.sidebarControl = new WandScreen.SidebarToggleWidget(0, 2 * 48 + 8, 16, 48, controlTex, controlPressedTex, () -> screen.setSidebar("control"));
-        screen.sidebarBase = new WandScreen.SidebarToggleWidget(0, 3 * 48 + 8, 16, 48, baseTex, basePressedTex, () -> screen.setSidebar("base"));
+        screen.sidebarCompute = new WandScreen.SidebarToggleWidget(0, 8, 16, 48,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute_pressed.png"),
+                () -> screen.setSidebar("compute"));
+        screen.sidebarAdjust = new WandScreen.SidebarToggleWidget(0, 48 + 8, 16, 48,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust_pressed.png"),
+                () -> screen.setSidebar("adjust"));
+        screen.sidebarControl = new WandScreen.SidebarToggleWidget(0, 2 * 48 + 8, 16, 48,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control_pressed.png"),
+                () -> screen.setSidebar("control"));
+        screen.sidebarBase = new WandScreen.SidebarToggleWidget(0, 3 * 48 + 8, 16, 48,
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base.png"),
+                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base_pressed.png"),
+                () -> screen.setSidebar("base"));
 
         screen.addRenderableWidget(screen.sidebarCompute);
         screen.addRenderableWidget(screen.sidebarAdjust);
@@ -53,21 +68,16 @@ public class SpellSupply extends BasePlugin{
     }
 
     @Override
+    /**
+     * 屏幕渲染：绘制法术侧栏外框、分组标题与网格槽背景。
+     */
     public void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen) {
         var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
         int sh = win.getGuiScaledHeight();
-
-        int CENTER_X = screen.width / 2 - 1 - screen.getGuiLeft();
-        int BOTTOM_Y = sh - screen.getGuiTop();
 
         // 法术侧栏
         guiGraphics.fill(17 - screen.getGuiLeft(), -screen.getGuiTop(), 17 - screen.getGuiLeft() + 1, sh - 16, 0xFFFFFFFF);
         guiGraphics.fill(17 + 82 - screen.getGuiLeft(), -screen.getGuiTop(), 17 + 82 - screen.getGuiLeft() + 1, sh - 16, 0xFFFFFFFF);
-
-        int spellSlotCount = Math.floorDiv(sw - 200, 16) - 4;
-        boolean compactMode = spellSlotCount <= 16;
-        int compactModeYOffset = compactMode ? 18 : 0; // 当物品栏与法术侧栏重叠时调整位置
 
         // 左侧法术选择菜单
         Map<Component, List<ItemStack>> spells = SpellUtils.getSpellsGroupedBySubCategory(SpellUtils.stringSpellTypeMap.get(screen.sidebar));
@@ -93,6 +103,9 @@ public class SpellSupply extends BasePlugin{
     }
 
     @Override
+    /**
+     * 菜单布局：固定 5 列可见网格，创建 SupplySlot 后初始化一次映射。
+     */
     public void menuLogic(int x, int y, WandMenu menu) {
         menu.supplyItems = menu.computeSupplyItemsForCurrentSidebar();
 
@@ -121,16 +134,25 @@ public class SpellSupply extends BasePlugin{
     }
 
     @Override
+    /**
+     * 菜单 tick：本插件无菜单侧持续行为。
+     */
     public void menuTick(int x, int y, WandMenu menu) {
 
     }
 
     @Override
+    /**
+     * 执行前：不更改法术参数。
+     */
     public void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }
 
     @Override
+    /**
+     * 执行后：不更改执行结果。
+     */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
     }

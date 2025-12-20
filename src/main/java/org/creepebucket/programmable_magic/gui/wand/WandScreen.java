@@ -239,6 +239,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 调用所有已安装插件的屏幕初始化逻辑（用于创建控件）。
+     */
     private void invokePluginsScreenStartup() {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -257,6 +260,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 调用所有已安装插件的屏幕渲染逻辑（用于自绘制）。
+     */
     private void invokePluginsScreenRender(GuiGraphics graphics) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -464,6 +470,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
+    /**
+     * 向屏幕添加可渲染组件（透明转发父类实现，便于外部统一调用）。
+     */
     public <T extends GuiEventListener & Renderable & NarratableEntry> T addRenderableWidget(T widget) {
         return super.addRenderableWidget(widget);
     }
