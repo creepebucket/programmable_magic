@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.wand_plugins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.MathUtils;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
@@ -23,7 +24,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  * - menuLogic：在菜单中构建可偏移映射的法术槽位。
  */
 public class SpellSlots extends BasePlugin{
-    public SpellSlots() { this.pluginName = "spell_slots"; }
+    private final int tier;
+    public SpellSlots() { this(1); }
+    public SpellSlots(int tier) { this.tier = Math.max(1, tier); this.pluginName = "spell_slots_t" + this.tier; }
 
     @Override
     /**
@@ -95,6 +98,11 @@ public class SpellSlots extends BasePlugin{
     }
 
     @Override
+    public void screenTick(int x, int y, WandScreen screen) {
+        // 本插件不做额外 tick 行为
+    }
+
+    @Override
     /**
      * 菜单布局：创建与屏幕长度相适配的一排 OffsetSlot（映射 wandInv）。
      */
@@ -134,5 +142,14 @@ public class SpellSlots extends BasePlugin{
      */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
+    }
+
+    @Override
+    /**
+     * 数值调整：按等级增加法术槽位数。
+     * 等级 = 物品堆叠数量。
+     */
+    public void adjustWandValues(WandValues values, net.minecraft.world.item.ItemStack pluginStack) {
+        values.spellSlots += (int) (64 * Math.pow(2, this.tier));
     }
 }

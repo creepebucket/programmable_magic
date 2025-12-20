@@ -95,10 +95,8 @@ public class ModItems {
     public static final DeferredItem<Wand> WAND = ITEMS.register(
             "rg_alloy_wand", registryName -> new Wand(
                     new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
-                    1.0,   // mana 倍率
-                    1000,     // 槽位数
-                    4000.0, // 充能功率（W）
-                    3 // 插件槽位
+                    1000, // 法术槽位最大数量（有效容量由插件控制）
+                    5     // 插件槽位最大数量
             )
     );
 

@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.wand_plugins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
@@ -22,7 +23,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  * - screenRenderLogic：在充能时绘制能量读数。
  */
 public class SpellRelease extends BasePlugin{
-    public SpellRelease() { this.pluginName = "spell_release"; }
+    private final int tier;
+    public SpellRelease() { this(1); }
+    public SpellRelease(int tier) { this.tier = Math.max(1, tier); this.pluginName = "spell_release_t" + this.tier; }
 
     @Override
     /**
@@ -49,8 +52,7 @@ public class SpellRelease extends BasePlugin{
         // 法术释放
         var releaseTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 112 / 2, sh - 100 - compactModeYOffset, 112, 16, releaseTex, releaseTex, () -> {
-            screen.isCharging = true;
-            screen.chargeTicks = 0; // 充能开始时重置到0，由 containerTick 每tick自增
+            screen.isCharging = true; // 进入充能态，具体每tick自增由 Screen.containerTick 执行
         }));
     }
 
@@ -68,8 +70,13 @@ public class SpellRelease extends BasePlugin{
 
         // 发射按钮能量显示
         if (screen.isCharging) guiGraphics.drawString(screen.getFont(),
-                ModUtils.FormattedManaString(((double) screen.chargeTicks / 20.0) * (screen.chargeRate / 1000.0)),
+                ModUtils.FormattedManaString(((double) screen.chargeTicks / 20.0) * (screen.getMenuChargeRate() / 1000.0)),
                 CENTER_X - 20, BOTTOM_Y - 94, 0xFFFFFFFF);
+    }
+
+    @Override
+    public void screenTick(int x, int y, WandScreen screen) {
+        // 本插件不做额外 tick 行为
     }
 
     @Override
@@ -102,5 +109,14 @@ public class SpellRelease extends BasePlugin{
      */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
+    }
+
+    @Override
+    /**
+     * 数值调整：按等级提升充能功率（W）。
+     * 等级 = 物品堆叠数量。
+     */
+    public void adjustWandValues(WandValues values, net.minecraft.world.item.ItemStack pluginStack) {
+        values.chargeRateW += 4000 * Math.pow(8, this.tier);
     }
 }

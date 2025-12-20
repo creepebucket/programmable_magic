@@ -12,6 +12,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.lwjgl.glfw.GLFW;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.ModUtils;
 
 import java.util.Set;
@@ -48,11 +50,14 @@ public class CommonItemTooltipHandler {
 
         // 对于所有魔杖（Wand），永远在底部追加绿色属性说明
         if (event.getItemStack().getItem() instanceof Wand wand) {
-            String mult = String.format("%.2f", wand.getManaMult());
-            String slots = String.valueOf(wand.getSlots());
-            // 充能速率（用 FormattedManaString，单位每秒）
-            String energyPerSec = ModUtils.formattedNumber(wand.getChargeRate());
+            java.util.List<net.minecraft.world.item.ItemStack> plugins = event.getItemStack().get(ModDataComponents.WAND_PLUGINS.get());
+            var values = ModUtils.computeWandValues(plugins);
+            int slotsCap = (int) Math.floor(values.spellSlots);
+            String slots = String.valueOf(slotsCap);
             String pluginSlots = String.valueOf(wand.getPluginSlots());
+
+            String mult = String.format("%.2f", values.manaMult);
+            String energyPerSec = ModUtils.formattedNumber(values.chargeRateW);
 
             event.getToolTip().add(Component.literal("魔力修正 x" + mult).withStyle(ChatFormatting.BLUE));
             event.getToolTip().add(Component.literal("槽位数 " + slots).withStyle(ChatFormatting.YELLOW));

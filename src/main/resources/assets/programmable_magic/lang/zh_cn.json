@@ -221,6 +221,19 @@
   "item.programmable_magic.rg_alloy_wand": "红石-金合金魔杖",
   "item.programmable_magic.spell_scroll": "法术卷轴",
 
+  "item.programmable_magic.spell_display_compute_nearest_entity": "法术：最近实体",
+
+  "item.programmable_magic.wand_plugin_spell_slots_t1": "插件：法术槽 I",
+  "item.programmable_magic.wand_plugin_spell_slots_t2": "插件：法术槽 II",
+  "item.programmable_magic.wand_plugin_spell_slots_t3": "插件：法术槽 III",
+  "item.programmable_magic.wand_plugin_spell_supply_t1": "插件：法术供应 I",
+  "item.programmable_magic.wand_plugin_spell_supply_t2": "插件：法术供应 II",
+  "item.programmable_magic.wand_plugin_spell_supply_t3": "插件：法术供应 III",
+  "item.programmable_magic.wand_plugin_spell_release_t1": "插件：法术释放 I",
+  "item.programmable_magic.wand_plugin_spell_release_t2": "插件：法术释放 II",
+  "item.programmable_magic.wand_plugin_spell_release_t3": "插件：法术释放 III",
+  "item.programmable_magic.wand_plugin_auto_charge": "插件：自动充能",
+
   "block.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
   "item.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
   "itemGroup.programmable_magic.main": "Programmable Magic",

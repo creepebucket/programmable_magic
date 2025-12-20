@@ -24,6 +24,7 @@ import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ public class WandMenu extends AbstractContainerMenu {
     public int spellEndIndex = -1;
     private String selectedSidebar = "compute";
 
-    public final SimpleContainer wandInv;
+    public final ResizableContainer wandInv;
     private final InteractionHand wandHand;
     private final SimpleContainer supplyInv = new SimpleContainer(0);
     public final java.util.List<SupplySlot> supplySlots = new java.util.ArrayList<>();
@@ -80,10 +81,11 @@ public class WandMenu extends AbstractContainerMenu {
         this.playerInv = playerInv;
         int ord = extra.readVarInt();
         this.wandHand = (ord >= 0 && ord < InteractionHand.values().length) ? InteractionHand.values()[ord] : InteractionHand.MAIN_HAND;
-        this.wandInv = new SimpleContainer(resolveWandSlots());
+        this.wandInv = new ResizableContainer(resolveWandSlots());
         this.pluginInv = new SimpleContainer(resolvePluginSlots());
         loadWandInvFromStack();
         loadPluginsFromStack();
+        updateWandCapacityFromPlugins();
     }
 
     /**
@@ -100,10 +102,11 @@ public class WandMenu extends AbstractContainerMenu {
         super(ModMenuTypes.WAND_MENU.get(), containerId);
         this.playerInv = playerInv;
         this.wandHand = hand;
-        this.wandInv = new SimpleContainer(resolveWandSlots());
+        this.wandInv = new ResizableContainer(resolveWandSlots());
         this.pluginInv = new SimpleContainer(resolvePluginSlots());
         loadWandInvFromStack();
         loadPluginsFromStack();
+        updateWandCapacityFromPlugins();
     }
 
     @Override
@@ -123,7 +126,13 @@ public class WandMenu extends AbstractContainerMenu {
             if (container == this.wandInv) saveWandInvToStack(this.playerInv.player);
         } else if (container == this.pluginInv) {
             savePluginsToStack(this.playerInv.player);
-            invokePluginMenuLogic();
+            applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
+            updateWandCapacityFromPlugins();
+            int visible = (this.spellSlots != null) ? this.spellSlots.size() : 25;
+            int maxOffset = Math.max(0, this.wandInv.getContainerSize() - visible);
+            this.spellIndexOffset = Mth.clamp(this.spellIndexOffset, 0, maxOffset);
+            this.slotsChanged(this.wandInv);
+            this.broadcastChanges();
         }
     }
 
@@ -137,6 +146,11 @@ public class WandMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack ret = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
+        // 禁用主手槽位的 shift 快速移动（通过对象引用比对主手物品）
+        if (slot != null && slot.container == this.playerInv) {
+            ItemStack main = this.playerInv.player.getMainHandItem();
+            if (!main.isEmpty() && slot.getItem() == main) return ItemStack.EMPTY;
+        }
         if (slot != null && slot.hasItem()) {
             ItemStack in = slot.getItem();
             ret = in.copy();
@@ -253,7 +267,7 @@ public class WandMenu extends AbstractContainerMenu {
 
         // 界面坐标变化时，调用插件 Menu 逻辑一次
         if (slotsBuilt && (KEY_GUI_LEFT.equals(key) || KEY_GUI_TOP.equals(key))) {
-            invokePluginMenuLogic();
+            applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
         }
     }
 
@@ -289,9 +303,14 @@ public class WandMenu extends AbstractContainerMenu {
      * 返回魔杖充能功率（W）。
      */
     public double getChargeRate() {
-        ItemStack st = getWandStack();
-        if (st.getItem() instanceof Wand bw) return bw.getChargeRate();
-        return 0.0;
+        java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
+        int n = this.pluginInv.getContainerSize();
+        for (int i = 0; i < n; i++) {
+            ItemStack it = this.pluginInv.getItem(i);
+            if (it != null && !it.isEmpty()) list.add(it);
+        }
+        var values = ModUtils.computeWandValues(list);
+        return values.chargeRateW;
     }
 
     /**
@@ -300,7 +319,7 @@ public class WandMenu extends AbstractContainerMenu {
     private int resolveWandSlots() {
         ItemStack st = getWandStack();
         if (st.getItem() instanceof Wand bw) return bw.getSlots();
-        return 25;
+        return 1000;
     }
 
     /**
@@ -344,6 +363,21 @@ public class WandMenu extends AbstractContainerMenu {
             ItemStack it = (saved != null && i < saved.size()) ? saved.get(i) : ItemStack.EMPTY;
             this.pluginInv.setItem(i, it);
         }
+    }
+
+    /**
+     * 根据插件聚合结果更新法术容器有效容量。
+     */
+    private void updateWandCapacityFromPlugins() {
+        java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
+        int n = this.pluginInv.getContainerSize();
+        for (int i = 0; i < n; i++) {
+            ItemStack it = this.pluginInv.getItem(i);
+            if (it != null && !it.isEmpty()) list.add(it);
+        }
+        var values = ModUtils.computeWandValues(list);
+        int cap = Math.max(0, (int) Math.floor(values.spellSlots));
+        this.wandInv.setLimit(cap);
     }
 
     /**
@@ -400,6 +434,14 @@ public class WandMenu extends AbstractContainerMenu {
      * 供应槽的点击行为特殊处理：若手上有物品则清空（模拟创造删除）。
      */
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        // 仅禁用“主手槽位”的点击交互（通过对象引用比对主手物品），其它不限制
+        if (slotId >= 0 && slotId < this.slots.size()) {
+            Slot s = this.slots.get(slotId);
+            if (s != null && s.container == this.playerInv) {
+                ItemStack main = this.playerInv.player.getMainHandItem();
+                if (!main.isEmpty() && s.getItem() == main) return;
+            }
+        }
         if (slotId >= 0 && slotId < this.slots.size()) {
             Slot s = this.slots.get(slotId);
             if (s instanceof SupplySlot) {
@@ -555,7 +597,7 @@ public class WandMenu extends AbstractContainerMenu {
         int startY = 10; // 顶部内边距
         for (int i = 0; i < count; i++) {
             int y = startY + i * 18; // 竖向排列
-            int cx = x - this.guiLeft;
+            int cx = x - this.guiLeft - 1; // 与背景贴图对齐，X 左移 1px
             int cy = y - this.guiTop;
             pluginSlots.add(this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy)));
         }
@@ -575,7 +617,10 @@ public class WandMenu extends AbstractContainerMenu {
     /**
      * 对每个已安装插件调用其 Menu 逻辑。
      */
-    private void invokePluginMenuLogic() {
+    @FunctionalInterface
+    private interface MenuPluginAction { void run(org.creepebucket.programmable_magic.wand_plugins.BasePlugin plugin, int x, int y); }
+
+    private void applyPlugins(MenuPluginAction action) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
         int x = sw - 24;
@@ -584,12 +629,9 @@ public class WandMenu extends AbstractContainerMenu {
         for (int i = 0; i < n; i++) {
             ItemStack st = this.pluginInv.getItem(i);
             if (st == null || st.isEmpty()) continue;
-            var item = st.getItem();
-            if (!WandPluginRegistry.isPlugin(item)) continue;
-            var plugin = WandPluginRegistry.createPlugin(item);
-            if (plugin == null) continue;
+            var plugin = WandPluginRegistry.createPlugin(st.getItem());
             int y = startY + i * 18;
-            plugin.menuLogic(x, y, this);
+            action.run(plugin, x, y);
         }
     }
 }

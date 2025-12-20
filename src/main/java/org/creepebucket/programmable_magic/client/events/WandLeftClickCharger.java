@@ -13,6 +13,7 @@ import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.lwjgl.glfw.GLFW;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -59,7 +60,13 @@ public class WandLeftClickCharger {
 
             // HUD：动作条显示 “|>>> XXX J <<<|”
             ItemStack wand = main.getItem() instanceof Wand ? main : off;
-            double rate = (wand.getItem() instanceof Wand w) ? w.getChargeRate() : 0.0;
+            java.util.List<net.minecraft.world.item.ItemStack> plugins = new java.util.ArrayList<>();
+            {
+                java.util.List<net.minecraft.world.item.ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
+                if (saved != null) for (var it : saved) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
+            }
+            var values = ModUtils.computeWandValues(plugins);
+            double rate = values.chargeRateW;
             double mana = ((double) chargeTicks / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
             player.displayClientMessage(Component.literal(bar), true);

@@ -17,39 +17,25 @@ import org.creepebucket.programmable_magic.gui.wand.WandMenu;
  */
 public class Wand extends Item {
 
-    private final double manaMult;
     private final int slots;
-    private final double chargeRate;
     private final int pluginSlots;
 
     /**
      * 构造一个魔杖实例。
      * @param properties 物品属性
-     * @param manaMult 魔力倍率（>1 提高消耗，<1 降低消耗）
-     * @param slots 法术槽位数量
-     * @param chargeRate 充能功率（W）
-     * @param pluginSlots 插件槽位数量
+     * @param slots 法术槽位最大数量（实际有效容量由插件控制）
+     * @param pluginSlots 插件槽位最大数量
      */
-    public Wand(Properties properties, double manaMult, int slots, double chargeRate, int pluginSlots) {
+    public Wand(Properties properties, int slots, int pluginSlots) {
         super(properties);
-        this.manaMult = manaMult;
         this.slots = slots;
-        this.chargeRate = chargeRate;
         this.pluginSlots = pluginSlots;
     }
 
     /**
-     * 获取魔力倍率。
-     */
-    public double getManaMult() { return manaMult; }
-    /**
      * 获取法术槽位数量。
      */
     public int getSlots() { return slots; }
-    /**
-     * 获取充能功率（W）。
-     */
-    public double getChargeRate() { return chargeRate; }
     /**
      * 获取插件槽位数量。
      */

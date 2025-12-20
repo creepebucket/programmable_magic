@@ -1,6 +1,8 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
@@ -46,6 +48,11 @@ public abstract class BasePlugin {
     public abstract void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen);
 
     /**
+     * 屏幕每 tick 回调：用于在界面打开期间的周期性逻辑（如自动充能）。
+     */
+    public abstract void screenTick(int x, int y, WandScreen screen);
+
+    /**
      * 菜单布局回调：用于添加槽位或根据屏幕坐标进行布局。
      */
     public abstract void menuLogic(int x, int y, WandMenu menu);
@@ -64,4 +71,15 @@ public abstract class BasePlugin {
      * 法术执行后回调：根据执行结果进行后处理。
      */
     public abstract void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
+
+    /**
+     * 数值调整器：用于由插件对魔杖相关数值进行调整。
+     * - 默认不做修改；具体插件可按需覆盖。
+     * - values 中的字段语义：
+     *   - manaMult：魔力倍率（参与发射时 supply 计算，0 表示不生效）。
+     *   - chargeRateW：充能功率（W）。
+     *   - spellSlots：法术槽位数（仅供展示或后续扩展，不直接改容器大小）。
+     *   - pluginSlots：插件槽位数（仅供展示或后续扩展，不直接改容器大小）。
+     */
+    public abstract void adjustWandValues(WandValues values, ItemStack pluginStack);
 }

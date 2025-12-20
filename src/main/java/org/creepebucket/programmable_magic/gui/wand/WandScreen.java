@@ -82,8 +82,8 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         // 初始化互斥状态并同步给 menu
         setSidebar(this.sidebar);
 
-        // 调用已安装插件的屏幕启动逻辑（传入各自渲染坐标）
-        invokePluginsScreenStartup();
+        // 调用已安装插件的屏幕启动逻辑（统一入口）
+        applyPlugins((plugin, x, y, g) -> plugin.screenStartupLogic(x, y, this), null);
     }
 
     /**
@@ -101,7 +101,8 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
      */
     public void updateSpellIndex(int delta) {
         int prev = this.spellIndexOffset;
-        int next = Mth.clamp(prev + delta, 0, this.spellSlots);
+        int cap = this.menu.getSpellSlotCapacity();
+        int next = Mth.clamp(prev + delta, 0, cap);
         this.spellIndexOffset = next;
         sendMenuData(WandMenu.KEY_SPELL_OFFSET, this.spellIndexOffset);
     }
@@ -169,7 +170,8 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
      */
     protected void containerTick() {
         super.containerTick();
-        this.chargeTicks++;
+        if (this.isCharging) this.chargeTicks++;
+        applyPlugins((plugin, x, y, g) -> plugin.screenTick(x, y, this), null);
     }
 
     @Override
@@ -194,7 +196,7 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
 
         // 插件自绘制逻辑
-        invokePluginsScreenRender(graphics);
+        applyPlugins((plugin, x, y, g) -> plugin.screenRenderLogic(graphics, x, y, this), graphics);
 
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
@@ -239,31 +241,10 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
     }
 
-    /**
-     * 调用所有已安装插件的屏幕初始化逻辑（用于创建控件）。
-     */
-    private void invokePluginsScreenStartup() {
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int x = sw - 24;
-        int startY = 10;
-        int n = this.menu.getPluginSlotCapacity();
-        for (int i = 0; i < n; i++) {
-            var st = this.menu.getPluginItem(i);
-            if (st == null || st.isEmpty()) continue;
-            var item = st.getItem();
-            if (!WandPluginRegistry.isPlugin(item)) continue;
-            var plugin = WandPluginRegistry.createPlugin(item);
-            if (plugin == null) continue;
-            int y = startY + i * 18;
-            plugin.screenStartupLogic(x, y, this);
-        }
-    }
+    @FunctionalInterface
+    private interface ScreenPluginAction { void run(org.creepebucket.programmable_magic.wand_plugins.BasePlugin plugin, int x, int y, GuiGraphics g); }
 
-    /**
-     * 调用所有已安装插件的屏幕渲染逻辑（用于自绘制）。
-     */
-    private void invokePluginsScreenRender(GuiGraphics graphics) {
+    private void applyPlugins(ScreenPluginAction action, GuiGraphics graphics) {
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
         int x = sw - 24;
@@ -272,12 +253,9 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         for (int i = 0; i < n; i++) {
             var st = this.menu.getPluginItem(i);
             if (st == null || st.isEmpty()) continue;
-            var item = st.getItem();
-            if (!WandPluginRegistry.isPlugin(item)) continue;
-            var plugin = WandPluginRegistry.createPlugin(item);
-            if (plugin == null) continue;
+            var plugin = WandPluginRegistry.createPlugin(st.getItem());
             int y = startY + i * 18;
-            plugin.screenRenderLogic(graphics, x, y, this);
+            action.run(plugin, x, y, graphics);
         }
     }
 
@@ -347,6 +325,7 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
             if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
 
             this.isCharging = false;
+            this.chargeTicks = 0; // 松开后重置充能时间
             return true;
         }
         return ret;
@@ -368,7 +347,8 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_8.png"),
                 ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_9.png"));
 
-        if (index < spellSlots) {
+        int cap = this.menu.getSpellSlotCapacity();
+        if (index < cap) {
 
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
                     ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_slot.png"),
@@ -390,6 +370,11 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
                     x, y, 0, 0, 16, 16, 16, 16);
         }
     }
+
+    /**
+     * 供插件获取当前聚合后的充能功率（W）。
+     */
+    public double getMenuChargeRate() { return this.menu.getChargeRate(); }
 
     /**
      * 纹理按钮：悬停/按下两态，回调触发。

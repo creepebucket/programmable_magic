@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+import org.creepebucket.programmable_magic.ModUtils.WandValues;
 
 /**
  * 插件：左侧法术供应栏（分类选择 + 内容滚动）。
@@ -28,7 +29,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  * - menuLogic：在菜单中构建可滚动映射的供应槽位并初始化映射。
  */
 public class SpellSupply extends BasePlugin{
-    public SpellSupply() { this.pluginName = "spell_supply"; }
+    private final int tier;
+    public SpellSupply() { this(1); }
+    public SpellSupply(int tier) { this.tier = Math.max(1, tier); this.pluginName = "spell_supply_t" + this.tier; }
 
     @Override
     /**
@@ -103,6 +106,11 @@ public class SpellSupply extends BasePlugin{
     }
 
     @Override
+    public void screenTick(int x, int y, WandScreen screen) {
+        // 本插件不做额外 tick 行为
+    }
+
+    @Override
     /**
      * 菜单布局：固定 5 列可见网格，创建 SupplySlot 后初始化一次映射。
      */
@@ -155,5 +163,14 @@ public class SpellSupply extends BasePlugin{
      */
     public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
 
+    }
+
+    @Override
+    /**
+     * 数值调整：按等级降低魔力倍率（倍数相乘）。
+     * 等级 = 物品堆叠数量；倍率因子 = 1 / (1 + 0.2 * 等级)。
+     */
+    public void adjustWandValues(WandValues values, net.minecraft.world.item.ItemStack pluginStack) {
+        values.manaMult = 1 * Math.pow(0.95, this.tier - 1);
     }
 }

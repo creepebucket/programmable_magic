@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.Wand;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.items.SpellScrollItem;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
@@ -194,17 +195,13 @@ public class SpellLogic {
         LOGGER.debug(String.format("玩家朝向: (%.2f, %.2f, %.2f)",
                 player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z));
 
-        // 依据充能秒数与魔杖功率（W）换算魔力：W * s = J；1 mana = 1 kJ
-        double manaMult = 1.0;
+        // 依据充能秒数与插件数值（W）换算魔力：W * s = J；1 mana = 1 kJ
+        double manaMult = 0.0;
         double chargeRateW = 0.0;
-        net.minecraft.world.item.ItemStack heldMain = player.getMainHandItem();
-        net.minecraft.world.item.ItemStack heldOff = player.getOffhandItem();
-        if (heldMain.getItem() instanceof Wand w) {
-            manaMult = w.getManaMult();
-            chargeRateW = w.getChargeRate();
-        } else if (heldOff.getItem() instanceof Wand w2) {
-            manaMult = w2.getManaMult();
-            chargeRateW = w2.getChargeRate();
+        {
+            var values = ModUtils.computeWandValues(this.pluginStacks);
+            manaMult = values.manaMult;
+            chargeRateW = values.chargeRateW;
         }
         double energyJ = chargeRateW * this.chargeSeconds; // 焦耳
         double chargedMana = energyJ / 1000.0; // 转换为 mana（1 mana = 1 kJ）

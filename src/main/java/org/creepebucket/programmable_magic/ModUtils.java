@@ -7,11 +7,22 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
+import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModUtils {
+    /**
+     * 插件数值聚合对象：所有字段默认 0，由插件按需调整。
+     */
+    public static class WandValues {
+        public double manaMult = 0.0;   // 魔力倍率：0 表示无倍率（按现有计算规则处理）
+        public double chargeRateW = 0.0; // 充能功率（W）
+        public int spellSlots = 0;       // 法术槽位有效容量
+        public int pluginSlots = 0;      // 插件槽有效容量（当前未使用）
+    }
     public static List<ItemStack> getItemsFromTag(TagKey<Item> tagKey) {
         List<ItemStack> items = new ArrayList<>();
 
@@ -62,5 +73,23 @@ public class ModUtils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 由插件物品聚合魔杖数值：
+     * - 遍历每个插件物品，构造插件实例并调用其 adjustWandValues。
+     * - 返回聚合后的 WandValues（默认各字段为 0）。
+     */
+    public static WandValues computeWandValues(List<ItemStack> stacks) {
+        WandValues values = new WandValues();
+        if (stacks == null) return values;
+        for (ItemStack st : stacks) {
+            if (st == null || st.isEmpty()) continue;
+            Item item = st.getItem();
+            BasePlugin plugin = WandPluginRegistry.createPlugin(item);
+            if (plugin == null) continue;
+            plugin.adjustWandValues(values, st);
+        }
+        return values;
     }
 }
