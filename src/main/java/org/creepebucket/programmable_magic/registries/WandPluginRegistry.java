@@ -8,6 +8,9 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
+import org.creepebucket.programmable_magic.wand_plugins.SpellRelease;
+import org.creepebucket.programmable_magic.wand_plugins.SpellSlots;
+import org.creepebucket.programmable_magic.wand_plugins.SpellSupply;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,10 @@ public class WandPluginRegistry {
 
     public static void registerPlugins(IEventBus eventBus) {
         // 在这里注册所有插件
+        registerPlugin(SpellSlots::new);
+        registerPlugin(SpellSupply::new);
+        registerPlugin(SpellRelease::new);
+
         ITEMS.register(eventBus);
     }
 

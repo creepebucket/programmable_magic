@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.items.mana_cell;
+package org.creepebucket.programmable_magic.items;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,7 +15,7 @@ import org.creepebucket.programmable_magic.gui.wand.WandMenu;
  * - 右键（use）在服务端打开菜单，客户端由已注册的 Screen 渲染。
  * - 暴露法术倍率、槽位数、充能功率（W）三个属性供工具提示与法术逻辑使用。
  */
-public class BaseWand extends Item {
+public class Wand extends Item {
 
     private final double manaMult;
     private final int slots;
@@ -29,7 +29,7 @@ public class BaseWand extends Item {
      * @param slots 法术槽位数量
      * @param chargeRate 充能功率（W）
      */
-    public BaseWand(Properties properties, double manaMult, int slots, double chargeRate, int pluginSlots) {
+    public Wand(Properties properties, double manaMult, int slots, double chargeRate, int pluginSlots) {
         super(properties);
         this.manaMult = manaMult;
         this.slots = slots;

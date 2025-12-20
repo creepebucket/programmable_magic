@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.items.mana_cell;
+package org.creepebucket.programmable_magic.items;
 
 import net.minecraft.world.item.Item;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;

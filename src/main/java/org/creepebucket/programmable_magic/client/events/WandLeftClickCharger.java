@@ -9,7 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -20,7 +20,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 /**
  * 客户端左键长按充能与释放：
  * - 玩家在未打开界面时按住左键开始充能，松开后发送法术释放数据包（仅带充能时长）。
- * - 仅当主手或副手持有 BaseWand 时生效。
+ * - 仅当主手或副手持有 Wand 时生效。
  */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class WandLeftClickCharger {
@@ -43,7 +43,7 @@ public class WandLeftClickCharger {
         // 需要手持魔杖（主/副手之一）
         ItemStack main = player.getMainHandItem();
         ItemStack off = player.getOffhandItem();
-        boolean hasWand = (main.getItem() instanceof BaseWand) || (off.getItem() instanceof BaseWand);
+        boolean hasWand = (main.getItem() instanceof Wand) || (off.getItem() instanceof Wand);
         if (!hasWand || mc.screen != null) {
             if (charging) charging = false;
             return;
@@ -58,8 +58,8 @@ public class WandLeftClickCharger {
             }
 
             // HUD：动作条显示 “|>>> XXX J <<<|”
-            ItemStack wand = main.getItem() instanceof BaseWand ? main : off;
-            double rate = (wand.getItem() instanceof BaseWand w) ? w.getChargeRate() : 0.0;
+            ItemStack wand = main.getItem() instanceof Wand ? main : off;
+            double rate = (wand.getItem() instanceof Wand w) ? w.getChargeRate() : 0.0;
             double mana = ((double) chargeTicks / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
             player.displayClientMessage(Component.literal(bar), true);
@@ -68,7 +68,7 @@ public class WandLeftClickCharger {
             java.util.List<net.minecraft.world.item.ItemStack> spells = java.util.List.of();
             java.util.List<net.minecraft.world.item.ItemStack> plugins = new java.util.ArrayList<>();
             {
-                net.minecraft.world.item.ItemStack wand = main.getItem() instanceof BaseWand ? main : off;
+                net.minecraft.world.item.ItemStack wand = main.getItem() instanceof Wand ? main : off;
                 java.util.List<net.minecraft.world.item.ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
                 if (saved != null) for (var it : saved) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
             }

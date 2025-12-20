@@ -18,7 +18,7 @@ import org.creepebucket.programmable_magic.gui.wand.slots.PluginSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.ScrollInputSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.ScrollOutputSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.SupplySlot;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
@@ -49,16 +49,16 @@ public class WandMenu extends AbstractContainerMenu {
     private int guiLeft = 0;
     private int guiTop = 0;
     public int spellIndexOffset = 0;
-    private List<Slot> spellSlots;
-    private int spellStartIndex = -1;
-    private int spellEndIndex = -1;
+    public List<Slot> spellSlots;
+    public int spellStartIndex = -1;
+    public int spellEndIndex = -1;
     private String selectedSidebar = "compute";
 
-    private final SimpleContainer wandInv;
+    public final SimpleContainer wandInv;
     private final InteractionHand wandHand;
     private final SimpleContainer supplyInv = new SimpleContainer(0);
-    private final java.util.List<SupplySlot> supplySlots = new java.util.ArrayList<>();
-    private java.util.List<ItemStack> supplyItems = new java.util.ArrayList<>();
+    public final java.util.List<SupplySlot> supplySlots = new java.util.ArrayList<>();
+    public java.util.List<ItemStack> supplyItems = new java.util.ArrayList<>();
     private java.util.List<SupplyGroupMeta> supplyGroupMetas = new java.util.ArrayList<>();
     private int supplyScrollRow = 0;
 
@@ -231,12 +231,6 @@ public class WandMenu extends AbstractContainerMenu {
 
             // 法术栏（独立容器 + 偏移映射）
             spellSlots = new ArrayList<>();
-            this.spellStartIndex = this.slots.size();
-            for (int i = 0; i < spellSlotCount; i++) spellSlots.add(this.addOffsetSlotConverted(wandInv, i, centerX - spellSlotCount * 8 + i * 16 - 1, sh + MathUtils.SPELL_SLOT_OFFSET - (compactMode ? 18 : 0)));
-            this.spellEndIndex = this.slots.size();
-
-            // 左侧法术供应栏（无限供应）：按当前侧栏分类与子类别布局生成
-            buildInitialSupplySlots();
 
             // 右侧插件槽（1xX 贴屏幕右边）
             buildInitialPluginSlots();
@@ -298,7 +292,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     public double getChargeRate() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof BaseWand bw) return bw.getChargeRate();
+        if (st != null && st.getItem() instanceof Wand bw) return bw.getChargeRate();
         return 0.0;
     }
 
@@ -307,7 +301,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private int resolveWandSlots() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof BaseWand bw) return bw.getSlots();
+        if (st != null && st.getItem() instanceof Wand bw) return bw.getSlots();
         return 25;
     }
 
@@ -316,7 +310,7 @@ public class WandMenu extends AbstractContainerMenu {
      */
     private int resolvePluginSlots() {
         ItemStack st = getWandStack();
-        if (st != null && st.getItem() instanceof BaseWand bw) return bw.getPluginSlots();
+        if (st != null && st.getItem() instanceof Wand bw) return bw.getPluginSlots();
         return 0;
     }
 
@@ -418,41 +412,10 @@ public class WandMenu extends AbstractContainerMenu {
         super.clicked(slotId, button, clickType, player);
     }
 
-    // 计算当前侧栏应展示的法术清单（按子类别分组后扁平化，保持视觉顺序）并生成初始供给槽位
-    /**
-     * 根据当前侧栏类型构建一组可见的供应槽位（含滚动偏移）。
-     */
-    private void buildInitialSupplySlots() {
-        supplyItems = computeSupplyItemsForCurrentSidebar();
-
-        var win = Minecraft.getInstance().getWindow();
-        int sh = win.getGuiScaledHeight();
-
-        // 固定网格：从顶部 20px 开始，至底部上边距 16px，5 列
-        int startX = 19; // 屏幕坐标（随后减去 gui_left）
-        int startY = 4;
-        int visibleHeightPx = sh - 4;
-        int visibleRows = Math.max(1, Math.floorDiv(visibleHeightPx, 16));
-        int total = visibleRows * 5;
-
-        for (int i = 0; i < total; i++) {
-            int col = i % 5;
-            int row = Math.floorDiv(i, 5);
-            int screenX = startX + col * 16 - 1;
-            int screenY = startY + row * 16;
-            var slot = addSupplySlotConverted(-1, screenX, screenY);
-            slot.setActive(false);
-            supplySlots.add(slot);
-        }
-
-        // 初始化一次映射
-        updateSupplySlotMapping();
-    }
-
     /**
      * 计算当前侧栏类别下的扁平化法术物品列表（保持分组遍历顺序）。
      */
-    private java.util.List<ItemStack> computeSupplyItemsForCurrentSidebar() {
+    public java.util.List<ItemStack> computeSupplyItemsForCurrentSidebar() {
         var type = SpellUtils.stringSpellTypeMap.getOrDefault(this.selectedSidebar,
                 SpellItemLogic.SpellType.COMPUTE_MOD);
         var map = SpellUtils.getSpellsGroupedBySubCategory(type);
@@ -494,7 +457,7 @@ public class WandMenu extends AbstractContainerMenu {
         updateSupplySlotMapping();
     }
 
-    private void updateSupplySlotMapping() {
+    public void updateSupplySlotMapping() {
         int visibleRows;
         {
             var win = Minecraft.getInstance().getWindow();
@@ -548,7 +511,7 @@ public class WandMenu extends AbstractContainerMenu {
     /**
      * 辅助：以屏幕坐标添加供应槽位。
      */
-    private SupplySlot addSupplySlotConverted(int supplyIndex, int screenX, int screenY) {
+    public SupplySlot addSupplySlotConverted(int supplyIndex, int screenX, int screenY) {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
         var s = new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems);
@@ -627,5 +590,4 @@ public class WandMenu extends AbstractContainerMenu {
             plugin.menuLogic(x, y, this);
         }
     }
-
 }

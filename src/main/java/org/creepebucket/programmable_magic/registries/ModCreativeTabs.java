@@ -2,7 +2,6 @@ package org.creepebucket.programmable_magic.registries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -18,7 +17,7 @@ public class ModCreativeTabs {
 
     public static final Supplier<CreativeModeTab> MAIN = CREATIVE_MODE_TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + MODID + ".main"))
-            .icon(() -> new ItemStack(ModItems.RG_ALLOY_WAND.get()))
+            .icon(() -> new ItemStack(ModItems.WAND.get()))
             .displayItems((params, output) -> {
                 // 将本模组命名空间下的所有物品放入，但排除法术展示物品（spell_display_*）
                 BuiltInRegistries.ITEM.stream()

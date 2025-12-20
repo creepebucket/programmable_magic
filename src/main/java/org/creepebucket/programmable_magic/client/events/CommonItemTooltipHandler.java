@@ -10,9 +10,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.lwjgl.glfw.GLFW;
 import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 
 import java.util.Set;
 
@@ -46,8 +46,8 @@ public class CommonItemTooltipHandler {
             event.getToolTip().add(Component.translatable("tooltip." + MODID + "." + key.getPath()).withStyle(ChatFormatting.GRAY));
         }
 
-        // 对于所有魔杖（BaseWand），永远在底部追加绿色属性说明
-        if (event.getItemStack().getItem() instanceof BaseWand wand) {
+        // 对于所有魔杖（Wand），永远在底部追加绿色属性说明
+        if (event.getItemStack().getItem() instanceof Wand wand) {
             String mult = String.format("%.2f", wand.getManaMult());
             String slots = String.valueOf(wand.getSlots());
             // 充能速率（用 FormattedManaString，单位每秒）

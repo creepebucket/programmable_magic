@@ -72,7 +72,7 @@ public class ProgrammableMagicRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_debris_clay", this.has(ModItems.DEBRIS_CLAY.get()))
                 .save(this.output);
 
-        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.RG_ALLOY_WAND.get())
+        ShapedRecipeBuilder.shaped(this.registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.WAND.get())
                 .pattern("SCA")
                 .pattern("SWC")
                 .pattern("WSS")

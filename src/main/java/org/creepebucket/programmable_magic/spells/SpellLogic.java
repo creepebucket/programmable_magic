@@ -8,9 +8,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.items.SpellScrollItem;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
@@ -199,10 +199,10 @@ public class SpellLogic {
         double chargeRateW = 0.0;
         net.minecraft.world.item.ItemStack heldMain = player.getMainHandItem();
         net.minecraft.world.item.ItemStack heldOff = player.getOffhandItem();
-        if (heldMain.getItem() instanceof BaseWand w) {
+        if (heldMain.getItem() instanceof Wand w) {
             manaMult = w.getManaMult();
             chargeRateW = w.getChargeRate();
-        } else if (heldOff.getItem() instanceof BaseWand w2) {
+        } else if (heldOff.getItem() instanceof Wand w2) {
             manaMult = w2.getManaMult();
             chargeRateW = w2.getChargeRate();
         }

@@ -19,11 +19,11 @@ public abstract class BasePlugin {
         return "wand_plugin_".concat(name);
     }
 
-    public void onEntityTick(SpellEntity spellEntity) {}
+    public abstract void onEntityTick(SpellEntity spellEntity);
     public abstract void screenStartupLogic(int x, int y, WandScreen screen);
     public abstract void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen);
     public abstract void menuLogic(int x, int y, WandMenu menu);
     public abstract void menuTick(int x, int y, WandMenu menu);
-    public void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {}
-    public void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {}
+    public abstract void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
+    public abstract void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
 }

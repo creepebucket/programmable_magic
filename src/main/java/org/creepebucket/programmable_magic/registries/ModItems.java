@@ -14,7 +14,7 @@ import org.creepebucket.programmable_magic.items.mana_cell.HugeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.ColossalManaCell;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.items.SpellScrollItem;
-import org.creepebucket.programmable_magic.items.mana_cell.BaseWand;
+import org.creepebucket.programmable_magic.items.Wand;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -92,9 +92,8 @@ public class ModItems {
                     .setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
-    // 最小魔杖（RG 合金魔杖）
-    public static final DeferredItem<BaseWand> RG_ALLOY_WAND = ITEMS.register(
-            "rg_alloy_wand", registryName -> new BaseWand(
+    public static final DeferredItem<Wand> WAND = ITEMS.register(
+            "rg_alloy_wand", registryName -> new Wand(
                     new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
                     1.0,   // mana 倍率
                     1000,     // 槽位数
