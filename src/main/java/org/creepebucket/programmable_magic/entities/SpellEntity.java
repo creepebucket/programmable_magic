@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.entities;
 
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -10,7 +11,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import java.util.List;
@@ -19,10 +19,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.*;
-import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
-import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
-import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,7 +168,7 @@ public class SpellEntity extends Entity {
         }
     }
 
-    private void randomParticles(ParticleOptions options, double a, double b, double particleTick) {
+    private void randomParticles(ParticleOptions options, double a, double b, double partialTick) {
         // 依据随机方向与实体速度方向的夹角调整速度（越接近实体速度方向，粒子自身速度越低），并叠加实体自身速度
         Vec3 v = this.getDeltaMovement();
         Vec3 vDir = v.normalize();
@@ -182,9 +179,9 @@ public class SpellEntity extends Entity {
 
         this.level().addParticle(
                 options,
-                this.getX() + this.getDeltaMovement().x * particleTick,
-                this.getY() + this.getDeltaMovement().y * particleTick,
-                this.getZ() + this.getDeltaMovement().z * particleTick,
+                this.getX() + this.getDeltaMovement().x * partialTick,
+                this.getY() + this.getDeltaMovement().y * partialTick,
+                this.getZ() + this.getDeltaMovement().z * partialTick,
                 pv.x, pv.y, pv.z
         );
     }

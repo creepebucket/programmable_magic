@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.items.SpellScrollItem;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
@@ -64,8 +63,7 @@ public class OffsetSlot extends Slot {
         var item = stack.getItem();
         boolean isSpell = SpellRegistry.isSpell(item);
         boolean isPlaceholder = item instanceof WandItemPlaceholder;
-        boolean isScroll = item instanceof SpellScrollItem;
-        return (isSpell || isPlaceholder || isScroll) && this.container.canPlaceItem(idx, stack);
+        return (isSpell || isPlaceholder) && this.container.canPlaceItem(idx, stack);
     }
 
     @Override

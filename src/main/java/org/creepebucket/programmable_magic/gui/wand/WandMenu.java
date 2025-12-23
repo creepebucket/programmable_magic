@@ -12,15 +12,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.creepebucket.programmable_magic.gui.wand.slots.OffsetSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.PluginSlot;
-import org.creepebucket.programmable_magic.gui.wand.slots.ScrollInputSlot;
-import org.creepebucket.programmable_magic.gui.wand.slots.ScrollOutputSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.SupplySlot;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
@@ -67,10 +63,7 @@ public class WandMenu extends AbstractContainerMenu {
     private final SimpleContainer pluginInv;
     private final java.util.List<Slot> pluginSlots = new java.util.ArrayList<>();
 
-    // 卷轴制作：左纸右出卷轴
-    private final SimpleContainer scrollInventory = new SimpleContainer(2);
-    private Slot scrollInputSlot;
-    private Slot scrollOutputSlot;
+    // 卷轴制作功能已移除
     
 
     /**
@@ -121,9 +114,8 @@ public class WandMenu extends AbstractContainerMenu {
      */
     public void slotsChanged(Container container) {
         super.slotsChanged(container);
-        if (container == this.wandInv || container == this.scrollInventory) {
-            updateScrollOutput();
-            if (container == this.wandInv) saveWandInvToStack(this.playerInv.player);
+        if (container == this.wandInv) {
+            saveWandInvToStack(this.playerInv.player);
         } else if (container == this.pluginInv) {
             savePluginsToStack(this.playerInv.player);
             applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
@@ -249,12 +241,6 @@ public class WandMenu extends AbstractContainerMenu {
             buildInitialPluginSlots();
 
             // 在法术槽右侧添加两个槽位：左输入纸，右输出卷轴
-            int spellY = sh + MathUtils.SPELL_SLOT_OFFSET - (compactMode ? 18 : 0);
-            int inputX = sw - 80;
-            int outputX = sw - 48;
-            this.scrollInputSlot = this.addSlot(new ScrollInputSlot(this.scrollInventory, 0, inputX - this.guiLeft, spellY - this.guiTop));
-            this.scrollOutputSlot = this.addSlot(new ScrollOutputSlot(this, this.scrollInventory, 1, outputX - this.guiLeft, spellY - this.guiTop));
-            updateScrollOutput();
 
             slotsBuilt = true;
         }
@@ -563,27 +549,7 @@ public class WandMenu extends AbstractContainerMenu {
         return (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
     }
 
-    /**
-     * 生成卷轴输出：当左侧为纸张时，将 wandInv 非空项复制到右侧卷轴。
-     */
-    private void updateScrollOutput() {
-        ItemStack in = this.scrollInventory.getItem(0);
-        if (in != null && !in.isEmpty() && in.is(Items.PAPER)) {
-            // 构建一个卷轴，内含当前 wandInv 非空条目
-            java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
-            int n = this.wandInv.getContainerSize();
-            for (int i = 0; i < n; i++) {
-                ItemStack it = this.wandInv.getItem(i);
-                if (!it.isEmpty()) list.add(it.copy());
-            }
-            ItemStack scroll = ModItems.SPELL_SCROLL.get().getDefaultInstance();
-            scroll.set(ModDataComponents.SPELL_SCROLL_STACKS.get(), list);
-            this.scrollInventory.setItem(1, scroll);
-        } else {
-            this.scrollInventory.setItem(1, ItemStack.EMPTY);
-        }
-        this.broadcastChanges();
-    }
+    // 卷轴制作逻辑已移除
 
     /**
      * 构建初始插件槽（靠屏幕右侧，从上至下 1xX）。

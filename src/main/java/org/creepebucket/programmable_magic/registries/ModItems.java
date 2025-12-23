@@ -13,7 +13,6 @@ import org.creepebucket.programmable_magic.items.mana_cell.LargeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.HugeManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.ColossalManaCell;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
-import org.creepebucket.programmable_magic.items.SpellScrollItem;
 import org.creepebucket.programmable_magic.items.Wand;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -75,13 +74,6 @@ public class ModItems {
     ;
     public static final DeferredItem<Item> SMALL_CELL_CERTIDGE = ITEMS.register(
             "small_cell_certidge", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-
-    // 法术卷轴
-    public static final DeferredItem<SpellScrollItem> SPELL_SCROLL = ITEMS.register(
-            "spell_scroll", registryName -> new SpellScrollItem(new Item.Properties()
-                    .stacksTo(1)
-                    .setId(ResourceKey.create(Registries.ITEM, registryName))))
     ;
 
     // 魔杖物品占位符

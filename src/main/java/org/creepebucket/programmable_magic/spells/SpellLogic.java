@@ -11,7 +11,6 @@ import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
-import org.creepebucket.programmable_magic.items.SpellScrollItem;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
@@ -118,12 +117,6 @@ public class SpellLogic {
     private void appendStackToSequence(ItemStack stack) {
         SpellItemLogic logic = SpellRegistry.createSpellLogic(stack.getItem());
         if (logic != null) { spellSequence.addLast(logic); return; }
-
-        if (stack.getItem() instanceof SpellScrollItem) {
-            java.util.List<ItemStack> inner = stack.get(ModDataComponents.SPELL_SCROLL_STACKS.get());
-            if (inner != null) { for (ItemStack i : inner) appendStackToSequence(i); }
-            return;
-        }
 
         if (stack.getItem() instanceof WandItemPlaceholder) {
             String key = stack.get(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get());

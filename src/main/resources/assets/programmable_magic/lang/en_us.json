@@ -5,10 +5,6 @@
   "item.programmable_magic.huge_mana_cell": "Huge Mana Cell",
   "item.programmable_magic.colossal_mana_cell": "Colossal Mana Cell",
   "item.programmable_magic.test_wand": "Test Wand",
-  "item.programmable_magic.spell_scroll": "Spell Scroll",
-  "tooltip.programmable_magic.spell_scroll_header": "Contains:",
-  "tooltip.programmable_magic.spell_scroll_empty": "Scroll is empty",
-  "tooltip.programmable_magic.and_more": "and %s more...",
 
   "item.programmable_magic.spell_display_projectile": "Spell: Projectile Carrier",
   "item.programmable_magic.spell_display_gain_velocity": "Spell: Velocity",

@@ -222,12 +222,6 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         }
 
         // 法术卷轴制作菜单
-        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_paper_slot.png"),
-                sw - 80 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_arrow.png"),
-                sw - 64 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
-        graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_scroll_slot.png"),
-                sw - 48 - this.leftPos, BOTTOM_Y + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 0, 0, 16, 16, 16, 16);
 
         // 插件槽可视化（使用统一槽纹理）
         int pluginCount = this.menu.getPluginSlotCapacity();

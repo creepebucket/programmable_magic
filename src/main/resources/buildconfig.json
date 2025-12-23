@@ -118,7 +118,7 @@
       { "from_top_left": [144, 0], "from_bottom_right": [159, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_hotbar.png" },
       { "from_top_left": [0, 16], "from_bottom_right": [111, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_release.png" },
       { "from_top_left": [112, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_sidebar_slot.png" },
-      { "from_top_left": [128, 16], "from_bottom_right": [143, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_arrow.png" },
+      
       { "from_top_left": [144, 16], "from_bottom_right": [159, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_out_of_bound.png" },
       { "from_top_left": [0, 32], "from_bottom_right": [15, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute.png" },
       { "from_top_left": [16, 32], "from_bottom_right": [31, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute_pressed.png" },
@@ -128,8 +128,7 @@
       { "from_top_left": [80, 32], "from_bottom_right": [95, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_control_pressed.png" },
       { "from_top_left": [96, 32], "from_bottom_right": [111, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base.png" },
       { "from_top_left": [112, 32], "from_bottom_right": [127, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base_pressed.png" },
-      { "from_top_left": [128, 32], "from_bottom_right": [143, 47], "target_img_path": "assets/programmable_magic/textures/gui/wand_paper_slot.png" },
-      { "from_top_left": [144, 32], "from_bottom_right": [159, 47], "target_img_path": "assets/programmable_magic/textures/gui/wand_scroll_slot.png" },
+      
 
       { "from_top_left": [0, 176], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/gui/machine_bg.png" },
       { "from_top_left": [192, 112], "from_bottom_right": [225, 126], "target_img_path": "assets/programmable_magic/textures/gui/button_red.png" },
