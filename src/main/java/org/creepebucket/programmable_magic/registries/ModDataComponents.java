@@ -60,5 +60,11 @@ public class ModDataComponents {
                     .persistent(Codec.list(ItemStack.CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
+    // 被动充能：安装自动充能插件时，手持时每tick累积的充能时长（以 tick 计）
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> WAND_AUTO_CHARGE_TICKS =
+            DATA_COMPONENTS.registerComponentType("wand_auto_charge_ticks", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT));
+
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }
