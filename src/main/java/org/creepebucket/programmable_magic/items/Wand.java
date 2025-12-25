@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.items;
 
+import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -78,7 +79,9 @@ public class Wand extends BowItem {
      */
     @Override
     public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
-        if (level.isClientSide && living instanceof Player player) {
+        if (!(living instanceof Player player)) return;
+
+        if (level.isClientSide) {
             int total = getUseDuration(stack, living);
             int used = Math.max(0, total - remainingUseDuration);
             Integer passive = stack.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
@@ -93,7 +96,18 @@ public class Wand extends BowItem {
             double rate = values.chargeRateW;
             double mana = ((double) used / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
-            player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
+
+            for(int i = 1; i < 5; i++) {
+                double n = Math.random() * 2 * Math.PI;
+                double x_offset = Math.sin(n) * 0.5;
+                double z_offset = Math.cos(n) * 0.5;
+
+                player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
+                level.addParticle(new TrailParticleOption(player.getPosition(0).add(x_offset, 0, z_offset), 0xFFFFFFFF, 20),
+                        player.getX() + x_offset,
+                        player.getEyeY() + 2,
+                        player.getZ() + z_offset, 0, 0, 0);
+            }
         }
     }
 
@@ -151,7 +165,7 @@ public class Wand extends BowItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!(entity instanceof Player player)) return;
 
-        boolean isHeld = (player.getMainHandItem() == stack) || (player.getOffhandItem() == stack);
+        boolean isHeld = isSelected || (player.getOffhandItem() == stack);
         if (!isHeld) return;
 
         java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
