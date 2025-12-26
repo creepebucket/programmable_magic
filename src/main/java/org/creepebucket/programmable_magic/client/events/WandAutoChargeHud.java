@@ -14,9 +14,17 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
+/**
+ * 客户端 HUD：在未按住使用时，基于“上次释放时间戳”显示被动充能能量条。
+ * - 仅在主手/副手持有 Wand 时运行。
+ * - 按住右键充能时，HUD 由 on_use_tick 负责，这里不显示。
+ */
 @EventBusSubscriber(modid = MODID, value = Dist.CLIENT)
 public class WandAutoChargeHud {
 
+    /**
+     * 客户端每 tick 更新：显示被动充能提示条。
+     */
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
@@ -43,19 +51,15 @@ public class WandAutoChargeHud {
         // 正在按住右键使用时交给 onUseTick 显示
         if (player.isUsingItem() && player.getUseItem() == wand) return;
 
-        java.util.ArrayList<ItemStack> copy = new java.util.ArrayList<>();
-        if (plugins != null) for (ItemStack it : plugins) { if (it != null && !it.isEmpty()) copy.add(it); }
-        var values = ModUtils.computeWandValues(copy);
-        double rate = values.chargeRateW;
+        double rate = ModUtils.computeWandValues(plugins).chargeRateW;
 
-        int passive = 0;
-        Integer saved = wand.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
-        if (saved != null) passive = Math.max(0, saved);
-
-        double mana = ((double) passive / 20.0) * (rate / 1000.0);
+        Long last_release = wand.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+        long now = mc.level != null ? mc.level.getGameTime() : 0L;
+        if (last_release == null) last_release = now;
+        long dt = Math.max(0L, now - last_release);
+        double mana = (dt / 20.0) * (rate / 1000.0);
         if (mana <= 0.0) return;
         String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
         player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
     }
 }
-

@@ -66,5 +66,11 @@ public class ModDataComponents {
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.INT));
 
+    // 上次释放结束的世界时间戳（tick）
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> WAND_LAST_RELEASE_TIME =
+            DATA_COMPONENTS.registerComponentType("wand_last_release_time", builder -> builder
+                    .persistent(Codec.LONG)
+                    .networkSynchronized(ByteBufCodecs.VAR_LONG));
+
     public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
 }

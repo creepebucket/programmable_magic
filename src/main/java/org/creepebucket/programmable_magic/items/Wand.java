@@ -2,30 +2,32 @@ package org.creepebucket.programmable_magic.items;
 
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.level.Level;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.spells.SpellLogic;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.neoforge.common.extensions.IItemExtension;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * 最小魔杖基类：
  * - 右键（use）在服务端打开菜单，客户端由已注册的 Screen 渲染。
  * - 暴露法术倍率、法术槽位数、充能功率（W）、插件槽位数四个属性供工具提示与法术逻辑使用。
  */
-public class Wand extends BowItem {
+public class Wand extends BowItem implements IItemExtension {
 
     private final int slots;
     private final int pluginSlots;
@@ -83,18 +85,15 @@ public class Wand extends BowItem {
 
         if (level.isClientSide) {
             int total = getUseDuration(stack, living);
-            int used = Math.max(0, total - remainingUseDuration);
-            Integer passive = stack.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
-            if (passive != null) used += Math.max(0, passive);
+            int holdUsed = Math.max(0, total - remainingUseDuration);
+            Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+            long now = level.getGameTime();
+            if (last == null) last = now;
+            long dt = Math.max(0L, now - last);
+            int used = Math.max(holdUsed, (int) Math.max(0L, dt));
 
-            java.util.List<net.minecraft.world.item.ItemStack> plugins = new java.util.ArrayList<>();
-            {
-                java.util.List<net.minecraft.world.item.ItemStack> saved = stack.get(ModDataComponents.WAND_PLUGINS.get());
-                if (saved != null) for (var it : saved) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
-            }
-            var values = ModUtils.computeWandValues(plugins);
-            double rate = values.chargeRateW;
-            double mana = ((double) used / 20.0) * (rate / 1000.0);
+            double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.WAND_PLUGINS.get())).chargeRateW;
+            double mana = (used / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
 
             for(int i = 1; i < 5; i++) {
@@ -121,9 +120,12 @@ public class Wand extends BowItem {
         if (player.isShiftKeyDown()) return false; // 潜行用于打开 GUI，不触发快捷充能释放
 
         int total = getUseDuration(stack, living);
-        int used = Math.max(0, total - timeLeft);
-        Integer passive = stack.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
-        if (passive != null) used += Math.max(0, passive);
+        int holdUsed = Math.max(0, total - timeLeft);
+        long now = level.getGameTime();
+        Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+        if (last == null) last = now;
+        long dt = Math.max(0L, now - last);
+        int used = (int) Math.max(0L, dt);
         double chargeSec = ((double) used) / 20.0;
 
         // 从魔杖组件重建法术与插件列表（与服务端数据包处理一致）
@@ -135,6 +137,7 @@ public class Wand extends BowItem {
                 if (it == null || it.isEmpty()) continue;
                 ItemStack cp = it.copy();
                 cp.setCount(1);
+            //player.getInventory().setChanged();
                 spells.add(cp);
             }
         }
@@ -149,7 +152,8 @@ public class Wand extends BowItem {
         logic.execute();
 
         // 清空被动充能计数
-        stack.set(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get(), 0);
+        // 改为记录“上次释放结束”的世界时间戳（tick）
+        stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), now);
         return true;
     }
 
@@ -162,10 +166,11 @@ public class Wand extends BowItem {
     /**
      * 物品每 tick：若安装自动充能插件且被玩家手持，则累积被动充能时间；客户端在未按住使用时显示 HUD。
      */
-    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+    @Override
+    public void inventoryTick(ItemStack stack, ServerLevel level, Entity entity, @Nullable EquipmentSlot slot) {
         if (!(entity instanceof Player player)) return;
 
-        boolean isHeld = isSelected || (player.getOffhandItem() == stack);
+        boolean isHeld = player.isHolding(stack.getItem());
         if (!isHeld) return;
 
         java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
@@ -180,28 +185,19 @@ public class Wand extends BowItem {
         if (!hasAuto) return;
 
         if (!level.isClientSide) {
-            if (player.containerMenu instanceof WandMenu) return;
-            Integer ticks = stack.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
-            int next = (ticks == null ? 0 : ticks) + 1;
-            stack.set(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get(), next);
+            // 服务端不再在物品上每 tick 写入状态，以避免触发持握模型异常
             return;
-        }
-
-        // 客户端 HUD：未按住使用时显示被动累积效果
-        if (level.isClientSide) {
+        } else {
             boolean using = player.isUsingItem() && (player.getUseItem() == stack);
             if (using) return; // 按住使用时由 onUseTick 负责 HUD
 
-            java.util.ArrayList<ItemStack> pluginList = new java.util.ArrayList<>();
-            if (plugins != null) for (ItemStack it : plugins) { if (it != null && !it.isEmpty()) pluginList.add(it); }
-            var values = ModUtils.computeWandValues(pluginList);
-            double rate = values.chargeRateW;
+            double rate = ModUtils.computeWandValues(plugins).chargeRateW;
 
-            int passive = 0;
-            Integer saved = stack.get(ModDataComponents.WAND_AUTO_CHARGE_TICKS.get());
-            if (saved != null) passive = Math.max(0, saved);
-
-            double mana = ((double) passive / 20.0) * (rate / 1000.0);
+            Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+            long now = level.getGameTime();
+            if (last == null) last = now;
+            long dt = Math.max(0L, now - last);
+            double mana = (dt / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
             player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
         }
