@@ -184,10 +184,7 @@ public class Wand extends BowItem implements IItemExtension {
         }
         if (!hasAuto) return;
 
-        if (!level.isClientSide) {
-            // 服务端不再在物品上每 tick 写入状态，以避免触发持握模型异常
-            return;
-        } else {
+        if (level.isClientSide) {
             boolean using = player.isUsingItem() && (player.getUseItem() == stack);
             if (using) return; // 按住使用时由 onUseTick 负责 HUD
 
