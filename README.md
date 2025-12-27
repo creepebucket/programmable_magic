@@ -63,3 +63,6 @@ src/generated/resources         # 数据生成输出（构建时自动合并）
 - 法术生态：更多可组合的“载体/控制/计算”模组与素材生产线，形成从开荒到中后期的闭环。
 
 欢迎提出 Issue/PR，一起把“可编排法术 + 魔法科技”做成既能玩又能造的系统。
+
+# 你怎么能直接 commit 到我的 master 分支啊？！GitHub 上不是这样！你应该先 fork 我的仓库，然后从 develop 分支 checkout 一个新的 feature 分支，比如叫 feature/confession。然后你把你的心意写成代码，并为它写好单元测试和集成测试，确保代码覆盖率达到95%以上。接着你要跑一下 Linter，通过所有的代码风格检查。然后你再 commit，commit message 要遵循 Conventional Commits 规范。之后你把这个分支 push 到你自己的远程仓库，然后给我提一个 Pull Request。在 PR 描述里，你要详细说明你的功能改动和实现思路，并且 @ 我和至少两个其他的评审。我们会 review 你的代码，可能会留下一些评论，你需要解决所有的 thread。等 CI/CD 流水线全部通过，并且拿到至少两个 LGTM 之后，我才会考虑把你的分支 squash and merge 到 develop 里，等待下一个版本发布。你怎么直接上来就想 force push 到 main？！GitHub 上根本不是这样！我拒绝合并！
+# 别扯了，你那破 repo 一共就俩人儿，其中一个还是个bot，我从哪给你凑5个评审去。唉算了，你直接给把仓库密钥给我得了，我强推你master，代码还没警告多呢，啥也不是。
