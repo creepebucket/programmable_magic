@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.creepebucket.programmable_magic.mananet.AbstractNetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.ManaNetService;
 import org.creepebucket.programmable_magic.mananet.api.IManaNetNode;
 
 import java.util.ArrayDeque;
@@ -84,14 +85,38 @@ public final class SimpleNetManager {
         }
         // 防重复遍历
         Set<BlockPos> visited = new HashSet<>();
+        List<ComponentUpdate> updates = new ArrayList<>();
         for (it.unimi.dsi.fastutil.longs.LongIterator it = toProcess.iterator(); it.hasNext(); ) {
             long l = it.nextLong();
             BlockPos seed = BlockPos.of(l);
             if (!isCable(seed) || visited.contains(seed)) continue;
             Component comp = collectComponent(seed, visited);
             if (comp.isEmpty()) continue;
-            long netId = encodeNetId(comp.minPos);
-            for (BlockPos p : comp.members) applyNetId(p, netId);
+            long oldNetId = readNetId(seed);
+            long netId = hashNetId(encodeNetId(comp.minPos));
+            updates.add(new ComponentUpdate(oldNetId, netId, comp.members));
+        }
+
+        for (ComponentUpdate u : updates) {
+            for (BlockPos p : u.members) applyNetId(p, u.newNetId);
+        }
+
+        Map<Long, Map<Long, it.unimi.dsi.fastutil.longs.LongOpenHashSet>> byOld = new HashMap<>();
+        for (ComponentUpdate u : updates) {
+            if (u.oldNetId == 0L) continue;
+            Map<Long, it.unimi.dsi.fastutil.longs.LongOpenHashSet> byNew = byOld.computeIfAbsent(u.oldNetId, k -> new HashMap<>());
+            it.unimi.dsi.fastutil.longs.LongOpenHashSet keys = byNew.computeIfAbsent(u.newNetId, k -> new it.unimi.dsi.fastutil.longs.LongOpenHashSet());
+            for (BlockPos p : u.members) keys.add(p.asLong());
+        }
+
+        ManaNetService svc = ManaNetService.get(level);
+        for (Map.Entry<Long, Map<Long, it.unimi.dsi.fastutil.longs.LongOpenHashSet>> e : byOld.entrySet()) {
+            if (e.getValue().size() == 1) {
+                long newNetId = e.getValue().keySet().iterator().next();
+                svc.moveStored(e.getKey(), newNetId);
+                continue;
+            }
+            svc.redistributeStoredByCacheOnSplit(e.getKey(), e.getValue());
         }
     }
 
@@ -263,6 +288,24 @@ public final class SimpleNetManager {
         boolean isEmpty() {return members.isEmpty();}
     }
 
+    private static final class ComponentUpdate {
+        final long oldNetId;
+        final long newNetId;
+        final Set<BlockPos> members;
+
+        ComponentUpdate(long oldNetId, long newNetId, Set<BlockPos> members) {
+            this.oldNetId = oldNetId;
+            this.newNetId = newNetId;
+            this.members = members;
+        }
+    }
+
+    private long readNetId(BlockPos pos) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof AbstractNetNodeBlockEntity node) return node.getSimpleNetId();
+        return 0L;
+    }
+
     /** 判断该位置是否是“可参与网络”的线缆。 */
     private boolean isCable(BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
@@ -302,6 +345,13 @@ public final class SimpleNetManager {
         long uy = toUnsigned21(pos.getY());
         long uz = toUnsigned21(pos.getZ());
         return (ux << 42) | (uy << 21) | uz;
+    }
+
+    private static long hashNetId(long v) {
+        long z = v + 0x9e3779b97f4a7c15L;
+        z = (z ^ (z >>> 30)) * 0xbf58476d1ce4e5b9L;
+        z = (z ^ (z >>> 27)) * 0x94d049bb133111ebL;
+        return z ^ (z >>> 31);
     }
 
     private static long toUnsigned21(int v) {

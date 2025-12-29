@@ -14,6 +14,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.mananet.api.IManaNetNode;
 import org.creepebucket.programmable_magic.mananet.simple.SimpleNetManager;
 
+import java.nio.ByteBuffer;
+import java.util.Base64;
+
 /**
  * 抽象网络节点方块实体：统一 simpleNetId 存储与网络拓扑触发。
  */
@@ -54,6 +57,10 @@ public abstract class AbstractNetNodeBlockEntity extends BlockEntity implements 
     }
 
     public long getSimpleNetId() { return simpleNetId; }
+
+    public String getNetworkIdDisplayName() {
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(ByteBuffer.allocate(Long.BYTES).putLong(simpleNetId).array());
+    }
 
     /**
      * 获取当前网络操作对象（仅服务端，netId==0 返回 null）。

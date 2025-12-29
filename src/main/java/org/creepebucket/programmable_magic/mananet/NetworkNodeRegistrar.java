@@ -12,6 +12,7 @@ import org.creepebucket.programmable_magic.registries.ModBlocks;
 import org.creepebucket.programmable_magic.registries.ModItems;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -22,28 +23,30 @@ import java.util.function.Supplier;
 public final class NetworkNodeRegistrar {
     private NetworkNodeRegistrar() {}
 
-    public static void register(AbstractNetworkNode node) {
-        NodeRegistryData meta = Objects.requireNonNull(node.getRegistryData());
+    public static <T extends AbstractNetworkNode> void register(NodeRegistryData meta,
+                                                                BiFunction<Block.Properties, Supplier<BlockEntityType<NodeBoundBlockEntity>>, T> factory) {
+        Objects.requireNonNull(factory);
+        NodeRegistryData data = Objects.requireNonNull(meta);
 
         @SuppressWarnings("unchecked")
         final Supplier<BlockEntityType<NodeBoundBlockEntity>>[] beRef = new Supplier[]{() -> null};
 
-        DeferredBlock<NodeBoundBlock> block = ModBlocks.BLOCKS.register(meta.name(),
+        DeferredBlock<T> block = ModBlocks.BLOCKS.register(data.name(),
                 registryName -> {
                     ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, registryName);
                     Block.Properties props = Block.Properties.of().setId(key);
-                    return new NodeBoundBlock(props, node, () -> beRef[0].get());
+                    return factory.apply(props, () -> beRef[0].get());
                 }
         );
 
         Supplier<BlockEntityType<NodeBoundBlockEntity>> beType = ModBlockEntities.BLOCK_ENTITIES.register(
-                meta.name(),
-                () -> new BlockEntityType<>((pos, state) -> new NodeBoundBlockEntity(beRef[0].get(), pos, state, node), false, block.get())
+                data.name(),
+                () -> new BlockEntityType<>((pos, state) -> new NodeBoundBlockEntity(beRef[0].get(), pos, state), false, block.get())
         );
         beRef[0] = beType;
 
-        if (meta.withBlockItem()) {
-            ModItems.ITEMS.register(meta.name(), registryName -> new BlockItem(
+        if (data.withBlockItem()) {
+            ModItems.ITEMS.register(data.name(), registryName -> new BlockItem(
                     block.get(), new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))
             ));
         }

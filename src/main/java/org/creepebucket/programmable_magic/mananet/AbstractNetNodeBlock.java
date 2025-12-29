@@ -2,6 +2,8 @@ package org.creepebucket.programmable_magic.mananet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.creepebucket.programmable_magic.ModUtils;
 
 import javax.annotation.Nullable;
 
@@ -48,5 +51,31 @@ public abstract class AbstractNetNodeBlock extends Block implements EntityBlock 
         return state;
     }
 
-    // 无交互行为：节点方块默认不处理空手使用
+    @Override
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (level.isClientSide) return InteractionResult.SUCCESS;
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!(be instanceof AbstractNetNodeBlockEntity node)) return InteractionResult.SUCCESS;
+        ManaNet net = node.getNet();
+        if (net == null) return InteractionResult.SUCCESS;
+
+        var totals = net.getTotalManaAll();
+        StringBuilder sb = new StringBuilder();
+        sb.append("net ").append(node.getNetworkIdDisplayName()).append(" total: ");
+        if (totals.isEmpty()) {
+            sb.append("{}");
+        } else {
+            boolean first = true;
+            for (var e : totals.entrySet()) {
+                if (!first) sb.append(", ");
+                first = false;
+                sb.append(e.getKey()).append("=");
+                sb.append(ModUtils.FormattedManaString(e.getValue()));
+            }
+        }
+        sb.append(" | can_produce=").append(net.canProduce());
+
+        ((ServerPlayer) player).sendSystemMessage(Component.literal(sb.toString()));
+        return InteractionResult.SUCCESS;
+    }
 }

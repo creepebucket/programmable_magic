@@ -14,6 +14,8 @@ public final class ManaNetService {
 
     private final ServerLevel level;
     private final Map<Long, ManaNetImpl> nets = new HashMap<>();
+    private final Map<Long, Map<String, Double>> lastCacheByNode = new HashMap<>();
+    private final Map<Long, Long> lastCacheTickByNode = new HashMap<>();
 
     private ManaNetService(ServerLevel level) { this.level = level; }
 
@@ -21,6 +23,109 @@ public final class ManaNetService {
         if (netId == 0) return null;
         long now = level.getGameTime(); ManaNetImpl net = nets.get(netId);
         if (net == null || now - net.lastAccessTick > 1) nets.put(netId, net = new ManaNetImpl(level)); net.lastAccessTick = now; return net;
+    }
+
+    public void moveStored(long fromNetId, long toNetId) {
+        if (fromNetId == 0L) return;
+        if (toNetId == 0L) return;
+        if (fromNetId == toNetId) return;
+
+        ManaNetImpl from = nets.get(fromNetId);
+        if (from == null) return;
+        if (from.stored.isEmpty()) return;
+
+        long now = level.getGameTime();
+        ManaNetImpl to = nets.computeIfAbsent(toNetId, id -> new ManaNetImpl(level));
+        to.lastAccessTick = now;
+        from.stored.forEach((t, v) -> to.stored.merge(t, v, Double::sum));
+        from.stored.clear();
+    }
+
+    public void redistributeStoredByCacheOnSplit(long oldNetId, Map<Long, ? extends Iterable<Long>> nodeKeysByNewNetId) {
+        if (oldNetId == 0L) return;
+        if (nodeKeysByNewNetId.size() <= 1) return;
+
+        ManaNetImpl oldNet = nets.get(oldNetId);
+        if (oldNet == null) return;
+
+        Map<String, Double> oldStored = new HashMap<>(oldNet.stored);
+        if (oldStored.isEmpty()) return;
+
+        long now = level.getGameTime();
+        for (long newNetId : nodeKeysByNewNetId.keySet()) {
+            ManaNetImpl net = nets.computeIfAbsent(newNetId, id -> new ManaNetImpl(level));
+            net.stored.clear();
+            net.lastAccessTick = now;
+        }
+        if (!nodeKeysByNewNetId.containsKey(oldNetId)) oldNet.stored.clear();
+
+        Map<Long, Map<String, Double>> totalCacheByNewNet = new HashMap<>();
+        Map<String, Double> totalCacheAll = new HashMap<>();
+        Map<Long, Integer> weightByNewNet = new HashMap<>();
+        int weightAll = 0;
+
+        for (Map.Entry<Long, ? extends Iterable<Long>> e : nodeKeysByNewNetId.entrySet()) {
+            long newNetId = e.getKey();
+
+            Map<String, Double> cache = new HashMap<>();
+            int weight = 0;
+            for (Long nodeKey : e.getValue()) {
+                weight++;
+                Map<String, Double> byType = lastCacheByNode.get(nodeKey);
+                if (byType == null) continue;
+                byType.forEach((t, v) -> cache.merge(t, v, Double::sum));
+            }
+
+            totalCacheByNewNet.put(newNetId, cache);
+            cache.forEach((t, v) -> totalCacheAll.merge(t, v, Double::sum));
+            weightByNewNet.put(newNetId, weight);
+            weightAll += weight;
+        }
+
+        for (Map.Entry<String, Double> e : oldStored.entrySet()) {
+            String type = e.getKey();
+            double amount = e.getValue();
+            double capAll = totalCacheAll.getOrDefault(type, 0.0);
+
+            if (capAll > 0.0) {
+                for (long newNetId : nodeKeysByNewNetId.keySet()) {
+                    double cap = totalCacheByNewNet.get(newNetId).getOrDefault(type, 0.0);
+                    double part = amount * (cap / capAll);
+                    ManaNetImpl net = nets.computeIfAbsent(newNetId, id -> new ManaNetImpl(level));
+                    net.lastAccessTick = now;
+                    net.stored.merge(type, part, Double::sum);
+                }
+                continue;
+            }
+
+            for (long newNetId : nodeKeysByNewNetId.keySet()) {
+                int w = weightByNewNet.get(newNetId);
+                double part = amount * ((double) w / (double) weightAll);
+                ManaNetImpl net = nets.computeIfAbsent(newNetId, id -> new ManaNetImpl(level));
+                net.lastAccessTick = now;
+                net.stored.merge(type, part, Double::sum);
+            }
+        }
+    }
+
+    private void recordCache(long nodeKey, String type, double capacity) {
+        long tick = level.getGameTime();
+        Long lastTick = lastCacheTickByNode.put(nodeKey, tick);
+        Map<String, Double> cache = lastCacheByNode.computeIfAbsent(nodeKey, k -> new HashMap<>());
+        if (lastTick == null || lastTick != tick) cache.clear();
+        cache.put(type, capacity);
+    }
+
+    private void recordCache(long nodeKey, Map<String, Double> byType) {
+        long tick = level.getGameTime();
+        Long lastTick = lastCacheTickByNode.put(nodeKey, tick);
+        Map<String, Double> cache = lastCacheByNode.computeIfAbsent(nodeKey, k -> new HashMap<>());
+        if (lastTick == null || lastTick != tick) cache.clear();
+        cache.putAll(byType);
+    }
+
+    public void tick() {
+        for (ManaNetImpl net : nets.values()) net.ensureTick();
     }
 
     // 实现：简单的逐刻结算逻辑
@@ -63,12 +168,14 @@ public final class ManaNetService {
             for (Map.Entry<String, Double> e : unionKeys(stored, addedThisTick, totalLoad, totalCache).entrySet()) {
                 String t = e.getKey();
                 double s = stored.getOrDefault(t, 0.0);
-                double add = addedThisTick.getOrDefault(t, 0.0);
-                double cap = totalCache.getOrDefault(t, 0.0);
-                double need = totalLoad.getOrDefault(t, 0.0);
+                double addW = addedThisTick.getOrDefault(t, 0.0);
+                double capJ = totalCache.getOrDefault(t, 0.0);
+                double loadW = totalLoad.getOrDefault(t, 0.0);
+                double addFromNegativeLoad = Math.max(0.0, -loadW) / 20000.0;
+                double need = Math.max(0.0, loadW) / 20000.0;
 
-                double avail = s + add;
-                if (cap > 0) avail = Math.min(avail, cap);
+                double avail = s + (addW / 20000.0) + addFromNegativeLoad;
+                if (capJ > 0) avail = Math.min(avail, capJ / 1000.0);
                 available.put(t, avail);
 
                 boolean ok = avail >= need;
@@ -76,11 +183,13 @@ public final class ManaNetService {
 
                 double consumed = Math.min(avail, need);
                 double remain = avail - consumed;
-                stored.put(t, (cap > 0) ? Math.min(remain, cap) : remain);
+                stored.put(t, (capJ > 0) ? Math.min(remain, capJ / 1000.0) : remain);
             }
 
             // 清空本刻注入，负载/容量由节点每刻重报
             addedThisTick.clear();
+            loadByNode.clear();
+            cacheByNode.clear();
         }
 
         private static Map<String, Double> unionKeys(Map<String, Double>... maps) {
@@ -90,10 +199,10 @@ public final class ManaNetService {
         }
 
         @Override
-        public double getTotalMana(String type) { ensureTick(); return stored.getOrDefault(type, 0.0); }
+        public double getTotalMana(String type) { return stored.getOrDefault(type, 0.0); }
 
         @Override
-        public Map<String, Double> getTotalManaAll() { ensureTick(); return java.util.Map.copyOf(stored); }
+        public Map<String, Double> getTotalManaAll() { return java.util.Map.copyOf(stored); }
 
         @Override
         public void setLoad(long nodeKey, String type, double amount) {
@@ -108,11 +217,13 @@ public final class ManaNetService {
         @Override
         public void setCache(long nodeKey, String type, double capacity) {
             cacheByNode.computeIfAbsent(nodeKey, k -> new HashMap<>()).put(type, capacity);
+            ManaNetService.get(level).recordCache(nodeKey, type, capacity);
         }
 
         @Override
         public void setCache(long nodeKey, Map<String, Double> byType) {
             cacheByNode.computeIfAbsent(nodeKey, k -> new HashMap<>()).putAll(byType);
+            ManaNetService.get(level).recordCache(nodeKey, byType);
         }
 
         @Override
@@ -122,12 +233,11 @@ public final class ManaNetService {
         public void addMana(Map<String, Double> byType) { byType.forEach((k,v)-> addedThisTick.merge(k, v, Double::sum)); }
 
         @Override
-        public boolean canProduce() { ensureTick(); return canAll; }
+        public boolean canProduce() { return canAll; }
 
         @Override
         public boolean canProduce(String type) {
-            ensureTick();
-            double need = totalLoad.getOrDefault(type, 0.0);
+            double need = Math.max(0.0, totalLoad.getOrDefault(type, 0.0)) / 20000.0;
             return available.getOrDefault(type, 0.0) >= need;
         }
     }
