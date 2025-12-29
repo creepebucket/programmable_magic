@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mana.api;
+package org.creepebucket.programmable_magic.mananet.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,5 +30,4 @@ public interface IManaNetNode {
     Level getLevel();
     BlockPos getBlockPos();
 }
-
 

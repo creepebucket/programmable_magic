@@ -45,7 +45,7 @@ src/main/java/org/creepebucket/programmable_magic
 ├─ spells/           # 法术核心：效果/调整/控制/载体/计算、序列执行、费用计算
 ├─ gui/wand/         # 魔杖界面：法术展示/存储槽位、交互管线
 ├─ items/            # 物品：法术卡片、魔杖、魔力单元等
-├─ mana/             # 魔力网络：接口与简化网络原型（WIP）
+├─ mananet/          # 魔力网络：接口与简化网络原型（WIP）
 ├─ block(+blockentity)/events/  # 方块与交互事件（含早期流程方块）
 ├─ registries/       # 注册中心（方块/物品/方块实体/菜单/标签/法术）
 └─ data/             # 数据生成器（blockstate、模型、客户端 items）

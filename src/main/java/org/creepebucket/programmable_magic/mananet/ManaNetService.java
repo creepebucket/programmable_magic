@@ -19,13 +19,14 @@ public final class ManaNetService {
 
     public ManaNet getNet(long netId) {
         if (netId == 0) return null;
-        return nets.computeIfAbsent(netId, id -> new ManaNetImpl(level));
+        long now = level.getGameTime(); ManaNetImpl net = nets.get(netId);
+        if (net == null || now - net.lastAccessTick > 1) nets.put(netId, net = new ManaNetImpl(level)); net.lastAccessTick = now; return net;
     }
 
     // 实现：简单的逐刻结算逻辑
     private static final class ManaNetImpl implements ManaNet {
         private final ServerLevel level;
-        private long lastTick = Long.MIN_VALUE;
+        private long lastTick = Long.MIN_VALUE, lastAccessTick = Long.MIN_VALUE;
 
         // 累计存量（跨刻持久）
         private final Map<String, Double> stored = new HashMap<>();
@@ -131,4 +132,3 @@ public final class ManaNetService {
         }
     }
 }
-

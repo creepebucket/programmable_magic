@@ -1,10 +1,11 @@
-package org.creepebucket.programmable_magic.mana.simple;
+package org.creepebucket.programmable_magic.mananet.simple;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.creepebucket.programmable_magic.mana.api.IManaNetNode;
+import org.creepebucket.programmable_magic.mananet.AbstractNetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.api.IManaNetNode;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -283,7 +284,7 @@ public final class SimpleNetManager {
      */
     private void applyNetId(BlockPos pos, long netId) {
         BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof org.creepebucket.programmable_magic.mananet.AbstractNetNodeBlockEntity node) {
+        if (be instanceof AbstractNetNodeBlockEntity node) {
             node.setSimpleNetId(netId);
         }
     }

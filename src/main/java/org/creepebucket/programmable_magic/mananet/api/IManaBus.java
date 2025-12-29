@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mana.api;
+package org.creepebucket.programmable_magic.mananet.api;
 
 import net.minecraft.core.Direction;
 
@@ -42,5 +42,4 @@ public interface IManaBus {
 
     default long extractMana(String type, long amount, Direction face) {return extractMana(type, amount);}    
 }
-
 

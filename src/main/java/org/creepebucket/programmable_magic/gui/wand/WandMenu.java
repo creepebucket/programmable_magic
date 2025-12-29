@@ -420,6 +420,7 @@ public class WandMenu extends AbstractContainerMenu {
      * 供应槽的点击行为特殊处理：若手上有物品则清空（模拟创造删除）。
      */
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
+        if (clickType == ClickType.SWAP) return;
         // 仅禁用“主手槽位”的点击交互（通过对象引用比对主手物品），其它不限制
         if (slotId >= 0 && slotId < this.slots.size()) {
             Slot s = this.slots.get(slotId);

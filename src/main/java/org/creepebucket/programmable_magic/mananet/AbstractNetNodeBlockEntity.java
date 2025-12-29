@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.creepebucket.programmable_magic.mana.api.IManaNetNode;
-import org.creepebucket.programmable_magic.mana.simple.SimpleNetManager;
+import org.creepebucket.programmable_magic.mananet.api.IManaNetNode;
+import org.creepebucket.programmable_magic.mananet.simple.SimpleNetManager;
 
 /**
  * 抽象网络节点方块实体：统一 simpleNetId 存储与网络拓扑触发。

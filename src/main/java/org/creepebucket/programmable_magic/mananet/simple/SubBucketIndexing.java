@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mana.simple;
+package org.creepebucket.programmable_magic.mananet.simple;
 
 import net.minecraft.core.BlockPos;
 
