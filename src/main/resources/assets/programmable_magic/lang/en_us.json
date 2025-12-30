@@ -97,6 +97,13 @@
   "item.programmable_magic.small_cell_certidge": "Small Cell Cartridge",
   "item.programmable_magic.rg_alloy_wand": "RG Alloy Wand",
 
+  "block.programmable_magic.mana_cable": "Mana Cable",
+  "item.programmable_magic.mana_cable": "Mana Cable",
+  "block.programmable_magic.mana_generator": "Mana Generator",
+  "item.programmable_magic.mana_generator": "Mana Generator",
+  "block.programmable_magic.mana_buffer": "Mana Buffer",
+  "item.programmable_magic.mana_buffer": "Mana Buffer",
+
   "block.programmable_magic.primitive_alloy_smelter": "Primitive Alloy Smelter",
   "item.programmable_magic.primitive_alloy_smelter": "Primitive Alloy Smelter",
   "itemGroup.programmable_magic.main": "Programmable Magic",

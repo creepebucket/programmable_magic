@@ -6,6 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.core.BlockPos;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class PlaceBlockSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.0, 0.0, 0.3, 0.0);
+    public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new ModUtils.Mana(0.0, 0.0, 0.3, 0.0);
     }
 
     @Override

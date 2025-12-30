@@ -233,6 +233,13 @@
   "item.programmable_magic.wand_plugin_spell_release_t3": "插件：法术释放 III",
   "item.programmable_magic.wand_plugin_auto_charge": "插件：自动充能",
 
+  "block.programmable_magic.mana_cable": "魔力线缆",
+  "item.programmable_magic.mana_cable": "魔力线缆",
+  "block.programmable_magic.mana_generator": "魔力产生器",
+  "item.programmable_magic.mana_generator": "魔力产生器",
+  "block.programmable_magic.mana_buffer": "魔力缓存器",
+  "item.programmable_magic.mana_buffer": "魔力缓存器",
+
   "block.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
   "item.programmable_magic.primitive_alloy_smelter": "原始合金熔炼炉",
   "itemGroup.programmable_magic.main": "Programmable Magic",

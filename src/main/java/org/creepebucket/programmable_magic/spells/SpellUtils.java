@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.spells;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
@@ -38,9 +39,9 @@ public final class SpellUtils {
         public final boolean successful;
         public final int delayTicks;
         public final Map<String, Object> result;
-        public final Mana mana;
+        public final ModUtils.Mana mana;
 
-        public StepResult(boolean shouldDiscard, boolean successful, int delayTicks, Map<String, Object> result, Mana mana) {
+        public StepResult(boolean shouldDiscard, boolean successful, int delayTicks, Map<String, Object> result, ModUtils.Mana mana) {
             this.shouldDiscard = shouldDiscard;
             this.successful = successful;
             this.delayTicks = delayTicks;
@@ -74,9 +75,9 @@ public final class SpellUtils {
                                                  SpellData spellData,
                                                  SpellSequence sequence,
                                                  SpellItemLogic currentSpell,
-                                                 Mana myMana) {
+                                                 ModUtils.Mana myMana) {
 
-        if (currentSpell == null) return new StepResult(true, false, 0,  Map.of(), new Mana());
+        if (currentSpell == null) return new StepResult(true, false, 0,  Map.of(), new ModUtils.Mana());
 
         // 收集法术参数和修饰法术
         List<SpellItemLogic> modifiers = new ArrayList<>();
@@ -192,11 +193,11 @@ public final class SpellUtils {
 
         Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
 
-        Mana mana = new Mana();
+        ModUtils.Mana mana = new ModUtils.Mana();
         if (currentSpell instanceof BaseBaseSpellLogic) {
             mana = ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams);
         } else {
-            mana = new Mana();
+            mana = new ModUtils.Mana();
         }
 
         int delayTicks = 0;
@@ -230,13 +231,13 @@ public final class SpellUtils {
     private static StepResult paramOutOfBound(Player caster, SpellItemLogic current) {
         LOGGER.error("在搜索参数时突破边界: 当前法术: {}", current.getRegistryName());
         sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.param_search_out_of_bound"), caster);
-        return new StepResult(true, false, 0, Map.of(), new Mana());
+        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
     private static StepResult paramTypeError(Player caster, SpellItemLogic current) {
         LOGGER.error("尝试收集参数时发现参数不是ValueLiteralSpell类型: 当前法术: {}", current.getRegistryName());
         sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.internal_bug"), caster);
-        return new StepResult(true, false, 0, Map.of(), new Mana());
+        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
     private static StepResult paramTypeMismatch(Player caster, SpellItemLogic current, ValueLiteralSpell v, SpellValueType neededType) {
@@ -246,13 +247,13 @@ public final class SpellUtils {
                 "message.programmable_magic.error.wand.param_type_error",
                 current.getRegistryName(), v.VALUE_TYPE.display(), neededType.display()
         ), caster);
-        return new StepResult(true, false, 0, Map.of(), new Mana());
+        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
     private static StepResult notEnoughMana(Player caster, SpellItemLogic current) {
         LOGGER.error("法术 {} 的魔力不足", current.getRegistryName());
         sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.not_enough_mana"), caster);
-        return new StepResult(true, false, 0, Map.of(), new Mana());
+        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
 
@@ -337,7 +338,7 @@ public final class SpellUtils {
                     || spell instanceof LogicalOperationsSpell.OrSpell)
                     && (!(spell.getPrevSpell() instanceof ValueLiteralSpell) || !(spell.getNextSpell() instanceof ValueLiteralSpell))) continue;
 
-            var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell, new Mana());
+            var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell, new ModUtils.Mana());
             if (!step.successful) continue;
             Map<String, Object> result = step.result;
 

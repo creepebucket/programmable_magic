@@ -8,7 +8,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
-import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
@@ -199,7 +198,7 @@ public class SpellLogic {
         double energyJ = chargeRateW * this.chargeSeconds; // 焦耳
         double chargedMana = energyJ / 1000.0; // 转换为 mana（1 mana = 1 kJ）
         double supply = (manaMult == 0.0) ? chargedMana : chargedMana / manaMult; // 发射时除以魔杖倍率
-        Mana initialMana = new Mana(supply, supply, supply, supply);
+        ModUtils.Mana initialMana = new ModUtils.Mana(supply, supply, supply, supply);
 
         SpellEntity entity = new SpellEntity(player.level(), player, spellSequence, spellData, initialMana, this.pluginStacks);
         LOGGER.debug("法术实体创建成功，实体ID: {}", entity.getId());

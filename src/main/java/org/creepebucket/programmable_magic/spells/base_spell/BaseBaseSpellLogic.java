@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.spells.base_spell;
 
-import org.creepebucket.programmable_magic.spells.Mana;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
@@ -14,5 +14,5 @@ public abstract class BaseBaseSpellLogic extends SpellItemLogic {
         return SpellType.BASE_SPELL;
     }
 
-    public abstract Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
+    public abstract ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
 }

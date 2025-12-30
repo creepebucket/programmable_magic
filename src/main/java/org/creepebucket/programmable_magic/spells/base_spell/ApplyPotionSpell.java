@@ -7,6 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
@@ -41,8 +42,8 @@ public class ApplyPotionSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.0, 0.0, 0.3, 0.3);
+    public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new ModUtils.Mana(0.0, 0.0, 0.3, 0.3);
     }
 
     @Override

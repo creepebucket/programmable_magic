@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class VelocitySpell extends BaseBaseSpellLogic{
     }
 
     @Override
-    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.0, 0.0, ((Vec3) spellParams.get(1)).length(), 0.0);
+    public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new ModUtils.Mana(0.0, 0.0, ((Vec3) spellParams.get(1)).length(), 0.0);
     }
 
     @Override

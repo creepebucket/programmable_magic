@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.Tags;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
@@ -36,8 +37,8 @@ public class ProjectileAttachSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.1, 0.1, 0.1, 0.1);
+    public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new ModUtils.Mana(0.1, 0.1, 0.1, 0.1);
     }
 
     @Override

@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class PaintDataSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new Mana(0.05, 0.05, 0.05, 0.05);
+    public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+        return new ModUtils.Mana(0.05, 0.05, 0.05, 0.05);
     }
 
     @Override

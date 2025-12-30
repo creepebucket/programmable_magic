@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.entities;
 
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -17,6 +16,7 @@ import java.util.List;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.*;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
@@ -37,7 +37,7 @@ public class SpellEntity extends Entity {
     private SpellItemLogic lastBoundarySpell = spellSequence.getFirstSpell();
     private int delayTicks = 0;
     private Player caster;
-    private Mana mana;
+    private ModUtils.Mana mana;
     private List<ItemStack> pluginItems = List.of();
     
     public SpellEntity(EntityType<?> entityType, Level level) {
@@ -45,7 +45,7 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
     
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, Mana mana) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, ModUtils.Mana mana) {
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
         this.spellSequence = spellSequence;
         this.caster = caster;
@@ -57,7 +57,7 @@ public class SpellEntity extends Entity {
         this.mana = mana;
     }
 
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, Mana mana,
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, SpellData spellData, ModUtils.Mana mana,
                        List<ItemStack> plugins) {
         this(level, caster, spellSequence, spellData, mana);
         if (plugins != null) this.pluginItems = plugins;
@@ -147,7 +147,7 @@ public class SpellEntity extends Entity {
         double t = valueInput.getDoubleOr("mana_temperature", this.mana != null ? this.mana.getTemperature() : 0.0);
         double m = valueInput.getDoubleOr("mana_momentum", this.mana != null ? this.mana.getMomentum() : 0.0);
         double p = valueInput.getDoubleOr("mana_pressure", this.mana != null ? this.mana.getPressure() : 0.0);
-        this.mana = new Mana(r, t, m, p);
+        this.mana = new ModUtils.Mana(r, t, m, p);
     }
 
     @Override

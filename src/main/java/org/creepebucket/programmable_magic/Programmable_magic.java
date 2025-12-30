@@ -8,6 +8,8 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
 import org.creepebucket.programmable_magic.registries.*;
 import org.creepebucket.programmable_magic.data.ModDataGenerators;
+import org.creepebucket.programmable_magic.registries.ModAttachments;
+import org.creepebucket.programmable_magic.registries.MananetNodeBlocks;
 
 @Mod(Programmable_magic.MODID)
 public class Programmable_magic {
@@ -15,9 +17,10 @@ public class Programmable_magic {
 
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
 
-        ManaNetNodes.main();
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        MananetNodeBlocks.register(modEventBus);
+        ModAttachments.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModDataComponents.register(modEventBus);
