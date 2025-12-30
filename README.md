@@ -12,7 +12,7 @@
 [![repo](https://img.shields.io/badge/repo-programmable_magic-181717?logo=github&logoColor=white)](https://github.com/creepebucket/programmable_magic)
 
 ![GitHub Repo Card](https://githubcard.com/creepebucket/programmable_magic.svg?d=dU-_JTBK)
-[![Star History Chart](https://api.star-history.com/svg?repos=creepebucket/programmable_magic&type=date&legend=top-left)](https://www.star-history.com/#creepebucket/programmable_magic&type=date&legend=top-left)
+![Star History Chart](https://api.star-history.com/svg?repos=creepebucket/programmable_magic&type=date&legend=top-left)
 
 ## 概述
 
