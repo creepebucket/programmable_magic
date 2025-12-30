@@ -16,6 +16,11 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 @EventBusSubscriber(modid = MODID)
 public class HandlerMananetNodeInspect {
 
+    /**
+     * 调试用：右键节点方块时，把该节点所属网络的汇总信息发送给玩家。
+     *
+     * <p>输出包括 network_id、网络规模（size）、当前 mana、总 cache、总 load（标注为每秒）。</p>
+     */
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
@@ -33,6 +38,9 @@ public class HandlerMananetNodeInspect {
         player.sendSystemMessage(Component.literal("load_per_s " + formatMana(info.load())));
     }
 
+    /**
+     * 把四分量魔力格式化成一行易读文本。
+     */
     private static String formatMana(Mana mana) {
         return "radiation=" + ModUtils.formattedNumber(mana.getRadiation())
                 + " temperature=" + ModUtils.formattedNumber(mana.getTemperature())

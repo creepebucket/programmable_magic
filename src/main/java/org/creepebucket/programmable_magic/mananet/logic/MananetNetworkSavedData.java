@@ -12,6 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Mananet 的 SavedData（世界级持久化）。
+ *
+ * <p>当前只保存两类信息：</p>
+ * <ul>
+ *     <li>{@code parent}：网络 union-find 的 parent 表，用于跨存档保持网络根关系稳定。</li>
+ *     <li>{@code manaById}：每个网络根 id 对应的当前魔力存量。</li>
+ * </ul>
+ *
+ * <p>cache/load/size 不在此处保存：它们可由各 chunk 的节点数据在加载时重新汇总。</p>
+ */
 public final class MananetNetworkSavedData extends SavedData {
 
     private static final Codec<UUID> UUID_CODEC = Codec.STRING.xmap(UUID::fromString, UUID::toString);
@@ -57,19 +68,31 @@ public final class MananetNetworkSavedData extends SavedData {
         if (manaById != null) this.manaById.putAll(manaById);
     }
 
+    /**
+     * 获取（或创建）overworld 上的 Mananet SavedData。
+     */
     public static MananetNetworkSavedData get(ServerLevel level) {
         return level.getServer().overworld().getDataStorage().computeIfAbsent(ID);
     }
 
+    /**
+     * union-find parent 表（可直接写入 manager）。
+     */
     public Map<UUID, UUID> parent() {
         return parent;
     }
 
+    /**
+     * 获取指定网络根 id 的当前魔力存量（返回 copy）。
+     */
     public Mana getMana(UUID id) {
         Mana mana = manaById.get(id);
         return mana != null ? ManaMath.copy(mana) : new Mana();
     }
 
+    /**
+     * 从运行时 manager 写回 SavedData（通常在世界保存事件触发）。
+     */
     public void writeFromManager(MananetNetworkManager manager) {
         parent.clear();
         parent.putAll(manager.exportParent());
@@ -80,4 +103,3 @@ public final class MananetNetworkSavedData extends SavedData {
         setDirty();
     }
 }
-

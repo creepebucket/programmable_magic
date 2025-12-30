@@ -10,10 +10,25 @@ import it.unimi.dsi.fastutil.longs.LongIterator;
 
 import java.util.UUID;
 
+/**
+ * chunk 附件：保存“节点方块”的按位置数据。
+ *
+ * <p>该数据用于跨加载周期保留：</p>
+ * <ul>
+ *     <li>节点所属 network_id（UUID）</li>
+ *     <li>连通掩码 connectivity_mask</li>
+ *     <li>cache/load 两个贡献量</li>
+ * </ul>
+ *
+ * <p>序列化字段名保持稳定，便于后续数据迁移或排查存档内容。</p>
+ */
 public final class MananetChunkNodes implements ValueIOSerializable {
 
     private final Long2ObjectOpenHashMap<NodeData> nodes = new Long2ObjectOpenHashMap<>();
 
+    /**
+     * 按 {@code BlockPos.asLong()} 读取节点数据。
+     */
     public NodeData get(long posLong) {
         return nodes.get(posLong);
     }
@@ -26,10 +41,16 @@ public final class MananetChunkNodes implements ValueIOSerializable {
         nodes.remove(posLong);
     }
 
+    /**
+     * 迭代所有位置 key。
+     */
     public LongIterator positions() {
         return nodes.keySet().iterator();
     }
 
+    /**
+     * 迭代所有条目（posLong -> NodeData）。
+     */
     public Iterable<Long2ObjectOpenHashMap.Entry<NodeData>> entries() {
         return nodes.long2ObjectEntrySet();
     }
@@ -55,10 +76,25 @@ public final class MananetChunkNodes implements ValueIOSerializable {
         }
     }
 
+    /**
+     * 单个节点方块的持久化数据（随 chunk 保存/加载）。
+     */
     public static final class NodeData implements ValueIOSerializable {
+        /**
+         * 节点所属 network_id；为 null 表示尚未集成（integrate）。
+         */
         public UUID networkId;
+        /**
+         * 6 个方向连通掩码，位序与 {@code Direction.ordinal()} 一致。
+         */
         public int connectivityMask = 0b111111;
+        /**
+         * 本节点 cache 贡献。
+         */
         public Mana cache = new Mana();
+        /**
+         * 本节点 load 贡献（每秒净负载）。
+         */
         public Mana load = new Mana();
 
         @Override
@@ -94,4 +130,3 @@ public final class MananetChunkNodes implements ValueIOSerializable {
         }
     }
 }
-

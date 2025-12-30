@@ -13,6 +13,9 @@ public final class MananetPersistenceHandler {
 
     private MananetPersistenceHandler() {}
 
+    /**
+     * chunk 加载：把 chunk 附件里的节点数据装入运行时 manager，并汇总到网络状态。
+     */
     @SubscribeEvent
     public static void onChunkLoad(ChunkEvent.Load event) {
         if (event.getLevel() instanceof ServerLevel level) {
@@ -20,6 +23,9 @@ public final class MananetPersistenceHandler {
         }
     }
 
+    /**
+     * chunk 卸载：从运行时 manager 移除该 chunk 的节点状态，并扣除其对网络的贡献。
+     */
     @SubscribeEvent
     public static void onChunkUnload(ChunkEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel level) {
@@ -27,6 +33,9 @@ public final class MananetPersistenceHandler {
         }
     }
 
+    /**
+     * 世界保存：把运行时 union-find 与网络当前 mana 写入 SavedData。
+     */
     @SubscribeEvent
     public static void onLevelSave(LevelEvent.Save event) {
         if (event.getLevel() instanceof ServerLevel level) {
@@ -34,4 +43,3 @@ public final class MananetPersistenceHandler {
         }
     }
 }
-

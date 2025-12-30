@@ -13,6 +13,15 @@ import org.creepebucket.programmable_magic.ModUtils.Mana;
 import org.creepebucket.programmable_magic.mananet.api.AbstractNodeBlock;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 
+/**
+ * 魔力网络的“发电机”节点方块。
+ *
+ * <p>通过 {@link #init_node_state(ServerLevel, BlockPos, BlockState, MananetNodeState)} 设定：</p>
+ * <ul>
+ *     <li>较小的缓存上限（cache）</li>
+ *     <li>持续产出（load 为负）</li>
+ * </ul>
+ */
 public class ManaGeneratorBlock extends AbstractNodeBlock {
 
     public static final String ID = "mana_generator";
@@ -21,6 +30,9 @@ public class ManaGeneratorBlock extends AbstractNodeBlock {
         super(properties);
     }
 
+    /**
+     * 注册方块与对应物品。
+     */
     public static DeferredBlock<ManaGeneratorBlock> register(DeferredRegister.Blocks blocks, DeferredRegister.Items items) {
         DeferredBlock<ManaGeneratorBlock> block = blocks.register(ID, registryName -> new ManaGeneratorBlock(
                 BlockBehaviour.Properties.of()
@@ -39,6 +51,7 @@ public class ManaGeneratorBlock extends AbstractNodeBlock {
 
     @Override
     public void init_node_state(ServerLevel level, BlockPos pos, BlockState state, MananetNodeState node_state) {
+        // 发电机提供少量容量，并按固定速率向网络注入魔力（load 为负数）。
         node_state.cache = new Mana(32.0, 32.0, 32.0, 32.0);
         node_state.load = new Mana(-8.0, -8.0, -8.0, -8.0);
     }

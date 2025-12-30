@@ -2,14 +2,25 @@ package org.creepebucket.programmable_magic.mananet.api;
 
 import org.creepebucket.programmable_magic.ModUtils.Mana;
 
+/**
+ * {@link Mana} 的轻量数学工具。
+ *
+ * <p>这里的所有运算都返回新对象，避免在调用点隐式修改入参。</p>
+ */
 public final class ManaMath {
 
     private ManaMath() {}
 
+    /**
+     * 复制一份 Mana。
+     */
     public static Mana copy(Mana mana) {
         return new Mana(mana.getRadiation(), mana.getTemperature(), mana.getMomentum(), mana.getPressure());
     }
 
+    /**
+     * 计算差值：{@code next - prev}。
+     */
     public static Mana delta(Mana next, Mana prev) {
         return new Mana(
                 next.getRadiation() - prev.getRadiation(),
@@ -19,6 +30,9 @@ public final class ManaMath {
         );
     }
 
+    /**
+     * 缩放：{@code mana * factor}。
+     */
     public static Mana scale(Mana mana, double factor) {
         return new Mana(
                 mana.getRadiation() * factor,
@@ -28,6 +42,9 @@ public final class ManaMath {
         );
     }
 
+    /**
+     * 将每个分量夹到非负：{@code max(0, x)}。
+     */
     public static Mana clampNonNegative(Mana mana) {
         return new Mana(
                 Math.max(0.0, mana.getRadiation()),
@@ -37,6 +54,9 @@ public final class ManaMath {
         );
     }
 
+    /**
+     * 将每个分量夹到缓存上限：{@code min(mana, cache)}。
+     */
     public static Mana clampToCache(Mana mana, Mana cache) {
         return new Mana(
                 Math.min(mana.getRadiation(), cache.getRadiation()),
@@ -46,6 +66,9 @@ public final class ManaMath {
         );
     }
 
+    /**
+     * 是否能支付 cost（逐分量比较）。
+     */
     public static boolean canAfford(Mana mana, Mana cost) {
         return mana.getRadiation() >= cost.getRadiation()
                 && mana.getTemperature() >= cost.getTemperature()
@@ -53,6 +76,11 @@ public final class ManaMath {
                 && mana.getPressure() >= cost.getPressure();
     }
 
+    /**
+     * 取正部：{@code max(0, x)}。
+     *
+     * <p>常用于把“每秒净负载”拆成“需要支付的消耗部分”（正数）与“可免费获得的产出部分”（负数）。</p>
+     */
     public static Mana positivePart(Mana mana) {
         return new Mana(
                 Math.max(0.0, mana.getRadiation()),
@@ -62,6 +90,11 @@ public final class ManaMath {
         );
     }
 
+    /**
+     * 计算缓存权重（四个分量求和）。
+     *
+     * <p>用于某些“按容量占比分配”的场景时，提供一个简单的标量。</p>
+     */
     public static double cacheWeight(Mana cache) {
         return cache.getRadiation() + cache.getTemperature() + cache.getMomentum() + cache.getPressure();
     }

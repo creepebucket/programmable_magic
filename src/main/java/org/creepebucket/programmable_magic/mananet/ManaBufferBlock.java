@@ -13,6 +13,11 @@ import org.creepebucket.programmable_magic.ModUtils.Mana;
 import org.creepebucket.programmable_magic.mananet.api.AbstractNodeBlock;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 
+/**
+ * 魔力网络的“缓冲”节点方块。
+ *
+ * <p>缓冲节点只提供大量容量（cache），不提供持续产出/消耗（load 保持为 0）。</p>
+ */
 public class ManaBufferBlock extends AbstractNodeBlock {
 
     public static final String ID = "mana_buffer";
@@ -21,6 +26,9 @@ public class ManaBufferBlock extends AbstractNodeBlock {
         super(properties);
     }
 
+    /**
+     * 注册方块与对应物品。
+     */
     public static DeferredBlock<ManaBufferBlock> register(DeferredRegister.Blocks blocks, DeferredRegister.Items items) {
         DeferredBlock<ManaBufferBlock> block = blocks.register(ID, registryName -> new ManaBufferBlock(
                 BlockBehaviour.Properties.of()
@@ -39,6 +47,7 @@ public class ManaBufferBlock extends AbstractNodeBlock {
 
     @Override
     public void init_node_state(ServerLevel level, BlockPos pos, BlockState state, MananetNodeState node_state) {
+        // 提供更大的容量上限，用于存储网络中的当前魔力。
         node_state.cache = new Mana(512.0, 512.0, 512.0, 512.0);
     }
 }
