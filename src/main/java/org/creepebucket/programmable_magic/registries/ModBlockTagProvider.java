@@ -16,8 +16,5 @@ public class ModBlockTagProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        // 偏好使用镐子开采
-        this.tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(ModBlocks.PRIMITIVE_ALLOY_SMELTER.get());
     }
 }

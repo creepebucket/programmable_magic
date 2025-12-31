@@ -31,15 +31,6 @@ public class GeneralItemModelProvider implements DataProvider {
         List<CompletableFuture<?>> futures = new ArrayList<>();
 
         for (String name : List.of(
-                "pure_redstone_dust",
-                "redstone_gold_alloy",
-                "rg_alloy_wire",
-                "rg_alloy_rod",
-                "small_cell_shell",
-                "debris_dust",
-                "debris_clay",
-                "covered_rg_alloy_wire",
-                "small_cell_certidge",
                 "small_mana_cell",
                 "rg_alloy_wand",
                 "wand_item_placeholder"

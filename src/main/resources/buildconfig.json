@@ -52,9 +52,8 @@
 
       { "from_top_left": [16, 0], "from_bottom_right": [31, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png" },
       { "from_top_left": [16, 16], "from_bottom_right": [31, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/condition_inverter.png" },
-      { "from_top_left": [16, 32], "from_bottom_right": [31, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/power_boost.png" },
       { "from_top_left": [16, 48], "from_bottom_right": [31, 63], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_entity.png" },
-      { "from_top_left": [16, 64], "from_bottom_right": [31, 79], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png" },
+      { "from_top_left": [16, 32], "from_bottom_right": [31, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png" },
 
       { "from_top_left": [48, 0], "from_bottom_right": [63, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_end.png" },
       { "from_top_left": [48, 16], "from_bottom_right": [63, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_start.png" },
@@ -73,31 +72,13 @@
       { "from_top_left": [48, 224], "from_bottom_right": [63, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/true.png" },
       { "from_top_left": [48, 240], "from_bottom_right": [63, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/false.png" },
 
-      { "from_top_left": [480, 128], "from_bottom_right": [495, 143], "target_img_path": "assets/programmable_magic/textures/item/pure_redstone_dust.png" },
-      { "from_top_left": [480, 144], "from_bottom_right": [495, 159], "target_img_path": "assets/programmable_magic/textures/item/redstone_gold_alloy.png" },
-      { "from_top_left": [480, 160], "from_bottom_right": [495, 175], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wire.png" },
-      { "from_top_left": [480, 176], "from_bottom_right": [495, 191], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_rod.png" },
-      { "from_top_left": [480, 192], "from_bottom_right": [495, 207], "target_img_path": "assets/programmable_magic/textures/item/small_cell_shell.png" },
-
-      { "from_top_left": [544, 128], "from_bottom_right": [559, 143], "target_img_path": "assets/programmable_magic/textures/item/debris_dust.png" },
-      { "from_top_left": [544, 144], "from_bottom_right": [559, 159], "target_img_path": "assets/programmable_magic/textures/item/debris_clay.png" },
-      { "from_top_left": [544, 160], "from_bottom_right": [559, 175], "target_img_path": "assets/programmable_magic/textures/item/covered_rg_alloy_wire.png" },
-      { "from_top_left": [544, 176], "from_bottom_right": [559, 191], "target_img_path": "assets/programmable_magic/textures/item/small_cell_certidge.png" },
-
       { "from_top_left": [208, 128], "from_bottom_right": [223, 143], "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png" },
       { "from_top_left": [112, 0], "from_bottom_right": [127, 15], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand.png" },
       { "from_top_left": [123, 11], "from_bottom_right": [143, 31], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand_in_hand.png" },
 
-      { "from_top_left": [96,160], "from_bottom_right": [111,175], "target_img_path": "assets/programmable_magic/textures/item/wand_item_placeholder.png" },
+      { "from_top_left": [96, 160], "from_bottom_right": [111, 175], "target_img_path": "assets/programmable_magic/textures/item/wand_item_placeholder.png" },
 
-      { "from_top_left": [352, 128], "from_bottom_right": [367, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_empty.png" },
-      { "from_top_left": [368, 128], "from_bottom_right": [383, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_burn.png" },
-      { "from_top_left": [384, 128], "from_bottom_right": [399, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_front_blocked.png" },
-      { "from_top_left": [400, 128], "from_bottom_right": [415, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_empty.png" },
-      { "from_top_left": [416, 128], "from_bottom_right": [431, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_burn.png" },
-      { "from_top_left": [432, 128], "from_bottom_right": [447, 143], "target_img_path": "assets/programmable_magic/textures/block/primitive_alloy_smelter_side_blocked.png" },
-
-      { "from_top_left": [16, 16], "from_bottom_right": [31, 31], "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png" }
+      { "from_top_left": [112, 32], "from_bottom_right": [127, 47], "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png" }
     ],
     "gui_big.png": [
       { "from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_prev.png" },

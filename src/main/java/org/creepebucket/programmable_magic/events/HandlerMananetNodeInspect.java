@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.logic;
+package org.creepebucket.programmable_magic.events;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +10,7 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.ModUtils.Mana;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodes;
 import org.creepebucket.programmable_magic.mananet.api.MananetNode;
+import org.creepebucket.programmable_magic.mananet.logic.MananetNetworkManager;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 

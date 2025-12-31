@@ -46,36 +46,6 @@ public class ModItems {
                     .setId(ResourceKey.create(Registries.ITEM, registryName)))
     );
 
-    // 通用材料与工具
-    public static final DeferredItem<Item> PURE_REDSTONE_DUST = ITEMS.register(
-            "pure_redstone_dust", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> REDSTONE_GOLD_ALLOY = ITEMS.register(
-            "redstone_gold_alloy", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> RG_ALLOY_WIRE = ITEMS.register(
-            "rg_alloy_wire", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> RG_ALLOY_ROD = ITEMS.register(
-            "rg_alloy_rod", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> SMALL_CELL_SHELL = ITEMS.register(
-            "small_cell_shell", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-
-    public static final DeferredItem<Item> DEBRIS_DUST = ITEMS.register(
-            "debris_dust", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> DEBRIS_CLAY = ITEMS.register(
-            "debris_clay", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> COVERED_RG_ALLOY_WIRE = ITEMS.register(
-            "covered_rg_alloy_wire", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-    public static final DeferredItem<Item> SMALL_CELL_CERTIDGE = ITEMS.register(
-            "small_cell_certidge", registryName -> new Item(new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
-
     // 魔杖物品占位符
     public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
@@ -89,14 +59,6 @@ public class ModItems {
                     new Item.Properties().stacksTo(1).setId(ResourceKey.create(Registries.ITEM, registryName)),
                     1000, // 法术槽位最大数量（有效容量由插件控制）
                     5     // 插件槽位最大数量
-            )
-    );
-
-    // 方块物品
-    public static final DeferredItem<BlockItem> PRIMITIVE_ALLOY_SMELTER_ITEM = ITEMS.register(
-            "primitive_alloy_smelter", registryName -> new BlockItem(
-                    ModBlocks.PRIMITIVE_ALLOY_SMELTER.get(),
-                    new Item.Properties().setId(ResourceKey.create(Registries.ITEM, registryName))
             )
     );
 
