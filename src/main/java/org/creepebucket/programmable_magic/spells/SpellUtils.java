@@ -304,7 +304,7 @@ public final class SpellUtils {
                     SpellItemLogic nextAfter = (R != null) ? R.getNextSpell() : null;
 
                     // 检测两边是否都是ValueLiteralSpell
-                    if (L instanceof ValueLiteralSpell && R instanceof ValueLiteralSpell) {
+                    if (L instanceof ValueLiteralSpell && R instanceof ValueLiteralSpell && operator.getNeededParamsType().contains(List.of(((ValueLiteralSpell) L).VALUE_TYPE, ((ValueLiteralSpell) R).VALUE_TYPE))) {
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(
                                 ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
 
