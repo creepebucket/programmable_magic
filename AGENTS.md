@@ -19,3 +19,4 @@
 17. 在字符串中, 使用snake_case 命名法而不是 camelCase。
 18. 修 bug 时只修我指出的 bug, 其他潜在问题只允许提出, 不准修。
 19. 不要写完整的类包名, 使用import语句引入。
+20. 编译项目请升级权限使用 gradlew -q compileJava

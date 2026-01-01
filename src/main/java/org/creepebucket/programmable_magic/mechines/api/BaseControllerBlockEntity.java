@@ -2,12 +2,15 @@ package org.creepebucket.programmable_magic.mechines.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredBlock;
+
 import java.util.List;
 import java.util.Map;
+
+import static org.creepebucket.programmable_magic.mechines.logic.StructureUtils.matches;
 
 public class BaseControllerBlockEntity extends BlockEntity {
     /*
@@ -27,11 +30,12 @@ public class BaseControllerBlockEntity extends BlockEntity {
     /*
      * map: 决定pattern内的方块如何被映射为方块.
      */
-    public Map<Character, Block> map;
+    // map value: List<String>，不带'#'表示方块id，带'#'表示方块标签
+    public Map<Character, List<String>> map;
     short nextStructureCheck = 5; // 下一次结构完整性检查还剩 (tick)
     boolean formed; // 是否成型
 
-    public BaseControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, List<List<String>> pattern, Map<Character, Block> map) {
+    public BaseControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, List<List<String>> pattern, Map<Character, List<String>> map) {
         super(type, pos, blockState);
         this.pattern = pattern;
         this.map = map;
@@ -48,7 +52,10 @@ public class BaseControllerBlockEntity extends BlockEntity {
 
         System.out.println("我成型了");
         // 主要逻辑
+        be.tick_formed(level, pos, state);
     }
+
+    protected void tick_formed(Level level, BlockPos pos, BlockState state) {}
 
     private void checkStructure() {
         Level level = this.getLevel();
@@ -56,7 +63,8 @@ public class BaseControllerBlockEntity extends BlockEntity {
 
         BlockState controller_state = level.getBlockState(controller_pos);
         if (controller_state.getBlock() instanceof UniversalMultiblockControllerBlock controller_block) {
-            Map<Character, Block> map = controller_block.map();
+            // 通用控制器：pattern/map 由 block 决定，并且要按朝向做旋转/镜像匹配。
+            Map<Character, List<String>> map = controller_block.map;
             List<List<String>> pattern = controller_block.rotated_pattern(controller_state);
             if (matches(level, controller_pos, pattern, map)) {
                 this.formed = true;
@@ -67,40 +75,5 @@ public class BaseControllerBlockEntity extends BlockEntity {
         }
 
         this.formed = matches(level, controller_pos, this.pattern, this.map);
-    }
-
-    private static boolean matches(Level level, BlockPos controller_pos, List<List<String>> pattern, Map<Character, Block> map) {
-        int controller_z = 0;
-        int controller_y = 0;
-        int controller_x = 0;
-        for (int z = 0; z < pattern.size(); z++) {
-            List<String> layer = pattern.get(z);
-            for (int y = 0; y < layer.size(); y++) {
-                String row = layer.get(y);
-                for (int x = 0; x < row.length(); x++) {
-                    if (row.charAt(x) != '#') continue;
-                    controller_z = z;
-                    controller_y = y;
-                    controller_x = x;
-                }
-            }
-        }
-
-        boolean formed = true;
-        for (int z = 0; z < pattern.size(); z++) {
-            List<String> layer = pattern.get(z);
-            for (int y = 0; y < layer.size(); y++) {
-                String row = layer.get(y);
-                for (int x = 0; x < row.length(); x++) {
-                    char ch = row.charAt(x);
-                    if (ch == '#') continue;
-
-                    Block expected = map.get(ch);
-                    BlockPos target_pos = controller_pos.offset(x - controller_x, y - controller_y, z - controller_z);
-                    if (!level.getBlockState(target_pos).is(expected)) formed = false;
-                }
-            }
-        }
-        return formed;
     }
 }

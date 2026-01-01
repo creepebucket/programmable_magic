@@ -6,7 +6,6 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.minecraft.world.item.BlockItem;
 import org.creepebucket.programmable_magic.items.mana_cell.SmallManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.MediumManaCell;
 import org.creepebucket.programmable_magic.items.mana_cell.LargeManaCell;
@@ -20,12 +19,6 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public class ModItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-
-    public static final DeferredItem<BlockItem> EXAMPLE_UNIVERSAL_MULTIBLOCK_CONTROLLER = ITEMS.register(
-            "example_universal_multiblock_controller",
-            registryName -> new BlockItem(ModBlocks.EXAMPLE_UNIVERSAL_MULTIBLOCK_CONTROLLER.get(), new Item.Properties()
-                    .setId(ResourceKey.create(Registries.ITEM, registryName)))
-    );
 
     public static final DeferredItem<SmallManaCell> SMALL_MANA_CELL_DEFERRED_ITEM = ITEMS.register(
             "small_mana_cell", registryName -> new SmallManaCell(new Item.Properties()

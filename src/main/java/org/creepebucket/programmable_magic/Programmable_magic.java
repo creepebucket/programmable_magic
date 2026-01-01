@@ -19,6 +19,7 @@ public class Programmable_magic {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
+        MultiblockController.register(modEventBus);
         MananetNodeBlocks.register(modEventBus);
         ModAttachments.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
