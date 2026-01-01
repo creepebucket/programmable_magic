@@ -24,6 +24,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.creepebucket.programmable_magic.mananet.api.MananetNode;
+import org.creepebucket.programmable_magic.mananet.logic.MananetNetworkLogic;
 
 /**
  * 魔力网络的“线缆”节点方块。
@@ -107,18 +109,20 @@ public class ManaCableBlock extends AbstractNodeBlock {
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
         LevelReader level = context.getLevel();
+        if (!(level instanceof ServerLevel serverLevel)) return this.defaultBlockState();
         return this.defaultBlockState()
-                .setValue(NORTH, can_connect(level, pos, Direction.NORTH))
-                .setValue(EAST, can_connect(level, pos, Direction.EAST))
-                .setValue(SOUTH, can_connect(level, pos, Direction.SOUTH))
-                .setValue(WEST, can_connect(level, pos, Direction.WEST))
-                .setValue(UP, can_connect(level, pos, Direction.UP))
-                .setValue(DOWN, can_connect(level, pos, Direction.DOWN));
+                .setValue(NORTH, can_connect(serverLevel, pos, Direction.NORTH))
+                .setValue(EAST, can_connect(serverLevel, pos, Direction.EAST))
+                .setValue(SOUTH, can_connect(serverLevel, pos, Direction.SOUTH))
+                .setValue(WEST, can_connect(serverLevel, pos, Direction.WEST))
+                .setValue(UP, can_connect(serverLevel, pos, Direction.UP))
+                .setValue(DOWN, can_connect(serverLevel, pos, Direction.DOWN));
     }
 
     @Override
     protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource randomSource) {
-        boolean connected = can_connect(neighborState);
+        if (!(level instanceof ServerLevel serverLevel)) return state;
+        boolean connected = can_connect(serverLevel, pos, direction);
         return switch (direction) {
             case NORTH -> state.setValue(NORTH, connected);
             case EAST -> state.setValue(EAST, connected);
@@ -150,12 +154,10 @@ public class ManaCableBlock extends AbstractNodeBlock {
         return mask;
     }
 
-    private static boolean can_connect(LevelReader level, BlockPos pos, Direction direction) {
-        return can_connect(level.getBlockState(pos.relative(direction)));
-    }
-
-    private static boolean can_connect(BlockState neighborState) {
-        return neighborState.getBlock() instanceof AbstractNodeBlock;
+    private static boolean can_connect(ServerLevel level, BlockPos pos, Direction direction) {
+        MananetNode neighbor = MananetNetworkLogic.getNodeAccess(level, pos.relative(direction));
+        if (neighbor == null) return false;
+        return neighbor.getConnectivity(direction.getOpposite());
     }
 
     @Override

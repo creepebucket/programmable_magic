@@ -10,6 +10,7 @@ public class ModDataGenerators {
         event.createProvider(ModBlockTagProvider::new);
         event.createProvider(output -> new ModItemTagProvider(output, event.getLookupProvider()));
         event.createProvider(ManaCableBlockAssetProvider::new);
+        event.createProvider(EnergyHatchBlockAssetProvider::new);
         // 生成法术的模型 + client items（1.21+ 必需）
         event.createProvider(SpellItemModelProvider::new);
         // 通用物品模型

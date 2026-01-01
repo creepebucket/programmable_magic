@@ -3,29 +3,18 @@ package org.creepebucket.programmable_magic.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
-public class ManaCableBlockAssetProvider implements DataProvider {
-
-    private final PackOutput.PathProvider blockstatesProvider;
-    private final PackOutput.PathProvider blockModelsProvider;
-    private final PackOutput.PathProvider itemModelsProvider;
-    private final PackOutput.PathProvider itemsProvider;
+public class ManaCableBlockAssetProvider extends AbstractAssetProvider {
 
     public ManaCableBlockAssetProvider(PackOutput output) {
-        this.blockstatesProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates");
-        this.blockModelsProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
-        this.itemModelsProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/item");
-        this.itemsProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "items");
+        super(output);
     }
 
     @Override
@@ -329,30 +318,6 @@ public class ManaCableBlockAssetProvider implements DataProvider {
         futures.add(save_item(cache, "mana_cable", clientItem));
 
         return futures;
-    }
-
-    private CompletableFuture<?> save_blockstate(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
-        Path path = blockstatesProvider.file(id, "json");
-        return DataProvider.saveStable(cache, json, path);
-    }
-
-    private CompletableFuture<?> save_block_model(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
-        Path path = blockModelsProvider.file(id, "json");
-        return DataProvider.saveStable(cache, json, path);
-    }
-
-    private CompletableFuture<?> save_item_model(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
-        Path path = itemModelsProvider.file(id, "json");
-        return DataProvider.saveStable(cache, json, path);
-    }
-
-    private CompletableFuture<?> save_item(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
-        Path path = itemsProvider.file(id, "json");
-        return DataProvider.saveStable(cache, json, path);
     }
 
     private static JsonObject textures_block(String texturePath) {
