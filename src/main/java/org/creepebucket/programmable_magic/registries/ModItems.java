@@ -21,6 +21,12 @@ public class ModItems {
 
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
 
+    public static final DeferredItem<BlockItem> EXAMPLE_UNIVERSAL_MULTIBLOCK_CONTROLLER = ITEMS.register(
+            "example_universal_multiblock_controller",
+            registryName -> new BlockItem(ModBlocks.EXAMPLE_UNIVERSAL_MULTIBLOCK_CONTROLLER.get(), new Item.Properties()
+                    .setId(ResourceKey.create(Registries.ITEM, registryName)))
+    );
+
     public static final DeferredItem<SmallManaCell> SMALL_MANA_CELL_DEFERRED_ITEM = ITEMS.register(
             "small_mana_cell", registryName -> new SmallManaCell(new Item.Properties()
                     .setId(ResourceKey.create(Registries.ITEM, registryName)))

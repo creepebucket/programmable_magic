@@ -14,14 +14,14 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
-public class MananetBlockAssetProvider implements DataProvider {
+public class ManaCableBlockAssetProvider implements DataProvider {
 
     private final PackOutput.PathProvider blockstatesProvider;
     private final PackOutput.PathProvider blockModelsProvider;
     private final PackOutput.PathProvider itemModelsProvider;
     private final PackOutput.PathProvider itemsProvider;
 
-    public MananetBlockAssetProvider(PackOutput output) {
+    public ManaCableBlockAssetProvider(PackOutput output) {
         this.blockstatesProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates");
         this.blockModelsProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/block");
         this.itemModelsProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models/item");
