@@ -107,6 +107,7 @@ public class SpellSlots extends BasePlugin{
      * 菜单布局：创建与屏幕长度相适配的一排 OffsetSlot（映射 wandInv）。
      */
     public void menuLogic(int x, int y, WandMenu menu) {
+        if (menu.spellStartIndex >= 0) return;
         var win = Minecraft.getInstance().getWindow();
         int sw = win.getGuiScaledWidth();
         int sh = win.getGuiScaledHeight();

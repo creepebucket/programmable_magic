@@ -12,6 +12,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.gui.base.ClientSlotManager;
 import org.creepebucket.programmable_magic.gui.wand.slots.OffsetSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.PluginSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.SupplySlot;
@@ -263,7 +264,9 @@ public class WandMenu extends AbstractContainerMenu {
     public Slot addSlotConverted(Inventory inv, int index, int screenX, int screenY) {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
-        return this.addSlot(new Slot(inv, index, cx, cy));
+        Slot slot = this.addSlot(new Slot(inv, index, cx, cy));
+        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        return slot;
     }
 
     /**
@@ -272,7 +275,9 @@ public class WandMenu extends AbstractContainerMenu {
     public Slot addOffsetSlotConverted(Container inv, int baseIndex, int screenX, int screenY) {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
-        return this.addSlot(new OffsetSlot(this, inv, baseIndex, cx, cy));
+        Slot slot = this.addSlot(new OffsetSlot(this, inv, baseIndex, cx, cy));
+        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        return slot;
     }
 
     /**
@@ -548,7 +553,9 @@ public class WandMenu extends AbstractContainerMenu {
     public SupplySlot addSupplySlotConverted(int supplyIndex, int screenX, int screenY) {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
-        return (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
+        SupplySlot slot = (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
+        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        return slot;
     }
 
     // 卷轴制作逻辑已移除
@@ -567,7 +574,9 @@ public class WandMenu extends AbstractContainerMenu {
             int y = startY + i * 18; // 竖向排列
             int cx = x - this.guiLeft - 1; // 与背景贴图对齐，X 左移 1px
             int cy = y - this.guiTop;
-            pluginSlots.add(this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy)));
+            Slot slot = this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy));
+            ClientSlotManager.setClientPosition(slot, x - 1, y);
+            pluginSlots.add(slot);
         }
     }
 

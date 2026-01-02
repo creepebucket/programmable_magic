@@ -21,14 +21,11 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
         super(menu, playerInventory, title);
     }
 
-    public static boolean isHideJei(){
-        return true;
-    }
-
     @Override
     protected void renderSlot(@NotNull GuiGraphics guiGraphics, @NotNull Slot slot) {
-        int i = ClientSlotManager.getClientX(slot);
-        int j = ClientSlotManager.getClientY(slot);
+        var pos = ClientSlotManager.getClientPosition(slot);
+        int i = pos != null ? pos.getFirst() : slot.x + this.leftPos;
+        int j = pos != null ? pos.getSecond() : slot.y + this.topPos;
         ItemStack itemstack = slot.getItem();
         boolean flag = false;
         boolean flag1 = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
@@ -79,8 +76,9 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
 
     @Override
     protected void renderSlotContents(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack itemstack, @NotNull Slot slot, @Nullable String countString) {
-        int x = ClientSlotManager.getClientX(slot);
-        int y = ClientSlotManager.getClientY(slot);
+        var pos = ClientSlotManager.getClientPosition(slot);
+        int x = pos != null ? pos.getFirst() : slot.x + this.leftPos;
+        int y = pos != null ? pos.getSecond() : slot.y + this.topPos;
         int seed = x + y * this.imageWidth;
         if (slot.isFake()) {
             guiGraphics.renderFakeItem(itemstack,x,y,seed);
@@ -93,6 +91,9 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
 
     @Override
     protected boolean isHovering(@NotNull Slot slot, double mouseX, double mouseY) {
-        return this.isHovering(ClientSlotManager.getClientX(slot),ClientSlotManager.getClientY(slot),16,16,mouseX, mouseY);
+        var pos = ClientSlotManager.getClientPosition(slot);
+        int x = pos != null ? pos.getFirst() : slot.x + this.leftPos;
+        int y = pos != null ? pos.getSecond() : slot.y + this.topPos;
+        return this.isHovering(x, y, 16, 16, mouseX, mouseY);
     }
 }

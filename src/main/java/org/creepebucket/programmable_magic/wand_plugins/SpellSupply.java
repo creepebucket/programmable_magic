@@ -115,6 +115,7 @@ public class SpellSupply extends BasePlugin{
      * 菜单布局：固定 5 列可见网格，创建 SupplySlot 后初始化一次映射。
      */
     public void menuLogic(int x, int y, WandMenu menu) {
+        if (!menu.supplySlots.isEmpty()) return;
         menu.supplyItems = menu.computeSupplyItemsForCurrentSidebar();
 
         var win = Minecraft.getInstance().getWindow();

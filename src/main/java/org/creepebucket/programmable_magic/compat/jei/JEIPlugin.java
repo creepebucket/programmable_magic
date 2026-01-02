@@ -4,7 +4,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import net.minecraft.resources.ResourceLocation;
-import org.creepebucket.programmable_magic.gui.base.SlotManipulationScreen;
+import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.jetbrains.annotations.NotNull;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -18,8 +18,6 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
-        if(SlotManipulationScreen.isHideJei()){
-            registration.addGuiScreenHandler(SlotManipulationScreen.class,screen-> null);
-        }
+        registration.addGuiScreenHandler(WandScreen.class, screen -> null);
     }
 }
