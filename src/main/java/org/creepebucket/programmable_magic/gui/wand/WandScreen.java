@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -15,7 +14,7 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.gui.base.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
 import org.creepebucket.programmable_magic.network.dataPackets.GuiDataPacket;
 import net.minecraft.util.Mth;
@@ -23,7 +22,6 @@ import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +33,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  * - 提供法术栏视窗、物品栏绘制、左侧法术供应选择与滚动、卷轴制作位、充能/释放按钮。
  * - 将界面关键数据（坐标、偏移、侧栏、滚动等）上报给对应的 Menu 进行布局与存储。
  */
-public class WandScreen extends AbstractContainerScreen<WandMenu> {
+public class WandScreen extends SlotManipulationScreen<WandMenu> {
 
     public int spellIndexOffset = 0;
     public int chargeTicks;
