@@ -120,6 +120,7 @@ public class WandMenu extends AbstractContainerMenu {
         } else if (container == this.pluginInv) {
             savePluginsToStack(this.playerInv.player);
             applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
+            updateClientSlotPositions();
             updateWandCapacityFromPlugins();
             int visible = (this.spellSlots != null) ? this.spellSlots.size() : 25;
             int maxOffset = Math.max(0, this.wandInv.getContainerSize() - visible);
@@ -255,7 +256,126 @@ public class WandMenu extends AbstractContainerMenu {
         // 界面坐标变化时，调用插件 Menu 逻辑一次
         if (slotsBuilt && (KEY_GUI_LEFT.equals(key) || KEY_GUI_TOP.equals(key))) {
             applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
+            updateClientSlotPositions();
         }
+    }
+
+    private void updateClientSlotPositions() {
+        var win = Minecraft.getInstance().getWindow();
+        int sw = win.getGuiScaledWidth();
+        int sh = win.getGuiScaledHeight();
+
+        int spellSlotCount = Math.max(1, Math.floorDiv(sw - 200, 16) - 4);
+        boolean compactMode = spellSlotCount <= 16;
+        int compactModeYOffset = compactMode ? 18 : 0;
+
+        int centerX = sw / 2;
+        int offX = -9999;
+        int offY = -9999;
+
+        for (int i = 0; i < 36; i++) {
+            int screenX;
+            int screenY;
+            if (!compactMode) {
+                screenX = centerX - 162 + (i % 18) * 18;
+                screenY = sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 18) * 18;
+            } else {
+                if (i >= 9) {
+                    screenX = centerX - 82 + (i % 9) * 18;
+                    screenY = sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 9) * 18 - 36;
+                } else {
+                    screenX = centerX - 88 + (i % 9) * 20;
+                    screenY = sh - 19;
+                }
+            }
+            Slot slot = this.slots.get(i);
+            ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, screenY - this.guiTop);
+        }
+
+        int pluginCount = this.pluginSlots.size();
+        if (pluginCount > 0) {
+            int x = sw - 24;
+            int startY = 10;
+            for (int i = 0; i < pluginCount; i++) {
+                int y = startY + i * 18;
+                Slot slot = this.pluginSlots.get(i);
+                ClientSlotManager.setClientPosition(slot, x - this.guiLeft - 1, y - this.guiTop);
+            }
+        }
+
+        boolean supplyEnabled = hasPluginPrefix("spell_supply_t");
+        if (supplyEnabled) {
+            int visibleRows = Math.max(1, Math.floorDiv(sh - 4, 16));
+            int needed = visibleRows * 5;
+            int startX = 19;
+            int startY = 4;
+
+            for (int i = this.supplySlots.size(); i < needed; i++) {
+                int col = i % 5;
+                int row = Math.floorDiv(i, 5);
+                int screenX = startX + col * 16 - 1;
+                int screenY = startY + row * 16;
+                var slot = this.addSupplySlotConverted(-1, screenX, screenY);
+                slot.setActive(false);
+                this.supplySlots.add(slot);
+            }
+
+            for (int i = 0; i < this.supplySlots.size(); i++) {
+                Slot slot = this.supplySlots.get(i);
+                if (i < needed) {
+                    int col = i % 5;
+                    int row = Math.floorDiv(i, 5);
+                    int screenX = startX + col * 16 - 1;
+                    int screenY = startY + row * 16;
+                    ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, screenY - this.guiTop);
+                } else {
+                    ClientSlotManager.setClientPosition(slot, offX, offY);
+                }
+            }
+            refreshSupplySlots();
+        } else {
+            for (var slot : this.supplySlots) {
+                slot.setSupplyIndex(-1);
+                slot.setActive(false);
+                ClientSlotManager.setClientPosition(slot, offX, offY);
+            }
+        }
+
+        boolean spellSlotsEnabled = hasPluginPrefix("spell_slots_t");
+        if (spellSlotsEnabled) {
+            int visible = spellSlotCount;
+            int y = sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset;
+            for (int i = this.spellSlots.size(); i < visible; i++) {
+                int screenX = centerX - visible * 8 + i * 16 - 1;
+                Slot slot = this.addOffsetSlotConverted(this.wandInv, i, screenX, y);
+                this.spellSlots.add(slot);
+            }
+            for (int i = 0; i < this.spellSlots.size(); i++) {
+                Slot slot = this.spellSlots.get(i);
+                if (i < visible) {
+                    int screenX = centerX - visible * 8 + i * 16 - 1;
+                    ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, y - this.guiTop);
+                } else {
+                    ClientSlotManager.setClientPosition(slot, offX, offY);
+                }
+            }
+        } else {
+            for (var slot : this.spellSlots) {
+                ClientSlotManager.setClientPosition(slot, offX, offY);
+            }
+        }
+    }
+
+    private boolean hasPluginPrefix(String prefix) {
+        int n = this.pluginInv.getContainerSize();
+        for (int i = 0; i < n; i++) {
+            ItemStack st = this.pluginInv.getItem(i);
+            if (st == null || st.isEmpty()) continue;
+            var plugin = WandPluginRegistry.createPlugin(st.getItem());
+            if (plugin == null) continue;
+            if (plugin.pluginName.startsWith(prefix)) return true;
+        }
+        return false;
     }
 
     /**
@@ -265,7 +385,7 @@ public class WandMenu extends AbstractContainerMenu {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
         Slot slot = this.addSlot(new Slot(inv, index, cx, cy));
-        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        ClientSlotManager.setClientPosition(slot, cx, cy);
         return slot;
     }
 
@@ -276,7 +396,7 @@ public class WandMenu extends AbstractContainerMenu {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
         Slot slot = this.addSlot(new OffsetSlot(this, inv, baseIndex, cx, cy));
-        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        ClientSlotManager.setClientPosition(slot, cx, cy);
         return slot;
     }
 
@@ -506,11 +626,7 @@ public class WandMenu extends AbstractContainerMenu {
         }
 
         int totalSlots = supplySlots.size();
-        int rowsInView = Math.max(1, Math.floorDiv(totalSlots + 4, 5));
-        if (rowsInView != visibleRows) {
-            // 容错：以当前已有槽位行数为准
-            visibleRows = rowsInView;
-        }
+        int totalInView = visibleRows * 5;
 
         for (int r = 0; r < visibleRows; r++) {
             int cRow = this.supplyScrollRow + r; // 全局内容行
@@ -543,6 +659,12 @@ public class WandMenu extends AbstractContainerMenu {
                 }
             }
         }
+
+        for (int i = totalInView; i < totalSlots; i++) {
+            var s = supplySlots.get(i);
+            s.setSupplyIndex(-1);
+            s.setActive(false);
+        }
         this.slotsChanged(this.supplyInv);
         this.broadcastChanges();
     }
@@ -554,7 +676,7 @@ public class WandMenu extends AbstractContainerMenu {
         int cx = screenX - this.guiLeft;
         int cy = screenY - this.guiTop;
         SupplySlot slot = (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
-        ClientSlotManager.setClientPosition(slot, screenX, screenY);
+        ClientSlotManager.setClientPosition(slot, cx, cy);
         return slot;
     }
 
@@ -575,7 +697,7 @@ public class WandMenu extends AbstractContainerMenu {
             int cx = x - this.guiLeft - 1; // 与背景贴图对齐，X 左移 1px
             int cy = y - this.guiTop;
             Slot slot = this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy));
-            ClientSlotManager.setClientPosition(slot, x - 1, y);
+            ClientSlotManager.setClientPosition(slot, cx, cy);
             pluginSlots.add(slot);
         }
     }

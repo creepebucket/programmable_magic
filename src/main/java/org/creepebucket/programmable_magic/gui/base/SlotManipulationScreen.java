@@ -24,8 +24,8 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     @Override
     protected void renderSlot(@NotNull GuiGraphics guiGraphics, @NotNull Slot slot) {
         var pos = ClientSlotManager.getClientPosition(slot);
-        int i = pos != null ? pos.getFirst() : slot.x + this.leftPos;
-        int j = pos != null ? pos.getSecond() : slot.y + this.topPos;
+        int i = pos != null ? pos.getFirst() : slot.x;
+        int j = pos != null ? pos.getSecond() : slot.y;
         ItemStack itemstack = slot.getItem();
         boolean flag = false;
         boolean flag1 = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
@@ -77,8 +77,8 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     @Override
     protected void renderSlotContents(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack itemstack, @NotNull Slot slot, @Nullable String countString) {
         var pos = ClientSlotManager.getClientPosition(slot);
-        int x = pos != null ? pos.getFirst() : slot.x + this.leftPos;
-        int y = pos != null ? pos.getSecond() : slot.y + this.topPos;
+        int x = pos != null ? pos.getFirst() : slot.x;
+        int y = pos != null ? pos.getSecond() : slot.y;
         int seed = x + y * this.imageWidth;
         if (slot.isFake()) {
             guiGraphics.renderFakeItem(itemstack,x,y,seed);
@@ -92,8 +92,26 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     @Override
     protected boolean isHovering(@NotNull Slot slot, double mouseX, double mouseY) {
         var pos = ClientSlotManager.getClientPosition(slot);
-        int x = pos != null ? pos.getFirst() : slot.x + this.leftPos;
-        int y = pos != null ? pos.getSecond() : slot.y + this.topPos;
+        int x = pos != null ? pos.getFirst() : slot.x;
+        int y = pos != null ? pos.getSecond() : slot.y;
         return this.isHovering(x, y, 16, 16, mouseX, mouseY);
+    }
+
+    @Override
+    protected void renderSlotHighlightBack(@NotNull GuiGraphics guiGraphics) {
+        if (this.hoveredSlot == null || !this.hoveredSlot.isHighlightable()) return;
+        var pos = ClientSlotManager.getClientPosition(this.hoveredSlot);
+        int x = pos != null ? pos.getFirst() : this.hoveredSlot.x;
+        int y = pos != null ? pos.getSecond() : this.hoveredSlot.y;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
+    }
+
+    @Override
+    protected void renderSlotHighlightFront(@NotNull GuiGraphics guiGraphics) {
+        if (this.hoveredSlot == null || !this.hoveredSlot.isHighlightable()) return;
+        var pos = ClientSlotManager.getClientPosition(this.hoveredSlot);
+        int x = pos != null ? pos.getFirst() : this.hoveredSlot.x;
+        int y = pos != null ? pos.getSecond() : this.hoveredSlot.y;
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
     }
 }
