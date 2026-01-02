@@ -6,6 +6,7 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +71,13 @@ public class ParenSpell extends BaseComputeModLogic{
 
                 // 边界条件
                 if (left == null) {
-                    ModUtils.sendErrorMessageToPlayer(Component.translatable("error.programmable_magic.no_matching_paren"), player);
+                    int index = SpellUtils.displayIndexOf(spellSequence, this);
+                    SpellUtils.setSpellError(player, data, ModUtils.formatSpellError(
+                            Component.translatable("message.programmable_magic.error.kind.syntax"),
+                            Component.translatable("message.programmable_magic.error.detail.unclosed_paren", index)
+                    ));
                     LOGGER.error("[ProgrammableMagic:SpellEntity] 找不到配对的括号");
-                    return Map.of("successful", true);
+                    return Map.of("successful", false, "should_discard", true);
                 }
 
                 if (left instanceof RightParenSpell) {
@@ -104,9 +109,13 @@ public class ParenSpell extends BaseComputeModLogic{
 
                 // 边界条件
                 if (right == null) {
-                    ModUtils.sendErrorMessageToPlayer(Component.translatable("error.programmable_magic.no_matching_paren"), player);
+                    int index = SpellUtils.displayIndexOf(spellSequence, this);
+                    SpellUtils.setSpellError(player, data, ModUtils.formatSpellError(
+                            Component.translatable("message.programmable_magic.error.kind.syntax"),
+                            Component.translatable("message.programmable_magic.error.detail.unclosed_paren", index)
+                    ));
                     LOGGER.error("[ProgrammableMagic:SpellEntity] 找不到配对的括号");
-                    return Map.of("successful", true);
+                    return Map.of("successful", false, "should_discard", true);
                 }
 
                 if (right instanceof LeftParenSpell) {

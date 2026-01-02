@@ -96,13 +96,22 @@ public class WandScreen extends AbstractContainerScreen<WandMenu> {
         return 1;
     }
 
+    private int getVisibleSpellSlots() {
+        var win = Minecraft.getInstance().getWindow();
+        int sw = win.getGuiScaledWidth();
+        return Math.max(1, Math.floorDiv(sw - 200, 16) - 4);
+    }
+
     /**
      * 更新法术偏移并同步给 Menu。
      */
     public void updateSpellIndex(int delta) {
         int prev = this.spellIndexOffset;
         int cap = this.menu.getSpellSlotCapacity();
-        int next = Mth.clamp(prev + delta, 0, cap);
+        int visible = getVisibleSpellSlots();
+        int maxOffset = Math.max(0, cap - visible);
+        int next = Mth.clamp(prev + delta, 0, maxOffset);
+        if (next == prev) return;
         this.spellIndexOffset = next;
         sendMenuData(WandMenu.KEY_SPELL_OFFSET, this.spellIndexOffset);
     }

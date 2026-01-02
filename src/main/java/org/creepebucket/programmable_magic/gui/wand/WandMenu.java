@@ -375,7 +375,7 @@ public class WandMenu extends AbstractContainerMenu {
         if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
         var list = new ArrayList<ItemStack>(n);
-        for (int i = 0; i < n; i++) if (!this.wandInv.getItem(i).isEmpty()) list.add(this.wandInv.getItem(i));
+        for (int i = 0; i < n; i++) list.add(this.wandInv.getItem(i).copy());
         st.set(ModDataComponents.WAND_STACKS_SMALL.get(), list);
     }
 
@@ -401,7 +401,7 @@ public class WandMenu extends AbstractContainerMenu {
         if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
         var list = new ArrayList<ItemStack>(n);
-        for (int i = 0; i < n; i++) if (!this.wandInv.getItem(i).isEmpty()) list.add(this.wandInv.getItem(i).copy());
+        for (int i = 0; i < n; i++) list.add(this.wandInv.getItem(i).copy());
         st.set(ModDataComponents.WAND_SAVED_STACKS.get(), list);
     }
 
@@ -413,6 +413,7 @@ public class WandMenu extends AbstractContainerMenu {
         super.removed(player);
         saveWandInvToStack(player);
         savePluginsToStack(player);
+        if (!player.level().isClientSide) getWandStack().set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), player.level().getGameTime());
     }
 
     @Override

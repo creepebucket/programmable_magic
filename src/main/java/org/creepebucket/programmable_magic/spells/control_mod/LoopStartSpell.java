@@ -6,14 +6,17 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 
 import java.util.List;
 import java.util.Map;
-import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 
 public class LoopStartSpell extends BaseControlModLogic{
     // 循环体模板：首次识别配对后缓存 (start, end) 之间的原始序列克隆
-    /* package */ org.creepebucket.programmable_magic.spells.SpellSequence loopBodyTemplate;
+    /* package */ SpellSequence loopBodyTemplate;
     /* package */ boolean loopTemplateCaptured = false;
     @Override
     public String getRegistryName() {
@@ -31,8 +34,12 @@ public class LoopStartSpell extends BaseControlModLogic{
             SpellItemLogic p = this.getNextSpell();
             while (true) {
                 if (p == null) {
-                    sendErrorMessageToPlayer(Component.translatable("programmable_magic.error.loop_not_pair"), player);
-                    break;
+                    int index = SpellUtils.displayIndexOf(spellSequence, this);
+                    setSpellError(player, data, formatSpellError(
+                            Component.translatable("message.programmable_magic.error.kind.syntax"),
+                            Component.translatable("message.programmable_magic.error.detail.loop_not_pair", index)
+                    ));
+                    return Map.of("successful", false, "should_discard", true);
                 } else if (p instanceof LoopStartSpell) {
                     depth++;
                 } else if (p instanceof LoopEndSpell) {

@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.*;
 
 public class StorageSpell {
@@ -28,12 +31,7 @@ public class StorageSpell {
     }
 
     private static SpellValueType deduceType(Object v) {
-        if (v instanceof Double) return NUMBER;
-        if (v instanceof Vec3) return VECTOR3;
-        if (v instanceof Entity) return ENTITY;
-        if (v instanceof Boolean) return BOOLEAN;
-        if (v instanceof ItemStack) return ITEM;
-        return ANY;
+        return SpellValueType.fromValue(v);
     }
 
     public static class StoreInputSpell extends BaseComputeModLogic {
@@ -84,8 +82,14 @@ public class StorageSpell {
             Map<Double, Object> store = ensureStore(data);
             Object v = store.get(index);
             if (v == null) {
-                org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer(net.minecraft.network.chat.Component.translatable("message.programmable_magic.error.wand.internal_bug"), player);
-                return java.util.Map.of("successful", false, "should_discard", true);
+                int spellIndex = SpellUtils.displayIndexOf(spellSequence, this);
+                setSpellError(player, data, formatSpellError(
+                        Component.translatable("message.programmable_magic.error.kind.param"),
+                        Component.translatable("message.programmable_magic.error.detail.storage_empty", index)
+                                .append(Component.literal(" "))
+                                .append(Component.translatable("message.programmable_magic.error.detail.at_spell", spellIndex, getRegistryName()))
+                ));
+                return Map.of("successful", false, "should_discard", true);
             }
             return Map.of("successful", true, "type", deduceType(v), "value", v);
         }

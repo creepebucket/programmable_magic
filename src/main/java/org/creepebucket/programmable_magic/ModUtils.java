@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -75,6 +76,15 @@ public class ModUtils {
             return true;
         }
         return false;
+    }
+
+    public static Component formatSpellError(Component kind, Component detail) {
+        return Component.translatable("message.programmable_magic.error.spell_error_header")
+                .withStyle(ChatFormatting.RED)
+                .append(Component.literal(" "))
+                .append(kind.copy().withStyle(ChatFormatting.GOLD))
+                .append(Component.literal("\n"))
+                .append(detail.copy().withStyle(ChatFormatting.GRAY));
     }
 
     /**

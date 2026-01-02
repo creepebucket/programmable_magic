@@ -6,11 +6,13 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 
 public class LoopContinueSpell extends BaseControlModLogic {
     @Override
@@ -28,8 +30,12 @@ public class LoopContinueSpell extends BaseControlModLogic {
         while (true) {
             if (pointer == null) {
                 // 未找到配对
-                sendErrorMessageToPlayer(Component.translatable("programmable_magic.error.loop_not_pair"), player);
-                break;
+                int index = SpellUtils.displayIndexOf(spellSequence, this);
+                setSpellError(player, data, formatSpellError(
+                        Component.translatable("message.programmable_magic.error.kind.syntax"),
+                        Component.translatable("message.programmable_magic.error.detail.loop_not_pair", index)
+                ));
+                return Map.of("successful", false, "should_discard", true);
             } else if (pointer instanceof LoopStartSpell) {
                 break;
             }

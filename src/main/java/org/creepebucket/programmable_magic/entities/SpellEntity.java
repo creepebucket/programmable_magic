@@ -76,6 +76,7 @@ public class SpellEntity extends Entity {
         // 执行法术序列逻辑
 
         if (this.level().isClientSide) { spawnParticles(); return; }
+        if (this.spellData != null && Boolean.TRUE.equals(this.spellData.getCustomData("spell_error", Boolean.class))) { this.discard(); return; }
 
         // 若已附加“弹丸附加”效果，则先进行严格命中检测并结算伤害（严格：沿速度向量扫掠）
         handleProjectileAttachHit();
@@ -239,6 +240,7 @@ public class SpellEntity extends Entity {
         if (start == null || end == null || start == boundary) return; // 空区间或起点即边界，直接跳过
         SpellSequence slice = cloneRange(start, end);
         SpellSequence simplified = SpellUtils.calculateSpellSequence(caster, spellData, slice);
+        if (this.spellData != null && Boolean.TRUE.equals(this.spellData.getCustomData("spell_error", Boolean.class))) { this.discard(); return; }
         spellSequence.replaceSection(start, end, simplified);
     }
 

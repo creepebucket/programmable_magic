@@ -1,8 +1,10 @@
 package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
 
 /**
  * 执行法术相关的工具函数。
@@ -168,10 +171,7 @@ public final class SpellUtils {
         }
 
         if (!matched) {
-            if (seenOutOfBound) return paramOutOfBound(caster, currentSpell);
-            if (firstMismatchV != null && firstNeededType != null) return paramTypeMismatch(caster, currentSpell, firstMismatchV, firstNeededType);
-            if (seenNonLiteral) return paramTypeError(caster, currentSpell);
-            return paramTypeError(caster, currentSpell);
+            return paramNoOverload(caster, spellData, sequence, currentSpell);
         }
 
         // 使用匹配到的参数执行
@@ -187,8 +187,9 @@ public final class SpellUtils {
         }
 
         // 检查魔力是否足够（任一系不足即判定不足）
-        if (currentSpell instanceof BaseBaseSpellLogic && ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams).anyGreaterThan(myMana)) {
-            return notEnoughMana(caster, currentSpell);
+        if (currentSpell instanceof BaseBaseSpellLogic) {
+            ModUtils.Mana need = ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams);
+            if (need.anyGreaterThan(myMana)) return notEnoughMana(caster, sequence, currentSpell, need, myMana, spellParams);
         }
 
         Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
@@ -228,40 +229,111 @@ public final class SpellUtils {
         return null;
     }
 
-    private static StepResult paramOutOfBound(Player caster, SpellItemLogic current) {
-        LOGGER.error("在搜索参数时突破边界: 当前法术: {}", current.getRegistryName());
-        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.param_search_out_of_bound"), caster);
+    public static int indexOf(SpellSequence seq, SpellItemLogic target) {
+        int i = 0;
+        for (SpellItemLogic it = seq.getFirstSpell(); it != null; it = it.getNextSpell()) {
+            if (it == target) return i;
+            i++;
+        }
+        return -1;
+    }
+
+    public static int displayIndexOf(SpellSequence seq, SpellItemLogic target) {
+        return indexOf(seq, target) - 1;
+    }
+
+    private static String formatActualParams(SpellSequence seq, SpellItemLogic current) {
+        List<List<SpellValueType>> overloads = current.getNeededParamsType();
+        int maxParams = 0;
+        if (overloads != null) {
+            for (List<SpellValueType> types : overloads) {
+                if (types == null) continue;
+                if (Objects.equals(types, List.of(SpellValueType.EMPTY))) continue;
+                maxParams = Math.max(maxParams, types.size());
+            }
+        }
+        if (maxParams <= 0) return "[]";
+
+        int right = Math.max(0, Math.min(current.RightParamsOffset, maxParams));
+        int left = maxParams - right;
+
+        ArrayList<String> got = new ArrayList<>();
+
+        SpellItemLogic p = current;
+        for (int i = 0; i < left; i++) p = (p == null) ? null : p.getPrevSpell();
+        for (int i = 0; i < left; i++) {
+            if (!(p instanceof ValueLiteralSpell v)) break;
+            got.add(v.VALUE_TYPE.name().toLowerCase(java.util.Locale.ROOT));
+            p = p.getNextSpell();
+        }
+
+        SpellItemLogic n = current.getNextSpell();
+        for (int j = 0; j < right; j++) {
+            if (!(n instanceof ValueLiteralSpell v)) break;
+            got.add(v.VALUE_TYPE.name().toLowerCase(java.util.Locale.ROOT));
+            n = n.getNextSpell();
+        }
+
+        return "[" + String.join(", ", got) + "]";
+    }
+
+    private static String formatActualValues(List<Object> spellParams) {
+        if (spellParams == null || spellParams.isEmpty()) return "[]";
+        ArrayList<String> list = new ArrayList<>();
+        for (Object o : spellParams) {
+            if (o instanceof Double) list.add("number");
+            else if (o instanceof Vec3) list.add("vector3");
+            else if (o instanceof String) list.add("string");
+            else if (o instanceof ItemStack) list.add("item");
+            else if (o instanceof Entity) list.add("entity");
+            else if (o instanceof Boolean) list.add("boolean");
+            else list.add((o == null ? "null" : o.getClass().getSimpleName().toLowerCase(java.util.Locale.ROOT)));
+        }
+        return "[" + String.join(", ", list) + "]";
+    }
+
+    public static boolean setSpellError(Player caster, SpellData spellData, Component message) {
+        if (spellData.hasCustomData("spell_error")) return false;
+        spellData.setCustomData("spell_error", true);
+        sendErrorMessageToPlayer(message, caster);
+        return true;
+    }
+
+    private static StepResult paramNoOverload(Player caster, SpellData spellData, SpellSequence seq, SpellItemLogic current) {
+        int index = displayIndexOf(seq, current);
+        String actual = formatActualParams(seq, current);
+        LOGGER.error("参数错误: spell[{}]:{} no_overload actual_params:{}", index, current.getRegistryName(), actual);
+        setSpellError(caster, spellData, formatSpellError(
+                Component.translatable("message.programmable_magic.error.kind.param"),
+                Component.translatable("message.programmable_magic.error.detail.no_overload", index, current.getRegistryName(), actual)
+        ));
         return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
-    private static StepResult paramTypeError(Player caster, SpellItemLogic current) {
-        LOGGER.error("尝试收集参数时发现参数不是ValueLiteralSpell类型: 当前法术: {}", current.getRegistryName());
-        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.internal_bug"), caster);
-        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
-    }
-
-    private static StepResult paramTypeMismatch(Player caster, SpellItemLogic current, ValueLiteralSpell v, SpellValueType neededType) {
-        LOGGER.error("尝试收集参数时发现参数类型错误: 当前法术: {} 参数类型: {} 需要的类型: {}",
-                current.getRegistryName(), v.VALUE_TYPE, neededType);
-        sendErrorMessageToPlayer(Component.translatable(
-                "message.programmable_magic.error.wand.param_type_error",
-                current.getRegistryName(), v.VALUE_TYPE.display(), neededType.display()
+    private static StepResult notEnoughMana(Player caster,
+                                           SpellSequence seq,
+                                           SpellItemLogic current,
+                                           ModUtils.Mana need,
+                                           ModUtils.Mana have,
+                                           List<Object> spellParams) {
+        int index = displayIndexOf(seq, current);
+        String actual = formatActualValues(spellParams);
+        LOGGER.error("内部错误: spell[{}]:{} not_enough_mana need:{} have:{} params:{}", index, current.getRegistryName(), need.toMap(), have.toMap(), actual);
+        sendErrorMessageToPlayer(formatSpellError(
+                Component.translatable("message.programmable_magic.error.kind.internal"),
+                Component.translatable("message.programmable_magic.error.detail.not_enough_mana_at", index, current.getRegistryName(), actual)
         ), caster);
-        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
-    }
-
-    private static StepResult notEnoughMana(Player caster, SpellItemLogic current) {
-        LOGGER.error("法术 {} 的魔力不足", current.getRegistryName());
-        sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.not_enough_mana"), caster);
         return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
     }
 
 
     public static SpellSequence calculateSpellSequence(Player player, SpellData spellData, SpellSequence seq) {
         LOGGER.debug("开始计算法术序列");
+        if (spellData != null && spellData.hasCustomData("spell_error")) return seq;
 
         // 先寻找括号, 对每个括号内的部分进行递归计算
         List<List<SpellItemLogic>> pairs = getParenPairs(player, spellData, seq);
+        if (spellData != null && spellData.hasCustomData("spell_error")) return seq;
         for (List<SpellItemLogic> pair : pairs) {
             if (pair == null || pair.size() != 2) continue;
             SpellItemLogic left = pair.get(0);
@@ -305,6 +377,21 @@ public final class SpellUtils {
 
                     // 检测两边是否都是ValueLiteralSpell
                     if (L instanceof ValueLiteralSpell && R instanceof ValueLiteralSpell && operator.getNeededParamsType().contains(List.of(((ValueLiteralSpell) L).VALUE_TYPE, ((ValueLiteralSpell) R).VALUE_TYPE))) {
+                        if (operator instanceof MathOperationsSpell.DivisionSpell) {
+                            boolean div0 = false;
+                            if (((ValueLiteralSpell) L).VALUE instanceof Double a && ((ValueLiteralSpell) R).VALUE instanceof Double b) div0 = (b == 0.0);
+                            if (((ValueLiteralSpell) L).VALUE instanceof Vec3 && ((ValueLiteralSpell) R).VALUE instanceof Double b) div0 = (b == 0.0);
+                            if (((ValueLiteralSpell) L).VALUE instanceof Double a && ((ValueLiteralSpell) R).VALUE instanceof Vec3) div0 = (a == 0.0);
+                            if (div0) {
+                                int index = displayIndexOf(seq, current);
+                                String actual = formatActualParams(seq, current);
+                                setSpellError(player, spellData, formatSpellError(
+                                        Component.translatable("message.programmable_magic.error.kind.math"),
+                                        Component.translatable("message.programmable_magic.error.detail.divide_by_zero", index, actual)
+                                ));
+                                return seq;
+                            }
+                        }
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(
                                 ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
 

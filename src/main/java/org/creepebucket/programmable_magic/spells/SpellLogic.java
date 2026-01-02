@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
 import static org.creepebucket.programmable_magic.spells.SpellUtils.getSeps;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
@@ -93,7 +94,10 @@ public class SpellLogic {
         boolean r = consumePendingItemsFromInventory();
         if (!r) {
             // 未能按预期扣除物品
-            sendErrorMessageToPlayer(Component.translatable("message.programmable_magic.error.wand.placeholder_consume_failed"), player);
+            sendErrorMessageToPlayer(formatSpellError(
+                    Component.translatable("message.programmable_magic.error.kind.param"),
+                    Component.translatable("message.programmable_magic.error.wand.placeholder_consume_failed")
+            ), player);
             return;
         }
         // 4. 创建法术实体

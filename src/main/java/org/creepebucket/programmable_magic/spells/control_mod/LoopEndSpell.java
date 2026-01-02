@@ -6,14 +6,18 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 
 public class LoopEndSpell extends BaseControlModLogic{
-    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger("ProgrammableMagic:LoopEndSpell");
+    private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:LoopEndSpell");
 
     @Override
     public String getRegistryName() {
@@ -32,9 +36,13 @@ public class LoopEndSpell extends BaseControlModLogic{
         while (true) {
             if (pointer == null) {
                 // 未找到配对
-                sendErrorMessageToPlayer(Component.translatable("programmable_magic.error.loop_not_pair"), player);
+                int index = SpellUtils.displayIndexOf(spellSequence, this);
+                setSpellError(player, data, formatSpellError(
+                        Component.translatable("message.programmable_magic.error.kind.syntax"),
+                        Component.translatable("message.programmable_magic.error.detail.loop_not_pair", index)
+                ));
                 LOGGER.error("[ProgrammableMagic:SpellEntity] 未找到配对");
-                return Map.of("successful", true);
+                return Map.of("successful", false, "should_discard", true);
             } else if (pointer instanceof LoopStartSpell) {
                 if (count == 0) {
                     // 找到配对

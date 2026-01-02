@@ -38,18 +38,18 @@ public class ModDataComponents {
     // 直接存储完整 ItemStack（含数据组件/自定义状态）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_BIG =
             DATA_COMPONENTS.registerComponentType("wand_stacks_big", builder -> builder
-                    .persistent(Codec.list(ItemStack.CODEC))
+                    .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_STACKS_SMALL =
             DATA_COMPONENTS.registerComponentType("wand_stacks_small", builder -> builder
-                    .persistent(Codec.list(ItemStack.CODEC))
+                    .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
     
     // 隐藏保存：供左键释放读取
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_SAVED_STACKS =
             DATA_COMPONENTS.registerComponentType("wand_saved_stacks", builder -> builder
-                    .persistent(Codec.list(ItemStack.CODEC))
+                    .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     

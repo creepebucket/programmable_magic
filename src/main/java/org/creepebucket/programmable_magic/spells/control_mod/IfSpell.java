@@ -6,12 +6,14 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.creepebucket.programmable_magic.ModUtils.sendErrorMessageToPlayer;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 
 public class IfSpell extends BaseControlModLogic{
 
@@ -34,8 +36,12 @@ public class IfSpell extends BaseControlModLogic{
             p = p.getNextSpell();
         }
         if (left == null) {
-            sendErrorMessageToPlayer(Component.translatable("programmable_magic.error.if_not_pair"), player);
-            return Map.of("successful", true);
+            int index = SpellUtils.displayIndexOf(spellSequence, this);
+            setSpellError(player, data, formatSpellError(
+                    Component.translatable("message.programmable_magic.error.kind.syntax"),
+                    Component.translatable("message.programmable_magic.error.detail.if_not_pair", index)
+            ));
+            return Map.of("successful", false, "should_discard", true);
         }
 
         // 寻找与之配对的右括号
@@ -51,8 +57,12 @@ public class IfSpell extends BaseControlModLogic{
             q = q.getNextSpell();
         }
         if (right == null) {
-            sendErrorMessageToPlayer(Component.translatable("programmable_magic.error.if_not_pair"), player);
-            return Map.of("successful", true);
+            int index = SpellUtils.displayIndexOf(spellSequence, this);
+            setSpellError(player, data, formatSpellError(
+                    Component.translatable("message.programmable_magic.error.kind.syntax"),
+                    Component.translatable("message.programmable_magic.error.detail.if_not_pair", index)
+            ));
+            return Map.of("successful", false, "should_discard", true);
         }
 
         boolean cond = Boolean.TRUE.equals(spellParams.get(0));

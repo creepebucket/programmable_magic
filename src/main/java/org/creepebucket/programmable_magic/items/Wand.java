@@ -32,6 +32,17 @@ public class Wand extends BowItem implements IItemExtension {
     private final int slots;
     private final int pluginSlots;
 
+    private static boolean hasAutoChargePlugin(ItemStack stack) {
+        java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
+        if (plugins == null) return false;
+        for (ItemStack it : plugins) {
+            if (it == null || it.isEmpty()) continue;
+            var id = BuiltInRegistries.ITEM.getKey(it.getItem());
+            if (id != null && "wand_plugin_auto_charge".equals(id.getPath())) return true;
+        }
+        return false;
+    }
+
     /**
      * 构造一个魔杖实例。
      * @param properties 物品属性
@@ -59,6 +70,8 @@ public class Wand extends BowItem implements IItemExtension {
      */
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.isShiftKeyDown()) {
+            ItemStack stack = player.getItemInHand(hand);
+            stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
             if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(
                         new SimpleMenuProvider(
@@ -72,6 +85,8 @@ public class Wand extends BowItem implements IItemExtension {
         }
 
         // 非潜行：进入“使用”态（按住右键充能，松手释放）
+        ItemStack stack = player.getItemInHand(hand);
+        if (!hasAutoChargePlugin(stack)) stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
         player.startUsingItem(hand);
         return InteractionResult.SUCCESS;
     }
@@ -174,17 +189,10 @@ public class Wand extends BowItem implements IItemExtension {
         if (!isHeld) return;
 
         java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
-        boolean hasAuto = false;
-        if (plugins != null) {
-            for (ItemStack it : plugins) {
-                if (it == null || it.isEmpty()) continue;
-                var id = BuiltInRegistries.ITEM.getKey(it.getItem());
-                if (id != null && "wand_plugin_auto_charge".equals(id.getPath())) { hasAuto = true; break; }
-            }
-        }
-        if (!hasAuto) return;
+        if (!hasAutoChargePlugin(stack)) return;
 
         if (level.isClientSide) {
+            if (player.containerMenu instanceof WandMenu) return;
             boolean using = player.isUsingItem() && (player.getUseItem() == stack);
             if (using) return; // 按住使用时由 onUseTick 负责 HUD
 

@@ -38,6 +38,11 @@ public class OffsetSlot extends Slot {
     }
 
     @Override
+    public boolean isActive() {
+        return inRange(targetIndex());
+    }
+
+    @Override
     public boolean hasItem() {
         int idx = targetIndex();
         return inRange(idx) && !inv.getItem(idx).isEmpty();
