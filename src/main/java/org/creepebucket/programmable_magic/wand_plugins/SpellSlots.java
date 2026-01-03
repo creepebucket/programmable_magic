@@ -2,7 +2,7 @@ package org.creepebucket.programmable_magic.wand_plugins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.MathUtils;
@@ -52,25 +52,25 @@ public class SpellSlots extends BasePlugin{
 
         // 法术控制
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 34, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"), () -> {
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_prev.png"), () -> {
             screen.updateSpellIndex(-screen.computeStep());
             screen.sendMenuData(WandMenu.KEY_SPELL_OFFSET, screen.spellIndexOffset);
         }));
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 8 * spellSlotCount - 18, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"), () -> {
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_clear.png"), () -> {
             screen.sendMenuData(WandMenu.KEY_CLEAN, true);
         }));
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X + 8 * spellSlotCount + 16, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"), () -> {
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_next.png"), () -> {
             screen.updateSpellIndex(screen.computeStep());
             screen.sendMenuData(WandMenu.KEY_SPELL_OFFSET, screen.spellIndexOffset);
         }));
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X + 8 * spellSlotCount, sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset, 16, 16,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"), () -> {
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_button_save.png"), () -> {
             // 将当前屏幕中的法术存入“隐藏”数据组件，由服务端菜单处理
             screen.sendMenuData(WandMenu.KEY_SAVE, true);
         }));

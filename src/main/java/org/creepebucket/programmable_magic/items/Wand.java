@@ -72,7 +72,7 @@ public class Wand extends BowItem implements IItemExtension {
         if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(hand);
             stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
-            if (!level.isClientSide && player instanceof ServerPlayer serverPlayer) {
+            if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(
                         new SimpleMenuProvider(
                                 (containerId, inventory, p) -> new WandMenu(containerId, inventory, hand),
@@ -98,7 +98,7 @@ public class Wand extends BowItem implements IItemExtension {
     public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
         if (!(living instanceof Player player)) return;
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             int total = getUseDuration(stack, living);
             int holdUsed = Math.max(0, total - remainingUseDuration);
             Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
@@ -130,7 +130,7 @@ public class Wand extends BowItem implements IItemExtension {
      */
     @Override
     public boolean releaseUsing(ItemStack stack, Level level, LivingEntity living, int timeLeft) {
-        if (level.isClientSide) return false;
+        if (level.isClientSide()) return false;
         if (!(living instanceof Player player)) return false;
         if (player.isShiftKeyDown()) return false; // 潜行用于打开 GUI，不触发快捷充能释放
 
@@ -191,7 +191,7 @@ public class Wand extends BowItem implements IItemExtension {
         java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
         if (!hasAutoChargePlugin(stack)) return;
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (player.containerMenu instanceof WandMenu) return;
             boolean using = player.isUsingItem() && (player.getUseItem() == stack);
             if (using) return; // 按住使用时由 onUseTick 负责 HUD

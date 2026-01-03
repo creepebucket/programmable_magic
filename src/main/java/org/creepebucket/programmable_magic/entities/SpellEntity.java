@@ -75,7 +75,7 @@ public class SpellEntity extends Entity {
         super.tick();
         // 执行法术序列逻辑
 
-        if (this.level().isClientSide) { spawnParticles(); return; }
+        if (this.level().isClientSide()) { spawnParticles(); return; }
         if (this.spellData != null && Boolean.TRUE.equals(this.spellData.getCustomData("spell_error", Boolean.class))) { this.discard(); return; }
 
         // 若已附加“弹丸附加”效果，则先进行严格命中检测并结算伤害（严格：沿速度向量扫掠）
@@ -188,7 +188,7 @@ public class SpellEntity extends Entity {
     }
 
     private void handleProjectileAttachHit() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         if (this.spellData == null) return;
         if (!this.spellData.hasCustomData("projectile_attach_active")) return;
         var caster = this.caster;

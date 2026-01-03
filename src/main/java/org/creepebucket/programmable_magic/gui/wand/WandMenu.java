@@ -495,7 +495,7 @@ public class WandMenu extends AbstractContainerMenu {
      * 保存 wandInv 至魔杖数据组件（仅服务端）。
      */
     private void saveWandInvToStack(Player player) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ItemStack st = getWandStack();
         if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
@@ -508,7 +508,7 @@ public class WandMenu extends AbstractContainerMenu {
      * 保存插件栏至魔杖组件（仅服务端）。
      */
     private void savePluginsToStack(Player player) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ItemStack st = getWandStack();
         if (st.isEmpty()) return;
         int n = this.pluginInv.getContainerSize();
@@ -521,7 +521,7 @@ public class WandMenu extends AbstractContainerMenu {
      * 另存一份“保存用”法术清单（仅非空项，复制）。
      */
     private void saveWandInvToSavedStacks(Player player) {
-        if (player.level().isClientSide) return;
+        if (player.level().isClientSide()) return;
         ItemStack st = getWandStack();
         if (st.isEmpty()) return;
         int n = this.wandInv.getContainerSize();
@@ -538,7 +538,7 @@ public class WandMenu extends AbstractContainerMenu {
         super.removed(player);
         saveWandInvToStack(player);
         savePluginsToStack(player);
-        if (!player.level().isClientSide) getWandStack().set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), player.level().getGameTime());
+        if (!player.level().isClientSide()) getWandStack().set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), player.level().getGameTime());
     }
 
     @Override

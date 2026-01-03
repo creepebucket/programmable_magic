@@ -57,7 +57,7 @@ public class UniversalMultiblockControllerBlock<BE extends BaseControllerBlockEn
     @Nullable
     @Override
     public final <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) return null;
+        if (level.isClientSide()) return null;
         return (lvl, pos, st, be) -> BaseControllerBlockEntity.tick(lvl, pos, st, (BE) be);
     }
 

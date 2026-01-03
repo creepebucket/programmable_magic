@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
@@ -51,7 +51,7 @@ public class SpellItemModelProvider implements DataProvider {
             textures.addProperty("layer0", MODID + ":item/spell/" + spellName);
             modelJson.add("textures", textures);
 
-            ResourceLocation modelId = ResourceLocation.fromNamespaceAndPath(MODID, itemModelName);
+            Identifier modelId = Identifier.fromNamespaceAndPath(MODID, itemModelName);
             Path modelPath = modelsProvider.file(modelId, "json");
             futures.add(DataProvider.saveStable(cache, modelJson, modelPath));
             // 兼容清理：删除此前错误生成的双点扩展文件（如果存在）
@@ -65,7 +65,7 @@ public class SpellItemModelProvider implements DataProvider {
             model.addProperty("model", MODID + ":item/" + itemModelName);
             clientItem.add("model", model);
 
-            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(MODID, itemModelName);
+            Identifier itemId = Identifier.fromNamespaceAndPath(MODID, itemModelName);
             Path itemPath = itemsProvider.file(itemId, "json");
             futures.add(DataProvider.saveStable(cache, clientItem, itemPath));
         }

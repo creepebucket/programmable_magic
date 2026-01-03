@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -22,7 +22,7 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     }
 
     @Override
-    protected void renderSlot(@NotNull GuiGraphics guiGraphics, @NotNull Slot slot) {
+    protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
         var pos = ClientSlotManager.getClientPosition(slot);
         int i = pos != null ? pos.getFirst() : slot.x;
         int j = pos != null ? pos.getSecond() : slot.y;
@@ -57,7 +57,7 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
         }
 
         if (itemstack.isEmpty() && slot.isActive()) {
-            ResourceLocation resourcelocation = slot.getNoItemIcon();
+            Identifier resourcelocation = slot.getNoItemIcon();
             if (resourcelocation != null) {
                 guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourcelocation, i, j, 16, 16);
                 flag1 = true;
@@ -74,7 +74,6 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
 
     }
 
-    @Override
     protected void renderSlotContents(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack itemstack, @NotNull Slot slot, @Nullable String countString) {
         var pos = ClientSlotManager.getClientPosition(slot);
         int x = pos != null ? pos.getFirst() : slot.x;

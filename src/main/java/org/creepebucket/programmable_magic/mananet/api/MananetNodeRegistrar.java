@@ -13,7 +13,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 import java.util.function.Function;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Mananet 相关方块/物品/方块实体的注册辅助。
@@ -31,7 +31,7 @@ public final class MananetNodeRegistrar {
      * @param id 资源 id（不含命名空间）
      * @param factory 使用 registryName 构造方块实例的工厂
      */
-    public static <T extends Block> DeferredBlock<T> registerBlock(DeferredRegister.Blocks blocks, String id, Function<ResourceLocation, ? extends T> factory) {
+    public static <T extends Block> DeferredBlock<T> registerBlock(DeferredRegister.Blocks blocks, String id, Function<Identifier, ? extends T> factory) {
         return blocks.register(id, factory);
     }
 

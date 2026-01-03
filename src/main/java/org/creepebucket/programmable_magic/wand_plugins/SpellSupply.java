@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -48,20 +48,20 @@ public class SpellSupply extends BasePlugin{
     public void screenStartupLogic(int x, int y, WandScreen screen) {
         // 侧栏（互斥）
         screen.sidebarCompute = new WandScreen.SidebarToggleWidget(0, 8, 16, 48,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute_pressed.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute_pressed.png"),
                 () -> screen.setSidebar("compute"));
         screen.sidebarAdjust = new WandScreen.SidebarToggleWidget(0, 48 + 8, 16, 48,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust_pressed.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust_pressed.png"),
                 () -> screen.setSidebar("adjust"));
         screen.sidebarControl = new WandScreen.SidebarToggleWidget(0, 2 * 48 + 8, 16, 48,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control_pressed.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control_pressed.png"),
                 () -> screen.setSidebar("control"));
         screen.sidebarBase = new WandScreen.SidebarToggleWidget(0, 3 * 48 + 8, 16, 48,
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base_pressed.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base_pressed.png"),
                 () -> screen.setSidebar("base"));
 
         screen.addRenderableWidget(screen.sidebarCompute);
@@ -98,7 +98,7 @@ public class SpellSupply extends BasePlugin{
 
             for (int i = 0; i < entry.getValue().size(); i++) guiGraphics.blit(
                     RenderPipelines.GUI_TEXTURED,
-                    ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
+                    Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
                     x + (i % 5) * 16 - 1, y + Math.floorDiv(i, 5) * 16 + 10, 0, 0, 16, 16, 16, 16);
 
             y += Math.floorDiv(entry.getValue().size() - 1, 5) * 16 + 32;

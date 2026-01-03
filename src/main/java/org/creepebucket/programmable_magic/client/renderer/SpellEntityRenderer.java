@@ -1,7 +1,5 @@
 package org.creepebucket.programmable_magic.client.renderer;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -41,11 +39,4 @@ public class SpellEntityRenderer extends EntityRenderer<SpellEntity, SpellEntity
         state.vz = v.z;
     }
 
-    /**
-     * 渲染入口：当前无额外渲染，直接调用父类。
-     */
-    @Override
-    public void render(SpellEntityRenderState state, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        super.render(state, poseStack, bufferSource, packedLight);
-    }
 }

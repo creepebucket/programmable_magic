@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
@@ -26,25 +26,25 @@ public abstract class AbstractAssetProvider implements DataProvider {
     }
 
     protected final CompletableFuture<?> save_blockstate(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
         Path path = blockstates_provider.file(id, "json");
         return DataProvider.saveStable(cache, json, path);
     }
 
     protected final CompletableFuture<?> save_block_model(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
         Path path = block_models_provider.file(id, "json");
         return DataProvider.saveStable(cache, json, path);
     }
 
     protected final CompletableFuture<?> save_item_model(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
         Path path = item_models_provider.file(id, "json");
         return DataProvider.saveStable(cache, json, path);
     }
 
     protected final CompletableFuture<?> save_item(CachedOutput cache, String name, JsonObject json) {
-        ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+        Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
         Path path = items_provider.file(id, "json");
         return DataProvider.saveStable(cache, json, path);
     }

@@ -2,7 +2,7 @@ package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -123,7 +123,7 @@ public class SpellLogic {
 
         if (stack.getItem() instanceof WandItemPlaceholder) {
             String key = stack.get(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get());
-            ResourceLocation rl = ResourceLocation.tryParse(key);
+            Identifier rl = Identifier.tryParse(key);
             ItemStack real = new ItemStack(BuiltInRegistries.ITEM.get(rl).get());
             spellSequence.addLast(new ValueLiteralSpell(SpellValueType.ITEM, real));
             if (!real.isEmpty()) pending.add(real.copy());

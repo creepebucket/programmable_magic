@@ -2,7 +2,7 @@ package org.creepebucket.programmable_magic.wand_plugins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -50,7 +50,7 @@ public class SpellRelease extends BasePlugin{
         int compactModeYOffset = spellSlotCount <= 16 ? 18 : 0; // 当物品栏与法术侧栏重叠时调整位置
 
         // 法术释放
-        var releaseTex = ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
+        var releaseTex = Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
         screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 112 / 2, sh - 100 - compactModeYOffset, 112, 16, releaseTex, releaseTex, () -> {
             screen.isCharging = true; // 进入充能态，具体每tick自增由 Screen.containerTick 执行
         }));

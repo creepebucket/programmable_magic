@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -36,12 +36,12 @@ public class CommonItemTooltipHandler {
     @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         var item = event.getItemStack().getItem();
-        ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
+        Identifier key = BuiltInRegistries.ITEM.getKey(item);
         if (key == null || !MODID.equals(key.getNamespace())) return;
         if (!TIPPED_ITEMS.contains(key.getPath())) return;
 
-        long hwnd = Minecraft.getInstance().getWindow().getWindow();
-        boolean lalt = InputConstants.isKeyDown(hwnd, GLFW.GLFW_KEY_LEFT_ALT);
+        var window = Minecraft.getInstance().getWindow();
+        boolean lalt = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT);
         if (!lalt) {
             event.getToolTip().add(Component.translatable("tooltip." + MODID + ".hold_lalt").withStyle(ChatFormatting.GRAY));
         } else {
