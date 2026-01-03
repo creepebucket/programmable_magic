@@ -9,6 +9,7 @@ import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.SpellUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,9 @@ import java.util.Map;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.EMPTY;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.ENTITY;
+import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
+import static org.creepebucket.programmable_magic.ModUtils.formatSpellError;
+import static org.creepebucket.programmable_magic.spells.SpellUtils.setSpellError;
 
 public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     /*
@@ -165,12 +169,27 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     public static class NearestEntitySpell extends DynamicConstantSpell {
         public String getRegistryName() { return "compute_nearest_entity"; }
 
+        @Override
+        public List<List<SpellValueType>> getNeededParamsType() {
+            return List.of(List.of(NUMBER));
+        }
+
         public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
             var pos = data.getPosition();
             var self = data.getCustomData("spell_entity", Entity.class);
-            double r = 16.0; // 简单范围
+            double diameter = (Double) spellParams.get(0);
+            if (diameter > 64.0) {
+                int index = SpellUtils.displayIndexOf(spellSequence, this);
+                setSpellError(player, data, formatSpellError(
+                        Component.translatable("message.programmable_magic.error.kind.param"),
+                        Component.translatable("message.programmable_magic.error.detail.nearest_entity_range_too_large", index, diameter)
+                ));
+                return Map.of("successful", false, "should_discard", true);
+            }
+            double r = diameter / 2.0;
             AABB box = new net.minecraft.world.phys.AABB(pos.x - r, pos.y - r, pos.z - r, pos.x + r, pos.y + r, pos.z + r);
-            List<Entity> list = player.level().getEntities((Entity) null, box, e -> e != null && e != self && e != player);
+            double r2 = r * r;
+            List<Entity> list = player.level().getEntities((Entity) null, box, e -> e != null && e != self && e != player && e.distanceToSqr(pos.x, pos.y, pos.z) <= r2);
 
             Entity nearest = null;
             double best = Double.POSITIVE_INFINITY;
@@ -186,7 +205,8 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
         protected List<Component> getSpecificTooltip() {
             return List.of(
                     Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc1"),
-                    Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc2")
+                    Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc2"),
+                    Component.translatable("tooltip.programmable_magic.spell.nearest_entity.desc3")
             );
         }
 

@@ -17,6 +17,7 @@ import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
+import org.creepebucket.programmable_magic.spells.control_mod.BlockConditionSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -412,7 +413,7 @@ public final class SpellUtils {
         // 遍历每个法术, 执行剩下的COMPUTE_MOD
 
         for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
-            if (!(spell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD || spell instanceof LogicalOperationsSpell) || spell instanceof ValueLiteralSpell || spell instanceof MathOperationsSpell) continue;
+            if (isExecutable(spell) || spell instanceof ValueLiteralSpell || spell instanceof MathOperationsSpell) continue;
 
             if ((spell instanceof LogicalOperationsSpell.EqualSpell
                     || spell instanceof LogicalOperationsSpell.NotEqualSpell
@@ -515,9 +516,10 @@ public final class SpellUtils {
     }
 
     public static boolean isExecutable(SpellItemLogic currentSpell) { return
-            !(currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
-            || currentSpell instanceof LogicalOperationsSpell
-            || currentSpell instanceof ValueLiteralSpell); }
+	            !(currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
+	            || currentSpell instanceof LogicalOperationsSpell
+	            || currentSpell instanceof BlockConditionSpell
+	            || currentSpell instanceof ValueLiteralSpell); }
 
     public static Map<Component, List<ItemStack>> getSpellsGroupedBySubCategory(SpellItemLogic.SpellType type) {
         var map = new LinkedHashMap<Component, List<ItemStack>>();

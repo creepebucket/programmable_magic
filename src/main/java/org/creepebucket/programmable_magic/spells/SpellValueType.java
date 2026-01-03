@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public enum SpellValueType {
@@ -11,6 +12,7 @@ public enum SpellValueType {
     NUMBER("number", "Number", ChatFormatting.GOLD, Double.class),
     VECTOR3("vector3", "Vector3", ChatFormatting.AQUA, Vec3.class),
     STRING("string", "String", ChatFormatting.YELLOW, String.class),
+    BLOCK("block", "Block", ChatFormatting.DARK_GREEN, BlockState.class),
     MODIFIER("modifier", "Modifier", ChatFormatting.LIGHT_PURPLE, null),
     SPELL("spell", "Spell", ChatFormatting.GREEN, null),
     ANY("any", "Any", ChatFormatting.GRAY, null),

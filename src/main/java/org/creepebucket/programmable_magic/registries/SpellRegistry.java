@@ -83,8 +83,15 @@ public class SpellRegistry {
 
         // COMPUTE_MOD: 一般运算
         registerSpell(EntityVelocitySpell::new);
+        registerSpell(EntityQuerySpell.EntityPosSpell::new);
+        registerSpell(EntityQuerySpell.EntityHealthSpell::new);
+        registerSpell(EntityQuerySpell.EntityMaxHealthSpell::new);
+        registerSpell(EntityQuerySpell.EntityArmorSpell::new);
         registerSpell(StorageSpell.StoreInputSpell::new);
         registerSpell(StorageSpell.StoreOutputSpell::new);
+        registerSpell(SpecialComputeSpell.ViewBlockPosSpell::new);
+        registerSpell(SpecialComputeSpell.BlockAtPosSpell::new);
+        registerSpell(SpecialComputeSpell.VecLengthSpell::new);
 
         // 基础法术
         registerSpell(ExplosionSpell::new);
@@ -129,6 +136,9 @@ public class SpellRegistry {
         registerSpell(IfSpell::new);
         registerSpell(LoopBreakSpell::new);
         registerSpell(LoopContinueSpell::new);
+        registerSpell(ForSpell::new);
+        registerSpell(BlockConditionSpell.IsAirSpell::new);
+        registerSpell(BlockConditionSpell.IsGravityBlockSpell::new);
 
         ITEMS.register(eventBus);
     }

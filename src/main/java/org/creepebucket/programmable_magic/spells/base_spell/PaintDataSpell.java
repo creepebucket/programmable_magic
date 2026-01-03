@@ -4,6 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.*;
@@ -50,6 +51,7 @@ public class PaintDataSpell extends BaseBaseSpellLogic {
         if (v instanceof Vec3) return SpellValueType.VECTOR3;
         if (v instanceof Entity) return SpellValueType.ENTITY;
         if (v instanceof net.minecraft.world.item.ItemStack) return SpellValueType.ITEM;
+        if (v instanceof BlockState) return SpellValueType.BLOCK;
         return SpellValueType.ANY;
     }
 
