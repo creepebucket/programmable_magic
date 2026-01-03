@@ -281,13 +281,12 @@ public final class SpellUtils {
         if (spellParams == null || spellParams.isEmpty()) return "[]";
         ArrayList<String> list = new ArrayList<>();
         for (Object o : spellParams) {
-            if (o instanceof Double) list.add("number");
-            else if (o instanceof Vec3) list.add("vector3");
-            else if (o instanceof String) list.add("string");
-            else if (o instanceof ItemStack) list.add("item");
-            else if (o instanceof Entity) list.add("entity");
-            else if (o instanceof Boolean) list.add("boolean");
-            else list.add((o == null ? "null" : o.getClass().getSimpleName().toLowerCase(java.util.Locale.ROOT)));
+            if (o == null) { list.add("null"); continue; }
+            SpellValueType type = SpellValueType.ANY;
+            for (SpellValueType t : SpellValueType.values()) {
+                if (t.matches(o)) { type = t; break; }
+            }
+            list.add(type.id());
         }
         return "[" + String.join(", ", list) + "]";
     }
