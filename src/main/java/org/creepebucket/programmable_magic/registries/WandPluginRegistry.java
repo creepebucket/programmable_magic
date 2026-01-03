@@ -3,7 +3,7 @@ package org.creepebucket.programmable_magic.registries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -26,7 +26,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  */
 public class WandPluginRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    private static final Map<ResourceLocation, Supplier<BasePlugin>> PLUGIN_SUPPLIERS = new HashMap<>();
+    private static final Map<Identifier, Supplier<BasePlugin>> PLUGIN_SUPPLIERS = new HashMap<>();
     private static final Map<Supplier<Item>, Supplier<BasePlugin>> REGISTERED_PLUGINS = new HashMap<>();
 
     /**
@@ -58,7 +58,7 @@ public class WandPluginRegistry {
                 registryName -> new Item(new Item.Properties()
                         .setId(ResourceKey.create(Registries.ITEM, registryName))));
 
-        PLUGIN_SUPPLIERS.put(ResourceLocation.fromNamespaceAndPath(MODID, registryPath), pluginSupplier);
+        PLUGIN_SUPPLIERS.put(Identifier.fromNamespaceAndPath(MODID, registryPath), pluginSupplier);
         REGISTERED_PLUGINS.put(itemSupplier, pluginSupplier);
     }
 
@@ -66,7 +66,7 @@ public class WandPluginRegistry {
      * 由物品构造对应插件实例（未注册则返回 null）。
      */
     public static BasePlugin createPlugin(Item item) {
-        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(item);
+        Identifier registryName = BuiltInRegistries.ITEM.getKey(item);
         Supplier<BasePlugin> supplier = PLUGIN_SUPPLIERS.get(registryName);
         return supplier != null ? supplier.get() : null;
     }
@@ -75,7 +75,7 @@ public class WandPluginRegistry {
      * 判断物品是否为插件物品。
      */
     public static boolean isPlugin(Item item) {
-        ResourceLocation registryName = BuiltInRegistries.ITEM.getKey(item);
+        Identifier registryName = BuiltInRegistries.ITEM.getKey(item);
         return PLUGIN_SUPPLIERS.containsKey(registryName);
     }
 

@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public record SpellReleasePacket(List<ItemStack> spells, double charge, List<ItemStack> plugins) implements CustomPacketPayload {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellReleasePacket");
 
-    public static final CustomPacketPayload.Type<SpellReleasePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "spell_release"));
+    public static final CustomPacketPayload.Type<SpellReleasePacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MODID, "spell_release"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, SpellReleasePacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC),

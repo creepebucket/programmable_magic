@@ -31,7 +31,7 @@ public class Programmable_magic {
         WandPluginRegistry.registerPlugins(modEventBus);
         ModEntityTypes.register(modEventBus);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
 
             modEventBus.addListener(ClientEventHandler::registerScreen);
             modEventBus.addListener(ClientEventHandler::registerEntityRenderers);

@@ -4,7 +4,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -15,7 +15,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public record GuiDataPacket(String key, Object value) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<GuiDataPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(MODID, "wand_menu_kv"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MODID, "wand_menu_kv"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, GuiDataPacket> STREAM_CODEC = new StreamCodec<>() {
         @Override
@@ -64,4 +64,3 @@ public record GuiDataPacket(String key, Object value) implements CustomPacketPay
     @Override
     public Type<? extends CustomPacketPayload> type() { return TYPE; }
 }
-

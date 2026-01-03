@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class GeneralItemModelProvider implements DataProvider {
             textures.addProperty("layer0", MODID + ":item/" + name);
             model.add("textures", textures);
 
-            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MODID, name);
+            Identifier id = Identifier.fromNamespaceAndPath(MODID, name);
             Path modelPath = modelsProvider.file(id, "json");
             futures.add(DataProvider.saveStable(cache, model, modelPath));
 
@@ -62,4 +62,3 @@ public class GeneralItemModelProvider implements DataProvider {
     @Override
     public String getName() { return "General Item Models"; }
 }
-

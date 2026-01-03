@@ -5,7 +5,7 @@
 > ——GPT-5.2 Thinking（乱编）
 
 [![Gradle Package](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml)
-[![mc_version](https://img.shields.io/badge/minecraft-1.21.6~.8-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
+[![mc_version](https://img.shields.io/badge/minecraft-1.21.11-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
 [![last_commit](https://img.shields.io/github/last-commit/creepebucket/programmable_magic?logo=github)](https://github.com/creepebucket/programmable_magic/commits)
 [![release](https://img.shields.io/github/v/release/creepebucket/programmable_magic?include_prereleases&logo=github)](https://github.com/creepebucket/programmable_magic/releases)
 [![bilibili](https://img.shields.io/badge/bilibili-点击观看-00A1D6?logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1mHS8BWE9u)
@@ -23,11 +23,11 @@
 
 ## 概述
 
-Programmable Magic 是一个基于 NeoForge 1.21.8 的魔法模组：核心玩法不是“学会一个强力技能”，而是把一组「法术卡片」按顺序放进魔杖界面，组合出可复用的施法序列。你可以把它理解成“把魔法写成一条能跑的流程”——并且随着插件、计算模组与网络设备的加入，这条流程会逐渐工程化。
+Programmable Magic 是一个基于 NeoForge 1.21.11 的魔法模组：核心玩法不是“学会一个强力技能”，而是把一组「法术卡片」按顺序放进魔杖界面，组合出可复用的施法序列。你可以把它理解成“把魔法写成一条能跑的流程”——并且随着插件、计算模组与网络设备的加入，这条流程会逐渐工程化。
 
 ## 注意
 
-- 版本：本项目基于 NeoForge `1.21.8`（`minecraft_version_range=[1.21.6,1.22)`）。
+- 版本：本项目基于 NeoForge `1.21.11`（`minecraft_version_range=[1.21.11,1.22)`）。
 - 进度：目前仍处于早期开发阶段，内容、平衡与配方可能会频繁调整。
 
 ## 相关
@@ -69,12 +69,12 @@ Programmable Magic 是一个基于 NeoForge 1.21.8 的魔法模组：核心玩�
 
 ## 安装
 
-- 运行环境：Minecraft `1.21.8` + NeoForge `21.8.33`（或满足 `neo_version_range` 的兼容版本）。
+- 运行环境：Minecraft `1.21.11` + NeoForge `21.11.19-beta`（或满足 `neo_version_range` 的兼容版本）。
 - 获取方式：优先从 GitHub Releases 下载成品构建。
 - 使用方法：将本模组的 `.jar` 放入 `mods` 文件夹后启动游戏。
 
 ## 构建与开发
-- 要求：JDK 21（Gradle Toolchain 自动处理）、NeoForge 1.21.8。
+- 要求：JDK 21（Gradle Toolchain 自动处理）、NeoForge 1.21.11。
 - 常用命令：
   - 构建：`./gradlew build`（Windows 使用 `gradlew.bat build`）
   - 运行客户端：`./gradlew runClient`（Windows 使用 `gradlew.bat runClient`）

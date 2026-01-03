@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -8,10 +9,11 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.base.SlotManipulationScreen;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+import org.lwjgl.glfw.GLFW;
 
 /**
  * 魔杖界面：
@@ -88,9 +91,13 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
      * 计算法术视窗步进（支持修饰键）。
      */
     public int computeStep() {
-        if (Screen.hasControlDown()) return 100;
-        if (Screen.hasAltDown()) return 25;
-        if (Screen.hasShiftDown()) return 5;
+        var window = Minecraft.getInstance().getWindow();
+        boolean ctrl = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL);
+        if (ctrl) return 100;
+        boolean alt = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT);
+        if (alt) return 25;
+        boolean shift = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
+        if (shift) return 5;
         return 1;
     }
 
@@ -157,8 +164,8 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
     /**
      * 窗口尺寸变化时重新上报容器坐标。
      */
-    public void resize(Minecraft mc, int width, int height) {
-        super.resize(mc, width, height);
+    public void resize(int width, int height) {
+        super.resize(width, height);
         report_screen_bounds();
     }
 
@@ -222,9 +229,9 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
             int y = BOTTOM_Y + ( compactMode? MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 9) * 18 - 18 : MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 18) * 18 );
 
             if (i < 9 && !compactMode) {
-                graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_hotbar.png"), x, y, 0, 0, 16, 16, 16, 16);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_hotbar.png"), x, y, 0, 0, 16, 16, 16, 16);
             } else if (i >= 9){
-                graphics.blit(RenderPipelines.GUI_TEXTURED, ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_inventory.png"), x, y - compactModeYOffset, 0, 0, 16, 16, 16, 16);
+                graphics.blit(RenderPipelines.GUI_TEXTURED, Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_inventory.png"), x, y - compactModeYOffset, 0, 0, 16, 16, 16, 16);
             }
         }
 
@@ -237,7 +244,7 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
         for (int i = 0; i < pluginCount; i++) {
             int yy = pluginStartY + i * 18;
             graphics.blit(RenderPipelines.GUI_TEXTURED,
-                    ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
+                    Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
                     pluginX - 1, yy, 0, 0, 16, 16, 16, 16);
         }
     }
@@ -305,8 +312,8 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
     /**
      * 鼠标释放：若处于充能状态，则计算充能时长并发送释放数据包。
      */
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        boolean ret = super.mouseReleased(mouseX, mouseY, button);
+    public boolean mouseReleased(MouseButtonEvent event) {
+        boolean ret = super.mouseReleased(event);
         if (this.isCharging) {
             double chargeSec = Math.max(0, this.chargeTicks) / 20.0;
 
@@ -336,23 +343,23 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
      * 绘制一个法术视窗槽位：索引在容量内绘制普通槽，否则绘制越界槽。
      */
     public void drawSpellSlot(GuiGraphics guiGraphics, int index, int x, int y) {
-        List<ResourceLocation> numbers = List.of(
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_0.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_1.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_2.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_3.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_4.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_5.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_6.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_7.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_8.png"),
-                ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_font_9.png"));
+        List<Identifier> numbers = List.of(
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_0.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_1.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_2.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_3.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_4.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_5.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_6.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_7.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_8.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_font_9.png"));
 
         int cap = this.menu.getSpellSlotCapacity();
         if (index < cap) {
 
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_slot.png"),
+                    Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_slot.png"),
                     x, y, 0, 0, 16, 16, 16, 16);
 
 
@@ -367,7 +374,7 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
                     x + 9, y - 3, 0, 0, 3, 5, 3, 5);
         } else {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED,
-                    ResourceLocation.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_out_of_bound.png"),
+                    Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_out_of_bound.png"),
                     x, y, 0, 0, 16, 16, 16, 16);
         }
     }
@@ -381,12 +388,12 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
      * 纹理按钮：悬停/按下两态，回调触发。
      */
     public static class ImageButtonWidget extends AbstractWidget {
-        private final ResourceLocation normal;
-        private final ResourceLocation pressed;
+        private final Identifier normal;
+        private final Identifier pressed;
         private final Runnable onPress;
 
         public ImageButtonWidget(int x, int y, int w, int h,
-                                 ResourceLocation normal, ResourceLocation pressed,
+                                 Identifier normal, Identifier pressed,
                                  Runnable onPress) {
             super(x, y, w, h, Component.empty());
             this.normal = normal;
@@ -405,7 +412,7 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY) {
+        public void onClick(MouseButtonEvent event, boolean fromMouse) {
             if (this.onPress != null) this.onPress.run();
         }
 
@@ -419,13 +426,13 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
      * 侧栏互斥开关按钮。
      */
     public static class SidebarToggleWidget extends AbstractWidget {
-        private final ResourceLocation normal;
-        private final ResourceLocation selectedTex;
+        private final Identifier normal;
+        private final Identifier selectedTex;
         private final Runnable onPress;
         private boolean selected;
 
         public SidebarToggleWidget(int x, int y, int w, int h,
-                                   ResourceLocation normal, ResourceLocation selectedTex,
+                                   Identifier normal, Identifier selectedTex,
                                    Runnable onPress) {
             super(x, y, w, h, Component.empty());
             this.normal = normal;
@@ -446,7 +453,7 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY) {
+        public void onClick(MouseButtonEvent event, boolean fromMouse) {
             if (this.onPress != null) this.onPress.run();
         }
 

@@ -11,6 +11,10 @@ group = mod_group_id
 repositories {
     mavenLocal()
     maven {
+        name = "ParchmentMC"
+        url = uri("https://maven.parchmentmc.org")
+    }
+    maven {
         name = "Jared's Maven"
         url = uri("https://maven.blamejared.com/")
     }

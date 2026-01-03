@@ -3,7 +3,7 @@ package org.creepebucket.programmable_magic.mechines.logic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -53,9 +53,9 @@ public interface StructureUtils {
                     // - "#namespace:tag_id" ：按方块标签匹配
                     for (String v : map.get(ch)) {
                         if (v.startsWith("#")) {
-                            if (target_state.is(TagKey.create(Registries.BLOCK, ResourceLocation.parse(v.substring(1))))) { matched = true; break; }
+                            if (target_state.is(TagKey.create(Registries.BLOCK, Identifier.parse(v.substring(1))))) { matched = true; break; }
                         } else {
-                            if (target_state.is(BuiltInRegistries.BLOCK.getValue(ResourceLocation.parse(v)))) { matched = true; break; }
+                            if (target_state.is(BuiltInRegistries.BLOCK.getValue(Identifier.parse(v)))) { matched = true; break; }
                         }
                     }
                     if (!matched) formed = false;
