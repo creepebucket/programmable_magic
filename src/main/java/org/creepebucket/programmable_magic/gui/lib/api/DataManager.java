@@ -6,8 +6,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+/**
+ * 键值数据管理器：为 UI 提供本地存储与 c2s/s2c 的 KV 同步。
+ */
 public class DataManager {
 
+    /**
+     * 拉取模式使用的内部键：客户端上报需要拉取的 keys，服务端返回这些 keys 的当前值。
+     */
     public static final String KEY_PULL = "data_manager.pull_keys";
 
     private static final BiConsumer<String, Object> NOOP = (k, v) -> {};
@@ -21,9 +27,19 @@ public class DataManager {
     private BiConsumer<String, Object> sendToServer = NOOP;
     private BiConsumer<String, Object> sendToClient = NOOP;
 
+    /**
+     * 绑定客户端 -> 服务端发送器。
+     */
     public void bindSendToServer(BiConsumer<String, Object> sender) { this.sendToServer = sender; }
+
+    /**
+     * 绑定服务端 -> 客户端发送器。
+     */
     public void bindSendToClient(BiConsumer<String, Object> sender) { this.sendToClient = sender; }
 
+    /**
+     * 注册一个键并返回实例句柄；若已存在则复用既有元信息与初始值。
+     */
     public DataInstance request(String key, DataType type, SyncMode syncMode, Object initialValue) {
         if (initialValue == null) throw new IllegalArgumentException("initialValue is required: " + key);
         this.metas.putIfAbsent(key, new Meta(type, syncMode));
@@ -33,26 +49,31 @@ public class DataManager {
         return new DataInstance(this, key, type, syncMode);
     }
 
+    /**
+     * 判断某个键是否已注册。
+     */
     public boolean hasKey(String key) { return this.metas.containsKey(key); }
 
+    /**
+     * 读取键的当前值。
+     */
     public Object get(String key) { return this.values.get(key); }
 
+    /**
+     * 仅写入本地值，不触发同步发送。
+     */
     public void setLocal(String key, Object value) {
-        Meta meta = this.metas.get(key);
-        if (meta == null) throw new IllegalStateException("unknown key: " + key);
-        assertType(meta.type(), value);
+        metaOrThrow(key);
         this.values.put(key, value);
     }
 
+    /**
+     * 写入值，并按键的同步模式决定是否发送到对端。
+     */
     public void set(String key, Object value) {
-        Meta meta = this.metas.get(key);
-        if (meta == null) throw new IllegalStateException("unknown key: " + key);
-        assertType(meta.type(), value);
-
-        boolean isClient = this.sendToServer != NOOP;
-        boolean isServer = this.sendToClient != NOOP;
-        if (isClient && meta.syncMode() == SyncMode.S2C) throw new IllegalStateException("client cannot set s2c key: " + key);
-        if (isServer && meta.syncMode() == SyncMode.C2S) throw new IllegalStateException("server cannot set c2s key: " + key);
+        Meta meta = metaOrThrow(key);
+        if (this.sendToServer != NOOP && meta.syncMode() == SyncMode.S2C) throw new IllegalStateException("client cannot set s2c key: " + key);
+        if (this.sendToClient != NOOP && meta.syncMode() == SyncMode.C2S) throw new IllegalStateException("server cannot set c2s key: " + key);
 
         this.values.put(key, value);
 
@@ -60,15 +81,16 @@ public class DataManager {
         if ((meta.syncMode() == SyncMode.S2C || meta.syncMode() == SyncMode.BOTH) && this.sendToClient != NOOP) this.sendToClient.accept(key, value);
     }
 
+    /**
+     * 处理客户端 -> 服务端的数据包；返回 {@code true} 表示该键被本管理器消费。
+     */
     public boolean handleC2S(String key, Object value) {
         if (KEY_PULL.equals(key)) {
-            String joined = (String) value;
-            for (String requestedKey : joined.split("\n")) {
-                Meta meta = this.metas.get(requestedKey);
-                if (meta == null) throw new IllegalStateException("unknown key: " + requestedKey);
-                Object v = get(requestedKey);
-                if (v == null) throw new IllegalStateException("null value: " + requestedKey);
-                this.sendToClient.accept(requestedKey, v);
+            for (String requestedKey : ((String) value).split("\n")) {
+                metaOrThrow(requestedKey);
+                Object requestedValue = get(requestedKey);
+                if (requestedValue == null) throw new IllegalStateException("null value: " + requestedKey);
+                this.sendToClient.accept(requestedKey, requestedValue);
             }
             return true;
         }
@@ -78,12 +100,18 @@ public class DataManager {
         return true;
     }
 
+    /**
+     * 处理服务端 -> 客户端的数据包；返回 {@code true} 表示该键被本管理器消费。
+     */
     public boolean handleS2C(String key, Object value) {
         if (!this.metas.containsKey(key)) return false;
         setLocal(key, value);
         return true;
     }
 
+    /**
+     * 将暂存的拉取 keys 作为一个 KEY_PULL 包发送给服务端。
+     */
     public void flushPullRequests() {
         if (this.pendingPullKeys.isEmpty()) return;
         if (this.sendToServer == NOOP) return;
@@ -91,13 +119,12 @@ public class DataManager {
         this.pendingPullKeys.clear();
     }
 
-    private void assertType(DataType type, Object value) {
-        boolean ok = switch (type) {
-            case STRING -> value instanceof String;
-            case INT -> value instanceof Integer;
-            case DOUBLE -> value instanceof Double;
-            case BOOLEAN -> value instanceof Boolean;
-        };
-        if (!ok) throw new IllegalArgumentException("type mismatch: " + type + " value=" + value);
+    /**
+     * 获取键的元信息；若未注册则抛出异常。
+     */
+    private Meta metaOrThrow(String key) {
+        Meta meta = this.metas.get(key);
+        if (meta == null) throw new IllegalStateException("unknown key: " + key);
+        return meta;
     }
 }

@@ -15,102 +15,131 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * 支持客户端槽位坐标重定位的容器界面基类。
+ */
 public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu> extends AbstractContainerScreen<Menu> {
 
+    /**
+     * 创建可操作槽位坐标的容器界面。
+     */
     public SlotManipulationScreen(Menu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
     }
 
+    /**
+     * 以客户端坐标（若存在）渲染槽位内容。
+     */
     @Override
     protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
-        var pos = ClientSlotManager.getClientPosition(slot);
-        int i = pos != null ? pos.getFirst() : slot.x;
-        int j = pos != null ? pos.getSecond() : slot.y;
-        ItemStack itemstack = slot.getItem();
-        boolean flag = false;
-        boolean flag1 = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
-        ItemStack itemStack1 = this.menu.getCarried();
-        String s = null;
-        if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !itemstack.isEmpty()) {
-            itemstack = itemstack.copyWithCount(itemstack.getCount() / 2);
-        } else if (this.isQuickCrafting && this.quickCraftSlots.contains(slot) && !itemStack1.isEmpty()) {
-            if (this.quickCraftSlots.size() == 1) {
-                return;
-            }
+        // 计算 slot 的渲染坐标（若未设置则退回到原生 slot 坐标）
+        int slotX = slotX(slot);
+        int slotY = slotY(slot);
 
-            if (AbstractContainerMenu.canItemQuickReplace(slot, itemStack1, true) && this.menu.canDragTo(slot)) {
-                flag = true;
-                int k = Math.min(itemStack1.getMaxStackSize(), slot.getMaxStackSize(itemStack1));
-                int l = slot.getItem().isEmpty() ? 0 : slot.getItem().getCount();
-                int i1 = AbstractContainerMenu.getQuickCraftPlaceCount(this.quickCraftSlots, this.quickCraftingType, itemStack1) + l;
-                if (i1 > k) {
-                    i1 = k;
-                    String var10000 = ChatFormatting.YELLOW.toString();
-                    s = var10000 + k;
+        // 准备待渲染的物品与渲染状态
+        ItemStack stackToRender = slot.getItem();
+        boolean showQuickCraftOverlay = false;
+        boolean skipSlotContents = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
+        ItemStack carriedStack = this.menu.getCarried();
+        String countString = null;
+
+        // 处理分割堆叠 / 快速合成拖拽时的数量显示逻辑
+        if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !stackToRender.isEmpty()) {
+            stackToRender = stackToRender.copyWithCount(stackToRender.getCount() / 2);
+        } else if (this.isQuickCrafting && this.quickCraftSlots.contains(slot) && !carriedStack.isEmpty()) {
+            if (this.quickCraftSlots.size() == 1) return;
+            if (AbstractContainerMenu.canItemQuickReplace(slot, carriedStack, true) && this.menu.canDragTo(slot)) {
+                showQuickCraftOverlay = true;
+                int maxCount = Math.min(carriedStack.getMaxStackSize(), slot.getMaxStackSize(carriedStack));
+                int existingCount = slot.getItem().isEmpty() ? 0 : slot.getItem().getCount();
+                int placeCount = AbstractContainerMenu.getQuickCraftPlaceCount(this.quickCraftSlots, this.quickCraftingType, carriedStack) + existingCount;
+                if (placeCount > maxCount) {
+                    placeCount = maxCount;
+                    countString = ChatFormatting.YELLOW + Integer.toString(maxCount);
                 }
-
-                itemstack = itemStack1.copyWithCount(i1);
+                stackToRender = carriedStack.copyWithCount(placeCount);
             } else {
                 this.quickCraftSlots.remove(slot);
                 this.recalculateQuickCraftRemaining();
             }
         }
 
-        if (itemstack.isEmpty() && slot.isActive()) {
-            Identifier resourcelocation = slot.getNoItemIcon();
-            if (resourcelocation != null) {
-                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourcelocation, i, j, 16, 16);
-                flag1 = true;
+        // 空槽位：如果存在 no_item 图标则直接绘制该图标并跳过后续内容渲染
+        if (stackToRender.isEmpty() && slot.isActive()) {
+            Identifier noItemIcon = slot.getNoItemIcon();
+            if (noItemIcon != null) {
+                guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, noItemIcon, slotX, slotY, 16, 16);
+                skipSlotContents = true;
             }
         }
 
-        if (!flag1) {
-            if (flag) {
-                guiGraphics.fill(i, j, i + 16, j + 16, -2130706433);
-            }
-
-            this.renderSlotContents(guiGraphics, itemstack, slot, s);
-        }
-
+        // 绘制快速合成的半透明覆盖，并渲染物品内容
+        if (skipSlotContents) return;
+        if (showQuickCraftOverlay) guiGraphics.fill(slotX, slotY, slotX + 16, slotY + 16, -2130706433);
+        this.renderSlotContents(guiGraphics, stackToRender, slot, countString);
     }
 
+    /**
+     * 绘制槽位内的物品与叠加文字。
+     */
     protected void renderSlotContents(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack itemstack, @NotNull Slot slot, @Nullable String countString) {
-        var pos = ClientSlotManager.getClientPosition(slot);
-        int x = pos != null ? pos.getFirst() : slot.x;
-        int y = pos != null ? pos.getSecond() : slot.y;
+        int x = slotX(slot);
+        int y = slotY(slot);
         int seed = x + y * this.imageWidth;
         if (slot.isFake()) {
-            guiGraphics.renderFakeItem(itemstack,x,y,seed);
+            guiGraphics.renderFakeItem(itemstack, x, y, seed);
         } else {
-            guiGraphics.renderItem(itemstack,x,y,seed);
+            guiGraphics.renderItem(itemstack, x, y, seed);
         }
         Font font = IClientItemExtensions.of(itemstack).getFont(itemstack, IClientItemExtensions.FontContext.ITEM_COUNT);
         guiGraphics.renderItemDecorations(font != null ? font : this.font, itemstack, x, y, countString);
     }
 
+    /**
+     * 将 hover 判定与客户端槽位坐标对齐。
+     */
     @Override
     protected boolean isHovering(@NotNull Slot slot, double mouseX, double mouseY) {
-        var pos = ClientSlotManager.getClientPosition(slot);
-        int x = pos != null ? pos.getFirst() : slot.x;
-        int y = pos != null ? pos.getSecond() : slot.y;
-        return this.isHovering(x, y, 16, 16, mouseX, mouseY);
+        return this.isHovering(slotX(slot), slotY(slot), 16, 16, mouseX, mouseY);
     }
 
+    /**
+     * 将 slot 高亮背景与客户端槽位坐标对齐。
+     */
     @Override
     protected void renderSlotHighlightBack(@NotNull GuiGraphics guiGraphics) {
-        if (this.hoveredSlot == null || !this.hoveredSlot.isHighlightable()) return;
-        var pos = ClientSlotManager.getClientPosition(this.hoveredSlot);
-        int x = pos != null ? pos.getFirst() : this.hoveredSlot.x;
-        int y = pos != null ? pos.getSecond() : this.hoveredSlot.y;
+        Slot hoveredSlot = this.hoveredSlot;
+        if (hoveredSlot == null || !hoveredSlot.isHighlightable()) return;
+        int x = slotX(hoveredSlot);
+        int y = slotY(hoveredSlot);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
     }
 
+    /**
+     * 将 slot 高亮前景与客户端槽位坐标对齐。
+     */
     @Override
     protected void renderSlotHighlightFront(@NotNull GuiGraphics guiGraphics) {
-        if (this.hoveredSlot == null || !this.hoveredSlot.isHighlightable()) return;
-        var pos = ClientSlotManager.getClientPosition(this.hoveredSlot);
-        int x = pos != null ? pos.getFirst() : this.hoveredSlot.x;
-        int y = pos != null ? pos.getSecond() : this.hoveredSlot.y;
+        Slot hoveredSlot = this.hoveredSlot;
+        if (hoveredSlot == null || !hoveredSlot.isHighlightable()) return;
+        int x = slotX(hoveredSlot);
+        int y = slotY(hoveredSlot);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
+    }
+
+    /**
+     * 返回槽位的客户端 X（若未设置则使用原生 {@link Slot#x}）。
+     */
+    private int slotX(@NotNull Slot slot) {
+        var pos = ClientSlotManager.getClientPosition(slot);
+        return pos != null ? pos.getFirst() : slot.x;
+    }
+
+    /**
+     * 返回槽位的客户端 Y（若未设置则使用原生 {@link Slot#y}）。
+     */
+    private int slotY(@NotNull Slot slot) {
+        var pos = ClientSlotManager.getClientPosition(slot);
+        return pos != null ? pos.getSecond() : slot.y;
     }
 }
