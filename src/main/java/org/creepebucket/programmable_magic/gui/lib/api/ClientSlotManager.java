@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.gui.base;
+package org.creepebucket.programmable_magic.gui.lib.api;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.inventory.Slot;

@@ -3,9 +3,11 @@ package org.creepebucket.programmable_magic.registries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import org.creepebucket.programmable_magic.network.dataPackets.ClientPacketHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.ServerPacketHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
-import org.creepebucket.programmable_magic.network.dataPackets.GuiDataPacket;
+import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
+import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2cPacket;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -24,9 +26,15 @@ public class ModNetworkPackets {
 
         // Screen -> Menu: 传递一个键值对（k=string, v=object）
         registrar.playToServer(
-                GuiDataPacket.TYPE,
-                GuiDataPacket.STREAM_CODEC,
+                SimpleKvPacket.TYPE,
+                SimpleKvPacket.STREAM_CODEC,
                 ServerPacketHandler::handleWandMenuKV
+        );
+
+        registrar.playToClient(
+                SimpleKvS2cPacket.TYPE,
+                SimpleKvS2cPacket.STREAM_CODEC,
+                ClientPacketHandler::handleSimpleKvS2C
         );
 
         // 如果你还有其他数据包，可以在这里继续注册...

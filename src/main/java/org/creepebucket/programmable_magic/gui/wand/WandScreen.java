@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -16,9 +15,9 @@ import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.gui.base.SlotManipulationScreen;
+import org.creepebucket.programmable_magic.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
-import org.creepebucket.programmable_magic.network.dataPackets.GuiDataPacket;
+import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 import net.minecraft.util.Mth;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
 import org.creepebucket.programmable_magic.items.Wand;
@@ -131,7 +130,7 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
         // 同步给服务端 Menu（如服务端也需要使用这些数据）
         var connection = Minecraft.getInstance().getConnection();
         if (connection != null) {
-            var payload = new GuiDataPacket(key, value);
+            var payload = new SimpleKvPacket(key, value);
             connection.send(new ServerboundCustomPayloadPacket(payload));
         }
     }

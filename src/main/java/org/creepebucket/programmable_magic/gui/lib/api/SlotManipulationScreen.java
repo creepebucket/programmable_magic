@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.gui.base;
+package org.creepebucket.programmable_magic.gui.lib.api;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>  extends AbstractContainerScreen<Menu> {
+public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu> extends AbstractContainerScreen<Menu> {
 
     public SlotManipulationScreen(Menu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);

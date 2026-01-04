@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.gui.base.ClientSlotManager;
+import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
 import org.creepebucket.programmable_magic.gui.wand.slots.OffsetSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.PluginSlot;
 import org.creepebucket.programmable_magic.gui.wand.slots.SupplySlot;
@@ -23,6 +23,8 @@ import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
+import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2CHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +34,7 @@ import java.util.List;
  * - 负责响应 Screen 上报的屏幕坐标，按当前屏幕尺寸构建物品栏/法术栏/侧栏/卷轴制作槽位。
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
-public class WandMenu extends AbstractContainerMenu {
+public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandler, SimpleKvS2CHandler {
     public static final String KEY_GUI_LEFT = "gui_left";
     public static final String KEY_GUI_TOP = "gui_top";
     public static final String KEY_SPELL_OFFSET = "spell_offset";
@@ -732,5 +734,15 @@ public class WandMenu extends AbstractContainerMenu {
             int y = startY + i * 18;
             action.run(plugin, x, y);
         }
+    }
+
+    @Override
+    public void handleSimpleKvC2S(String key, Object value) {
+        setClientData(key, value);
+    }
+
+    @Override
+    public void handleSimpleKvS2C(String key, Object value) {
+        setClientData(key, value);
     }
 }
