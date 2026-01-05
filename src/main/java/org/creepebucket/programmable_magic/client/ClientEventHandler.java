@@ -4,8 +4,8 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import org.creepebucket.programmable_magic.gui.lib.ui.UiScreenBase;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.client.renderer.SpellEntityRenderer;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
@@ -15,8 +15,8 @@ public class ClientEventHandler {
     public static void registerScreen(RegisterMenuScreensEvent event) {
         event.register(
                 ModMenuTypes.WAND_MENU.get(),
-                (net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor<WandMenu, WandScreen>)
-                        (menu, inv, title) -> new WandScreen(menu, inv, title)
+                (MenuScreens.ScreenConstructor<WandMenu, UiScreenBase<WandMenu>>)
+                        (menu, inv, title) -> new UiScreenBase<>(menu, inv, title)
         );
     }
 

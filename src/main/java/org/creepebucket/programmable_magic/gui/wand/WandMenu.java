@@ -153,6 +153,12 @@ public class WandMenu extends UiMenuBase {
     }
 
     @Override
+    public void reportScreenSize(int screenWidth, int screenHeight) {
+        sendMenuData(KEY_SCREEN_WIDTH, screenWidth);
+        sendMenuData(KEY_SCREEN_HEIGHT, screenHeight);
+    }
+
+    @Override
     /**
      * 简化：任意时刻均可交互。
      */

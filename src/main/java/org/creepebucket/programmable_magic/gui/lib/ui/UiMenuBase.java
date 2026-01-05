@@ -44,6 +44,8 @@ public abstract class UiMenuBase extends AbstractContainerMenu implements Simple
     @Override
     public boolean stillValid(Player player) { return true; }
 
+    public void reportScreenSize(int screenWidth, int screenHeight) { }
+
     /**
      * UI 菜单默认不支持快速搬运；需要时由子类实现。
      */

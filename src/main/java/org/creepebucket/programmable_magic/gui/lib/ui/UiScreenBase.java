@@ -14,7 +14,7 @@ import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 /**
  * UI 屏幕基类：将 Minecraft 的输入/渲染生命周期桥接到 {@link UiRuntime}。
  */
-public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipulationScreen<Menu> {
+public class UiScreenBase<Menu extends UiMenuBase> extends SlotManipulationScreen<Menu> {
     private float lastPartialTick = 0.0F;
 
     /**
@@ -34,6 +34,7 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
         super.init();
 
         updateUiBounds();
+        reportScreenSize();
 
         this.menu.ui().bindSendToServer((k, v) -> {
             Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SimpleKvPacket(k, v)));
@@ -51,6 +52,7 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
         this.imageHeight = height;
         super.resize(width, height);
         updateUiBounds();
+        reportScreenSize();
     }
 
     /**
@@ -77,7 +79,6 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
      */
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        super.renderLabels(graphics, mouseX, mouseY);
         this.menu.ui().renderForeground(graphics, mouseX, mouseY, this.lastPartialTick);
     }
 
@@ -151,4 +152,12 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
         var window = Minecraft.getInstance().getWindow();
         this.menu.ui().setBounds(window.getGuiScaledWidth(), window.getGuiScaledHeight(), this.leftPos, this.topPos);
     }
+
+    private void reportScreenSize() {
+        var window = Minecraft.getInstance().getWindow();
+        this.menu.reportScreenSize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { }
 }

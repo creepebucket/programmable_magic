@@ -4,7 +4,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import net.minecraft.resources.Identifier;
-import org.creepebucket.programmable_magic.gui.wand.WandScreen;
+import org.creepebucket.programmable_magic.gui.lib.ui.UiScreenBase;
 import org.jetbrains.annotations.NotNull;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -18,6 +18,6 @@ public class JEIPlugin implements IModPlugin {
 
     @Override
     public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
-        registration.addGuiScreenHandler(WandScreen.class, screen -> null);
+        registration.addGuiScreenHandler(UiScreenBase.class, screen -> null);
     }
 }
