@@ -72,6 +72,8 @@ public class WandScreen extends SlotManipulationScreen<WandMenu> {
      * 初始化界面控件并同步屏幕边界数据到 Menu。
      */
     protected void init() {
+        this.imageWidth = this.width;
+        this.imageHeight = this.height;
         super.init();
 
         chargeTicks = 0;
