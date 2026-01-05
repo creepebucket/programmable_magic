@@ -1,13 +1,15 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
+import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
+import org.creepebucket.programmable_magic.gui.wand.WandLayout;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.gui.wand.WandScreen;
+import org.creepebucket.programmable_magic.gui.wand.WandUiWidgets;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
@@ -36,63 +38,22 @@ public class SpellRelease extends BasePlugin{
     }
 
     @Override
-    /**
-     * 屏幕初始化：添加发射按钮，按下进入充能状态。
-     */
-    public void screenStartupLogic(int x, int y, WandScreen screen) {
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int sh = win.getGuiScaledHeight();
-
-        int CENTER_X = sw / 2;
-
-        int spellSlotCount = Math.floorDiv(sw - 200, 16) - 4;
-        int compactModeYOffset = spellSlotCount <= 16 ? 18 : 0; // 当物品栏与法术侧栏重叠时调整位置
-
-        // 法术释放
+    public void buildUi(WandMenu menu) {
         var releaseTex = Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
-        screen.addRenderableWidget(new WandScreen.ImageButtonWidget(CENTER_X - 112 / 2, sh - 100 - compactModeYOffset, 112, 16, releaseTex, releaseTex, () -> {
-            screen.isCharging = true; // 进入充能态，具体每tick自增由 Screen.containerTick 执行
-        }));
-    }
 
-    @Override
-    /**
-     * 屏幕渲染：若处于充能态，绘制实时能量数值。
-     */
-    public void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen) {
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int sh = win.getGuiScaledHeight();
+        menu.ui().addWidget(new ImageButtonWidget(new Coordinate(
+                (sw, sh) -> sw / 2 - 112 / 2,
+                (sw, sh) -> sh - 100 - WandLayout.compact_mode_y_offset(sw)
+        ), 112, 16, releaseTex, releaseTex, () -> menu.isCharging = true));
 
-        int CENTER_X = screen.width / 2 - 1 - screen.getGuiLeft();
-        int BOTTOM_Y = sh - screen.getGuiTop();
+        menu.ui().addWidget(new TextWidget(new Coordinate(
+                (sw, sh) -> sw / 2 - 20,
+                (sw, sh) -> sh - 94 - WandLayout.compact_mode_y_offset(sw)
+        ), () -> menu.isCharging
+                ? ModUtils.FormattedManaString(((double) menu.chargeTicks / 20.0) * (menu.getChargeRate() / 1000.0))
+                : "", () -> 0xFFFFFFFF));
 
-        // 发射按钮能量显示
-        if (screen.isCharging) guiGraphics.drawString(screen.getFont(),
-                ModUtils.FormattedManaString(((double) screen.chargeTicks / 20.0) * (screen.getMenuChargeRate() / 1000.0)),
-                CENTER_X - 20, BOTTOM_Y - 94, 0xFFFFFFFF);
-    }
-
-    @Override
-    public void screenTick(int x, int y, WandScreen screen) {
-        // 本插件不做额外 tick 行为
-    }
-
-    @Override
-    /**
-     * 菜单布局：本插件不参与菜单侧布局。
-     */
-    public void menuLogic(int x, int y, WandMenu menu) {
-
-    }
-
-    @Override
-    /**
-     * 菜单 tick：本插件无菜单侧持续行为。
-     */
-    public void menuTick(int x, int y, WandMenu menu) {
-
+        menu.ui().addWidget(new WandUiWidgets.SpellReleaseOnMouseReleasedWidget(menu));
     }
 
     @Override

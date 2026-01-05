@@ -1,11 +1,9 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
@@ -38,29 +36,9 @@ public abstract class BasePlugin {
     public abstract void onEntityTick(SpellEntity spellEntity);
 
     /**
-     * 屏幕初始化回调：用于创建按钮/开关等控件。
+     * 构建魔杖界面：用于创建槽位布局与按钮/渲染等控件。
      */
-    public abstract void screenStartupLogic(int x, int y, WandScreen screen);
-
-    /**
-     * 屏幕渲染回调：用于自定义绘制或状态提示。
-     */
-    public abstract void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen);
-
-    /**
-     * 屏幕每 tick 回调：用于在界面打开期间的周期性逻辑（如自动充能）。
-     */
-    public abstract void screenTick(int x, int y, WandScreen screen);
-
-    /**
-     * 菜单布局回调：用于添加槽位或根据屏幕坐标进行布局。
-     */
-    public abstract void menuLogic(int x, int y, WandMenu menu);
-
-    /**
-     * 菜单每 tick 回调：可用于定时刷新菜单状态。
-     */
-    public abstract void menuTick(int x, int y, WandMenu menu);
+    public abstract void buildUi(WandMenu menu);
 
     /**
      * 法术执行前回调：可读取/修改将要执行的参数。

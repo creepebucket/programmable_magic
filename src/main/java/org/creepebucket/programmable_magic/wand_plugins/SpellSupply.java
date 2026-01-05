@@ -1,16 +1,15 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
-import org.creepebucket.programmable_magic.gui.wand.MathUtils;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.SelectableImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.gui.wand.WandScreen;
+import org.creepebucket.programmable_magic.gui.wand.WandUiWidgets;
 import org.creepebucket.programmable_magic.spells.SpellData;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
@@ -42,112 +41,60 @@ public class SpellSupply extends BasePlugin{
     }
 
     @Override
-    /**
-     * 屏幕初始化：创建四个互斥的侧栏切换按钮。
-     */
-    public void screenStartupLogic(int x, int y, WandScreen screen) {
-        // 侧栏（互斥）
-        screen.sidebarCompute = new WandScreen.SidebarToggleWidget(0, 8, 16, 48,
+    public void buildUi(WandMenu menu) {
+        menu.ui().addWidget(new WandUiWidgets.SpellSupplyBackgroundWidget(menu));
+
+        menu.ui().addWidget(new SelectableImageButtonWidget(Coordinate.fromTopLeft(0, 8),
+                16, 48,
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute.png"),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_compute_pressed.png"),
-                () -> screen.setSidebar("compute"));
-        screen.sidebarAdjust = new WandScreen.SidebarToggleWidget(0, 48 + 8, 16, 48,
+                () -> "compute".equals(menu.selectedSidebar()),
+                () -> menu.sendMenuData(WandMenu.KEY_SPELL_SIDEBAR, "compute")));
+
+        menu.ui().addWidget(new SelectableImageButtonWidget(Coordinate.fromTopLeft(0, 48 + 8),
+                16, 48,
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust.png"),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_adjust_pressed.png"),
-                () -> screen.setSidebar("adjust"));
-        screen.sidebarControl = new WandScreen.SidebarToggleWidget(0, 2 * 48 + 8, 16, 48,
+                () -> "adjust".equals(menu.selectedSidebar()),
+                () -> menu.sendMenuData(WandMenu.KEY_SPELL_SIDEBAR, "adjust")));
+
+        menu.ui().addWidget(new SelectableImageButtonWidget(Coordinate.fromTopLeft(0, 2 * 48 + 8),
+                16, 48,
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control.png"),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_control_pressed.png"),
-                () -> screen.setSidebar("control"));
-        screen.sidebarBase = new WandScreen.SidebarToggleWidget(0, 3 * 48 + 8, 16, 48,
+                () -> "control".equals(menu.selectedSidebar()),
+                () -> menu.sendMenuData(WandMenu.KEY_SPELL_SIDEBAR, "control")));
+
+        menu.ui().addWidget(new SelectableImageButtonWidget(Coordinate.fromTopLeft(0, 3 * 48 + 8),
+                16, 48,
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base.png"),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_sidebar_base_pressed.png"),
-                () -> screen.setSidebar("base"));
+                () -> "base".equals(menu.selectedSidebar()),
+                () -> menu.sendMenuData(WandMenu.KEY_SPELL_SIDEBAR, "base")));
 
-        screen.addRenderableWidget(screen.sidebarCompute);
-        screen.addRenderableWidget(screen.sidebarAdjust);
-        screen.addRenderableWidget(screen.sidebarControl);
-        screen.addRenderableWidget(screen.sidebarBase);
+        menu.ui().addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(17, 0),
+                () -> 82,
+                () -> Minecraft.getInstance().getWindow().getGuiScaledHeight() - 16,
+                menu::supplyScrollRow,
+                () -> computeMaxSupplyScrollRow(menu),
+                v -> menu.sendMenuData(WandMenu.KEY_SUPPLY_SCROLL, v)));
     }
 
-    @Override
-    /**
-     * 屏幕渲染：绘制法术侧栏外框、分组标题与网格槽背景。
-     */
-    public void screenRenderLogic(GuiGraphics guiGraphics, int x, int y, WandScreen screen) {
-        var win = Minecraft.getInstance().getWindow();
-        int sh = win.getGuiScaledHeight();
+    private int computeMaxSupplyScrollRow(WandMenu menu) {
+        SpellItemLogic.SpellType type = SpellUtils.stringSpellTypeMap.getOrDefault(menu.selectedSidebar(), SpellItemLogic.SpellType.COMPUTE_MOD);
+        Map<Component, List<ItemStack>> spells = SpellUtils.getSpellsGroupedBySubCategory(type);
 
-        // 法术侧栏
-        guiGraphics.fill(17 - screen.getGuiLeft(), -screen.getGuiTop(), 17 - screen.getGuiLeft() + 1, sh - 16, 0xFFFFFFFF);
-        guiGraphics.fill(17 + 82 - screen.getGuiLeft(), -screen.getGuiTop(), 17 + 82 - screen.getGuiLeft() + 1, sh - 16, 0xFFFFFFFF);
+        int sh = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        int visibleRows = Math.max(1, Math.floorDiv((sh - 16) - 20, 16));
 
-        // 左侧法术选择菜单
-        Map<Component, List<ItemStack>> spells = SpellUtils.getSpellsGroupedBySubCategory(SpellUtils.stringSpellTypeMap.get(screen.sidebar));
-        // 遍历每个键值对
-        int startX = 19 - screen.getGuiLeft();
-        int startY = 10 - screen.getGuiTop() - screen.supplyScrollRow * 16;
-
-        x = startX;
-        y = startY;
-
+        int totalRows = 1;
         for (Map.Entry<Component, List<ItemStack>> entry : spells.entrySet()) {
-            Component key = entry.getKey();
-
-            guiGraphics.drawString(screen.getFont(), key.getString(), x, y, 0xFFBF360C);
-
-            for (int i = 0; i < entry.getValue().size(); i++) guiGraphics.blit(
-                    RenderPipelines.GUI_TEXTURED,
-                    Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_spell_sidebar_slot.png"),
-                    x + (i % 5) * 16 - 1, y + Math.floorDiv(i, 5) * 16 + 10, 0, 0, 16, 16, 16, 16);
-
-            y += Math.floorDiv(entry.getValue().size() - 1, 5) * 16 + 32;
-        }
-    }
-
-    @Override
-    public void screenTick(int x, int y, WandScreen screen) {
-        // 本插件不做额外 tick 行为
-    }
-
-    @Override
-    /**
-     * 菜单布局：固定 5 列可见网格，创建 SupplySlot 后初始化一次映射。
-     */
-    public void menuLogic(int x, int y, WandMenu menu) {
-        if (!menu.supplySlots.isEmpty()) return;
-        menu.supplyItems = menu.computeSupplyItemsForCurrentSidebar();
-
-        var win = Minecraft.getInstance().getWindow();
-        int sh = win.getGuiScaledHeight();
-
-        // 固定网格：从顶部 20px 开始，至底部上边距 16px，5 列
-        int startX = 19; // 屏幕坐标（随后减去 gui_left）
-        int startY = 4;
-        int visibleHeightPx = sh - 4;
-        int visibleRows = Math.max(1, Math.floorDiv(visibleHeightPx, 16));
-        int total = visibleRows * 5;
-
-        for (int i = 0; i < total; i++) {
-            int col = i % 5;
-            int row = Math.floorDiv(i, 5);
-            int screenX = startX + col * 16 - 1;
-            int screenY = startY + row * 16;
-            var slot = menu.addSupplySlotConverted(-1, screenX, screenY);
-            slot.setActive(false);
-            menu.supplySlots.add(slot);
+            int size = entry.getValue().size();
+            int rows = (int) Math.ceil(size / 5.0);
+            totalRows += rows + 1;
         }
 
-        // 初始化一次映射
-        menu.updateSupplySlotMapping();
-    }
-
-    @Override
-    /**
-     * 菜单 tick：本插件无菜单侧持续行为。
-     */
-    public void menuTick(int x, int y, WandMenu menu) {
-
+        return Math.max(0, totalRows - visibleRows);
     }
 
     @Override

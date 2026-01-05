@@ -15,6 +15,7 @@ import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
  * UI 屏幕基类：将 Minecraft 的输入/渲染生命周期桥接到 {@link UiRuntime}。
  */
 public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipulationScreen<Menu> {
+    private float lastPartialTick = 0.0F;
 
     /**
      * 创建 UI 屏幕。
@@ -28,6 +29,8 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
      */
     @Override
     protected void init() {
+        this.imageWidth = this.width;
+        this.imageHeight = this.height;
         super.init();
 
         updateUiBounds();
@@ -44,6 +47,8 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
      */
     @Override
     public void resize(int width, int height) {
+        this.imageWidth = width;
+        this.imageHeight = height;
         super.resize(width, height);
         updateUiBounds();
     }
@@ -58,16 +63,26 @@ public abstract class UiScreenBase<Menu extends UiMenuBase> extends SlotManipula
     }
 
     /**
-     * 渲染原生容器界面后，再渲染 UI 运行时控件。
+     * 渲染原生容器界面后，再渲染 UI 前景控件。
      */
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.lastPartialTick = partialTick;
         super.render(graphics, mouseX, mouseY, partialTick);
-        this.menu.ui().render(graphics, mouseX, mouseY, partialTick);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     /**
-     * 该基类不绘制背景；具体背景交由子类或控件自行实现。
+     * 在标签层（renderLabels）渲染 UI 前景控件，确保其处于原生控件之后、tooltip 之前。
+     */
+    @Override
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
+        this.menu.ui().renderForeground(graphics, mouseX, mouseY, this.lastPartialTick);
+    }
+
+    /**
+     * 默认在背景层渲染 UI 背景控件。
      */
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {

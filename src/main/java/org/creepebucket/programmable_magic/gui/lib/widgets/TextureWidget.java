@@ -32,7 +32,7 @@ public class TextureWidget extends Widget {
     @Override
     public void onRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, this.texture,
-                this.pos.toScreenX(), this.pos.toScreenY(),
+                this.pos.toMenuX(), this.pos.toMenuY(),
                 0, 0,
                 this.width, this.height,
                 this.width, this.height);

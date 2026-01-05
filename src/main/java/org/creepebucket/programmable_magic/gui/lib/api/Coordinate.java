@@ -21,25 +21,11 @@ public class Coordinate {
     public final BiFunction<Integer, Integer, Integer> y;
 
     /**
-     * 构造时捕获的窗口宽（缩放后）。
-     */
-    public final int sw;
-
-    /**
-     * 构造时捕获的窗口高（缩放后）。
-     */
-    public final int sh;
-
-    /**
-     * 创建一个坐标计算器，并捕获当前窗口缩放后的尺寸。
+     * 创建一个坐标计算器。
      */
     public Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
         this.x = x;
         this.y = y;
-
-        var window = Minecraft.getInstance().getWindow();
-        this.sw = window.getGuiScaledWidth();
-        this.sh = window.getGuiScaledHeight();
     }
 
     /**
@@ -59,12 +45,18 @@ public class Coordinate {
     /**
      * 计算屏幕坐标 X。
      */
-    public int toScreenX() { return this.x.apply(this.sw, this.sh); }
+    public int toScreenX() {
+        var window = Minecraft.getInstance().getWindow();
+        return this.x.apply(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+    }
 
     /**
      * 计算屏幕坐标 Y。
      */
-    public int toScreenY() { return this.y.apply(this.sw, this.sh); }
+    public int toScreenY() {
+        var window = Minecraft.getInstance().getWindow();
+        return this.y.apply(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+    }
 
     /**
      * 以屏幕左上角为基准创建坐标。

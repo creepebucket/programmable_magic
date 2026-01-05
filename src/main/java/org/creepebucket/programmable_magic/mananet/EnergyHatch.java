@@ -49,7 +49,8 @@ public class EnergyHatch extends AbstractNodeBlock {
 
     @Override
     public void init_node_state(ServerLevel level, BlockPos pos, BlockState state, MananetNodeState node_state) {
-        node_state.connectivityMask = 1 << state.getValue(FACING).ordinal();
+        node_state.connectivityMask =
+                1 << state.getValue(FACING).ordinal();
     }
 
     @Override

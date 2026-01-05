@@ -25,6 +25,11 @@ public class SlotWidget extends Widget {
      * 持续更新槽位的客户端坐标。
      */
     @Override
+    public void onInitialize() {
+        onTick();
+    }
+
+    @Override
     public void onTick() {
         ClientSlotManager.setClientPosition(this.slot, this.pos.toMenuX(), this.pos.toMenuY());
     }

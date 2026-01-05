@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
@@ -8,14 +7,18 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
-import org.creepebucket.programmable_magic.gui.wand.slots.OffsetSlot;
-import org.creepebucket.programmable_magic.gui.wand.slots.PluginSlot;
-import org.creepebucket.programmable_magic.gui.wand.slots.SupplySlot;
+import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.api.DataInstance;
+import org.creepebucket.programmable_magic.gui.lib.api.DataType;
+import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
+import org.creepebucket.programmable_magic.gui.lib.ui.UiMenuBase;
+import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
+import org.creepebucket.programmable_magic.gui.wand.WandSlots.OffsetSlot;
+import org.creepebucket.programmable_magic.gui.wand.WandSlots.PluginSlot;
+import org.creepebucket.programmable_magic.gui.wand.WandSlots.SupplySlot;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
@@ -23,58 +26,72 @@ import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
-import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
-import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2CHandler;
+import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 最小菜单：不含复杂数据同步，仅承载 Screen 与槽位布局。
  * - 负责响应 Screen 上报的屏幕坐标，按当前屏幕尺寸构建物品栏/法术栏/侧栏/卷轴制作槽位。
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
-public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandler, SimpleKvS2CHandler {
+public class WandMenu extends UiMenuBase {
     public static final String KEY_GUI_LEFT = "gui_left";
     public static final String KEY_GUI_TOP = "gui_top";
+    public static final String KEY_SCREEN_WIDTH = "screen_width";
+    public static final String KEY_SCREEN_HEIGHT = "screen_height";
     public static final String KEY_SPELL_OFFSET = "spell_offset";
     public static final String KEY_CLEAN = "clean";
     public static final String KEY_SPELL_SIDEBAR = "spell_sidebar";
     public static final String KEY_SAVE = "save";
     public static final String KEY_SUPPLY_SCROLL = "spell_sidebar_scroll";
-    private final java.util.Map<String, Object> clientData = new java.util.HashMap<>();
-    private final Inventory playerInv;
+    private final Map<String, Object> clientData = new HashMap<>();
     private boolean slotsBuilt = false;
 
-    private int guiLeft = 0;
-    private int guiTop = 0;
+    private int screenWidth = 0;
+    private int screenHeight = 0;
     public int spellIndexOffset = 0;
     public List<Slot> spellSlots;
     public int spellStartIndex = -1;
     public int spellEndIndex = -1;
     private String selectedSidebar = "compute";
 
+    public boolean isCharging = false;
+    public int chargeTicks = 0;
+
     public final ResizableContainer wandInv;
     private final InteractionHand wandHand;
     private final SimpleContainer supplyInv = new SimpleContainer(0);
-    public final java.util.List<SupplySlot> supplySlots = new java.util.ArrayList<>();
-    public java.util.List<ItemStack> supplyItems = new java.util.ArrayList<>();
-    private java.util.List<SupplyGroupMeta> supplyGroupMetas = new java.util.ArrayList<>();
+    private final List<SupplySlot> supplySlots = new ArrayList<>();
+    private List<ItemStack> supplyItems = new ArrayList<>();
+    private List<SupplyGroupMeta> supplyGroupMetas = new ArrayList<>();
     private int supplyScrollRow = 0;
 
     // 插件：玩家自装配的插件存储与槽位
     private final SimpleContainer pluginInv;
-    private final java.util.List<Slot> pluginSlots = new java.util.ArrayList<>();
+    private final List<Slot> pluginSlots = new ArrayList<>();
 
     // 卷轴制作功能已移除
+
+    private DataInstance ui_gui_left;
+    private DataInstance ui_gui_top;
+    private DataInstance ui_screen_width;
+    private DataInstance ui_screen_height;
+    private DataInstance ui_spell_offset;
+    private DataInstance ui_clean;
+    private DataInstance ui_spell_sidebar;
+    private DataInstance ui_save;
+    private DataInstance ui_supply_scroll;
     
 
     /**
      * 由网络附加数据构造（包含手持是哪只手）。
      */
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId);
-        this.playerInv = playerInv;
+        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {});
         int ord = extra.readVarInt();
         this.wandHand = (ord >= 0 && ord < InteractionHand.values().length) ? InteractionHand.values()[ord] : InteractionHand.MAIN_HAND;
         this.wandInv = new ResizableContainer(resolveWandSlots());
@@ -82,6 +99,7 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
         loadWandInvFromStack();
         loadPluginsFromStack();
         updateWandCapacityFromPlugins();
+        initUiData();
     }
 
     /**
@@ -95,14 +113,43 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
      * 指定手的便捷构造。
      */
     public WandMenu(int containerId, Inventory playerInv, InteractionHand hand) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId);
-        this.playerInv = playerInv;
+        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {});
         this.wandHand = hand;
         this.wandInv = new ResizableContainer(resolveWandSlots());
         this.pluginInv = new SimpleContainer(resolvePluginSlots());
         loadWandInvFromStack();
         loadPluginsFromStack();
         updateWandCapacityFromPlugins();
+        initUiData();
+    }
+
+    private void initUiData() {
+        this.ui_gui_left = ui().data(KEY_GUI_LEFT, DataType.INT, SyncMode.C2S, 0);
+        this.ui_gui_top = ui().data(KEY_GUI_TOP, DataType.INT, SyncMode.C2S, 0);
+        this.ui_screen_width = ui().data(KEY_SCREEN_WIDTH, DataType.INT, SyncMode.C2S, 0);
+        this.ui_screen_height = ui().data(KEY_SCREEN_HEIGHT, DataType.INT, SyncMode.C2S, 0);
+        this.ui_spell_offset = ui().data(KEY_SPELL_OFFSET, DataType.INT, SyncMode.C2S, 0);
+        this.ui_clean = ui().data(KEY_CLEAN, DataType.BOOLEAN, SyncMode.C2S, false);
+        this.ui_spell_sidebar = ui().data(KEY_SPELL_SIDEBAR, DataType.STRING, SyncMode.C2S, "compute");
+        this.ui_save = ui().data(KEY_SAVE, DataType.BOOLEAN, SyncMode.C2S, false);
+        this.ui_supply_scroll = ui().data(KEY_SUPPLY_SCROLL, DataType.INT, SyncMode.C2S, 0);
+    }
+
+    public void sendUiData(String key, Object value) {
+        if (KEY_GUI_LEFT.equals(key)) this.ui_gui_left.setInt((Integer) value);
+        else if (KEY_GUI_TOP.equals(key)) this.ui_gui_top.setInt((Integer) value);
+        else if (KEY_SCREEN_WIDTH.equals(key)) this.ui_screen_width.setInt((Integer) value);
+        else if (KEY_SCREEN_HEIGHT.equals(key)) this.ui_screen_height.setInt((Integer) value);
+        else if (KEY_SPELL_OFFSET.equals(key)) this.ui_spell_offset.setInt((Integer) value);
+        else if (KEY_CLEAN.equals(key)) this.ui_clean.setBoolean((Boolean) value);
+        else if (KEY_SPELL_SIDEBAR.equals(key)) this.ui_spell_sidebar.setString((String) value);
+        else if (KEY_SUPPLY_SCROLL.equals(key)) this.ui_supply_scroll.setInt((Integer) value);
+        else if (KEY_SAVE.equals(key)) this.ui_save.setBoolean((Boolean) value);
+    }
+
+    public void sendMenuData(String key, Object value) {
+        setClientData(key, value);
+        sendUiData(key, value);
     }
 
     @Override
@@ -121,14 +168,15 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
             saveWandInvToStack(this.playerInv.player);
         } else if (container == this.pluginInv) {
             savePluginsToStack(this.playerInv.player);
-            applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
-            updateClientSlotPositions();
             updateWandCapacityFromPlugins();
-            int visible = (this.spellSlots != null) ? this.spellSlots.size() : 25;
-            int maxOffset = Math.max(0, this.wandInv.getContainerSize() - visible);
-            this.spellIndexOffset = Mth.clamp(this.spellIndexOffset, 0, maxOffset);
+            int cap = this.wandInv.getContainerSize();
+            this.spellIndexOffset = Mth.clamp(this.spellIndexOffset, 0, cap);
+            if (this.screenWidth > 0 && this.screenHeight > 0) ensureDynamicSlots();
+            if (hasPluginPrefix("spell_supply_t")) refreshSupplySlots();
+            else disableSupplySlots();
             this.slotsChanged(this.wandInv);
             this.broadcastChanges();
+            rebuildUi();
         }
     }
 
@@ -191,12 +239,19 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
     public void setClientData(String key, Object value) {
         clientData.put(key, value);
 
-        if (KEY_GUI_LEFT.equals(key)) { this.guiLeft = (Integer) value; if (slotsBuilt) refreshSupplySlots(); }
-        else if (KEY_GUI_TOP.equals(key)) { this.guiTop = (Integer) value; if (slotsBuilt) refreshSupplySlots(); }
-        else if (KEY_SPELL_OFFSET.equals(key)) {
-            int visible = (this.spellSlots != null) ? this.spellSlots.size() : 25;
-            int maxOffset = Math.max(0, this.wandInv.getContainerSize() - visible);
-            this.spellIndexOffset = Mth.clamp((Integer) value, 0, maxOffset);
+        if (KEY_SCREEN_WIDTH.equals(key)) {
+            this.screenWidth = (Integer) value;
+            if (this.screenWidth > 0 && this.screenHeight > 0) onScreenSizeReady();
+        } else if (KEY_SCREEN_HEIGHT.equals(key)) {
+            this.screenHeight = (Integer) value;
+            if (this.screenWidth > 0 && this.screenHeight > 0) onScreenSizeReady();
+        } else if (KEY_SPELL_OFFSET.equals(key)) {
+            int cap = this.wandInv.getContainerSize();
+            this.spellIndexOffset = Mth.clamp((Integer) value, 0, cap);
+            if (slotsBuilt) {
+                this.slotsChanged(this.wandInv);
+                this.broadcastChanges();
+            }
         } else if (KEY_CLEAN.equals(key)) {
             int n = this.wandInv.getContainerSize();
             for (int i = 0; i < n; i++) this.wandInv.setItem(i, ItemStack.EMPTY);
@@ -206,165 +261,133 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
         } else if (KEY_SPELL_SIDEBAR.equals(key)) {
             this.selectedSidebar = (String) value;
             this.supplyScrollRow = 0;
-            if (slotsBuilt) refreshSupplySlots();
+            if (slotsBuilt && hasPluginPrefix("spell_supply_t")) refreshSupplySlots();
         } else if (KEY_SUPPLY_SCROLL.equals(key)) {
             this.supplyScrollRow = (Integer) value;
-            if (slotsBuilt) refreshSupplySlots();
+            if (slotsBuilt && hasPluginPrefix("spell_supply_t")) updateSupplySlotMapping();
         } else if (KEY_SAVE.equals(key)) {
             saveWandInvToSavedStacks(this.playerInv.player);
         }
+    }
 
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int sh = win.getGuiScaledHeight();
+    private void onScreenSizeReady() {
+        ensureSlotsBuilt();
+        ensureDynamicSlots();
+        if (hasPluginPrefix("spell_supply_t")) refreshSupplySlots();
+        else disableSupplySlots();
+        if (slotsBuilt) rebuildUi();
+    }
 
-        int centerX = sw / 2;
-
-        // 当两者都有时，添加槽位（避免 Slot.x/y final 的问题）
-        if (!slotsBuilt && clientData.containsKey(KEY_GUI_LEFT) && clientData.containsKey(KEY_GUI_TOP)) {
-            int spellSlotCount = Math.floorDiv(sw - 200, 16) - 4;
-            boolean compactMode = spellSlotCount <= 16;
-
-            // 物品栏
-            for (int i = 0; i < 36; i++) {
-                if (!compactMode) {
-                    this.addSlotConverted(playerInv, i, centerX - 162 + (i % 18) * 18, sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 18) * 18);
-                } else {
-                    if (i >= 9) {
-                        this.addSlotConverted(playerInv, i, centerX - 82 + (i % 9) * 18, sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 9) * 18 - 36);
-                    } else {
-                        this.addSlotConverted(playerInv, i, centerX - 88 + (i % 9) * 20, sh - 19);
-                    }
-                }
-            }
-
-            // 法术栏（独立容器 + 偏移映射）
-            spellSlots = new ArrayList<>();
-
-            // 右侧插件槽（1xX 贴屏幕右边）
-            buildInitialPluginSlots();
-
-            // 在法术槽右侧添加两个槽位：左输入纸，右输出卷轴
-
-            slotsBuilt = true;
-        }
-
-        // 偏移变化：OffsetSlot 动态映射，无需改 Slot.index
-        if (slotsBuilt && clientData.containsKey(KEY_SPELL_OFFSET)) {
-            this.slotsChanged(this.wandInv);
-            this.broadcastChanges();
-        }
-
-        // 界面坐标变化时，调用插件 Menu 逻辑一次
-        if (slotsBuilt && (KEY_GUI_LEFT.equals(key) || KEY_GUI_TOP.equals(key))) {
-            applyPlugins((plugin, x, y) -> plugin.menuLogic(x, y, this));
-            updateClientSlotPositions();
+    private void disableSupplySlots() {
+        for (var slot : this.supplySlots) {
+            slot.setSupplyIndex(-1);
+            slot.setActive(false);
         }
     }
 
-    private void updateClientSlotPositions() {
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int sh = win.getGuiScaledHeight();
+    private void ensureSlotsBuilt() {
+        if (this.slotsBuilt) return;
 
-        int spellSlotCount = Math.max(1, Math.floorDiv(sw - 200, 16) - 4);
-        boolean compactMode = spellSlotCount <= 16;
-        int compactModeYOffset = compactMode ? 18 : 0;
+        for (int i = 0; i < 36; i++) this.addSlot(new Slot(this.playerInv, i, 0, 0));
+        this.spellSlots = new ArrayList<>();
 
-        int centerX = sw / 2;
-        int offX = -9999;
-        int offY = -9999;
+        int count = this.pluginInv.getContainerSize();
+        for (int i = 0; i < count; i++) {
+            Slot slot = this.addSlot(new PluginSlot(this.pluginInv, i, 0, 0));
+            this.pluginSlots.add(slot);
+        }
+
+        this.slotsBuilt = true;
+    }
+
+    private void ensureDynamicSlots() {
+        int visibleSpells = Math.max(1, WandLayout.visible_spell_slots(this.screenWidth));
+        for (int i = this.spellSlots.size(); i < visibleSpells; i++) {
+            if (this.spellStartIndex < 0) this.spellStartIndex = this.slots.size();
+            Slot slot = this.addSlot(new OffsetSlot(this, this.wandInv, i, 0, 0));
+            this.spellSlots.add(slot);
+            this.spellEndIndex = this.slots.size();
+        }
+
+        int rows = Math.max(1, Math.floorDiv((this.screenHeight - 16) - 20, 16));
+        int needed = rows * 5;
+        for (int i = this.supplySlots.size(); i < needed; i++) {
+            SupplySlot slot = (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, 0, 0, -1, () -> this.supplyItems));
+            slot.setActive(false);
+            this.supplySlots.add(slot);
+        }
+    }
+
+    public String selectedSidebar() { return this.selectedSidebar; }
+    public int supplyScrollRow() { return this.supplyScrollRow; }
+
+    public void rebuildUi() {
+        if (!this.playerInv.player.level().isClientSide()) return;
+        this.ui().clearWidgets();
+
+        if (!this.slotsBuilt) return;
+
+        this.ui().addWidget(new WandUiWidgets.BaseBackgroundWidget(this));
+        this.ui().addWidget(new WandUiWidgets.ChargeTickWidget(this));
+        buildBaseSlotsUi();
+        buildInstalledPluginsUi();
+    }
+
+    private void buildBaseSlotsUi() {
+        boolean spellSlotsEnabled = hasPluginPrefix("spell_slots_t");
+        boolean supplyEnabled = hasPluginPrefix("spell_supply_t");
 
         for (int i = 0; i < 36; i++) {
-            int screenX;
-            int screenY;
-            if (!compactMode) {
-                screenX = centerX - 162 + (i % 18) * 18;
-                screenY = sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 18) * 18;
-            } else {
-                if (i >= 9) {
-                    screenX = centerX - 82 + (i % 9) * 18;
-                    screenY = sh + MathUtils.INVENTORY_OFFSET + Math.floorDiv(i, 9) * 18 - 36;
-                } else {
-                    screenX = centerX - 88 + (i % 9) * 20;
-                    screenY = sh - 19;
-                }
-            }
             Slot slot = this.slots.get(i);
-            ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, screenY - this.guiTop);
+            int idx = i;
+            this.ui().addWidget(new SlotWidget(slot, new Coordinate(
+                    (sw, sh) -> WandLayout.inventory_slot_x(sw, idx),
+                    (sw, sh) -> WandLayout.inventory_slot_y(sw, sh, idx)
+            )));
         }
 
-        int pluginCount = this.pluginSlots.size();
-        if (pluginCount > 0) {
-            int x = sw - 24;
-            int startY = 10;
-            for (int i = 0; i < pluginCount; i++) {
-                int y = startY + i * 18;
-                Slot slot = this.pluginSlots.get(i);
-                ClientSlotManager.setClientPosition(slot, x - this.guiLeft - 1, y - this.guiTop);
-            }
+        for (int i = 0; i < this.pluginSlots.size(); i++) {
+            Slot slot = this.pluginSlots.get(i);
+            int idx = i;
+            this.ui().addWidget(new SlotWidget(slot, new Coordinate(
+                    (sw, sh) -> WandLayout.plugin_slot_x(sw) - 1,
+                    (sw, sh) -> WandLayout.plugin_slot_y(idx)
+            )));
         }
 
-        boolean supplyEnabled = hasPluginPrefix("spell_supply_t");
-        if (supplyEnabled) {
-            int visibleRows = Math.max(1, Math.floorDiv(sh - 4, 16));
-            int needed = visibleRows * 5;
-            int startX = 19;
-            int startY = 4;
-
-            for (int i = this.supplySlots.size(); i < needed; i++) {
-                int col = i % 5;
-                int row = Math.floorDiv(i, 5);
-                int screenX = startX + col * 16 - 1;
-                int screenY = startY + row * 16;
-                var slot = this.addSupplySlotConverted(-1, screenX, screenY);
-                slot.setActive(false);
-                this.supplySlots.add(slot);
-            }
-
-            for (int i = 0; i < this.supplySlots.size(); i++) {
-                Slot slot = this.supplySlots.get(i);
-                if (i < needed) {
-                    int col = i % 5;
-                    int row = Math.floorDiv(i, 5);
-                    int screenX = startX + col * 16 - 1;
-                    int screenY = startY + row * 16;
-                    ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, screenY - this.guiTop);
-                } else {
-                    ClientSlotManager.setClientPosition(slot, offX, offY);
-                }
-            }
-            refreshSupplySlots();
-        } else {
-            for (var slot : this.supplySlots) {
-                slot.setSupplyIndex(-1);
-                slot.setActive(false);
-                ClientSlotManager.setClientPosition(slot, offX, offY);
-            }
+        for (int i = 0; i < this.spellSlots.size(); i++) {
+            Slot slot = this.spellSlots.get(i);
+            int idx = i;
+            this.ui().addWidget(new SlotWidget(slot, new Coordinate(
+                    (sw, sh) -> (spellSlotsEnabled && idx < WandLayout.visible_spell_slots(sw)) ? WandLayout.spell_slot_x(sw, idx) : -9999,
+                    (sw, sh) -> (spellSlotsEnabled && idx < WandLayout.visible_spell_slots(sw)) ? WandLayout.spell_slot_y(sw, sh) : -9999
+            )));
         }
 
-        boolean spellSlotsEnabled = hasPluginPrefix("spell_slots_t");
-        if (spellSlotsEnabled) {
-            int visible = spellSlotCount;
-            int y = sh + MathUtils.SPELL_SLOT_OFFSET - compactModeYOffset;
-            for (int i = this.spellSlots.size(); i < visible; i++) {
-                int screenX = centerX - visible * 8 + i * 16 - 1;
-                Slot slot = this.addOffsetSlotConverted(this.wandInv, i, screenX, y);
-                this.spellSlots.add(slot);
-            }
-            for (int i = 0; i < this.spellSlots.size(); i++) {
-                Slot slot = this.spellSlots.get(i);
-                if (i < visible) {
-                    int screenX = centerX - visible * 8 + i * 16 - 1;
-                    ClientSlotManager.setClientPosition(slot, screenX - this.guiLeft, y - this.guiTop);
-                } else {
-                    ClientSlotManager.setClientPosition(slot, offX, offY);
-                }
-            }
-        } else {
-            for (var slot : this.spellSlots) {
-                ClientSlotManager.setClientPosition(slot, offX, offY);
-            }
+        for (int i = 0; i < this.supplySlots.size(); i++) {
+            Slot slot = this.supplySlots.get(i);
+            int idx = i;
+            this.ui().addWidget(new SlotWidget(slot, new Coordinate(
+                    (sw, sh) -> {
+                        int needed = Math.max(1, Math.floorDiv((sh - 16) - 20, 16)) * 5;
+                        return (supplyEnabled && idx < needed) ? WandLayout.supply_slot_x(idx % 5) : -9999;
+                    },
+                    (sw, sh) -> {
+                        int needed = Math.max(1, Math.floorDiv((sh - 16) - 20, 16)) * 5;
+                        return (supplyEnabled && idx < needed) ? WandLayout.supply_slot_y(Math.floorDiv(idx, 5)) : -9999;
+                    }
+            )));
+        }
+    }
+
+    private void buildInstalledPluginsUi() {
+        int n = this.pluginInv.getContainerSize();
+        for (int i = 0; i < n; i++) {
+            ItemStack st = this.pluginInv.getItem(i);
+            if (st == null || st.isEmpty()) continue;
+            BasePlugin plugin = WandPluginRegistry.createPlugin(st.getItem());
+            if (plugin == null) continue;
+            plugin.buildUi(this);
         }
     }
 
@@ -373,33 +396,11 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
         for (int i = 0; i < n; i++) {
             ItemStack st = this.pluginInv.getItem(i);
             if (st == null || st.isEmpty()) continue;
-            var plugin = WandPluginRegistry.createPlugin(st.getItem());
+            BasePlugin plugin = WandPluginRegistry.createPlugin(st.getItem());
             if (plugin == null) continue;
             if (plugin.pluginName.startsWith(prefix)) return true;
         }
         return false;
-    }
-
-    /**
-     * 辅助：以屏幕坐标添加玩家物品栏槽位。
-     */
-    public Slot addSlotConverted(Inventory inv, int index, int screenX, int screenY) {
-        int cx = screenX - this.guiLeft;
-        int cy = screenY - this.guiTop;
-        Slot slot = this.addSlot(new Slot(inv, index, cx, cy));
-        ClientSlotManager.setClientPosition(slot, cx, cy);
-        return slot;
-    }
-
-    /**
-     * 辅助：以屏幕坐标添加偏移映射槽位（法术栏视窗）。
-     */
-    public Slot addOffsetSlotConverted(Container inv, int baseIndex, int screenX, int screenY) {
-        int cx = screenX - this.guiLeft;
-        int cy = screenY - this.guiTop;
-        Slot slot = this.addSlot(new OffsetSlot(this, inv, baseIndex, cx, cy));
-        ClientSlotManager.setClientPosition(slot, cx, cy);
-        return slot;
     }
 
     /**
@@ -416,13 +417,7 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
      * 返回魔杖充能功率（W）。
      */
     public double getChargeRate() {
-        java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
-        int n = this.pluginInv.getContainerSize();
-        for (int i = 0; i < n; i++) {
-            ItemStack it = this.pluginInv.getItem(i);
-            if (it != null && !it.isEmpty()) list.add(it);
-        }
-        var values = ModUtils.computeWandValues(list);
+        var values = ModUtils.computeWandValues(collectPlugins());
         return values.chargeRateW;
     }
 
@@ -482,15 +477,19 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
      * 根据插件聚合结果更新法术容器有效容量。
      */
     private void updateWandCapacityFromPlugins() {
-        java.util.ArrayList<ItemStack> list = new java.util.ArrayList<>();
+        var values = ModUtils.computeWandValues(collectPlugins());
+        int cap = Math.max(0, (int) Math.floor(values.spellSlots));
+        this.wandInv.setLimit(cap);
+    }
+
+    private List<ItemStack> collectPlugins() {
+        ArrayList<ItemStack> list = new ArrayList<>();
         int n = this.pluginInv.getContainerSize();
         for (int i = 0; i < n; i++) {
             ItemStack it = this.pluginInv.getItem(i);
             if (it != null && !it.isEmpty()) list.add(it);
         }
-        var values = ModUtils.computeWandValues(list);
-        int cap = Math.max(0, (int) Math.floor(values.spellSlots));
-        this.wandInv.setLimit(cap);
+        return list;
     }
 
     /**
@@ -570,16 +569,16 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
     /**
      * 计算当前侧栏类别下的扁平化法术物品列表（保持分组遍历顺序）。
      */
-    public java.util.List<ItemStack> computeSupplyItemsForCurrentSidebar() {
+    public List<ItemStack> computeSupplyItemsForCurrentSidebar() {
         var type = SpellUtils.stringSpellTypeMap.getOrDefault(this.selectedSidebar,
                 SpellItemLogic.SpellType.COMPUTE_MOD);
         var map = SpellUtils.getSpellsGroupedBySubCategory(type);
-        var flat = new java.util.ArrayList<ItemStack>();
-        var metas = new java.util.ArrayList<SupplyGroupMeta>();
+        var flat = new ArrayList<ItemStack>();
+        var metas = new ArrayList<SupplyGroupMeta>();
         int base = 0;
         int rowStart = 1;
         for (var e : map.entrySet()) {
-            java.util.List<ItemStack> list = e.getValue();
+            List<ItemStack> list = e.getValue();
             int size = list.size();
             int rows = (int) Math.ceil(size / 5.0);
             metas.add(new SupplyGroupMeta(base, size, rows, rowStart));
@@ -621,8 +620,7 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
     public void updateSupplySlotMapping() {
         int visibleRows;
         {
-            var win = Minecraft.getInstance().getWindow();
-            int sh = win.getGuiScaledHeight();
+            int sh = this.screenHeight;
             int visibleHeightPx = (sh - 16) - 20;
             visibleRows = Math.max(1, Math.floorDiv(visibleHeightPx, 16));
         }
@@ -671,38 +669,7 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
         this.broadcastChanges();
     }
 
-    /**
-     * 辅助：以屏幕坐标添加供应槽位。
-     */
-    public SupplySlot addSupplySlotConverted(int supplyIndex, int screenX, int screenY) {
-        int cx = screenX - this.guiLeft;
-        int cy = screenY - this.guiTop;
-        SupplySlot slot = (SupplySlot) this.addSlot(new SupplySlot(this.supplyInv, 0, cx, cy, supplyIndex, () -> this.supplyItems));
-        ClientSlotManager.setClientPosition(slot, cx, cy);
-        return slot;
-    }
-
     // 卷轴制作逻辑已移除
-
-    /**
-     * 构建初始插件槽（靠屏幕右侧，从上至下 1xX）。
-     */
-    private void buildInitialPluginSlots() {
-        int count = this.pluginInv.getContainerSize();
-        if (count <= 0) return;
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int x = sw - 24; // 贴右侧，留 8px 内边距
-        int startY = 10; // 顶部内边距
-        for (int i = 0; i < count; i++) {
-            int y = startY + i * 18; // 竖向排列
-            int cx = x - this.guiLeft - 1; // 与背景贴图对齐，X 左移 1px
-            int cy = y - this.guiTop;
-            Slot slot = this.addSlot(new PluginSlot(this.pluginInv, i, cx, cy));
-            ClientSlotManager.setClientPosition(slot, cx, cy);
-            pluginSlots.add(slot);
-        }
-    }
 
     /**
      * 供 Screen 调用：返回指定插件槽位的当前物品。
@@ -715,34 +682,44 @@ public class WandMenu extends AbstractContainerMenu implements SimpleKvC2SHandle
         return this.pluginInv.getItem(index);
     }
 
-    /**
-     * 对每个已安装插件调用其 Menu 逻辑。
-     */
-    @FunctionalInterface
-    private interface MenuPluginAction { void run(org.creepebucket.programmable_magic.wand_plugins.BasePlugin plugin, int x, int y); }
-
-    private void applyPlugins(MenuPluginAction action) {
-        var win = Minecraft.getInstance().getWindow();
-        int sw = win.getGuiScaledWidth();
-        int x = sw - 24;
-        int startY = 10;
-        int n = this.pluginInv.getContainerSize();
-        for (int i = 0; i < n; i++) {
-            ItemStack st = this.pluginInv.getItem(i);
-            if (st == null || st.isEmpty()) continue;
-            var plugin = WandPluginRegistry.createPlugin(st.getItem());
-            int y = startY + i * 18;
-            action.run(plugin, x, y);
-        }
-    }
 
     @Override
     public void handleSimpleKvC2S(String key, Object value) {
+        super.handleSimpleKvC2S(key, value);
         setClientData(key, value);
     }
 
     @Override
     public void handleSimpleKvS2C(String key, Object value) {
+        super.handleSimpleKvS2C(key, value);
         setClientData(key, value);
     }
+
+    /**
+     * 可调容量容器：
+     * - 以最大容量初始化，运行时按插件数值设置“有效容量”。
+     * - getContainerSize 返回有效容量，内部存储保留最大容量。
+     */
+    public static class ResizableContainer extends SimpleContainer {
+        private final int max;
+        private int limit;
+
+        public ResizableContainer(int max) {
+            super(max);
+            this.max = Math.max(0, max);
+            this.limit = this.max;
+        }
+
+        public void setLimit(int limit) {
+            if (limit < 0) limit = 0;
+            if (limit > max) limit = max;
+            this.limit = limit;
+        }
+
+        @Override
+        public int getContainerSize() {
+            return this.limit;
+        }
+    }
+
 }

@@ -75,6 +75,14 @@ public class UiRuntime {
     }
 
     /**
+     * 移除全部控件并触发其移除回调。
+     */
+    public void clearWidgets() {
+        for (var w : this.widgets) w.onRemoved();
+        this.widgets.clear();
+    }
+
+    /**
      * 移除一个控件并触发其移除回调。
      */
     public void removeWidget(Widget widget) {
@@ -90,9 +98,15 @@ public class UiRuntime {
     }
 
     /**
-     * 渲染所有控件。
+     * 渲染背景控件。
      */
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    }
+
+    /**
+     * 渲染前景控件。
+     */
+    public void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         for (var w : this.widgets) w.onRender(graphics, mouseX, mouseY, partialTick);
     }
 
