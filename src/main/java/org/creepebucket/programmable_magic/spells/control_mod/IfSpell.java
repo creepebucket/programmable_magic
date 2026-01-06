@@ -66,7 +66,7 @@ public class IfSpell extends BaseControlModLogic{
         }
 
         boolean cond = Boolean.TRUE.equals(spellParams.get(0));
-        SpellItemLogic target = cond ? left.getNextSpell() : right.getNextSpell();
+        SpellItemLogic target = cond ? left.getNextSpell() : right;
 
         return Map.of("successful", true, "current_spell", target);
     }
