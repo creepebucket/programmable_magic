@@ -32,12 +32,12 @@ public class WandLayout {
     }
 
     public static int inventory_bg_x(int screen_width, int slot_index) {
-        return inventory_slot_x(screen_width, slot_index) + 1;
+        return inventory_slot_x(screen_width, slot_index);
     }
 
     public static int inventory_bg_y(int screen_width, int screen_height, int slot_index) {
         int y = inventory_slot_y(screen_width, screen_height, slot_index);
-        if (compact_mode(screen_width) && slot_index >= 9) return y - compact_mode_y_offset(screen_width);
+        if (compact_mode(screen_width) && slot_index >= 9) return y + compact_mode_y_offset(screen_width) - 18;
         return y;
     }
 

@@ -26,6 +26,7 @@ import org.creepebucket.programmable_magic.spells.adjust_mod.TriggerSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.*;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -35,7 +36,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public class SpellRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     private static final Map<Identifier, Supplier<SpellItemLogic>> LOGIC_SUPPLIERS = new HashMap<>();
-    private static final Map<Supplier<Item>, Supplier<SpellItemLogic>> REGISTERED_SPELLS = new HashMap<>();
+    private static final Map<Supplier<Item>, Supplier<SpellItemLogic>> REGISTERED_SPELLS = new LinkedHashMap<>();
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术

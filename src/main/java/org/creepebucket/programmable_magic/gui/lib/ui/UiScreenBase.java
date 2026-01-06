@@ -34,12 +34,12 @@ public class UiScreenBase<Menu extends UiMenuBase> extends SlotManipulationScree
         super.init();
 
         updateUiBounds();
-        reportScreenSize();
 
         this.menu.ui().bindSendToServer((k, v) -> {
             Minecraft.getInstance().getConnection().send(new ServerboundCustomPayloadPacket(new SimpleKvPacket(k, v)));
         });
 
+        reportScreenSize();
         this.menu.ui().flushPullRequests();
     }
 

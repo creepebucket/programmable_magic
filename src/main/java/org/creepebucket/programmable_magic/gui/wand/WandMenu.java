@@ -376,11 +376,11 @@ public class WandMenu extends UiMenuBase {
             this.ui().addWidget(new SlotWidget(slot, new Coordinate(
                     (sw, sh) -> {
                         int needed = Math.max(1, Math.floorDiv((sh - 16) - 20, 16)) * 5;
-                        return (supplyEnabled && idx < needed) ? WandLayout.supply_slot_x(idx % 5) : -9999;
+                        return supplyEnabled ? WandLayout.supply_slot_x(idx % 5) : -9999;
                     },
                     (sw, sh) -> {
                         int needed = Math.max(1, Math.floorDiv((sh - 16) - 20, 16)) * 5;
-                        return (supplyEnabled && idx < needed) ? WandLayout.supply_slot_y(Math.floorDiv(idx, 5)) : -9999;
+                        return supplyEnabled ? WandLayout.supply_slot_y(Math.floorDiv(idx, 5) + (slot.isActive() ? 0 : 4)) : -9999;
                     }
             )));
         }
