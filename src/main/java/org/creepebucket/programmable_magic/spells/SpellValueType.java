@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public enum SpellValueType {
-    ENTITY("entity", "Entity", ChatFormatting.DARK_AQUA, Entity.class),
+    ENTITY("entity", "Entity", ChatFormatting.DARK_BLUE, Entity.class),
     NUMBER("number", "Number", ChatFormatting.GOLD, Double.class),
     VECTOR3("vector3", "Vector3", ChatFormatting.AQUA, Vec3.class),
     STRING("string", "String", ChatFormatting.YELLOW, String.class),
