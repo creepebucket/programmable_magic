@@ -16,8 +16,13 @@ import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
 import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ApplyPotionSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.BreakBlockSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.IgniteSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.ProjectileAttachSpell;
 import org.creepebucket.programmable_magic.spells.base_spell.PlaceBlockSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.SendToInventorySpell;
+import org.creepebucket.programmable_magic.spells.base_spell.SpawnParticlesSpell;
+import org.creepebucket.programmable_magic.spells.base_spell.TeleportSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.*;
 import org.creepebucket.programmable_magic.spells.compute_mod.EntityVelocitySpell;
 import org.creepebucket.programmable_magic.spells.adjust_mod.ConditionInverter;
@@ -80,6 +85,7 @@ public class SpellRegistry {
         registerSpell(MathOperationsSpell.SubtractionSpell::new);
         registerSpell(MathOperationsSpell.MultiplicationSpell::new);
         registerSpell(MathOperationsSpell.DivisionSpell::new);
+        registerSpell(MathOperationsSpell.RemainderSpell::new);
         registerSpell(MathOperationsSpell.PowerSpell::new);
 
         // COMPUTE_MOD: 一般运算
@@ -93,6 +99,21 @@ public class SpellRegistry {
         registerSpell(SpecialComputeSpell.ViewBlockPosSpell::new);
         registerSpell(SpecialComputeSpell.BlockAtPosSpell::new);
         registerSpell(SpecialComputeSpell.VecLengthSpell::new);
+        registerSpell(BuildVectorSpell::new);
+        registerSpell(WorldTimeSpell::new);
+        registerSpell(RandomNumberSpell::new);
+        registerSpell(PiSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.SinSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.CosSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.TanSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.AsinSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.AcosSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.AtanSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.CeilSpell::new);
+        registerSpell(UnaryNumberFunctionSpell.FloorSpell::new);
+        registerSpell(VectorComponentSpell.VecXSpell::new);
+        registerSpell(VectorComponentSpell.VecYSpell::new);
+        registerSpell(VectorComponentSpell.VecZSpell::new);
 
         // 基础法术
         registerSpell(ExplosionSpell::new);
@@ -101,6 +122,11 @@ public class SpellRegistry {
         registerSpell(ProjectileAttachSpell::new);
         registerSpell(PlaceBlockSpell::new);
         registerSpell(PaintDataSpell::new);
+        registerSpell(IgniteSpell::new);
+        registerSpell(BreakBlockSpell::new);
+        registerSpell(TeleportSpell::new);
+        registerSpell(SendToInventorySpell::new);
+        registerSpell(SpawnParticlesSpell::new);
 
         // ADJUST_MOD
         registerSpell(DelaySpell::new);
@@ -140,6 +166,8 @@ public class SpellRegistry {
         registerSpell(ForSpell::new);
         registerSpell(BlockConditionSpell.IsAirSpell::new);
         registerSpell(BlockConditionSpell.IsGravityBlockSpell::new);
+        registerSpell(RestartSpell::new);
+        registerSpell(EndSpell::new);
 
         ITEMS.register(eventBus);
     }

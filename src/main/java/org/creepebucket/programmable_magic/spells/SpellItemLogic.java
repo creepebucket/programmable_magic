@@ -70,6 +70,8 @@ public abstract class SpellItemLogic implements Cloneable {
         return true;
     }
 
+    public boolean isExecutable() { return true; }
+
     /**
      * 法术的参数类型
      *

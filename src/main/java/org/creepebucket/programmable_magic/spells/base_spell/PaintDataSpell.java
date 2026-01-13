@@ -17,7 +17,7 @@ public class PaintDataSpell extends BaseBaseSpellLogic {
     public String getRegistryName() { return "paint_data"; }
 
     @Override
-    public net.minecraft.network.chat.Component getSubCategory() { return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.debug"); }
+    public net.minecraft.network.chat.Component getSubCategory() { return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.show_effect"); }
 
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {

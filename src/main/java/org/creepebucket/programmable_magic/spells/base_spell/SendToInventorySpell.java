@@ -2,43 +2,40 @@ package org.creepebucket.programmable_magic.spells.base_spell;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.core.BlockPos;
 import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.spells.*;
+import org.creepebucket.programmable_magic.spells.SpellData;
+import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.SpellSequence;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.List;
 import java.util.Map;
 
-public class PlaceBlockSpell extends BaseBaseSpellLogic {
+public class SendToInventorySpell extends BaseBaseSpellLogic {
     @Override
-    public String getRegistryName() { return "place_block"; }
+    public String getRegistryName() { return "send_to_inventory"; }
 
     @Override
-    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.world_interaction"); }
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.entity_interaction"); }
 
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        ItemStack stack = (ItemStack) spellParams.get(0);
-        if (!(stack.getItem() instanceof BlockItem bi)) return Map.of("successful", true);
-        Block block = bi.getBlock();
-        BlockPos pos = BlockPos.containing(data.getPosition());
-        player.level().setBlockAndUpdate(pos, block.defaultBlockState());
+        ItemStack stack = ((ItemStack) spellParams.get(0)).copy();
+        player.getInventory().placeItemBackInInventory(stack);
         return Map.of("successful", true);
     }
 
     @Override
     public ModUtils.Mana calculateBaseMana(SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        return new ModUtils.Mana(0.0, 0.0, 0.3, 0.0);
+        return new ModUtils.Mana(0.0, 0.0, 0.05, 0.0);
     }
 
     @Override
     public List<Component> getTooltip() {
         return List.of(
-                Component.translatable("tooltip.programmable_magic.spell.place_block.desc1"),
-                Component.translatable("tooltip.programmable_magic.spell.place_block.desc2")
+                Component.translatable("tooltip.programmable_magic.spell.send_to_inventory.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.send_to_inventory.desc2")
         );
     }
 
@@ -48,3 +45,4 @@ public class PlaceBlockSpell extends BaseBaseSpellLogic {
     @Override
     public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(SpellValueType.SPELL)); }
 }
+

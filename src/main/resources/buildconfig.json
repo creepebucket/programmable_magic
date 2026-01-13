@@ -2,136 +2,1569 @@
   {
     "items_blocks_big.png": [
       {
-        "from_top_left": [0, 64],
-        "from_bottom_right": [15, 79],
+        "from_top_left": [
+          80,
+          608
+        ],
+        "from_bottom_right": [
+          95,
+          623
+        ],
         "target_img_path": "assets/programmable_magic/textures/item/spell/paint_data.png"
       },
-      { "from_top_left": [32, 0], "from_bottom_right": [47, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png" },
-      { "from_top_left": [32, 16], "from_bottom_right": [47, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png" },
-      { "from_top_left": [32, 32], "from_bottom_right": [47, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png" },
-      { "from_top_left": [32, 48], "from_bottom_right": [47, 63], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png" },
-      { "from_top_left": [32, 64], "from_bottom_right": [47, 79], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png" },
-      { "from_top_left": [32, 80], "from_bottom_right": [47, 95], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png" },
-      { "from_top_left": [32, 96], "from_bottom_right": [47, 111], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png" },
-      { "from_top_left": [32, 112], "from_bottom_right": [47, 127], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png" },
-      { "from_top_left": [32, 128], "from_bottom_right": [47, 143], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png" },
-      { "from_top_left": [32, 144], "from_bottom_right": [47, 159], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png" },
-      { "from_top_left": [32, 160], "from_bottom_right": [47, 175], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png" },
-      { "from_top_left": [32, 176], "from_bottom_right": [47, 191], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png" },
-      { "from_top_left": [32, 192], "from_bottom_right": [47, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png" },
-      { "from_top_left": [32, 208], "from_bottom_right": [47, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png" },
-      { "from_top_left": [32, 224], "from_bottom_right": [47, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png" },
-      { "from_top_left": [32, 240], "from_bottom_right": [47, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png" },
-      { "from_top_left": [32, 256], "from_bottom_right": [47, 271], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png" },
-      { "from_top_left": [32, 272], "from_bottom_right": [47, 287], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster.png" },
-      { "from_top_left": [32, 288], "from_bottom_right": [47, 303], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster_pos.png" },
-      { "from_top_left": [32, 304], "from_bottom_right": [47, 319], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_pos.png" },
-      { "from_top_left": [32, 320], "from_bottom_right": [47, 335], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_view_vec.png" },
-      { "from_top_left": [32, 336], "from_bottom_right": [47, 351], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_x.png" },
-      { "from_top_left": [32, 352], "from_bottom_right": [47, 367], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_y.png" },
-      { "from_top_left": [32, 368], "from_bottom_right": [47, 383], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_z.png" },
-      { "from_top_left": [32, 384], "from_bottom_right": [47, 399], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_entity.png" },
-      { "from_top_left": [32, 400], "from_bottom_right": [47, 415], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_nearest_entity.png" },
-      { "from_top_left": [32, 416], "from_bottom_right": [47, 431], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_xyz.png" },
-      { "from_top_left": [32, 432], "from_bottom_right": [47, 447], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mod.png" },
-      { "from_top_left": [32, 448], "from_bottom_right": [47, 463], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_velocity.png" },
-      { "from_top_left": [32, 464], "from_bottom_right": [47, 479], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_set_storage.png" },
-      { "from_top_left": [32, 480], "from_bottom_right": [47, 495], "target_img_path": "assets/programmable_magic/textures/item/spell/compute_get_storage.png" },
-      
-      { "from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/explosion.png" },
-      { "from_top_left": [0, 16], "from_bottom_right": [15, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/gain_velocity.png" },
-      { "from_top_left": [0, 32], "from_bottom_right": [15, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/ignite.png" },
-      { "from_top_left": [0, 48], "from_bottom_right": [15, 63], "target_img_path": "assets/programmable_magic/textures/item/spell/glow.png" },
-      { "from_top_left": [0, 80], "from_bottom_right": [15, 95], "target_img_path": "assets/programmable_magic/textures/item/spell/launch_projectile.png" },
-      { "from_top_left": [0, 96], "from_bottom_right": [15, 111], "target_img_path": "assets/programmable_magic/textures/item/spell/impulse_entity.png" },
-      { "from_top_left": [0, 112], "from_bottom_right": [15, 127], "target_img_path": "assets/programmable_magic/textures/item/spell/blink_spell.png" },
-      { "from_top_left": [0, 128], "from_bottom_right": [15, 143], "target_img_path": "assets/programmable_magic/textures/item/spell/blink_entity.png" },
-      { "from_top_left": [0, 144], "from_bottom_right": [15, 159], "target_img_path": "assets/programmable_magic/textures/item/spell/apply_potion.png" },
-      { "from_top_left": [0, 160], "from_bottom_right": [15, 175], "target_img_path": "assets/programmable_magic/textures/item/spell/projectile_attach.png" },
-      { "from_top_left": [0, 176], "from_bottom_right": [15, 191], "target_img_path": "assets/programmable_magic/textures/item/spell/place_block.png" },
-
-      { "from_top_left": [16, 0], "from_bottom_right": [31, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png" },
-      { "from_top_left": [16, 16], "from_bottom_right": [31, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/condition_inverter.png" },
-      { "from_top_left": [16, 48], "from_bottom_right": [31, 63], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_entity.png" },
-      { "from_top_left": [16, 32], "from_bottom_right": [31, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png" },
-
-      { "from_top_left": [48, 0], "from_bottom_right": [63, 15], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_end.png" },
-      { "from_top_left": [48, 16], "from_bottom_right": [63, 31], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_start.png" },
-      { "from_top_left": [48, 32], "from_bottom_right": [63, 47], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_break.png" },
-      { "from_top_left": [48, 48], "from_bottom_right": [63, 63], "target_img_path": "assets/programmable_magic/textures/item/spell/if.png" },
-      { "from_top_left": [48, 64], "from_bottom_right": [63, 79], "target_img_path": "assets/programmable_magic/textures/item/spell/loop_continue.png" },
-      { "from_top_left": [48, 80], "from_bottom_right": [63, 95], "target_img_path": "assets/programmable_magic/textures/item/spell/equal.png" },
-      { "from_top_left": [48, 96], "from_bottom_right": [63, 111], "target_img_path": "assets/programmable_magic/textures/item/spell/less.png" },
-      { "from_top_left": [48, 112], "from_bottom_right": [63, 127], "target_img_path": "assets/programmable_magic/textures/item/spell/less_equal.png" },
-      { "from_top_left": [48, 128], "from_bottom_right": [63, 143], "target_img_path": "assets/programmable_magic/textures/item/spell/greater.png" },
-      { "from_top_left": [48, 144], "from_bottom_right": [63, 159], "target_img_path": "assets/programmable_magic/textures/item/spell/greater_equal.png" },
-      { "from_top_left": [48, 160], "from_bottom_right": [63, 175], "target_img_path": "assets/programmable_magic/textures/item/spell/not_equal.png" },
-      { "from_top_left": [48, 176], "from_bottom_right": [63, 191], "target_img_path": "assets/programmable_magic/textures/item/spell/and.png" },
-      { "from_top_left": [48, 192], "from_bottom_right": [63, 207], "target_img_path": "assets/programmable_magic/textures/item/spell/or.png" },
-      { "from_top_left": [48, 208], "from_bottom_right": [63, 223], "target_img_path": "assets/programmable_magic/textures/item/spell/not.png" },
-      { "from_top_left": [48, 224], "from_bottom_right": [63, 239], "target_img_path": "assets/programmable_magic/textures/item/spell/true.png" },
-      { "from_top_left": [48, 240], "from_bottom_right": [63, 255], "target_img_path": "assets/programmable_magic/textures/item/spell/false.png" },
-
-      { "from_top_left": [208, 128], "from_bottom_right": [223, 143], "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png" },
-      { "from_top_left": [112, 0], "from_bottom_right": [127, 15], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand.png" },
-      { "from_top_left": [123, 11], "from_bottom_right": [143, 31], "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand_in_hand.png" },
-
-      { "from_top_left": [96, 160], "from_bottom_right": [111, 175], "target_img_path": "assets/programmable_magic/textures/item/wand_item_placeholder.png" },
-
-      { "from_top_left": [112, 32], "from_bottom_right": [127, 47], "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png" }
+      {
+        "from_top_left": [
+          96,
+          608
+        ],
+        "from_bottom_right": [
+          111,
+          623
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/spawn_particles.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          624
+        ],
+        "from_bottom_right": [
+          95,
+          639
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/gain_velocity.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          624
+        ],
+        "from_bottom_right": [
+          111,
+          639
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/apply_potion.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          624
+        ],
+        "from_bottom_right": [
+          127,
+          639
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/teleport.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          624
+        ],
+        "from_bottom_right": [
+          143,
+          639
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/projectile_attach.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          624
+        ],
+        "from_bottom_right": [
+          159,
+          639
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/send_to_inventory.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          640
+        ],
+        "from_bottom_right": [
+          95,
+          655
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/explosion.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          640
+        ],
+        "from_bottom_right": [
+          111,
+          655
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/ignite.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          640
+        ],
+        "from_bottom_right": [
+          127,
+          655
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/place_block.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          640
+        ],
+        "from_bottom_right": [
+          143,
+          655
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/break_block.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          656
+        ],
+        "from_bottom_right": [
+          95,
+          671
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          656
+        ],
+        "from_bottom_right": [
+          111,
+          671
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/condition_inverter.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          656
+        ],
+        "from_bottom_right": [
+          127,
+          671
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_entity.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          656
+        ],
+        "from_bottom_right": [
+          143,
+          671
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          672
+        ],
+        "from_bottom_right": [
+          95,
+          687
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          672
+        ],
+        "from_bottom_right": [
+          111,
+          687
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mod.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          672
+        ],
+        "from_bottom_right": [
+          127,
+          687
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          688
+        ],
+        "from_bottom_right": [
+          95,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_end.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          688
+        ],
+        "from_bottom_right": [
+          111,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/for.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          688
+        ],
+        "from_bottom_right": [
+          127,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_start.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          688
+        ],
+        "from_bottom_right": [
+          143,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_break.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          688
+        ],
+        "from_bottom_right": [
+          159,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_continue.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          688
+        ],
+        "from_bottom_right": [
+          175,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/if.png"
+      },
+      {
+        "from_top_left": [
+          176,
+          688
+        ],
+        "from_bottom_right": [
+          191,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/restart_spell.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          688
+        ],
+        "from_bottom_right": [
+          207,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/end_spell.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          704
+        ],
+        "from_bottom_right": [
+          95,
+          719
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_world_time.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          704
+        ],
+        "from_bottom_right": [
+          111,
+          719
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_random_number.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          720
+        ],
+        "from_bottom_right": [
+          95,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          720
+        ],
+        "from_bottom_right": [
+          111,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          720
+        ],
+        "from_bottom_right": [
+          127,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          720
+        ],
+        "from_bottom_right": [
+          143,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          720
+        ],
+        "from_bottom_right": [
+          159,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          720
+        ],
+        "from_bottom_right": [
+          175,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png"
+      },
+      {
+        "from_top_left": [
+          176,
+          720
+        ],
+        "from_bottom_right": [
+          191,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          720
+        ],
+        "from_bottom_right": [
+          207,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png"
+      },
+      {
+        "from_top_left": [
+          208,
+          720
+        ],
+        "from_bottom_right": [
+          223,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png"
+      },
+      {
+        "from_top_left": [
+          224,
+          720
+        ],
+        "from_bottom_right": [
+          239,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png"
+      },
+      {
+        "from_top_left": [
+          240,
+          720
+        ],
+        "from_bottom_right": [
+          255,
+          735
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pi.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          736
+        ],
+        "from_bottom_right": [
+          95,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          736
+        ],
+        "from_bottom_right": [
+          111,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          736
+        ],
+        "from_bottom_right": [
+          127,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          736
+        ],
+        "from_bottom_right": [
+          143,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          736
+        ],
+        "from_bottom_right": [
+          159,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rem.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          736
+        ],
+        "from_bottom_right": [
+          175,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png"
+      },
+      {
+        "from_top_left": [
+          176,
+          736
+        ],
+        "from_bottom_right": [
+          191,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sin.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          736
+        ],
+        "from_bottom_right": [
+          207,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_cos.png"
+      },
+      {
+        "from_top_left": [
+          208,
+          736
+        ],
+        "from_bottom_right": [
+          223,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_tan.png"
+      },
+      {
+        "from_top_left": [
+          224,
+          736
+        ],
+        "from_bottom_right": [
+          239,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_length.png"
+      },
+      {
+        "from_top_left": [
+          240,
+          736
+        ],
+        "from_bottom_right": [
+          255,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_asin.png"
+      },
+      {
+        "from_top_left": [
+          256,
+          736
+        ],
+        "from_bottom_right": [
+          271,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_acos.png"
+      },
+      {
+        "from_top_left": [
+          272,
+          736
+        ],
+        "from_bottom_right": [
+          287,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_atan.png"
+      },
+      {
+        "from_top_left": [
+          288,
+          736
+        ],
+        "from_bottom_right": [
+          303,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_x.png"
+      },
+      {
+        "from_top_left": [
+          304,
+          736
+        ],
+        "from_bottom_right": [
+          319,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_y.png"
+      },
+      {
+        "from_top_left": [
+          320,
+          736
+        ],
+        "from_bottom_right": [
+          335,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_z.png"
+      },
+      {
+        "from_top_left": [
+          336,
+          736
+        ],
+        "from_bottom_right": [
+          351,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_ceil.png"
+      },
+      {
+        "from_top_left": [
+          352,
+          736
+        ],
+        "from_bottom_right": [
+          367,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_floor.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          736
+        ],
+        "from_bottom_right": [
+          383,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_armor.png"
+      },
+      {
+        "from_top_left": [
+          384,
+          736
+        ],
+        "from_bottom_right": [
+          399,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_max_health.png"
+      },
+      {
+        "from_top_left": [
+          400,
+          736
+        ],
+        "from_bottom_right": [
+          415,
+          751
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_health.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          752
+        ],
+        "from_bottom_right": [
+          95,
+          767
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster_pos.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          752
+        ],
+        "from_bottom_right": [
+          111,
+          767
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_pos.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          752
+        ],
+        "from_bottom_right": [
+          127,
+          767
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_view_vec.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          768
+        ],
+        "from_bottom_right": [
+          95,
+          783
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_x.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          768
+        ],
+        "from_bottom_right": [
+          111,
+          783
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_y.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          768
+        ],
+        "from_bottom_right": [
+          127,
+          783
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_z.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          784
+        ],
+        "from_bottom_right": [
+          95,
+          799
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_xyz.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          784
+        ],
+        "from_bottom_right": [
+          111,
+          799
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_velocity.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          784
+        ],
+        "from_bottom_right": [
+          127,
+          799
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_pos.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          784
+        ],
+        "from_bottom_right": [
+          143,
+          799
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_view_block_pos.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          800
+        ],
+        "from_bottom_right": [
+          95,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/is_air.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          800
+        ],
+        "from_bottom_right": [
+          111,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/is_gravity_block.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          800
+        ],
+        "from_bottom_right": [
+          127,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/equal.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          800
+        ],
+        "from_bottom_right": [
+          143,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/not_equal.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          800
+        ],
+        "from_bottom_right": [
+          159,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/less.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          800
+        ],
+        "from_bottom_right": [
+          175,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/less_equal.png"
+      },
+      {
+        "from_top_left": [
+          176,
+          800
+        ],
+        "from_bottom_right": [
+          191,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/greater.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          800
+        ],
+        "from_bottom_right": [
+          207,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/greater_equal.png"
+      },
+      {
+        "from_top_left": [
+          208,
+          800
+        ],
+        "from_bottom_right": [
+          223,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/and.png"
+      },
+      {
+        "from_top_left": [
+          224,
+          800
+        ],
+        "from_bottom_right": [
+          239,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/or.png"
+      },
+      {
+        "from_top_left": [
+          240,
+          800
+        ],
+        "from_bottom_right": [
+          255,
+          815
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/not.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          816
+        ],
+        "from_bottom_right": [
+          95,
+          831
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/true.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          816
+        ],
+        "from_bottom_right": [
+          111,
+          831
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/false.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          832
+        ],
+        "from_bottom_right": [
+          95,
+          847
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_entity.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          832
+        ],
+        "from_bottom_right": [
+          111,
+          847
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          832
+        ],
+        "from_bottom_right": [
+          127,
+          847
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_nearest_entity.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          848
+        ],
+        "from_bottom_right": [
+          95,
+          863
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_block_at_pos.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          864
+        ],
+        "from_bottom_right": [
+          95,
+          879
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_get_storage.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          864
+        ],
+        "from_bottom_right": [
+          111,
+          879
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_set_storage.png"
+      },
+      {
+        "from_top_left": [
+          208,
+          128
+        ],
+        "from_bottom_right": [
+          223,
+          143
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          0
+        ],
+        "from_bottom_right": [
+          127,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand.png"
+      },
+      {
+        "from_top_left": [
+          123,
+          11
+        ],
+        "from_bottom_right": [
+          143,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/rg_alloy_wand_in_hand.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          160
+        ],
+        "from_bottom_right": [
+          111,
+          175
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/wand_item_placeholder.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          32
+        ],
+        "from_bottom_right": [
+          127,
+          47
+        ],
+        "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png"
+      }
     ],
     "gui_big.png": [
-      { "from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_prev.png" },
-      { "from_top_left": [16, 0], "from_bottom_right": [31, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_next.png" },
-      { "from_top_left": [32, 0], "from_bottom_right": [47, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_clear.png" },
-      { "from_top_left": [48, 0], "from_bottom_right": [63, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_button_save.png" },
-      { "from_top_left": [64, 0], "from_bottom_right": [79, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_slot.png" },
-      { "from_top_left": [80, 0], "from_bottom_right": [82, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_0.png" },
-      { "from_top_left": [84, 0], "from_bottom_right": [86, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_1.png" },
-      { "from_top_left": [88, 0], "from_bottom_right": [90, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_2.png" },
-      { "from_top_left": [92, 0], "from_bottom_right": [94, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_3.png" },
-      { "from_top_left": [96, 0], "from_bottom_right": [98, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_4.png" },
-      { "from_top_left": [100, 0], "from_bottom_right": [102, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_5.png" },
-      { "from_top_left": [104, 0], "from_bottom_right": [106, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_6.png" },
-      { "from_top_left": [108, 0], "from_bottom_right": [110, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_7.png" },
-      { "from_top_left": [112, 0], "from_bottom_right": [114, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_8.png" },
-      { "from_top_left": [116, 0], "from_bottom_right": [118, 4], "target_img_path": "assets/programmable_magic/textures/gui/wand_font_9.png" },
-      { "from_top_left": [128, 0], "from_bottom_right": [143, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_inventory.png" },
-      { "from_top_left": [144, 0], "from_bottom_right": [159, 15], "target_img_path": "assets/programmable_magic/textures/gui/wand_hotbar.png" },
-      { "from_top_left": [0, 16], "from_bottom_right": [111, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_release.png" },
-      { "from_top_left": [112, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_sidebar_slot.png" },
-      
-      { "from_top_left": [144, 16], "from_bottom_right": [159, 31], "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_out_of_bound.png" },
-      { "from_top_left": [0, 32], "from_bottom_right": [15, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute.png" },
-      { "from_top_left": [16, 32], "from_bottom_right": [31, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute_pressed.png" },
-      { "from_top_left": [32, 32], "from_bottom_right": [47, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_adjust.png" },
-      { "from_top_left": [48, 32], "from_bottom_right": [63, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_adjust_pressed.png" },
-      { "from_top_left": [64, 32], "from_bottom_right": [79, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_control.png" },
-      { "from_top_left": [80, 32], "from_bottom_right": [95, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_control_pressed.png" },
-      { "from_top_left": [96, 32], "from_bottom_right": [111, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base.png" },
-      { "from_top_left": [112, 32], "from_bottom_right": [127, 79], "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base_pressed.png" },
-      
-
-      { "from_top_left": [0, 176], "from_bottom_right": [271, 351], "target_img_path": "assets/programmable_magic/textures/gui/machine_bg.png" },
-      { "from_top_left": [192, 112], "from_bottom_right": [225, 126], "target_img_path": "assets/programmable_magic/textures/gui/button_red.png" },
-      { "from_top_left": [192, 128], "from_bottom_right": [225, 142], "target_img_path": "assets/programmable_magic/textures/gui/button_green.png" },
-      { "from_top_left": [192, 144], "from_bottom_right": [225, 158], "target_img_path": "assets/programmable_magic/textures/gui/button_blue.png" },
-      { "from_top_left": [227, 112], "from_bottom_right": [260, 126], "target_img_path": "assets/programmable_magic/textures/gui/button_red_pressed.png" },
-      { "from_top_left": [227, 128], "from_bottom_right": [260, 142], "target_img_path": "assets/programmable_magic/textures/gui/button_green_pressed.png" },
-      { "from_top_left": [227, 144], "from_bottom_right": [260, 158], "target_img_path": "assets/programmable_magic/textures/gui/button_blue_pressed.png" },
-      { "from_top_left": [268, 112], "from_bottom_right": [276, 161], "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_blocked.png" },
-      { "from_top_left": [351, 112], "from_bottom_right": [359, 161], "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_radiation.png" },
-      { "from_top_left": [288, 112], "from_bottom_right": [296, 161], "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_momentum.png" },
-      { "from_top_left": [308, 112], "from_bottom_right": [317, 161], "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_pressure.png" },
-      { "from_top_left": [330, 112], "from_bottom_right": [338, 161], "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_temperature.png" },
-      { "from_top_left": [368, 112], "from_bottom_right": [427, 120], "target_img_path": "assets/programmable_magic/textures/gui/status_operational.png" },
-      { "from_top_left": [368, 122], "from_bottom_right": [427, 130], "target_img_path": "assets/programmable_magic/textures/gui/status_no_item.png" },
-      { "from_top_left": [368, 132], "from_bottom_right": [427, 140], "target_img_path": "assets/programmable_magic/textures/gui/status_no_power.png" },
-      { "from_top_left": [368, 142], "from_bottom_right": [427, 150], "target_img_path": "assets/programmable_magic/textures/gui/status_no_fuel.png" },
-      { "from_top_left": [429, 112], "from_bottom_right": [488, 120], "target_img_path": "assets/programmable_magic/textures/gui/status_rad_mode.png" },
-      { "from_top_left": [429, 122], "from_bottom_right": [488, 130], "target_img_path": "assets/programmable_magic/textures/gui/status_mom_mode.png" },
-      { "from_top_left": [429, 132], "from_bottom_right": [488, 140], "target_img_path": "assets/programmable_magic/textures/gui/status_pra_mode.png" },
-      { "from_top_left": [429, 142], "from_bottom_right": [488, 150], "target_img_path": "assets/programmable_magic/textures/gui/status_tem_mode.png" }
+      {
+        "from_top_left": [
+          0,
+          0
+        ],
+        "from_bottom_right": [
+          15,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_button_prev.png"
+      },
+      {
+        "from_top_left": [
+          16,
+          0
+        ],
+        "from_bottom_right": [
+          31,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_button_next.png"
+      },
+      {
+        "from_top_left": [
+          32,
+          0
+        ],
+        "from_bottom_right": [
+          47,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_button_clear.png"
+      },
+      {
+        "from_top_left": [
+          48,
+          0
+        ],
+        "from_bottom_right": [
+          63,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_button_save.png"
+      },
+      {
+        "from_top_left": [
+          64,
+          0
+        ],
+        "from_bottom_right": [
+          79,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_slot.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          0
+        ],
+        "from_bottom_right": [
+          82,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_0.png"
+      },
+      {
+        "from_top_left": [
+          84,
+          0
+        ],
+        "from_bottom_right": [
+          86,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_1.png"
+      },
+      {
+        "from_top_left": [
+          88,
+          0
+        ],
+        "from_bottom_right": [
+          90,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_2.png"
+      },
+      {
+        "from_top_left": [
+          92,
+          0
+        ],
+        "from_bottom_right": [
+          94,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_3.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          0
+        ],
+        "from_bottom_right": [
+          98,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_4.png"
+      },
+      {
+        "from_top_left": [
+          100,
+          0
+        ],
+        "from_bottom_right": [
+          102,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_5.png"
+      },
+      {
+        "from_top_left": [
+          104,
+          0
+        ],
+        "from_bottom_right": [
+          106,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_6.png"
+      },
+      {
+        "from_top_left": [
+          108,
+          0
+        ],
+        "from_bottom_right": [
+          110,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_7.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          0
+        ],
+        "from_bottom_right": [
+          114,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_8.png"
+      },
+      {
+        "from_top_left": [
+          116,
+          0
+        ],
+        "from_bottom_right": [
+          118,
+          4
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_font_9.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          0
+        ],
+        "from_bottom_right": [
+          143,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_inventory.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          0
+        ],
+        "from_bottom_right": [
+          159,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_hotbar.png"
+      },
+      {
+        "from_top_left": [
+          0,
+          16
+        ],
+        "from_bottom_right": [
+          111,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_release.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          16
+        ],
+        "from_bottom_right": [
+          127,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_sidebar_slot.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          16
+        ],
+        "from_bottom_right": [
+          159,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_spell_out_of_bound.png"
+      },
+      {
+        "from_top_left": [
+          0,
+          32
+        ],
+        "from_bottom_right": [
+          15,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute.png"
+      },
+      {
+        "from_top_left": [
+          16,
+          32
+        ],
+        "from_bottom_right": [
+          31,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_compute_pressed.png"
+      },
+      {
+        "from_top_left": [
+          32,
+          32
+        ],
+        "from_bottom_right": [
+          47,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_adjust.png"
+      },
+      {
+        "from_top_left": [
+          48,
+          32
+        ],
+        "from_bottom_right": [
+          63,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_adjust_pressed.png"
+      },
+      {
+        "from_top_left": [
+          64,
+          32
+        ],
+        "from_bottom_right": [
+          79,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_control.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          32
+        ],
+        "from_bottom_right": [
+          95,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_control_pressed.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          32
+        ],
+        "from_bottom_right": [
+          111,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          32
+        ],
+        "from_bottom_right": [
+          127,
+          79
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/wand_sidebar_base_pressed.png"
+      },
+      {
+        "from_top_left": [
+          0,
+          176
+        ],
+        "from_bottom_right": [
+          271,
+          351
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/machine_bg.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          112
+        ],
+        "from_bottom_right": [
+          225,
+          126
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_red.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          128
+        ],
+        "from_bottom_right": [
+          225,
+          142
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_green.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          144
+        ],
+        "from_bottom_right": [
+          225,
+          158
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_blue.png"
+      },
+      {
+        "from_top_left": [
+          227,
+          112
+        ],
+        "from_bottom_right": [
+          260,
+          126
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_red_pressed.png"
+      },
+      {
+        "from_top_left": [
+          227,
+          128
+        ],
+        "from_bottom_right": [
+          260,
+          142
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_green_pressed.png"
+      },
+      {
+        "from_top_left": [
+          227,
+          144
+        ],
+        "from_bottom_right": [
+          260,
+          158
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/button_blue_pressed.png"
+      },
+      {
+        "from_top_left": [
+          268,
+          112
+        ],
+        "from_bottom_right": [
+          276,
+          161
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_blocked.png"
+      },
+      {
+        "from_top_left": [
+          351,
+          112
+        ],
+        "from_bottom_right": [
+          359,
+          161
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_radiation.png"
+      },
+      {
+        "from_top_left": [
+          288,
+          112
+        ],
+        "from_bottom_right": [
+          296,
+          161
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_momentum.png"
+      },
+      {
+        "from_top_left": [
+          308,
+          112
+        ],
+        "from_bottom_right": [
+          317,
+          161
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_pressure.png"
+      },
+      {
+        "from_top_left": [
+          330,
+          112
+        ],
+        "from_bottom_right": [
+          338,
+          161
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/mana_bar_temperature.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          112
+        ],
+        "from_bottom_right": [
+          427,
+          120
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_operational.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          122
+        ],
+        "from_bottom_right": [
+          427,
+          130
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_no_item.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          132
+        ],
+        "from_bottom_right": [
+          427,
+          140
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_no_power.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          142
+        ],
+        "from_bottom_right": [
+          427,
+          150
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_no_fuel.png"
+      },
+      {
+        "from_top_left": [
+          429,
+          112
+        ],
+        "from_bottom_right": [
+          488,
+          120
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_rad_mode.png"
+      },
+      {
+        "from_top_left": [
+          429,
+          122
+        ],
+        "from_bottom_right": [
+          488,
+          130
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_mom_mode.png"
+      },
+      {
+        "from_top_left": [
+          429,
+          132
+        ],
+        "from_bottom_right": [
+          488,
+          140
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_pra_mode.png"
+      },
+      {
+        "from_top_left": [
+          429,
+          142
+        ],
+        "from_bottom_right": [
+          488,
+          150
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/status_tem_mode.png"
+      }
     ]
   }
 ]

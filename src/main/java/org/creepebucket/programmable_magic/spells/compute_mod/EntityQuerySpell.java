@@ -19,12 +19,12 @@ import static org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3;
 
 public abstract class EntityQuerySpell extends BaseComputeModLogic {
     @Override
-    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.entity_query"); }
-
-    @Override
     public List<List<SpellValueType>> getNeededParamsType() { return List.of(List.of(ENTITY)); }
 
     public static class EntityPosSpell extends EntityQuerySpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_vector"); }
+
         @Override
         public String getRegistryName() { return "compute_entity_pos"; }
 
@@ -49,6 +49,9 @@ public abstract class EntityQuerySpell extends BaseComputeModLogic {
 
     public static class EntityHealthSpell extends EntityQuerySpell {
         @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_number"); }
+
+        @Override
         public String getRegistryName() { return "compute_entity_health"; }
 
         @Override
@@ -70,6 +73,9 @@ public abstract class EntityQuerySpell extends BaseComputeModLogic {
     }
 
     public static class EntityMaxHealthSpell extends EntityQuerySpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_number"); }
+
         @Override
         public String getRegistryName() { return "compute_entity_max_health"; }
 
@@ -93,6 +99,9 @@ public abstract class EntityQuerySpell extends BaseComputeModLogic {
 
     public static class EntityArmorSpell extends EntityQuerySpell {
         @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_number"); }
+
+        @Override
         public String getRegistryName() { return "compute_entity_armor"; }
 
         @Override
@@ -113,4 +122,3 @@ public abstract class EntityQuerySpell extends BaseComputeModLogic {
         public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(NUMBER)); }
     }
 }
-

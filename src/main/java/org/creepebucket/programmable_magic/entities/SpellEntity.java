@@ -23,8 +23,6 @@ import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.creepebucket.programmable_magic.spells.SpellUtils.isExecutable;
-
 public class SpellEntity extends Entity {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
     private static final EntityDataAccessor<Boolean> DATA_ACTIVE = 
@@ -93,7 +91,7 @@ public class SpellEntity extends Entity {
             return;
         }
 
-        if (!isExecutable(currentSpell)) {
+        if (!currentSpell.isExecutable()) {
 
             currentSpell = currentSpell.getNextSpell();
             this.tick(); // 递归执行下一个法术

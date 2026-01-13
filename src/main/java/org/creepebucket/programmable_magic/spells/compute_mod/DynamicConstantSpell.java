@@ -58,6 +58,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     public static class ViewVectorSpell extends DynamicConstantSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_vector"); }
+
         public String getRegistryName() {
             return "compute_view_vec";
         }
@@ -80,6 +83,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     public static class CasterPosSpell extends DynamicConstantSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_vector"); }
+
         public String getRegistryName() {
             return "compute_caster_pos";
         }
@@ -102,6 +108,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     public static class CasterEntitySpell extends DynamicConstantSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_entity"); }
+
         public String getRegistryName() {
             return "compute_caster";
         }
@@ -123,6 +132,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     public static class SpellPosSpell extends DynamicConstantSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_vector"); }
+
         public String getRegistryName() {
             return "compute_spell_pos";
         }
@@ -145,6 +157,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
     }
 
     public static class SpellEntitySpell extends DynamicConstantSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_entity"); }
+
         public String getRegistryName() {
             return "compute_spell_entity";
         }
@@ -168,6 +183,9 @@ public abstract class DynamicConstantSpell extends BaseComputeModLogic {
 
     public static class NearestEntitySpell extends DynamicConstantSpell {
         public String getRegistryName() { return "compute_nearest_entity"; }
+
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.dynamic_constant_entity"); }
 
         @Override
         public List<List<SpellValueType>> getNeededParamsType() {

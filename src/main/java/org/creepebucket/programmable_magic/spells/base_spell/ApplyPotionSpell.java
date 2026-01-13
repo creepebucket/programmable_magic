@@ -18,7 +18,7 @@ public class ApplyPotionSpell extends BaseBaseSpellLogic {
     public String getRegistryName() { return "apply_potion"; }
 
     @Override
-    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.status"); }
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.entity_interaction"); }
 
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {

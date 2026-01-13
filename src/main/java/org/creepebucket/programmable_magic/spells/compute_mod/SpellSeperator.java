@@ -18,7 +18,7 @@ public class SpellSeperator extends BaseComputeModLogic{
 
     @Override
     public Component getSubCategory() {
-        return Component.translatable("subcategory.programmable_magic.separator");
+        return Component.translatable("subcategory.programmable_magic.structure_control");
     }
 
     @Override

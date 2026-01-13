@@ -12,4 +12,7 @@ public abstract class BaseComputeModLogic extends SpellItemLogic {
     public SpellType getSpellType() {
         return SpellType.COMPUTE_MOD;
     }
+
+    @Override
+    public boolean isExecutable() { return false; }
 }

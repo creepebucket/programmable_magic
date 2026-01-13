@@ -20,10 +20,10 @@ import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.VECTOR3;
 
 public abstract class SpecialComputeSpell extends BaseComputeModLogic {
-    @Override
-    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.special_compute"); }
-
     public static class ViewBlockPosSpell extends SpecialComputeSpell {
+        @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_vector"); }
+
         @Override
         public String getRegistryName() { return "compute_view_block_pos"; }
 
@@ -58,6 +58,9 @@ public abstract class SpecialComputeSpell extends BaseComputeModLogic {
 
     public static class BlockAtPosSpell extends SpecialComputeSpell {
         @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_block"); }
+
+        @Override
         public String getRegistryName() { return "compute_block_at_pos"; }
 
         @Override
@@ -86,6 +89,9 @@ public abstract class SpecialComputeSpell extends BaseComputeModLogic {
 
     public static class VecLengthSpell extends SpecialComputeSpell {
         @Override
+        public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_number"); }
+
+        @Override
         public String getRegistryName() { return "compute_vec_length"; }
 
         @Override
@@ -109,4 +115,3 @@ public abstract class SpecialComputeSpell extends BaseComputeModLogic {
         public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(NUMBER)); }
     }
 }
-

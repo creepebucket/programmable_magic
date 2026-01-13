@@ -17,6 +17,7 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
     public List<Component> TOOLTIP;
     public Object VALUE;
     public SpellType spellType = SpellType.COMPUTE_MOD;
+    public Component SUB_CATEGORY;
 
     public ValueLiteralSpell(SpellValueType valueType, Object value) {
         this(valueType, "internal_value", value, List.of());
@@ -27,6 +28,7 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
         VALUE = value;
         REGISTRY_NAME = registryName;
         TOOLTIP = tooltip;
+        SUB_CATEGORY = Component.translatable("subcategory.programmable_magic.compute_constant");
     }
 
     public ValueLiteralSpell(SpellValueType valueType, String registryName, Object value, List<Component> tooltip, SpellType spellType) {
@@ -35,6 +37,18 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
         REGISTRY_NAME = registryName;
         TOOLTIP = tooltip;
         this.spellType = spellType;
+        SUB_CATEGORY = spellType == SpellType.CONTROL_MOD
+                ? Component.translatable("subcategory.programmable_magic.control_constant")
+                : Component.translatable("subcategory.programmable_magic.compute_constant");
+    }
+
+    public ValueLiteralSpell(SpellValueType valueType, String registryName, Object value, List<Component> tooltip, SpellType spellType, Component subCategory) {
+        VALUE_TYPE = valueType;
+        VALUE = value;
+        REGISTRY_NAME = registryName;
+        TOOLTIP = tooltip;
+        this.spellType = spellType;
+        this.SUB_CATEGORY = subCategory;
     }
 
     @Override
@@ -44,10 +58,7 @@ public class ValueLiteralSpell extends BaseComputeModLogic{
 
     @Override
     public net.minecraft.network.chat.Component getSubCategory() {
-        if (this.spellType == SpellType.CONTROL_MOD) {
-            return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.control_constant");
-        }
-        return net.minecraft.network.chat.Component.translatable("subcategory.programmable_magic.compute_constant");
+        return SUB_CATEGORY;
     }
 
     @Override

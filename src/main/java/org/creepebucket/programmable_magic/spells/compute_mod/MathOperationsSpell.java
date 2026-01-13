@@ -31,7 +31,7 @@ public abstract class MathOperationsSpell extends BaseComputeModLogic{
 
     @Override
     public Component getSubCategory() {
-        return Component.translatable("subcategory.programmable_magic.math_operation");
+        return Component.translatable("subcategory.programmable_magic.compute_number");
     }
 
     
@@ -239,5 +239,23 @@ public abstract class MathOperationsSpell extends BaseComputeModLogic{
                     List.of(NUMBER)
             );
         }
+    }
+
+    public static class RemainderSpell extends MathOperationsSpell {
+        public RemainderSpell() { super("compute_rem", List.of(
+                Component.translatable("tooltip.programmable_magic.spell.remainder.desc1"),
+                Component.translatable("tooltip.programmable_magic.spell.remainder.desc2")
+        )); }
+
+        @Override
+        public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
+            return Map.of("successful", true, "type", NUMBER, "value", (Double) spellParams.get(0) % (Double) spellParams.get(1));
+        }
+
+        @Override
+        public List<List<SpellValueType>> getNeededParamsType() { return List.of(List.of(NUMBER, NUMBER)); }
+
+        @Override
+        public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(NUMBER)); }
     }
 }

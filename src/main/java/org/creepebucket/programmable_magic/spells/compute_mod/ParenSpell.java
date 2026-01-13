@@ -28,7 +28,7 @@ public class ParenSpell extends BaseComputeModLogic{
 
     @Override
     public Component getSubCategory() {
-        return Component.translatable("subcategory.programmable_magic.paren");
+        return Component.translatable("subcategory.programmable_magic.structure_control");
     }
 
     @Override

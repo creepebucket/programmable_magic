@@ -17,7 +17,10 @@ import static org.creepebucket.programmable_magic.spells.SpellValueType.BOOLEAN;
 
 public abstract class BlockConditionSpell extends BaseControlModLogic {
     @Override
-    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.block_condition"); }
+    public boolean isExecutable() { return false; }
+
+    @Override
+    public Component getSubCategory() { return Component.translatable("subcategory.programmable_magic.compute_boolean"); }
 
     @Override
     public List<List<SpellValueType>> getNeededParamsType() { return List.of(List.of(BLOCK)); }
@@ -63,4 +66,3 @@ public abstract class BlockConditionSpell extends BaseControlModLogic {
         }
     }
 }
-

@@ -15,9 +15,9 @@ import org.creepebucket.programmable_magic.spells.base_spell.BaseBaseSpellLogic;
 import org.creepebucket.programmable_magic.spells.compute_mod.MathOperationsSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.SpellSeperator;
+import org.creepebucket.programmable_magic.spells.compute_mod.UnaryNumberFunctionSpell;
 import org.creepebucket.programmable_magic.spells.compute_mod.ValueLiteralSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.BaseControlModLogic;
-import org.creepebucket.programmable_magic.spells.control_mod.BlockConditionSpell;
 import org.creepebucket.programmable_magic.spells.control_mod.LogicalOperationsSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -181,7 +181,7 @@ public final class SpellUtils {
         // 如果来自实体执行阶段（SpellEntity 已写入到 spellData），则触发插件回调
         SpellEntity spellEntityRef = spellData.getCustomData("spell_entity", SpellEntity.class);
         java.util.List<BasePlugin> plugins = java.util.List.of();
-        boolean enablePlugin = (spellEntityRef != null) && isExecutable(currentSpell);
+        boolean enablePlugin = (spellEntityRef != null) && currentSpell.isExecutable();
         if (enablePlugin) {
             plugins = getInstalledPlugins(spellEntityRef);
             for (BasePlugin p : plugins) { p.beforeSpellExecution(spellEntityRef, currentSpell, spellData, sequence, modifiers, spellParams); }
@@ -357,8 +357,17 @@ public final class SpellUtils {
         // 再按计算顺序进行计算
         final List<SpellItemLogic> ORDER = List.of(
                 new MathOperationsSpell.PowerSpell(),
+                new UnaryNumberFunctionSpell.SinSpell(),
+                new UnaryNumberFunctionSpell.CosSpell(),
+                new UnaryNumberFunctionSpell.TanSpell(),
+                new UnaryNumberFunctionSpell.AsinSpell(),
+                new UnaryNumberFunctionSpell.AcosSpell(),
+                new UnaryNumberFunctionSpell.AtanSpell(),
+                new UnaryNumberFunctionSpell.CeilSpell(),
+                new UnaryNumberFunctionSpell.FloorSpell(),
                 new MathOperationsSpell.MultiplicationSpell(),
                 new MathOperationsSpell.DivisionSpell(),
+                new MathOperationsSpell.RemainderSpell(),
                 new MathOperationsSpell.AdditionSpell(),
                 new MathOperationsSpell.SubtractionSpell(),
                 new LogicalOperationsSpell.AndSpell(),
@@ -396,6 +405,9 @@ public final class SpellUtils {
                                 ((ValueLiteralSpell) L).VALUE, ((ValueLiteralSpell) R).VALUE));
 
                         seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
+                    } else if (operator instanceof UnaryNumberFunctionSpell && R instanceof ValueLiteralSpell && operator.getNeededParamsType().contains(List.of(((ValueLiteralSpell) R).VALUE_TYPE))) {
+                        Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
+                        seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
                     } else if (operator instanceof MathOperationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
                         // TODO: 这里的特判并不好, 应该复用下面的处理方法
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
@@ -413,7 +425,7 @@ public final class SpellUtils {
         // 遍历每个法术, 执行剩下的COMPUTE_MOD
 
         for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
-            if (isExecutable(spell) || spell instanceof ValueLiteralSpell || spell instanceof MathOperationsSpell) continue;
+            if (spell.isExecutable() || spell instanceof ValueLiteralSpell || spell instanceof MathOperationsSpell) continue;
 
             if ((spell instanceof LogicalOperationsSpell.EqualSpell
                     || spell instanceof LogicalOperationsSpell.NotEqualSpell
@@ -514,12 +526,6 @@ public final class SpellUtils {
         }
         return pairs;
     }
-
-    public static boolean isExecutable(SpellItemLogic currentSpell) { return
-	            !(currentSpell.getSpellType() == SpellItemLogic.SpellType.COMPUTE_MOD
-	            || currentSpell instanceof LogicalOperationsSpell
-	            || currentSpell instanceof BlockConditionSpell
-	            || currentSpell instanceof ValueLiteralSpell); }
 
     public static Map<Component, List<ItemStack>> getSpellsGroupedBySubCategory(SpellItemLogic.SpellType type) {
         var map = new LinkedHashMap<Component, List<ItemStack>>();
