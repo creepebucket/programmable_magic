@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.spells.base_spell;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -22,11 +23,9 @@ public class TeleportSpell extends BaseBaseSpellLogic {
 
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        Vec3 delta = (Vec3) spellParams.get(0);
-        Vec3 next = data.getPosition().add(delta);
-        SpellEntity spellEntity = data.getCustomData("spell_entity", SpellEntity.class);
-        spellEntity.setPos(next);
-        data.setPosition(next);
+        Entity entity = (Entity) spellParams.get(0);
+        Vec3 next = entity.position().add((Vec3) spellParams.get(1));
+        entity.teleportTo(next.x, next.y, next.z);
         return Map.of("successful", true);
     }
 
@@ -44,9 +43,8 @@ public class TeleportSpell extends BaseBaseSpellLogic {
     }
 
     @Override
-    public List<List<SpellValueType>> getNeededParamsType() { return List.of(List.of(SpellValueType.VECTOR3)); }
+    public List<List<SpellValueType>> getNeededParamsType() { return List.of(List.of(SpellValueType.ENTITY, SpellValueType.VECTOR3)); }
 
     @Override
     public List<List<SpellValueType>> getReturnParamsType() { return List.of(List.of(SpellValueType.SPELL)); }
 }
-

@@ -204,8 +204,8 @@
 
   "tooltip.programmable_magic.spell.spawn_particles.desc1": "Spawns a particle effect at a position",
   "tooltip.programmable_magic.spell.spawn_particles.desc2": "Inputs (absolute_pos, rgb_color); spawns a tinted particle",
-  "tooltip.programmable_magic.spell.teleport.desc1": "Teleports the spell entity by an offset",
-  "tooltip.programmable_magic.spell.teleport.desc2": "Input a delta vector (vector3); moves the spell entity position",
+  "tooltip.programmable_magic.spell.teleport.desc1": "Teleports a entity by an offset",
+  "tooltip.programmable_magic.spell.teleport.desc2": "Input a entity (entity) and a delta vector (vector3); moves the entity position",
   "tooltip.programmable_magic.spell.send_to_inventory.desc1": "Sends an item into the caster's inventory",
   "tooltip.programmable_magic.spell.send_to_inventory.desc2": "Input an item stack (item); tries to place it back into inventory",
   "tooltip.programmable_magic.spell.break_block.desc1": "Breaks the block at the spell entity and returns its item",

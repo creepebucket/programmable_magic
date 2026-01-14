@@ -204,8 +204,8 @@
 
   "tooltip.programmable_magic.spell.spawn_particles.desc1": "在指定位置生成粒子效果",
   "tooltip.programmable_magic.spell.spawn_particles.desc2": "输入(绝对位置, rgb颜色)，生成粒子",
-  "tooltip.programmable_magic.spell.teleport.desc1": "将法术实体传送到当前位置 + 位移",
-  "tooltip.programmable_magic.spell.teleport.desc2": "输入一个位移向量（vector3），移动法术实体的位置",
+  "tooltip.programmable_magic.spell.teleport.desc1": "将实体传送到当前位置 + 位移",
+  "tooltip.programmable_magic.spell.teleport.desc2": "输入一个实体（entity）和位移向量（vector3），移动实体的位置",
   "tooltip.programmable_magic.spell.send_to_inventory.desc1": "将一个物品送往施法者背包",
   "tooltip.programmable_magic.spell.send_to_inventory.desc2": "输入一个物品栈（item），尝试放回背包",
   "tooltip.programmable_magic.spell.break_block.desc1": "破坏法术实体所在方块并返回对应物品",

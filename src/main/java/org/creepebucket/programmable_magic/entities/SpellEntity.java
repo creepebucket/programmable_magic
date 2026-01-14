@@ -106,7 +106,7 @@ public class SpellEntity extends Entity {
         spellData.setPosition(new Vec3(this.getX(), this.getY(), this.getZ()));
 
         // 使用 SpellUtils 执行当前法术一步（回调在 SpellUtils 内部处理）
-        var step = SpellUtils.executeCurrentSpell(caster, spellData, spellSequence, currentSpell, mana);
+        var step = SpellUtils.executeASpell(caster, spellData, spellSequence, currentSpell, mana, true);
 
 
         // 扣蓝
@@ -237,7 +237,7 @@ public class SpellEntity extends Entity {
         SpellItemLogic end = boundary.getPrevSpell();
         if (start == null || end == null || start == boundary) return; // 空区间或起点即边界，直接跳过
         SpellSequence slice = cloneRange(start, end);
-        SpellSequence simplified = SpellUtils.calculateSpellSequence(caster, spellData, slice);
+        SpellSequence simplified = SpellUtils.calculateSpellSequence(caster, spellData, slice, false);
         if (this.spellData != null && Boolean.TRUE.equals(this.spellData.getCustomData("spell_error", Boolean.class))) { this.discard(); return; }
         spellSequence.replaceSection(start, end, simplified);
     }

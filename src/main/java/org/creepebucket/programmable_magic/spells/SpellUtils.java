@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -44,6 +43,7 @@ public final class SpellUtils {
         public final int delayTicks;
         public final Map<String, Object> result;
         public final ModUtils.Mana mana;
+        public boolean isNoOverload = false;
 
         public StepResult(boolean shouldDiscard, boolean successful, int delayTicks, Map<String, Object> result, ModUtils.Mana mana) {
             this.shouldDiscard = shouldDiscard;
@@ -52,15 +52,21 @@ public final class SpellUtils {
             this.result = result;
             this.mana = mana;
         }
+
+        public static StepResult NoOverload(boolean doThrowNotMatched) {
+            StepResult r = new StepResult(doThrowNotMatched, false, 0, Map.of(), new ModUtils.Mana());
+            r.isNoOverload = true;
+            return r;
+        }
     }
 
     /**
      * 从 SpellEntity 携带的插件物品构造插件实例列表（服务端）。
      */
-    public static java.util.List<BasePlugin> getInstalledPlugins(SpellEntity entity) {
-        java.util.ArrayList<BasePlugin> list = new java.util.ArrayList<>();
+    public static List<BasePlugin> getInstalledPlugins(SpellEntity entity) {
+        ArrayList<BasePlugin> list = new ArrayList<>();
         if (entity == null) return list;
-        java.util.List<ItemStack> stacks = entity.getPluginItems();
+        List<ItemStack> stacks = entity.getPluginItems();
         if (stacks == null) return list;
         for (ItemStack st : stacks) {
             if (st == null || st.isEmpty()) continue;
@@ -75,11 +81,12 @@ public final class SpellUtils {
     /**
      * 执行当前索引的法术一步，并返回执行结果。
      */
-    public static StepResult executeCurrentSpell(Player caster,
-                                                 SpellData spellData,
-                                                 SpellSequence sequence,
-                                                 SpellItemLogic currentSpell,
-                                                 ModUtils.Mana myMana) {
+    public static StepResult executeASpell(Player caster,
+                                           SpellData spellData,
+                                           SpellSequence sequence,
+                                           SpellItemLogic currentSpell,
+                                           ModUtils.Mana avaliableMana,
+                                           boolean doThrowNotMatched) {
 
         if (currentSpell == null) return new StepResult(true, false, 0,  Map.of(), new ModUtils.Mana());
 
@@ -172,7 +179,7 @@ public final class SpellUtils {
         }
 
         if (!matched) {
-            return paramNoOverload(caster, spellData, sequence, currentSpell);
+            return paramNoOverload(caster, spellData, sequence, currentSpell, doThrowNotMatched);
         }
 
         // 使用匹配到的参数执行
@@ -180,7 +187,7 @@ public final class SpellUtils {
 
         // 如果来自实体执行阶段（SpellEntity 已写入到 spellData），则触发插件回调
         SpellEntity spellEntityRef = spellData.getCustomData("spell_entity", SpellEntity.class);
-        java.util.List<BasePlugin> plugins = java.util.List.of();
+        List<BasePlugin> plugins = List.of();
         boolean enablePlugin = (spellEntityRef != null) && currentSpell.isExecutable();
         if (enablePlugin) {
             plugins = getInstalledPlugins(spellEntityRef);
@@ -190,7 +197,7 @@ public final class SpellUtils {
         // 检查魔力是否足够（任一系不足即判定不足）
         if (currentSpell instanceof BaseBaseSpellLogic) {
             ModUtils.Mana need = ((BaseBaseSpellLogic) currentSpell).calculateBaseMana(spellData, sequence, modifiers, spellParams);
-            if (need.anyGreaterThan(myMana)) return notEnoughMana(caster, sequence, currentSpell, need, myMana, spellParams);
+            if (need.anyGreaterThan(avaliableMana)) return notEnoughMana(caster, sequence, currentSpell, need, avaliableMana, spellParams);
         }
 
         Map<String, Object> result = currentSpell.run(caster, spellData, sequence, modifiers, spellParams);
@@ -264,14 +271,14 @@ public final class SpellUtils {
         for (int i = 0; i < left; i++) p = (p == null) ? null : p.getPrevSpell();
         for (int i = 0; i < left; i++) {
             if (!(p instanceof ValueLiteralSpell v)) break;
-            got.add(v.VALUE_TYPE.name().toLowerCase(java.util.Locale.ROOT));
+            got.add(v.VALUE_TYPE.name().toLowerCase(Locale.ROOT));
             p = p.getNextSpell();
         }
 
         SpellItemLogic n = current.getNextSpell();
         for (int j = 0; j < right; j++) {
             if (!(n instanceof ValueLiteralSpell v)) break;
-            got.add(v.VALUE_TYPE.name().toLowerCase(java.util.Locale.ROOT));
+            got.add(v.VALUE_TYPE.name().toLowerCase(Locale.ROOT));
             n = n.getNextSpell();
         }
 
@@ -299,15 +306,17 @@ public final class SpellUtils {
         return true;
     }
 
-    private static StepResult paramNoOverload(Player caster, SpellData spellData, SpellSequence seq, SpellItemLogic current) {
-        int index = displayIndexOf(seq, current);
-        String actual = formatActualParams(seq, current);
-        LOGGER.error("参数错误: spell[{}]:{} no_overload actual_params:{}", index, current.getRegistryName(), actual);
-        setSpellError(caster, spellData, formatSpellError(
-                Component.translatable("message.programmable_magic.error.kind.param"),
-                Component.translatable("message.programmable_magic.error.detail.no_overload", index, current.getRegistryName(), actual)
-        ));
-        return new StepResult(true, false, 0, Map.of(), new ModUtils.Mana());
+    private static StepResult paramNoOverload(Player caster, SpellData spellData, SpellSequence seq, SpellItemLogic current, boolean doThrowNotMatched) {
+        if (doThrowNotMatched) {
+            int index = displayIndexOf(seq, current);
+            String actual = formatActualParams(seq, current);
+            LOGGER.error("参数错误: spell[{}]:{} no_overload actual_params:{}", index, current.getRegistryName(), actual);
+            setSpellError(caster, spellData, formatSpellError(
+                    Component.translatable("message.programmable_magic.error.kind.param"),
+                    Component.translatable("message.programmable_magic.error.detail.no_overload", index, current.getRegistryName(), actual)
+            ));
+        }
+        return StepResult.NoOverload(doThrowNotMatched);
     }
 
     private static StepResult notEnoughMana(Player caster,
@@ -327,7 +336,7 @@ public final class SpellUtils {
     }
 
 
-    public static SpellSequence calculateSpellSequence(Player player, SpellData spellData, SpellSequence seq) {
+    public static SpellSequence calculateSpellSequence(Player player, SpellData spellData, SpellSequence seq, boolean doThrowNotMatched) {
         LOGGER.debug("开始计算法术序列");
         if (spellData != null && spellData.hasCustomData("spell_error")) return seq;
 
@@ -343,7 +352,7 @@ public final class SpellUtils {
             SpellSequence inner = seq.subSequence(left, right);
 
             // 递归计算子序列
-            inner = calculateSpellSequence(player, spellData, inner);
+            inner = calculateSpellSequence(player, spellData, inner, false);
 
             // 用递归结果替换整段 [left..right]
             seq.replaceSection(left, right, inner);
@@ -351,7 +360,7 @@ public final class SpellUtils {
 
         // 若仍存在未消解的括号，递归继续处理，确保算符阶段前无括号残留
         if (!getParenPairs(player, spellData, seq).isEmpty()) {
-            return calculateSpellSequence(player, spellData, seq);
+            return calculateSpellSequence(player, spellData, seq, false);
         }
 
         // 再按计算顺序进行计算
@@ -408,7 +417,8 @@ public final class SpellUtils {
                     } else if (operator instanceof UnaryNumberFunctionSpell && R instanceof ValueLiteralSpell && operator.getNeededParamsType().contains(List.of(((ValueLiteralSpell) R).VALUE_TYPE))) {
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
                         seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
-                    } else if (operator instanceof MathOperationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell) && R instanceof ValueLiteralSpell) {
+                    } else if (operator instanceof MathOperationsSpell.SubtractionSpell && !(L instanceof ValueLiteralSpell)
+                            && R instanceof ValueLiteralSpell && ((ValueLiteralSpell) R).VALUE_TYPE == SpellValueType.NUMBER) { // FUCK 在右侧是VEC3时也走这边 然后他妈数组越界了
                         // TODO: 这里的特判并不好, 应该复用下面的处理方法
                         Map<String, Object> result = operator.run(player, spellData, seq, null, List.of(((ValueLiteralSpell) R).VALUE));
                         seq.replaceSection(current, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
@@ -421,7 +431,8 @@ public final class SpellUtils {
             }
         }
 
-        boolean flag = false;
+        boolean sequenceChanged = false;
+        boolean hasSpellNoOverloads = false;
         // 遍历每个法术, 执行剩下的COMPUTE_MOD
 
         for (SpellItemLogic spell = seq.getFirstSpell(); spell != null; spell = spell.getNextSpell()) {
@@ -437,8 +448,9 @@ public final class SpellUtils {
                     || spell instanceof LogicalOperationsSpell.OrSpell)
                     && (!(spell.getPrevSpell() instanceof ValueLiteralSpell) || !(spell.getNextSpell() instanceof ValueLiteralSpell))) continue;
 
-            var step = SpellUtils.executeCurrentSpell(player, spellData, seq, spell, new ModUtils.Mana());
+            var step = SpellUtils.executeASpell(player, spellData, seq, spell, new ModUtils.Mana(), doThrowNotMatched);
             if (!step.successful) continue;
+            hasSpellNoOverloads = (hasSpellNoOverloads || step.isNoOverload);
             Map<String, Object> result = step.result;
 
             SpellItemLogic L = spell;
@@ -493,14 +505,16 @@ public final class SpellUtils {
                 }
             }
 
-            if (!result.containsKey("type")) { seq.replaceSection(L, R, new SpellSequence()); flag = true; continue; }
+            if (!result.containsKey("type")) { seq.replaceSection(L, R, new SpellSequence()); sequenceChanged = true; continue; }
             seq.replaceSection(L, R, new SpellSequence(List.of(new ValueLiteralSpell((SpellValueType) result.get("type"), result.get("value")))));
-            flag = true;
+            sequenceChanged = true;
         }
 
-
         // 如果计算完成后, 还有剩余COMPUTE_MOD残留, 再次递归调用calculateSpellSequence确保计算干净
-        if (flag) return calculateSpellSequence(player, spellData, seq);
+        if (sequenceChanged) return calculateSpellSequence(player, spellData, seq, false);
+
+        // 如果有法术匹配失败但是其他法术匹配成功, 再尝试匹配一次
+        if (!sequenceChanged && hasSpellNoOverloads) return calculateSpellSequence(player, spellData, seq, true);
 
         LOGGER.debug("法术序列计算完成");
         return seq;
