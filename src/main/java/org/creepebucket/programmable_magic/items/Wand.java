@@ -69,7 +69,7 @@ public class Wand extends BowItem implements IItemExtension {
      * 右键使用：潜行时在服务端打开菜单；否则进入“使用”态以进行按住充能。
      */
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        if (player.isShiftKeyDown()) {
+        if (player.isCrouching()) {
             ItemStack stack = player.getItemInHand(hand);
             stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
@@ -132,7 +132,7 @@ public class Wand extends BowItem implements IItemExtension {
     public boolean releaseUsing(ItemStack stack, Level level, LivingEntity living, int timeLeft) {
         if (level.isClientSide()) return false;
         if (!(living instanceof Player player)) return false;
-        if (player.isShiftKeyDown()) return false; // 潜行用于打开 GUI，不触发快捷充能释放
+        if (player.isCrouching()) return false; // 潜行用于打开 GUI，不触发快捷充能释放
 
         int total = getUseDuration(stack, living);
         int holdUsed = Math.max(0, total - timeLeft);

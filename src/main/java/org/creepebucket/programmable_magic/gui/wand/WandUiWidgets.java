@@ -24,6 +24,26 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public final class WandUiWidgets {
     private WandUiWidgets() { }
 
+    public static final int RELEASE_BUTTON_WIDTH = 112;
+    public static final int RELEASE_BUTTON_HEIGHT = 16;
+    public static final int RELEASE_BUTTON_BOTTOM_OFFSET = 100;
+
+    public static int release_button_screen_x(int screen_width) {
+        return screen_width / 2 - RELEASE_BUTTON_WIDTH / 2;
+    }
+
+    public static int release_button_screen_y(int screen_width, int screen_height) {
+        return screen_height - RELEASE_BUTTON_BOTTOM_OFFSET - WandLayout.compact_mode_y_offset(screen_width);
+    }
+
+    public static boolean is_in_release_button(MouseButtonEvent event, int screen_width, int screen_height) {
+        int x = release_button_screen_x(screen_width);
+        int y = release_button_screen_y(screen_width, screen_height);
+        double mx = event.x();
+        double my = event.y();
+        return mx >= x && mx < x + RELEASE_BUTTON_WIDTH && my >= y && my < y + RELEASE_BUTTON_HEIGHT;
+    }
+
     public static final class SpellSlotsBarWidget extends Widget {
         private final WandMenu menu;
 
@@ -162,26 +182,30 @@ public final class WandUiWidgets {
         public boolean mouseReleased(MouseButtonEvent event) {
             if (!this.menu.isCharging) return false;
 
-            double chargeSec = Math.max(0, this.menu.chargeTicks) / 20.0;
+            var bounds = this.menu.ui().bounds();
+            boolean in_release_button = is_in_release_button(event, bounds.sw(), bounds.sh());
 
-            List<ItemStack> spells = List.of();
+            if (in_release_button) {
+                double chargeSec = Math.max(0, this.menu.chargeTicks) / 20.0;
+                List<ItemStack> spells = List.of();
 
-            List<ItemStack> plugins = new ArrayList<>();
-            {
-                ItemStack main = Minecraft.getInstance().player.getMainHandItem();
-                ItemStack off = Minecraft.getInstance().player.getOffhandItem();
-                ItemStack wand = main.getItem() instanceof Wand ? main : off;
-                List<ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
-                if (saved != null) for (var it : saved) if (it != null && !it.isEmpty()) plugins.add(it.copy());
+                List<ItemStack> plugins = new ArrayList<>();
+                {
+                    ItemStack main = Minecraft.getInstance().player.getMainHandItem();
+                    ItemStack off = Minecraft.getInstance().player.getOffhandItem();
+                    ItemStack wand = main.getItem() instanceof Wand ? main : off;
+                    List<ItemStack> saved = wand.get(ModDataComponents.WAND_PLUGINS.get());
+                    if (saved != null) for (var it : saved) if (it != null && !it.isEmpty()) plugins.add(it.copy());
+                }
+
+                var payload = new SpellReleasePacket(spells, chargeSec, plugins);
+                var connection = Minecraft.getInstance().getConnection();
+                if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
             }
-
-            var payload = new SpellReleasePacket(spells, chargeSec, plugins);
-            var connection = Minecraft.getInstance().getConnection();
-            if (connection != null) connection.send(new ServerboundCustomPayloadPacket(payload));
 
             this.menu.isCharging = false;
             this.menu.chargeTicks = 0;
-            return true;
+            return in_release_button;
         }
     }
 

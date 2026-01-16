@@ -7,6 +7,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -31,6 +32,8 @@ public class WandAutoChargeHud {
         if (mc == null) return;
         Player player = mc.player;
         if (player == null) return;
+
+        if (player.containerMenu instanceof WandMenu) return;
 
         ItemStack main = player.getMainHandItem();
         ItemStack off = player.getOffhandItem();

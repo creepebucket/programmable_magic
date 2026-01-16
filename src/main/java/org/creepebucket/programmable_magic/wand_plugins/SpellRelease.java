@@ -42,9 +42,9 @@ public class SpellRelease extends BasePlugin{
         var releaseTex = Identifier.fromNamespaceAndPath(MODID, "textures/gui/wand_release.png");
 
         menu.ui().addWidget(new ImageButtonWidget(new Coordinate(
-                (sw, sh) -> sw / 2 - 112 / 2,
-                (sw, sh) -> sh - 100 - WandLayout.compact_mode_y_offset(sw)
-        ), 112, 16, releaseTex, releaseTex, () -> menu.isCharging = true));
+                (sw, sh) -> WandUiWidgets.release_button_screen_x(sw),
+                (sw, sh) -> WandUiWidgets.release_button_screen_y(sw, sh)
+        ), WandUiWidgets.RELEASE_BUTTON_WIDTH, WandUiWidgets.RELEASE_BUTTON_HEIGHT, releaseTex, releaseTex, () -> menu.isCharging = true));
 
         menu.ui().addWidget(new TextWidget(new Coordinate(
                 (sw, sh) -> sw / 2 - 20,
