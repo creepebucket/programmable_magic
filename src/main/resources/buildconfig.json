@@ -289,6 +289,17 @@
       },
       {
         "from_top_left": [
+          208,
+          688
+        ],
+        "from_bottom_right": [
+          223,
+          703
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/spell/if_branch_end.png"
+      },
+      {
+        "from_top_left": [
           80,
           704
         ],

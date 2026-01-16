@@ -7,7 +7,6 @@ import org.creepebucket.programmable_magic.spells.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellSequence;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.SpellUtils;
-import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
 
 import java.util.List;
 import java.util.Map;
@@ -27,36 +26,19 @@ public class IfSpell extends BaseControlModLogic{
 
     @Override
     public Map<String, Object> run(Player player, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams) {
-        // 新语义：仅使用一个括号块作为真分支；为假则跳过该括号块
-        // 查找 if 右侧最近的左括号
         SpellItemLogic p = this.getNextSpell();
-        ParenSpell.LeftParenSpell left = null;
+        IfBranchEndSpell end = null;
+        int depth = 0;
         while (p != null) {
-            if (p instanceof ParenSpell.LeftParenSpell l) { left = l; break; }
+            if (p instanceof IfSpell) {
+                depth++;
+            } else if (p instanceof IfBranchEndSpell e) {
+                if (depth == 0) { end = e; break; }
+                depth--;
+            }
             p = p.getNextSpell();
         }
-        if (left == null) {
-            int index = SpellUtils.displayIndexOf(spellSequence, this);
-            setSpellError(player, data, formatSpellError(
-                    Component.translatable("message.programmable_magic.error.kind.syntax"),
-                    Component.translatable("message.programmable_magic.error.detail.if_not_pair", index)
-            ));
-            return Map.of("successful", false, "should_discard", true);
-        }
-
-        // 寻找与之配对的右括号
-        SpellItemLogic q = left.getNextSpell();
-        int depth = 1;
-        ParenSpell.RightParenSpell right = null;
-        while (q != null) {
-            if (q instanceof ParenSpell.LeftParenSpell) depth++;
-            else if (q instanceof ParenSpell.RightParenSpell r) {
-                depth--;
-                if (depth == 0) { right = r; break; }
-            }
-            q = q.getNextSpell();
-        }
-        if (right == null) {
+        if (end == null) {
             int index = SpellUtils.displayIndexOf(spellSequence, this);
             setSpellError(player, data, formatSpellError(
                     Component.translatable("message.programmable_magic.error.kind.syntax"),
@@ -66,7 +48,7 @@ public class IfSpell extends BaseControlModLogic{
         }
 
         boolean cond = Boolean.TRUE.equals(spellParams.get(0));
-        SpellItemLogic target = cond ? left.getNextSpell() : right;
+        SpellItemLogic target = cond ? this.getNextSpell() : end;
 
         return Map.of("successful", true, "current_spell", target);
     }

@@ -26,16 +26,20 @@ public class SpellTooltipHandler {
         SpellItemLogic logic = spellItem.getLogic();
         List<Component> tooltip = event.getToolTip();
 
-        appendOverloads(tooltip, logic.getNeededParamsType(), logic.getReturnParamsType());
+        appendOverloads(tooltip, logic.RightParamsOffset, logic.getNeededParamsType(), logic.getReturnParamsType());
         appendDescriptions(tooltip, logic.getTooltip());
     }
 
-    private static void appendOverloads(List<Component> tooltip, List<List<SpellValueType>> inputs, List<List<SpellValueType>> outputs) {
+    private static void appendOverloads(List<Component> tooltip, int rightParamsOffset, List<List<SpellValueType>> inputs, List<List<SpellValueType>> outputs) {
         if (inputs.isEmpty() && outputs.isEmpty()) {
             return;
         }
 
-        tooltip.add(Component.literal("法术重载:").withStyle(ChatFormatting.GOLD));
+        MutableComponent header = Component.literal("法术重载:").withStyle(ChatFormatting.GOLD);
+        if (rightParamsOffset > 0) {
+            header.append(Component.literal("  右置" + rightParamsOffset + "参").withStyle(ChatFormatting.DARK_GRAY));
+        }
+        tooltip.add(header);
         int overloads = Math.max(inputs.size(), outputs.size());
         for (int i = 0; i < overloads; i++) {
             List<SpellValueType> in = i < inputs.size() ? inputs.get(i) : List.of();

@@ -362,6 +362,8 @@ public final class SpellUtils {
         if (!getParenPairs(player, spellData, seq).isEmpty()) {
             return calculateSpellSequence(player, spellData, seq, false);
         }
+        // FIXME: 这里一次调用线性循环一次就行, 根本用不上递归
+        // 只需要决定一个完整的执行顺序列表, 什么事都没有
 
         // 再按计算顺序进行计算
         final List<SpellItemLogic> ORDER = List.of(

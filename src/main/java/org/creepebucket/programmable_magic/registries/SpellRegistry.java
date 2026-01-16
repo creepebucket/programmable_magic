@@ -161,6 +161,7 @@ public class SpellRegistry {
         registerSpell(LoopStartSpell::new);
         registerSpell(LoopEndSpell::new);
         registerSpell(IfSpell::new);
+        registerSpell(IfBranchEndSpell::new);
         registerSpell(LoopBreakSpell::new);
         registerSpell(LoopContinueSpell::new);
         registerSpell(ForSpell::new);
