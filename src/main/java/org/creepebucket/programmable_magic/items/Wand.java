@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.spells.SpellLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellLogic;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
 import org.jetbrains.annotations.Nullable;

@@ -18,8 +18,11 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
-import org.creepebucket.programmable_magic.spells.*;
-import org.creepebucket.programmable_magic.spells.compute_mod.ParenSpell;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellSequence;
+import org.creepebucket.programmable_magic.spells.old.compute_mod.ParenSpell;
+import org.creepebucket.programmable_magic.spells.old.SpellData;
+import org.creepebucket.programmable_magic.spells.old.SpellUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

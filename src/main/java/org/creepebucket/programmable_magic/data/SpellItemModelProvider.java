@@ -7,6 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,7 +40,7 @@ public class SpellItemModelProvider implements DataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
-        for (Map.Entry<java.util.function.Supplier<Item>, java.util.function.Supplier<org.creepebucket.programmable_magic.spells.SpellItemLogic>> entry : SpellRegistry.getRegisteredSpells().entrySet()) {
+        for (Map.Entry<java.util.function.Supplier<Item>, java.util.function.Supplier<SpellItemLogic>> entry : SpellRegistry.getRegisteredSpells().entrySet()) {
             String spellName = entry.getValue().get().getRegistryName();
             String itemModelName = "spell_display_" + spellName;
 

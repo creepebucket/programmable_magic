@@ -12,8 +12,8 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,7 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 
 import java.util.List;

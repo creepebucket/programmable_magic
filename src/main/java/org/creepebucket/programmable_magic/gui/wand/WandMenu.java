@@ -23,9 +23,9 @@ import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
 import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.spells.old.SpellUtils;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
 import java.util.ArrayList;

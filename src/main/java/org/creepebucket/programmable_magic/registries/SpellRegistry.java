@@ -10,25 +10,25 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
-import org.creepebucket.programmable_magic.spells.base_spell.ExplosionSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.VelocitySpell;
-import org.creepebucket.programmable_magic.spells.base_spell.PaintDataSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.ApplyPotionSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.BreakBlockSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.IgniteSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.ProjectileAttachSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.PlaceBlockSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.SendToInventorySpell;
-import org.creepebucket.programmable_magic.spells.base_spell.SpawnParticlesSpell;
-import org.creepebucket.programmable_magic.spells.base_spell.TeleportSpell;
-import org.creepebucket.programmable_magic.spells.compute_mod.*;
-import org.creepebucket.programmable_magic.spells.compute_mod.EntityVelocitySpell;
-import org.creepebucket.programmable_magic.spells.adjust_mod.ConditionInverter;
-import org.creepebucket.programmable_magic.spells.adjust_mod.DelaySpell;
-import org.creepebucket.programmable_magic.spells.adjust_mod.TriggerSpell;
-import org.creepebucket.programmable_magic.spells.control_mod.*;
+import org.creepebucket.programmable_magic.spells.old.base_spell.ExplosionSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.VelocitySpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.PaintDataSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.ApplyPotionSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.BreakBlockSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.IgniteSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.ProjectileAttachSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.PlaceBlockSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.SendToInventorySpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.SpawnParticlesSpell;
+import org.creepebucket.programmable_magic.spells.old.base_spell.TeleportSpell;
+import org.creepebucket.programmable_magic.spells.old.compute_mod.*;
+import org.creepebucket.programmable_magic.spells.old.compute_mod.EntityVelocitySpell;
+import org.creepebucket.programmable_magic.spells.old.adjust_mod.ConditionInverter;
+import org.creepebucket.programmable_magic.spells.old.adjust_mod.DelaySpell;
+import org.creepebucket.programmable_magic.spells.old.adjust_mod.TriggerSpell;
+import org.creepebucket.programmable_magic.spells.old.control_mod.*;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -46,136 +46,12 @@ public class SpellRegistry {
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
 
-        // COMPUTE_MOD: 0-9
-        registerSpell(() -> new NumberDigitSpell(0));
-        registerSpell(() -> new NumberDigitSpell(1));
-        registerSpell(() -> new NumberDigitSpell(2));
-        registerSpell(() -> new NumberDigitSpell(3));
-        registerSpell(() -> new NumberDigitSpell(4));
-        registerSpell(() -> new NumberDigitSpell(5));
-        registerSpell(() -> new NumberDigitSpell(6));
-        registerSpell(() -> new NumberDigitSpell(7));
-        registerSpell(() -> new NumberDigitSpell(8));
-        registerSpell(() -> new NumberDigitSpell(9));
-
-        // COMPUTE_MOD: 常量
-        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_x", new Vec3(1.0, 0.0, 0.0),
-                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_x"))));
-        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_y", new Vec3(0.0, 1.0, 0.0),
-                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_y"))));
-        registerSpell(() -> new ValueLiteralSpell(SpellValueType.VECTOR3, "compute_unit_z", new Vec3(0.0, 0.0, 1.0),
-                List.of(Component.translatable("item.programmable_magic.spell_display_compute_unit_z"))));
-
-        registerSpell(DynamicConstantSpell.ViewVectorSpell::new);
-        registerSpell(DynamicConstantSpell.CasterEntitySpell::new);
-        registerSpell(DynamicConstantSpell.CasterPosSpell::new);
-        registerSpell(DynamicConstantSpell.SpellPosSpell::new);
-        registerSpell(DynamicConstantSpell.SpellEntitySpell::new);
-        registerSpell(DynamicConstantSpell.NearestEntitySpell::new);
-
-        // COMPUTE_MOD: 分隔符
-        registerSpell(SpellSeperator::new);
-
-        // COMPUTE_MOD: 括号
-        registerSpell(ParenSpell.LeftParenSpell::new);
-        registerSpell(ParenSpell.RightParenSpell::new);
-
-        // COMPUTE_MOD: 加减乘除幂
-        registerSpell(MathOperationsSpell.AdditionSpell::new);
-        registerSpell(MathOperationsSpell.SubtractionSpell::new);
-        registerSpell(MathOperationsSpell.MultiplicationSpell::new);
-        registerSpell(MathOperationsSpell.DivisionSpell::new);
-        registerSpell(MathOperationsSpell.RemainderSpell::new);
-        registerSpell(MathOperationsSpell.PowerSpell::new);
-
-        // COMPUTE_MOD: 一般运算
-        registerSpell(EntityVelocitySpell::new);
-        registerSpell(EntityQuerySpell.EntityPosSpell::new);
-        registerSpell(EntityQuerySpell.EntityHealthSpell::new);
-        registerSpell(EntityQuerySpell.EntityMaxHealthSpell::new);
-        registerSpell(EntityQuerySpell.EntityArmorSpell::new);
-        registerSpell(StorageSpell.StoreInputSpell::new);
-        registerSpell(StorageSpell.StoreOutputSpell::new);
-        registerSpell(SpecialComputeSpell.ViewBlockPosSpell::new);
-        registerSpell(SpecialComputeSpell.BlockAtPosSpell::new);
-        registerSpell(SpecialComputeSpell.VecLengthSpell::new);
-        registerSpell(BuildVectorSpell::new);
-        registerSpell(WorldTimeSpell::new);
-        registerSpell(RandomNumberSpell::new);
-        registerSpell(PiSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.SinSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.CosSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.TanSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.AsinSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.AcosSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.AtanSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.CeilSpell::new);
-        registerSpell(UnaryNumberFunctionSpell.FloorSpell::new);
-        registerSpell(VectorComponentSpell.VecXSpell::new);
-        registerSpell(VectorComponentSpell.VecYSpell::new);
-        registerSpell(VectorComponentSpell.VecZSpell::new);
-
-        // 基础法术
-        registerSpell(ExplosionSpell::new);
-        registerSpell(VelocitySpell::new);
-        registerSpell(ApplyPotionSpell::new);
-        registerSpell(ProjectileAttachSpell::new);
-        registerSpell(PlaceBlockSpell::new);
-        registerSpell(PaintDataSpell::new);
-        registerSpell(IgniteSpell::new);
-        registerSpell(BreakBlockSpell::new);
-        registerSpell(TeleportSpell::new);
-        registerSpell(SendToInventorySpell::new);
-        registerSpell(SpawnParticlesSpell::new);
-
-        // ADJUST_MOD
-        registerSpell(DelaySpell::new);
-        registerSpell(ConditionInverter::new);
-        registerSpell(TriggerSpell.TriggerTouchGround::new);
-        registerSpell(TriggerSpell.TriggerTouchEntity::new);
-
-        // CONTROL_MOD: 逻辑/比较
-        registerSpell(LogicalOperationsSpell.EqualSpell::new);
-        registerSpell(LogicalOperationsSpell.NotEqualSpell::new);
-        registerSpell(LogicalOperationsSpell.GreaterSpell::new);
-        registerSpell(LogicalOperationsSpell.GreaterEqualSpell::new);
-        registerSpell(LogicalOperationsSpell.LessSpell::new);
-        registerSpell(LogicalOperationsSpell.LessEqualSpell::new);
-        registerSpell(LogicalOperationsSpell.AndSpell::new);
-        registerSpell(LogicalOperationsSpell.OrSpell::new);
-        registerSpell(LogicalOperationsSpell.NotSpell::new);
-
-        // CONTROL_MOD: 常量
-        registerSpell(() -> new ValueLiteralSpell(SpellValueType.BOOLEAN, "true", true,
-                List.of(
-                        Component.translatable("tooltip.programmable_magic.spell.boolean_true.desc1"),
-                        Component.translatable("tooltip.programmable_magic.spell.boolean_true.desc2")
-                ), SpellItemLogic.SpellType.CONTROL_MOD));
-        registerSpell(() -> new ValueLiteralSpell(SpellValueType.BOOLEAN, "false", false,
-                List.of(
-                        Component.translatable("tooltip.programmable_magic.spell.boolean_false.desc1"),
-                        Component.translatable("tooltip.programmable_magic.spell.boolean_false.desc2")
-                ), SpellItemLogic.SpellType.CONTROL_MOD));
-
-        // CONTROL_MOD: 条件分支/循环
-        registerSpell(LoopStartSpell::new);
-        registerSpell(LoopEndSpell::new);
-        registerSpell(IfSpell::new);
-        registerSpell(IfBranchEndSpell::new);
-        registerSpell(LoopBreakSpell::new);
-        registerSpell(LoopContinueSpell::new);
-        registerSpell(ForSpell::new);
-        registerSpell(BlockConditionSpell.IsAirSpell::new);
-        registerSpell(BlockConditionSpell.IsGravityBlockSpell::new);
-        registerSpell(RestartSpell::new);
-        registerSpell(EndSpell::new);
-
         ITEMS.register(eventBus);
     }
 
     private static void registerSpell(Supplier<SpellItemLogic> logicSupplier) {
         SpellItemLogic logicInstance = logicSupplier.get();
-        String name = "spell_display_" + logicInstance.getRegistryName();
+        String name = "spell_display_" + logicInstance.name;
         Supplier<Item> itemSupplier = ITEMS.register(name,
                 registryName -> new BaseSpellItem(new Item.Properties()
                         .setId(ResourceKey.create(Registries.ITEM, registryName)), logicInstance));

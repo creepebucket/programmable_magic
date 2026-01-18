@@ -10,10 +10,10 @@ import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SelectableImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.gui.wand.WandUiWidgets;
-import org.creepebucket.programmable_magic.spells.SpellData;
-import org.creepebucket.programmable_magic.spells.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellSequence;
-import org.creepebucket.programmable_magic.spells.SpellUtils;
+import org.creepebucket.programmable_magic.spells.old.SpellData;
+import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.old.SpellSequence;
+import org.creepebucket.programmable_magic.spells.old.SpellUtils;
 
 import java.util.List;
 import java.util.Map;
