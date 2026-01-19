@@ -17,10 +17,10 @@ import java.util.UUID;
  *     其实际状态由运行时管理器维护，并通过访问器包装成 {@link MananetNode}。</li>
  * </ul>
  *
- * <p>本接口的核心是把“单个节点的贡献（cache/load/connectivity）”与“网络汇总状态（mana/union）”解耦：</p>
+ * <p>本接口的核心是把“单个节点的贡献（cache/load/connectivity）”与“网络汇总状态（availableMana/union）”解耦：</p>
  * <ul>
  *     <li>{@code cache/load/connectivity} 属于节点自身（或节点状态）。</li>
- *     <li>{@code mana/network_id} 属于网络（或节点当前所属网络）。</li>
+ *     <li>{@code availableMana/network_id} 属于网络（或节点当前所属网络）。</li>
  * </ul>
  */
 public interface MananetNode {
@@ -56,7 +56,7 @@ public interface MananetNode {
     /**
      * 直接对节点所属网络的当前魔力做增量修改。
      *
-     * <p>该操作作用于“网络当前 mana”，与 {@link #getLoad()} 的“持续每秒变化”是两套机制。</p>
+     * <p>该操作作用于“网络当前 availableMana”，与 {@link #getLoad()} 的“持续每秒变化”是两套机制。</p>
      */
     void addMana(Mana mana);
 

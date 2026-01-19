@@ -4,12 +4,11 @@ import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.spells.old.SpellData;
-import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.old.SpellSequence;
-import org.creepebucket.programmable_magic.spells.old.SpellUtils;
+import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 魔杖插件基类：定义插件在实体/界面/菜单/执行阶段的插入点。
@@ -43,12 +42,12 @@ public abstract class BasePlugin {
     /**
      * 法术执行前回调：可读取/修改将要执行的参数。
      */
-    public abstract void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
+    public abstract void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams);
 
     /**
      * 法术执行后回调：根据执行结果进行后处理。
      */
-    public abstract void afterSpellExecution(SpellUtils.StepResult result, SpellEntity spellEntity, SpellItemLogic currentSpell, SpellData data, SpellSequence spellSequence, List<SpellItemLogic> modifiers, List<Object> spellParams);
+    public abstract void afterSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams);
 
     /**
      * 数值调整器：用于由插件对魔杖相关数值进行调整。

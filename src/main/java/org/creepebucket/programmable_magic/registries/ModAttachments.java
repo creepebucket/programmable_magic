@@ -3,7 +3,9 @@ package org.creepebucket.programmable_magic.registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.logic.MananetChunkNodes;
+import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
 import java.util.function.Supplier;
 
@@ -21,8 +23,12 @@ public final class ModAttachments {
             () -> AttachmentType.serializable(MananetChunkNodes::new).build()
     );
 
+    public static final Supplier<AttachmentType<ModUtils.Mana>> MANA = ATTACHMENTS.register(
+            "mana",
+            () -> AttachmentType.builder(ModUtils.Mana::new).serialize(ModUtils.Mana.CODEC.fieldOf("mana")).build()
+    );
+
     public static void register(IEventBus bus) {
         ATTACHMENTS.register(bus);
     }
 }
-

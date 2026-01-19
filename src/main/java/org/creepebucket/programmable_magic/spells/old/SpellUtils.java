@@ -71,7 +71,7 @@ public final class SpellUtils {
         if (stacks == null) return list;
         for (ItemStack st : stacks) {
             if (st == null || st.isEmpty()) continue;
-            var p = WandPluginRegistry.createPlugin(st.getItem());
+            var p = WandPluginRegistry.getPlugin(st.getItem());
             if (p != null) list.add(p);
         }
         return list;

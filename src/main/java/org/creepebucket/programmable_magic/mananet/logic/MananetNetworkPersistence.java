@@ -20,10 +20,10 @@ import java.util.UUID;
  * <ul>
  *     <li>运行时：{@link MananetNetworkManager}（blockNodes、networks、parent）。</li>
  *     <li>chunk：{@code ModAttachments.CHUNK_NODES}（每个节点方块的 network_id/cache/load/connectivity）。</li>
- *     <li>世界：{@link MananetNetworkSavedData}（parent + 每个网络的当前 mana）。</li>
+ *     <li>世界：{@link MananetNetworkSavedData}（parent + 每个网络的当前 availableMana）。</li>
  * </ul>
  *
- * <p>加载时从 chunk 附件恢复节点状态，并把节点贡献汇总进网络；保存时把网络当前 mana 与 parent 写回 SavedData。</p>
+ * <p>加载时从 chunk 附件恢复节点状态，并把节点贡献汇总进网络；保存时把网络当前 availableMana 与 parent 写回 SavedData。</p>
  */
 public final class MananetNetworkPersistence {
 
@@ -37,7 +37,7 @@ public final class MananetNetworkPersistence {
     public static void onChunkLoad(ServerLevel level, ChunkAccess chunk) {
         // 获取运行时管理器：用于装载节点状态、维护网络汇总、以及延迟 integrate 的 dirty 队列。
         MananetNetworkManager manager = MananetNetworkManager.get(level);
-        // 获取世界级 SavedData：用于装载 union-find parent 与每个网络的当前 mana。
+        // 获取世界级 SavedData：用于装载 union-find parent 与每个网络的当前 availableMana。
         MananetNetworkSavedData saved = MananetNetworkSavedData.get(level);
         // parent 只需要装载一次：后续 chunk load 只做节点恢复与贡献汇总。
         if (!manager.isPersistentLoaded()) manager.loadPersistentParent(saved.parent());
@@ -82,7 +82,7 @@ public final class MananetNetworkPersistence {
                 modified = true;
             }
 
-            // 确保网络对象存在：首次见到该网络时，把当前 mana 从 SavedData 装载到运行时。
+            // 确保网络对象存在：首次见到该网络时，把当前 availableMana 从 SavedData 装载到运行时。
             MananetNetworkManager.NetworkState network = manager.getNetworkIfPresent(root);
             if (network == null) {
                 network = manager.getOrCreate(root);
@@ -158,7 +158,7 @@ public final class MananetNetworkPersistence {
      */
     public static void onLevelSave(ServerLevel level) {
         MananetNetworkManager manager = MananetNetworkManager.get(level);
-        // 只保存 parent + 当前 mana（cache/load/size 会在 chunk load 时由节点贡献重新汇总）。
+        // 只保存 parent + 当前 availableMana（cache/load/size 会在 chunk load 时由节点贡献重新汇总）。
         MananetNetworkSavedData.get(level).writeFromManager(manager);
     }
 

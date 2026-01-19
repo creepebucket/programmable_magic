@@ -21,7 +21,7 @@ public class ModDataComponents {
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Programmable_magic.MODID);
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<String, Double>>> MANA =
-            DATA_COMPONENTS.registerComponentType("mana", builder -> builder
+            DATA_COMPONENTS.registerComponentType("availableMana", builder -> builder
                     .persistent(Codec.unboundedMap(Codec.STRING, Codec.DOUBLE))
                     .networkSynchronized(ByteBufCodecs.map(
                             HashMap::new,

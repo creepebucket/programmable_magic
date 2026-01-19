@@ -31,7 +31,7 @@ public final class ManaMath {
     }
 
     /**
-     * 缩放：{@code mana * factor}。
+     * 缩放：{@code availableMana * factor}。
      */
     public static Mana scale(Mana mana, double factor) {
         return new Mana(
@@ -55,7 +55,7 @@ public final class ManaMath {
     }
 
     /**
-     * 将每个分量夹到缓存上限：{@code min(mana, cache)}。
+     * 将每个分量夹到缓存上限：{@code min(availableMana, cache)}。
      */
     public static Mana clampToCache(Mana mana, Mana cache) {
         return new Mana(

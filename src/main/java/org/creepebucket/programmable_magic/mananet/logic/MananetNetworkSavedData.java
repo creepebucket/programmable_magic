@@ -54,7 +54,7 @@ public final class MananetNetworkSavedData extends SavedData {
             MananetNetworkSavedData::new,
             RecordCodecBuilder.create(instance -> instance.group(
                     PARENT_CODEC.fieldOf("parent").forGetter(sd -> sd.parent),
-                    MANA_MAP_CODEC.fieldOf("mana").forGetter(sd -> sd.manaById)
+                    MANA_MAP_CODEC.fieldOf("availableMana").forGetter(sd -> sd.manaById)
             ).apply(instance, MananetNetworkSavedData::new))
     );
 

@@ -27,7 +27,7 @@ public class WandSlots {
          * 仅允许注册过的插件物品放入。
          */
         public boolean mayPlace(ItemStack stack) {
-            BasePlugin incoming = WandPluginRegistry.createPlugin(stack.getItem());
+            BasePlugin incoming = WandPluginRegistry.getPlugin(stack.getItem());
             if (incoming == null) return false;
             Class<?> inClazz = incoming.getClass();
 
@@ -36,7 +36,7 @@ public class WandSlots {
                 if (i == this.getSlotIndex()) continue;
                 ItemStack cur = this.container.getItem(i);
                 if (cur == null || cur.isEmpty()) continue;
-                BasePlugin exist = WandPluginRegistry.createPlugin(cur.getItem());
+                BasePlugin exist = WandPluginRegistry.getPlugin(cur.getItem());
                 if (exist == null) continue;
                 Class<?> exClazz = exist.getClass();
                 if (exClazz.isAssignableFrom(inClazz) || inClazz.isAssignableFrom(exClazz)) return false;

@@ -22,7 +22,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 /**
  * 魔杖插件注册表：
  * - 每个插件对应一个物品，物品注册名与插件创建器一一映射。
- * - 通过 isPlugin/createPlugin 判定与构造插件实例。
+ * - 通过 isPlugin/getPlugin 判定与构造插件实例。
  */
 public class WandPluginRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
@@ -65,7 +65,7 @@ public class WandPluginRegistry {
     /**
      * 由物品构造对应插件实例（未注册则返回 null）。
      */
-    public static BasePlugin createPlugin(Item item) {
+    public static BasePlugin getPlugin(Item item) {
         Identifier registryName = BuiltInRegistries.ITEM.getKey(item);
         Supplier<BasePlugin> supplier = PLUGIN_SUPPLIERS.get(registryName);
         return supplier != null ? supplier.get() : null;

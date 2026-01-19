@@ -34,7 +34,7 @@ public final class MananetPersistenceHandler {
     }
 
     /**
-     * 世界保存：把运行时 union-find 与网络当前 mana 写入 SavedData。
+     * 世界保存：把运行时 union-find 与网络当前 availableMana 写入 SavedData。
      */
     @SubscribeEvent
     public static void onLevelSave(LevelEvent.Save event) {

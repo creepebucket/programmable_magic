@@ -20,7 +20,7 @@ public class HandlerMananetNodeInspect {
     /**
      * 调试用：右键节点方块时，把该节点所属网络的汇总信息发送给玩家。
      *
-     * <p>输出包括 network_id、网络规模（size）、当前 mana、总 cache、总 load（标注为每秒）。</p>
+     * <p>输出包括 network_id、网络规模（size）、当前 availableMana、总 cache、总 load（标注为每秒）。</p>
      */
     @SubscribeEvent
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -34,7 +34,7 @@ public class HandlerMananetNodeInspect {
 
         MananetNetworkManager.NetworkInfo info = MananetNetworkManager.get(level).getNetworkInfo(node.getNetworkId());
         player.sendSystemMessage(Component.literal("mananet_node_info network_id=" + info.id() + " size=" + info.size()));
-        player.sendSystemMessage(Component.literal("mana " + formatMana(info.mana())));
+        player.sendSystemMessage(Component.literal("availableMana " + formatMana(info.mana())));
         player.sendSystemMessage(Component.literal("cache " + formatMana(info.cache())));
         player.sendSystemMessage(Component.literal("load_per_s " + formatMana(info.load())));
     }

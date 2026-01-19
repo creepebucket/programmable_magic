@@ -16,7 +16,7 @@ public class MananetTickHandler {
      * <p>这里拆成两步：</p>
      * <ul>
      *     <li>{@link MananetNetworkLogic#processPending(ServerLevel)}：处理放置/移除/连通变化的结构更新。</li>
-     *     <li>{@link MananetNetworkManager#tick()}：按网络汇总的 load 对当前 mana 做每 tick 积分。</li>
+     *     <li>{@link MananetNetworkManager#tick()}：按网络汇总的 load 对当前 availableMana 做每 tick 积分。</li>
      * </ul>
      */
     @SubscribeEvent

@@ -1,5 +1,7 @@
 package org.creepebucket.programmable_magic;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -39,7 +41,7 @@ public class ModUtils {
         return items;
     }
 
-    // 格式化魔力（1 点 mana = 1 KJ），保留约 4 位有效数字
+    // 格式化魔力（1 点 availableMana = 1 KJ），保留约 4 位有效数字
     public static String FormattedManaString(double mana) {
         double joules = mana * 1000.0; // 转为焦耳
         return formattedNumber(joules) + "J";
@@ -98,7 +100,7 @@ public class ModUtils {
         for (ItemStack st : stacks) {
             if (st == null || st.isEmpty()) continue;
             Item item = st.getItem();
-            BasePlugin plugin = WandPluginRegistry.createPlugin(item);
+            BasePlugin plugin = WandPluginRegistry.getPlugin(item);
             if (plugin == null) continue;
             plugin.adjustWandValues(values, st);
         }
@@ -138,6 +140,12 @@ public class ModUtils {
         public void add(Mana mana) {
             for (Map.Entry<String, Double> entry : mana.toMap().entrySet()) {
                 values.put(entry.getKey(), values.get(entry.getKey()) + entry.getValue());
+            }
+        }
+
+        public void subtract(Mana mana) {
+            for (Map.Entry<String, Double> entry : mana.toMap().entrySet()) {
+                values.put(entry.getKey(), values.get(entry.getKey()) - entry.getValue());
             }
         }
 
@@ -183,5 +191,14 @@ public class ModUtils {
                     values.get(MOMENTUM) > mana.getMomentum() ||
                     values.get(PRESSURE) > mana.getPressure();
         }
+
+        public static final Codec<Mana> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(
+                    Codec.DOUBLE.fieldOf("radiation").forGetter(Mana::getRadiation),
+                    Codec.DOUBLE.fieldOf("temperature").forGetter(Mana::getTemperature),
+                    Codec.DOUBLE.fieldOf("momentum").forGetter(Mana::getMomentum),
+                    Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
+            ).apply(instance, Mana::new)
+        );
     }
 }

@@ -31,6 +31,7 @@ public class SpellCompiler {
         // Step 2: 编译前语法检查
 
         // 2.1: 检查括号等法术配对情况
+        // FIXME: 无法检查)(
         Map<Class<? extends SpellItemLogic.PairedLeftSpell>, Integer> pairsCount = new HashMap<>();
 
         for (SpellItemLogic spell = rawSequence.head; spell != null; spell = spell.next) {

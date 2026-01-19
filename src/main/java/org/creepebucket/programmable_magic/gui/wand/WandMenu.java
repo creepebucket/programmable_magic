@@ -391,7 +391,7 @@ public class WandMenu extends UiMenuBase {
         for (int i = 0; i < n; i++) {
             ItemStack st = this.pluginInv.getItem(i);
             if (st == null || st.isEmpty()) continue;
-            BasePlugin plugin = WandPluginRegistry.createPlugin(st.getItem());
+            BasePlugin plugin = WandPluginRegistry.getPlugin(st.getItem());
             if (plugin == null) continue;
             plugin.buildUi(this);
         }
@@ -402,7 +402,7 @@ public class WandMenu extends UiMenuBase {
         for (int i = 0; i < n; i++) {
             ItemStack st = this.pluginInv.getItem(i);
             if (st == null || st.isEmpty()) continue;
-            BasePlugin plugin = WandPluginRegistry.createPlugin(st.getItem());
+            BasePlugin plugin = WandPluginRegistry.getPlugin(st.getItem());
             if (plugin == null) continue;
             if (plugin.pluginName.startsWith(prefix)) return true;
         }

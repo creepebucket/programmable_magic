@@ -90,7 +90,7 @@ final class MananetBlockNode implements MananetNode {
 
     @Override
     public void addMana(Mana mana) {
-        // 直接对所属网络的当前 mana 做增量修改（与 load 的持续变化是两套机制）。
+        // 直接对所属网络的当前 availableMana 做增量修改（与 load 的持续变化是两套机制）。
         manager.addMana(getNetworkId(), mana);
     }
 

@@ -21,7 +21,7 @@ import net.minecraft.core.Direction;
  *
  * <p>职责：</p>
  * <ul>
- *     <li>维护网络 union-find（{@code parent}）与每个网络的汇总状态（mana/cache/load/size）。</li>
+ *     <li>维护网络 union-find（{@code parent}）与每个网络的汇总状态（availableMana/cache/load/size）。</li>
  *     <li>缓存“节点方块”的按位置状态（{@code blockNodes}）。</li>
  *     <li>提供多个延迟队列（dirty/edgeChange/removal），让结构更新在 tick 中统一处理。</li>
  * </ul>
@@ -45,7 +45,7 @@ public final class MananetNetworkManager {
      * <p>其中：</p>
      * <ul>
      *     <li>{@code cache/load/size} 是节点贡献的求和。</li>
-     *     <li>{@code mana} 是当前存量，会被夹紧到 {@code cache}。</li>
+     *     <li>{@code availableMana} 是当前存量，会被夹紧到 {@code cache}。</li>
      * </ul>
      */
     public static final class NetworkState {
@@ -176,14 +176,14 @@ public final class MananetNetworkManager {
 
         // union-find：把 rb 的 parent 指向 ra（ra 成为新根）。
         parent.put(rb, ra);
-        // 合并汇总数据：mana/cache/load/size 都按加法聚合。
+        // 合并汇总数据：availableMana/cache/load/size 都按加法聚合。
         sa.mana.add(sb.mana);
         sa.cache.add(sb.cache);
         sa.load.add(sb.load);
         sa.size += sb.size;
         // rb 不再是根：从 networks map 中移除其汇总状态。
         networks.remove(rb);
-        // 合并后把 mana 夹紧到 [0, cache]，保持网络状态合法。
+        // 合并后把 availableMana 夹紧到 [0, cache]，保持网络状态合法。
         sa.mana = ManaMath.clampToCache(ManaMath.clampNonNegative(sa.mana), sa.cache);
         return ra;
     }
@@ -306,7 +306,7 @@ public final class MananetNetworkManager {
     public void setNetwork(UUID id, Mana mana, Mana cache, Mana load, int size) {
         UUID root = resolveNetworkId(id);
         NetworkState state = getOrCreate(root);
-        // 约束：写入的 mana 会先做非负化与 cache 夹紧，防止网络存量越界。
+        // 约束：写入的 availableMana 会先做非负化与 cache 夹紧，防止网络存量越界。
         state.mana = ManaMath.clampToCache(ManaMath.clampNonNegative(mana), cache);
         state.cache = cache;
         state.load = load;
@@ -351,12 +351,12 @@ public final class MananetNetworkManager {
         state.cache.add(cacheDelta);
         state.load.add(loadDelta);
         state.size += sizeDelta;
-        // 贡献变化后，当前 mana 也需要重新夹紧到新 cache（例如 cache 下降的场景）。
+        // 贡献变化后，当前 availableMana 也需要重新夹紧到新 cache（例如 cache 下降的场景）。
         state.mana = ManaMath.clampToCache(ManaMath.clampNonNegative(state.mana), state.cache);
     }
 
     /**
-     * 推进网络状态一个 tick：按 load 积分到 mana。
+     * 推进网络状态一个 tick：按 load 积分到 availableMana。
      *
      * <p>约定：load 为每秒变化量，因此每 tick 变化量为 {@code load / 20}。</p>
      */
@@ -366,7 +366,7 @@ public final class MananetNetworkManager {
             Mana perTick = ManaMath.scale(state.load, 1.0 / 20.0);
             // 消耗成本只看正部：负部代表产出，不需要先支付。
             Mana cost = ManaMath.positivePart(perTick);
-            // 能支付则执行本 tick 的净变化（负 load 会增加 mana，正 load 会减少 mana）。
+            // 能支付则执行本 tick 的净变化（负 load 会增加 availableMana，正 load 会减少 availableMana）。
             if (ManaMath.canAfford(state.mana, cost)) state.mana.add(ManaMath.scale(state.load, -1.0 / 20.0));
             // 每 tick 都收敛一次，保证网络状态始终在合法范围内。
             state.mana = ManaMath.clampToCache(ManaMath.clampNonNegative(state.mana), state.cache);

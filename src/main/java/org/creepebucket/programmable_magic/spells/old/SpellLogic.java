@@ -185,7 +185,7 @@ public class SpellLogic {
         LOGGER.debug(String.format("玩家朝向: (%.2f, %.2f, %.2f)",
                 player.getLookAngle().x, player.getLookAngle().y, player.getLookAngle().z));
 
-        // 依据充能秒数与插件数值（W）换算魔力：W * s = J；1 mana = 1 kJ
+        // 依据充能秒数与插件数值（W）换算魔力：W * s = J；1 availableMana = 1 kJ
         double manaMult = 0.0;
         double chargeRateW = 0.0;
         {
@@ -194,7 +194,7 @@ public class SpellLogic {
             chargeRateW = values.chargeRateW;
         }
         double energyJ = chargeRateW * this.chargeSeconds; // 焦耳
-        double chargedMana = energyJ / 1000.0; // 转换为 mana（1 mana = 1 kJ）
+        double chargedMana = energyJ / 1000.0; // 转换为 availableMana（1 availableMana = 1 kJ）
         double supply = (manaMult == 0.0) ? chargedMana : chargedMana / manaMult; // 发射时除以魔杖倍率
         ModUtils.Mana initialMana = new ModUtils.Mana(supply, supply, supply, supply);
 

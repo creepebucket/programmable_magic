@@ -171,7 +171,7 @@ public final class MananetNetworkLogic {
     private static void processRemovalGroup(ServerLevel level, UUID oldRoot, java.util.ArrayList<MananetNetworkManager.NodeRemoval> removals) {
         MananetNetworkManager manager = MananetNetworkManager.get(level);
         MananetNetworkManager.NetworkState oldNetwork = manager.getOrCreate(oldRoot);
-        // 拆分前先把旧网络的当前 mana 拷贝出来（拆分后需要按 cache 占比重新分配）。
+        // 拆分前先把旧网络的当前 availableMana 拷贝出来（拆分后需要按 cache 占比重新分配）。
         Mana oldMana = ManaMath.copy(oldNetwork.mana);
 
         // 移除数量覆盖整个网络：直接把旧网络清空即可（无需再做连通分量计算）。
@@ -284,11 +284,11 @@ public final class MananetNetworkLogic {
         MananetNetworkPersistence.updateNetworkIdBulk(level, a.positions, oldRoot);
         MananetNetworkPersistence.updateNetworkIdBulk(level, positionsB, idB);
 
-        // 重新计算“旧网络当前 mana 在拆分后如何分配”：先按总 cache 夹紧，再按两侧 cache 占比切分。
+        // 重新计算“旧网络当前 availableMana 在拆分后如何分配”：先按总 cache 夹紧，再按两侧 cache 占比切分。
         Mana totalCache = ManaMath.copy(a.cache);
         totalCache.add(cacheB);
         Mana clamped = ManaMath.clampToCache(ManaMath.clampNonNegative(oldMana), totalCache);
-        // 按两侧缓存占比把旧网络的当前 mana 分给 A/B（逐分量按 cache 比例切分）。
+        // 按两侧缓存占比把旧网络的当前 availableMana 分给 A/B（逐分量按 cache 比例切分）。
         ManaSplit split = splitManaByCache(clamped, a.cache, cacheB);
 
         manager.setNetwork(oldRoot, split.manaA, a.cache, a.load, a.size);
@@ -415,7 +415,7 @@ public final class MananetNetworkLogic {
             MananetNodeState sa = MananetNetworkManager.get(level).getBlockNode(pos);
             MananetNodeState sb = MananetNetworkManager.get(level).getBlockNode(np);
             if (sa != null && sb != null && sa.networkId != null && sb.networkId != null) {
-                // union-find 合并：把两侧网络汇总为同一根 id（mana/cache/load/size 同步合并）。
+                // union-find 合并：把两侧网络汇总为同一根 id（availableMana/cache/load/size 同步合并）。
                 MananetNetworkManager.get(level).union(sa.networkId, sb.networkId);
             }
             return;
@@ -442,7 +442,7 @@ public final class MananetNetworkLogic {
         UUID oldId = manager.resolveNetworkId(aState.networkId);
         if (!oldId.equals(manager.resolveNetworkId(bState.networkId))) return;
 
-        // 记录拆分前的当前 mana：拆分后需要重新分配。
+        // 记录拆分前的当前 availableMana：拆分后需要重新分配。
         MananetNetworkManager.NetworkState oldNetwork = manager.getOrCreate(oldId);
         Mana oldMana = ManaMath.copy(oldNetwork.mana);
 
@@ -484,11 +484,11 @@ public final class MananetNetworkLogic {
         MananetNetworkPersistence.updateNetworkIdBulk(level, compA.positions, oldId);
         MananetNetworkPersistence.updateNetworkIdBulk(level, positionsB, idB);
 
-        // 按两侧 cache 占比重新分配当前 mana，并写回两个网络的汇总状态。
+        // 按两侧 cache 占比重新分配当前 availableMana，并写回两个网络的汇总状态。
         Mana totalCache = ManaMath.copy(compA.cache);
         totalCache.add(cacheB);
         Mana clamped = ManaMath.clampToCache(ManaMath.clampNonNegative(oldMana), totalCache);
-        // 拆分后按两侧缓存占比分配当前 mana。
+        // 拆分后按两侧缓存占比分配当前 availableMana。
         ManaSplit split = splitManaByCache(clamped, compA.cache, cacheB);
 
         manager.setNetwork(oldId, split.manaA, compA.cache, compA.load, compA.size);
@@ -498,9 +498,9 @@ public final class MananetNetworkLogic {
     private record ManaSplit(Mana manaA, Mana manaB) {}
 
     /**
-     * 按两侧 cache 占比拆分当前 mana（逐分量分配）。
+     * 按两侧 cache 占比拆分当前 availableMana（逐分量分配）。
      *
-     * <p>该方法假设 mana 已被夹紧到 {@code cacheA + cacheB} 以内。</p>
+     * <p>该方法假设 availableMana 已被夹紧到 {@code cacheA + cacheB} 以内。</p>
      */
     private static ManaSplit splitManaByCache(Mana mana, Mana cacheA, Mana cacheB) {
         double denomR = cacheA.getRadiation() + cacheB.getRadiation();
