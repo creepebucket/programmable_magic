@@ -8,8 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
-import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
+import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 
 import java.util.List;
 
@@ -26,57 +25,65 @@ public class SpellTooltipHandler {
         SpellItemLogic logic = spellItem.getLogic();
         List<Component> tooltip = event.getToolTip();
 
-        appendOverloads(tooltip, logic.RightParamsOffset, logic.getNeededParamsType(), logic.getReturnParamsType());
-        appendDescriptions(tooltip, logic.getTooltip());
-    }
+        // 在这里添加法术的tooltip
+        MutableComponent tmp; // 临时变量
 
-    private static void appendOverloads(List<Component> tooltip, int rightParamsOffset, List<List<SpellValueType>> inputs, List<List<SpellValueType>> outputs) {
-        if (inputs.isEmpty() && outputs.isEmpty()) {
-            return;
-        }
+        // 1. 基本信息
+        // TODO: 本地化
 
-        MutableComponent header = Component.literal("法术重载:").withStyle(ChatFormatting.GOLD);
-        if (rightParamsOffset > 0) {
-            header.append(Component.literal("  右置" + rightParamsOffset + "参").withStyle(ChatFormatting.DARK_GRAY));
-        }
-        tooltip.add(header);
-        int overloads = Math.max(inputs.size(), outputs.size());
-        for (int i = 0; i < overloads; i++) {
-            List<SpellValueType> in = i < inputs.size() ? inputs.get(i) : List.of();
-            List<SpellValueType> out = i < outputs.size() ? outputs.get(i) : List.of();
-            tooltip.add(Component.literal("  ").withStyle(ChatFormatting.DARK_GRAY).append(buildSignatureLine(in, out)));
-        }
-    }
+        // 法术类型
+        if (logic instanceof SpellItemLogic.BaseSpell) tmp = Component.literal("基础法术");
+        else if (logic instanceof SpellItemLogic.ComputeMod) tmp = Component.literal("计算修饰");
+        else if (logic instanceof SpellItemLogic.ControlMod) tmp = Component.literal("控制修饰");
+        else if (logic instanceof SpellItemLogic.AdjustMod) tmp = Component.literal("调整修饰");
+        else tmp = Component.literal("未知法术");
 
-    private static void appendDescriptions(List<Component> tooltip, List<Component> descriptions) {
-        if (descriptions.isEmpty()) {
-            return;
-        }
+        // 参数偏移
+        tmp.append(Component.literal(" / 右置" + logic.rightParamOffset + "参"));
 
-        tooltip.add(Component.literal("法术说明:").withStyle(ChatFormatting.AQUA));
-        for (Component description : descriptions) {
-            tooltip.add(Component.literal("  ").withStyle(ChatFormatting.DARK_GRAY)
-                    .append(description.copy().withStyle(ChatFormatting.LIGHT_PURPLE)));
-        }
-    }
+        // 优先级
+        tmp.append(Component.literal(" / 优先级" + logic.precedence));
 
-    private static Component buildSignatureLine(List<SpellValueType> inputs, List<SpellValueType> outputs) {
-        MutableComponent line = Component.empty();
-        line.append(formatTuple(inputs));
-        line.append(Component.literal(" -> ").withStyle(ChatFormatting.DARK_GRAY));
-        line.append(formatTuple(outputs));
-        return line;
-    }
+        // 结合性
+        if (logic.rightConnectivity) tmp.append(Component.literal(" / 右结合性"));
+                else tmp.append(Component.literal(" / 左结合性"));
 
-    private static Component formatTuple(List<SpellValueType> types) {
-        MutableComponent tuple = Component.literal("(").withStyle(ChatFormatting.GRAY);
-        for (int i = 0; i < types.size(); i++) {
-            if (i > 0) {
-                tuple.append(Component.literal(", ").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(tmp.withStyle(ChatFormatting.GRAY));
+
+        // 重载
+
+        tooltip.add(Component.literal("重载:").withStyle(ChatFormatting.AQUA));
+
+        for (int i = 0; i < logic.inputTypes.size(); i++) { // 应该不会NPE
+            tmp = Component.literal("    (").withStyle(ChatFormatting.GRAY);
+
+            // 输入
+            var types = logic.inputTypes.get(i);
+            var tmp2 = Component.empty();
+            for (int j = 0; j < types.size(); j++) {
+                if (j != 0) tmp2.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)); // 傻逼特判
+                tmp2.append(types.get(j).typed());
             }
-            tuple.append(types.get(i).typed());
+            tmp.append(tmp2);
+
+            tmp.append(Component.literal(") -> (").withStyle(ChatFormatting.GRAY));
+
+            // 输出
+            types = logic.outputTypes.get(i);
+            tmp2 = Component.empty();
+            for (int j = 0; j < types.size(); j++) {
+                if (j != 0) tmp2.append(Component.literal(", ").withStyle(ChatFormatting.GRAY)); // 依旧傻逼特判
+                tmp2.append(types.get(j).typed());
+            }
+            tmp.append(tmp2);
+
+            tooltip.add(tmp.append(Component.literal(")").withStyle(ChatFormatting.GRAY)));
         }
-        tuple.append(Component.literal(")").withStyle(ChatFormatting.GRAY));
-        return tuple;
+
+        // 描述
+
+        tooltip.add(Component.literal("描述:").withStyle(ChatFormatting.LIGHT_PURPLE));
+
+        tooltip.add(Component.translatable("spell." + MODID + "." + logic.name + ".desc").withStyle(ChatFormatting.GRAY));
     }
 }

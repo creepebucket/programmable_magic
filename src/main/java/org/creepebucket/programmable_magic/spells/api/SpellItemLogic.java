@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.spells.api;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -8,10 +9,12 @@ import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
 
 public abstract class SpellItemLogic implements Cloneable {
@@ -29,11 +32,14 @@ public abstract class SpellItemLogic implements Cloneable {
     public boolean bypassShunting = false;
 
     // 出入参
-    public List<List<SpellValueType>> inputTypes;
-    public List<List<SpellValueType>> outputTypes;
+    public List<List<SpellValueType>> inputTypes = List.of(List.of(SpellValueType.EMPTY));
+    public List<List<SpellValueType>> outputTypes = List.of(List.of(SpellValueType.EMPTY));
 
     // 注册名
     public String name;
+
+    // 法术子类别名
+    public Component subCategoryName = Component.translatable("spell." + MODID + ".subcategory.none");
 
     @Override
     public SpellItemLogic clone() {

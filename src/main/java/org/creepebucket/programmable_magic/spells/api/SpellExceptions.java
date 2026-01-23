@@ -23,7 +23,7 @@ public class SpellExceptions {
     // 异常的本地化报错文本
     public Component message() {
         return Component.translatable(this.errorType).append(": ").append(message).append(
-                Component.translatable("message.programmable_magic.error.detail.at_spell")).append(spell.getName());
+                Component.translatable("message.programmable_magic.error.detail.at_spell")).append(spell.name);
     }
 
     // 实际抛出这个错误

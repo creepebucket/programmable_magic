@@ -7,7 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
-import org.creepebucket.programmable_magic.spells.old.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,15 +41,14 @@ public class SpellItemModelProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
         for (Map.Entry<java.util.function.Supplier<Item>, java.util.function.Supplier<SpellItemLogic>> entry : SpellRegistry.getRegisteredSpells().entrySet()) {
-            String spellName = entry.getValue().get().getRegistryName();
-            String itemModelName = "spell_display_" + spellName;
+            String itemModelName = "spell_display_" + entry.getValue().get().name;
 
             // 1) 生成 models/item/spell_display_<name>.json
             JsonObject modelJson = new JsonObject();
             modelJson.addProperty("parent", "minecraft:item/generated");
             JsonObject textures = new JsonObject();
             // 使用物品图集路径：assets/<modid>/textures/item/spell/<spellName>.png
-            textures.addProperty("layer0", MODID + ":item/spell/" + spellName);
+            textures.addProperty("layer0", MODID + ":item/spell/" + entry.getValue().get().name);
             modelJson.add("textures", textures);
 
             Identifier modelId = Identifier.fromNamespaceAndPath(MODID, itemModelName);

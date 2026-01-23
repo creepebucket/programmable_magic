@@ -329,7 +329,7 @@
           95,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_1.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_1.png"
       },
       {
         "from_top_left": [
@@ -340,7 +340,7 @@
           111,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_2.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_2.png"
       },
       {
         "from_top_left": [
@@ -351,7 +351,7 @@
           127,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_3.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_3.png"
       },
       {
         "from_top_left": [
@@ -362,7 +362,7 @@
           143,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_4.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_4.png"
       },
       {
         "from_top_left": [
@@ -373,7 +373,7 @@
           159,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_5.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_5.png"
       },
       {
         "from_top_left": [
@@ -384,7 +384,7 @@
           175,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_6.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_6.png"
       },
       {
         "from_top_left": [
@@ -395,7 +395,7 @@
           191,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_7.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_7.png"
       },
       {
         "from_top_left": [
@@ -406,7 +406,7 @@
           207,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_8.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_8.png"
       },
       {
         "from_top_left": [
@@ -417,7 +417,7 @@
           223,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_9.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_9.png"
       },
       {
         "from_top_left": [
@@ -428,7 +428,7 @@
           239,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_0.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/number_digit_0.png"
       },
       {
         "from_top_left": [

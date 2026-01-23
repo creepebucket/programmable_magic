@@ -31,26 +31,6 @@ public class ModItemTagProvider extends ItemTagsProvider {
             var itemSupplier = entry.getKey();
             var logicSupplier = entry.getValue();
             var logic = logicSupplier.get();
-
-            switch (logic.getSpellType()) {
-                case BASE_SPELL:
-                    tag(ModTagKeys.SPELL_BASE_EFFECT).add(itemSupplier.get());
-                    break;
-                case ADJUST_MOD:
-                    tag(ModTagKeys.SPELL_ADJUST_MOD).add(itemSupplier.get());
-                    hasAdjust = true;
-                    break;
-                case CONTROL_MOD:
-                    tag(ModTagKeys.SPELL_CONTROL_MOD).add(itemSupplier.get());
-                    hasControl = true;
-                    break;
-                case COMPUTE_MOD:
-                    tag(ModTagKeys.SPELL_COMPUTE_MOD).add(itemSupplier.get());
-                    hasCompute = true;
-                    break;
-                default:
-                    break;
-            }
         }
 
         // 若存在对应分类，则确保这些分类标签被创建（即使没有实际条目）

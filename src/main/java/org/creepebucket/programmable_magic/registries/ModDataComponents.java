@@ -20,15 +20,6 @@ public class ModDataComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENTS =
             DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, Programmable_magic.MODID);
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Map<String, Double>>> MANA =
-            DATA_COMPONENTS.registerComponentType("availableMana", builder -> builder
-                    .persistent(Codec.unboundedMap(Codec.STRING, Codec.DOUBLE))
-                    .networkSynchronized(ByteBufCodecs.map(
-                            HashMap::new,
-                            ByteBufCodecs.STRING_UTF8,
-                            ByteBufCodecs.DOUBLE
-                    )));
-
     // 占位符绑定：存储被绑定物品的注册名（ResourceLocation.toString）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> WAND_PLACEHOLDER_ITEM_ID =
             DATA_COMPONENTS.registerComponentType("wand_placeholder_item_id", builder -> builder

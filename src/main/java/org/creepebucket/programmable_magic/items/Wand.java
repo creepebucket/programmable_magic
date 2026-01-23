@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.spells.old.SpellLogic;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
 import org.jetbrains.annotations.Nullable;
@@ -130,45 +129,6 @@ public class Wand extends BowItem implements IItemExtension {
      */
     @Override
     public boolean releaseUsing(ItemStack stack, Level level, LivingEntity living, int timeLeft) {
-        if (level.isClientSide()) return false;
-        if (!(living instanceof Player player)) return false;
-        if (player.isCrouching()) return false; // 潜行用于打开 GUI，不触发快捷充能释放
-
-        int total = getUseDuration(stack, living);
-        int holdUsed = Math.max(0, total - timeLeft);
-        long now = level.getGameTime();
-        Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
-        if (last == null) last = now;
-        long dt = Math.max(0L, now - last);
-        int used = (int) Math.max(0L, dt);
-        double chargeSec = ((double) used) / 20.0;
-
-        // 从魔杖组件重建法术与插件列表（与服务端数据包处理一致）
-        java.util.List<ItemStack> spells = new java.util.ArrayList<>();
-        {
-            java.util.List<ItemStack> saved = stack.get(ModDataComponents.WAND_SAVED_STACKS.get());
-            if (saved == null || saved.isEmpty()) saved = stack.get(ModDataComponents.WAND_STACKS_SMALL.get());
-            if (saved != null) for (ItemStack it : saved) {
-                if (it == null || it.isEmpty()) continue;
-                ItemStack cp = it.copy();
-                cp.setCount(1);
-            //player.getInventory().setChanged();
-                spells.add(cp);
-            }
-        }
-
-        java.util.List<ItemStack> plugins = new java.util.ArrayList<>();
-        {
-            java.util.List<ItemStack> list = stack.get(ModDataComponents.WAND_PLUGINS.get());
-            if (list != null) for (ItemStack it : list) { if (it != null && !it.isEmpty()) plugins.add(it.copy()); }
-        }
-
-        SpellLogic logic = new SpellLogic(spells, player, chargeSec, plugins);
-        logic.execute();
-
-        // 清空被动充能计数
-        // 改为记录“上次释放结束”的世界时间戳（tick）
-        stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), now);
         return true;
     }
 

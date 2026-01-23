@@ -31,7 +31,6 @@ public class SpellCompiler {
         // Step 2: 编译前语法检查
 
         // 2.1: 检查括号等法术配对情况
-        // FIXME: 无法检查)(
         Map<Class<? extends SpellItemLogic.PairedLeftSpell>, Integer> pairsCount = new HashMap<>();
 
         for (SpellItemLogic spell = rawSequence.head; spell != null; spell = spell.next) {
@@ -41,6 +40,12 @@ public class SpellCompiler {
                         pairsCount.getOrDefault(spell.getClass(), 0) + 1);
             // 右括号为配对计数器-1
             if (spell instanceof SpellItemLogic.PairedRightSpell) {
+                // 如果计数器等于0, 直接报错未配对括号
+                if (pairsCount.get(((SpellItemLogic.PairedRightSpell) spell).leftSpellType) <= 0) {
+                    SpellExceptions.PAIRS_UNMATCHED(caster, spell).throwIt(); // 这个右括号永远不会配对
+                    return new SpellSequence();
+                }
+
                 pairsCount.put(((SpellItemLogic.PairedRightSpell) spell).leftSpellType,
                         pairsCount.getOrDefault(((SpellItemLogic.PairedRightSpell) spell).leftSpellType, 0) - 1);
             }
@@ -108,6 +113,27 @@ public class SpellCompiler {
 
         // Step 5: 解析法术序列
 
+        /*
+         * 法术优先级:
+         *
+         *  ^ 先执行
+         *  | +05
+         *  | +04
+         *  | +03
+         *  | +02
+         *  | +01
+         *  | 000
+         *  | -01
+         *  | -02
+         *  | -03
+         *  | -04
+         *  | -05
+         *  | ...
+         *  | -99 所有无输出普通法术
+         *  v 后执行
+         *
+         */
+
         // Shitting(?) Yard
         SpellSequence operatorStack = new SpellSequence();
         SpellSequence spellsRPN = new SpellSequence();
@@ -130,7 +156,7 @@ public class SpellCompiler {
 
             else if (i instanceof ValueLiteralSpell) spellsRPN.pushRight(i);
 
-            // 如果这个法术没有入参, 当作数值处理
+                // 如果这个法术没有入参, 当作数值处理
             else if (i.inputTypes.get(0).get(0) == SpellValueType.EMPTY) { // 绝对不会NPE(?
                 // 只检查第一个重载的第一个元素, 我们无法区分同时含有无参和有参的法术作为数字还是作为算符
                 spellsRPN.pushRight(i);
