@@ -33,8 +33,9 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     @Override
     protected void renderSlot(GuiGraphics guiGraphics, Slot slot, int mouseX, int mouseY) {
         // 计算 slot 的渲染坐标（若未设置则退回到原生 slot 坐标）
-        int slotX = slotX(slot);
-        int slotY = slotY(slot);
+        int[] pos = slotPos(slot);
+        int slotX = pos[0];
+        int slotY = pos[1];
 
         // 准备待渲染的物品与渲染状态
         ItemStack stackToRender = slot.getItem();
@@ -83,8 +84,9 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
      * 绘制槽位内的物品与叠加文字。
      */
     protected void renderSlotContents(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack itemstack, @NotNull Slot slot, @Nullable String countString) {
-        int x = slotX(slot);
-        int y = slotY(slot);
+        int[] pos = slotPos(slot);
+        int x = pos[0];
+        int y = pos[1];
         int seed = x + y * this.imageWidth;
         if (slot.isFake()) {
             guiGraphics.renderFakeItem(itemstack, x, y, seed);
@@ -100,7 +102,8 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
      */
     @Override
     protected boolean isHovering(@NotNull Slot slot, double mouseX, double mouseY) {
-        return this.isHovering(slotX(slot), slotY(slot), 16, 16, mouseX, mouseY);
+        int[] pos = slotPos(slot);
+        return this.isHovering(pos[0], pos[1], 16, 16, mouseX, mouseY);
     }
 
     /**
@@ -110,9 +113,8 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     protected void renderSlotHighlightBack(@NotNull GuiGraphics guiGraphics) {
         Slot hoveredSlot = this.hoveredSlot;
         if (hoveredSlot == null || !hoveredSlot.isHighlightable()) return;
-        int x = slotX(hoveredSlot);
-        int y = slotY(hoveredSlot);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
+        int[] pos = slotPos(hoveredSlot);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, pos[0] - 4, pos[1] - 4, 24, 24);
     }
 
     /**
@@ -122,24 +124,16 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     protected void renderSlotHighlightFront(@NotNull GuiGraphics guiGraphics) {
         Slot hoveredSlot = this.hoveredSlot;
         if (hoveredSlot == null || !hoveredSlot.isHighlightable()) return;
-        int x = slotX(hoveredSlot);
-        int y = slotY(hoveredSlot);
-        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
+        int[] pos = slotPos(hoveredSlot);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, pos[0] - 4, pos[1] - 4, 24, 24);
     }
 
     /**
-     * 返回槽位的客户端 X（若未设置则使用原生 {@link Slot#x}）。
+     * 获取槽位的客户端渲染坐标（若未设置则使用原生 slot.x/y）。
      */
-    private int slotX(@NotNull Slot slot) {
+    private int[] slotPos(@NotNull Slot slot) {
         var pos = ClientSlotManager.getClientPosition(slot);
-        return pos != null ? pos.getFirst() : slot.x;
-    }
-
-    /**
-     * 返回槽位的客户端 Y（若未设置则使用原生 {@link Slot#y}）。
-     */
-    private int slotY(@NotNull Slot slot) {
-        var pos = ClientSlotManager.getClientPosition(slot);
-        return pos != null ? pos.getSecond() : slot.y;
+        if (pos != null) return new int[]{pos.getFirst(), pos.getSecond()};
+        return new int[]{slot.x, slot.y};
     }
 }

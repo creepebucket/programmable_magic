@@ -18,13 +18,19 @@ public class DataManager {
 
     private static final BiConsumer<String, Object> NOOP = (k, v) -> {};
 
+    /** 数据键的元信息（类型与同步模式） */
     private record Meta(DataType type, SyncMode syncMode) {}
 
+    /** 键 -> 元信息映射 */
     private final Map<String, Meta> metas = new HashMap<>();
+    /** 键 -> 当前值映射 */
     private final Map<String, Object> values = new HashMap<>();
+    /** 待拉取的 S2C 键集合（客户端初始化时使用） */
     private final Set<String> pendingPullKeys = new LinkedHashSet<>();
 
+    /** 客户端 -> 服务端的发送函数 */
     private BiConsumer<String, Object> sendToServer = NOOP;
+    /** 服务端 -> 客户端的发送函数 */
     private BiConsumer<String, Object> sendToClient = NOOP;
 
     /**
@@ -42,10 +48,15 @@ public class DataManager {
      */
     public DataInstance request(String key, DataType type, SyncMode syncMode, Object initialValue) {
         if (initialValue == null) throw new IllegalArgumentException("initialValue is required: " + key);
+
+        // 注册键的元信息与初始值（若已存在则跳过）
         this.metas.putIfAbsent(key, new Meta(type, syncMode));
         this.values.putIfAbsent(key, initialValue);
 
-        if ((syncMode == SyncMode.S2C || syncMode == SyncMode.BOTH) && this.sendToClient == NOOP) this.pendingPullKeys.add(key);
+        // 若为 S2C 键且当前在客户端侧，则加入待拉取队列
+        if ((syncMode == SyncMode.S2C || syncMode == SyncMode.BOTH) && this.sendToClient == NOOP) {
+            this.pendingPullKeys.add(key);
+        }
         return new DataInstance(this, key, type, syncMode);
     }
 
@@ -72,19 +83,30 @@ public class DataManager {
      */
     public void set(String key, Object value) {
         Meta meta = metaOrThrow(key);
-        if (this.sendToServer != NOOP && meta.syncMode() == SyncMode.S2C) throw new IllegalStateException("client cannot set s2c key: " + key);
-        if (this.sendToClient != NOOP && meta.syncMode() == SyncMode.C2S) throw new IllegalStateException("server cannot set c2s key: " + key);
 
+        // 校验同步方向：客户端不能写 S2C 键，服务端不能写 C2S 键
+        if (this.sendToServer != NOOP && meta.syncMode() == SyncMode.S2C) {
+            throw new IllegalStateException("client cannot set s2c key: " + key);
+        }
+        if (this.sendToClient != NOOP && meta.syncMode() == SyncMode.C2S) {
+            throw new IllegalStateException("server cannot set c2s key: " + key);
+        }
+
+        // 写入本地值
         this.values.put(key, value);
 
-        if ((meta.syncMode() == SyncMode.C2S || meta.syncMode() == SyncMode.BOTH) && this.sendToServer != NOOP) this.sendToServer.accept(key, value);
-        if ((meta.syncMode() == SyncMode.S2C || meta.syncMode() == SyncMode.BOTH) && this.sendToClient != NOOP) this.sendToClient.accept(key, value);
+        // 按同步模式发送到对端
+        boolean shouldSendToServer = (meta.syncMode() == SyncMode.C2S || meta.syncMode() == SyncMode.BOTH) && this.sendToServer != NOOP;
+        boolean shouldSendToClient = (meta.syncMode() == SyncMode.S2C || meta.syncMode() == SyncMode.BOTH) && this.sendToClient != NOOP;
+        if (shouldSendToServer) this.sendToServer.accept(key, value);
+        if (shouldSendToClient) this.sendToClient.accept(key, value);
     }
 
     /**
      * 处理客户端 -> 服务端的数据包；返回 {@code true} 表示该键被本管理器消费。
      */
     public boolean handleC2S(String key, Object value) {
+        // 处理拉取请求：客户端请求服务端返回指定键的当前值
         if (KEY_PULL.equals(key)) {
             for (String requestedKey : ((String) value).split("\n")) {
                 metaOrThrow(requestedKey);
@@ -94,6 +116,8 @@ public class DataManager {
             }
             return true;
         }
+
+        // 普通键：写入本地并广播给客户端
         if (!this.metas.containsKey(key)) return false;
         setLocal(key, value);
         this.sendToClient.accept(key, get(key));
@@ -104,6 +128,7 @@ public class DataManager {
      * 处理服务端 -> 客户端的数据包；返回 {@code true} 表示该键被本管理器消费。
      */
     public boolean handleS2C(String key, Object value) {
+        // 仅处理已注册的键，写入本地值
         if (!this.metas.containsKey(key)) return false;
         setLocal(key, value);
         return true;
@@ -113,8 +138,11 @@ public class DataManager {
      * 将暂存的拉取 keys 作为一个 KEY_PULL 包发送给服务端。
      */
     public void flushPullRequests() {
+        // 若无待拉取键或未绑定发送器则跳过
         if (this.pendingPullKeys.isEmpty()) return;
         if (this.sendToServer == NOOP) return;
+
+        // 将所有待拉取键合并为一个请求发送给服务端
         this.sendToServer.accept(KEY_PULL, String.join("\n", this.pendingPullKeys));
         this.pendingPullKeys.clear();
     }

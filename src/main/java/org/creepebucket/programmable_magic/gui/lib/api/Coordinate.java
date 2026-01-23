@@ -59,6 +59,27 @@ public class Coordinate {
     }
 
     /**
+     * 一次性计算屏幕坐标 [x, y]，避免重复获取 window。
+     */
+    public int[] toScreen() {
+        var window = Minecraft.getInstance().getWindow();
+        int sw = window.getGuiScaledWidth();
+        int sh = window.getGuiScaledHeight();
+        return new int[]{this.x.apply(sw, sh), this.y.apply(sw, sh)};
+    }
+
+    /**
+     * 一次性计算菜单坐标 [x, y]，避免重复获取 window 和 screen。
+     */
+    public int[] toMenu() {
+        var window = Minecraft.getInstance().getWindow();
+        var screen = (AbstractContainerScreen<?>) Minecraft.getInstance().screen;
+        int sw = window.getGuiScaledWidth();
+        int sh = window.getGuiScaledHeight();
+        return new int[]{this.x.apply(sw, sh) - screen.getGuiLeft(), this.y.apply(sw, sh) - screen.getGuiTop()};
+    }
+
+    /**
      * 以屏幕左上角为基准创建坐标。
      */
     public static Coordinate fromTopLeft(int deltaX, int deltaY) {

@@ -63,4 +63,6 @@ public abstract class UiMenuBase extends AbstractContainerMenu implements Simple
      */
     @Override
     public void handleSimpleKvS2C(String key, Object value) { this.ui.handleS2C(key, value); }
+
+    public abstract void init();
 }

@@ -12,25 +12,22 @@ import org.creepebucket.programmable_magic.registries.ModMenuTypes;
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends UiMenuBase {
-    /**
-     * 由网络附加数据构造（包含手持是哪只手）。
-     */
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {});
-        int ord = extra.readVarInt();
+        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {
+        });
     }
 
-    /**
-     * 默认主手的便捷构造。
-     */
     public WandMenu(int containerId, Inventory playerInv) {
         this(containerId, playerInv, InteractionHand.MAIN_HAND);
     }
 
-    /**
-     * 指定手的便捷构造。
-     */
     public WandMenu(int containerId, Inventory playerInv, InteractionHand hand) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {});
+        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, ui -> {
+        });
+    }
+
+    @Override
+    public void init() {
+        var ui = this.ui();
     }
 }
