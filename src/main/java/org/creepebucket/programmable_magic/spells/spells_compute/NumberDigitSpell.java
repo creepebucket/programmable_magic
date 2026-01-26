@@ -19,7 +19,7 @@ public class NumberDigitSpell extends SpellItemLogic implements SpellItemLogic.C
     public NumberDigitSpell(int digit) {
         this.digit = digit;
         this.name = "number_digit_" + digit;
-        this.subCategory = "spell." + MODID + ".subcategory.numbers";
+        this.subCategory = "spell." + MODID + ".subcategory.constants.number";
 
         this.outputTypes = List.of(List.of(SpellValueType.NUMBER));
     }

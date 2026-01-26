@@ -9,11 +9,14 @@ import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
 import java.util.List;
 
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+
 public class ParenSpell {
     public static class LParenSpell extends SpellItemLogic.PairedLeftSpell implements SpellItemLogic.ComputeMod {
         public LParenSpell() {
             this.name = "l_paren";
             this.rightSpellType = RParenSpell.class;
+            this.subCategory = "spell." + MODID + ".subcategory.structure";
         }
 
         @Override
@@ -36,6 +39,7 @@ public class ParenSpell {
         public RParenSpell() {
             this.name = "r_paren";
             this.leftSpellType = LParenSpell.class;
+            this.subCategory = "spell." + MODID + ".subcategory.structure";
         }
 
         @Override

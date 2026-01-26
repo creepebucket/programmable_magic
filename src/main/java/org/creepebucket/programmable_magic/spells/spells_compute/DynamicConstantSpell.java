@@ -36,7 +36,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class CameraDirectionSpell extends DynamicConstantSpell {
         public CameraDirectionSpell() {
-            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector";
             name = "camera_direction";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
@@ -49,7 +49,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class CasterPositionSpell extends DynamicConstantSpell {
         public CasterPositionSpell() {
-            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector";
             name = "caster_position";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
@@ -62,7 +62,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class SpellPositionSpell extends DynamicConstantSpell {
         public SpellPositionSpell() {
-            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector";
             name = "spell_position";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }

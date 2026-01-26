@@ -17,7 +17,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class Vector3OperationsSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
 
     public Vector3OperationsSpell() {
-        subCategory = "spell." + MODID + ".subcategory.operations.vector3";
+        subCategory = "spell." + MODID + ".subcategory.operations.vector";
     }
 
     public static class BuildVectorSpell extends Vector3OperationsSpell {

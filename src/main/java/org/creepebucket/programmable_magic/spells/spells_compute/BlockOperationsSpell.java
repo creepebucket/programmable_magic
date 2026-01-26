@@ -19,7 +19,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class BlockOperationsSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod{
 
     public BlockOperationsSpell() {
-        subCategory = "spell." + MODID + ".subcategory.block_operations";
+        subCategory = "spell." + MODID + ".subcategory.operations.block";
     }
 
     public static class BlockPositionSpell extends BlockOperationsSpell {

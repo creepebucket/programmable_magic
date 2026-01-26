@@ -9,6 +9,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollbarWidget;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
@@ -36,7 +37,6 @@ public class WandMenu extends Menu {
     public void init() {
 
         // 法术供应段
-        SyncedValue<Integer> supplySlotDeltaX = dataManager.register("supply_slot_delta_x", SyncMode.BOTH, 0);
         SyncedValue<Integer> supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
 
         // 添加法术供应槽位
@@ -48,16 +48,23 @@ public class WandMenu extends Menu {
         for(String key: spells.keySet()) {
             dx = 0;
 
+            addWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx, dy), key, supplySlotDeltaY));
+
             for(int i = 0; i<spells.get(key).size(); i++) {
                 addWidget(new WandWidgets.SpellSupplyWidget(
-                        new ItemStack(spells.get(key).get(i).get()), Coordinate.fromTopLeft(dx % 80, dy + Math.floorDiv(dx, 80) * 16), supplySlotDeltaX, supplySlotDeltaY
+                        new ItemStack(spells.get(key).get(i).get()), Coordinate.fromTopLeft(dx % 80, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY
                 ));
 
                 dx = dx + 16;
             }
-            dy = dy + 32 + Math.floorDiv(dx - 16, 80) * 16; // 奇技淫巧和魔法数字的集大成者
+            dy = dy + 64 + Math.floorDiv(dx - 16, 80) * 16; // 奇技淫巧和魔法数字的集大成者
         }
 
-        addWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(0, 0), 80, 999, 0, dy, 16, supplySlotDeltaY));
+        int finalDy = dy;
+
+        addWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(0, 0),
+                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotDeltaY));
+        addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(80, 0), Coordinate.fromBottomLeft(4, 0),
+                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotDeltaY, 0xFFFFFFFF, "y", true));
     }
 }

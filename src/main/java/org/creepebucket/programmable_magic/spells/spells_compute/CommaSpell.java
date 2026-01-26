@@ -9,9 +9,12 @@ import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
 import java.util.List;
 
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+
 public class CommaSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
     public CommaSpell() {
         this.name = "comma";
+        this.subCategory = "spell." + MODID + ".subcategory.structure";
     }
 
     @Override
