@@ -10,7 +10,7 @@ import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 import java.util.List;
 
 public class ParenSpell {
-    public class LParenSpell extends SpellItemLogic.PairedLeftSpell implements SpellItemLogic.ComputeMod {
+    public static class LParenSpell extends SpellItemLogic.PairedLeftSpell implements SpellItemLogic.ComputeMod {
         public LParenSpell() {
             this.name = "l_paren";
             this.rightSpellType = RParenSpell.class;
@@ -32,7 +32,7 @@ public class ParenSpell {
         }
     }
 
-    public class RParenSpell extends SpellItemLogic.PairedRightSpell implements SpellItemLogic.ComputeMod {
+    public static class RParenSpell extends SpellItemLogic.PairedRightSpell implements SpellItemLogic.ComputeMod {
         public RParenSpell() {
             this.name = "r_paren";
             this.leftSpellType = LParenSpell.class;

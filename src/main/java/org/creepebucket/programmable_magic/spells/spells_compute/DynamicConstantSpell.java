@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -22,7 +21,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class TimestampSpell extends DynamicConstantSpell {
         public TimestampSpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.number");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.number";
             name = "timestamp";
             outputTypes = List.of(List.of(SpellValueType.NUMBER));
         }
@@ -37,7 +36,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class CameraDirectionSpell extends DynamicConstantSpell {
         public CameraDirectionSpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.vector3");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
             name = "camera_direction";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
@@ -50,7 +49,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class CasterPositionSpell extends DynamicConstantSpell {
         public CasterPositionSpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.vector3");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
             name = "caster_position";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
@@ -63,7 +62,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class SpellPositionSpell extends DynamicConstantSpell {
         public SpellPositionSpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.vector3");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector3";
             name = "spell_position";
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
@@ -78,7 +77,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class CasterEntitySpell extends DynamicConstantSpell {
         public CasterEntitySpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.entity");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.entity";
             name = "caster_entity";
             outputTypes = List.of(List.of(SpellValueType.ENTITY));
         }
@@ -91,7 +90,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class SpellEntitySpell extends DynamicConstantSpell {
         public SpellEntitySpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.entity");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.entity";
             name = "spell_entity";
             outputTypes = List.of(List.of(SpellValueType.ENTITY));
         }
@@ -104,7 +103,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     public static class NearestEntitySpell extends DynamicConstantSpell {
         public NearestEntitySpell() {
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.dynamic_constant.entity");
+            subCategory = "spell." + MODID + ".subcategory.dynamic_constant.entity";
             name = "nearest_entity";
             outputTypes = List.of(List.of(SpellValueType.ENTITY));
         }

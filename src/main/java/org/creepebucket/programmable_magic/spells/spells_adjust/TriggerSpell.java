@@ -18,11 +18,15 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLogic.AdjustMod {
     public TriggerSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.trigger");
+        subCategory = "spell." + MODID + ".subcategory.trigger";
         precedence = -99;
     }
 
     public static class ConditionInvertSpell extends TriggerSpell {
+        public ConditionInvertSpell() {
+            name = "condition_invert";
+        }
+
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             return ExecutionResult.SUCCESS(this);

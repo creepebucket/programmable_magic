@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +19,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class NumberOperationsSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
 
     public NumberOperationsSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.operations.number");
+        subCategory = "spell." + MODID + ".subcategory.operations.number";
         rightParamOffset = 1;
     }
 
@@ -303,7 +302,7 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         public RandomNumberSpell() {
             super();
             name = "random";
-            inputTypes = List.of(List.of(SpellValueType.NUMBER), List.of(SpellValueType.NUMBER)); // [上界 .. 下界]
+            inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER)); // [上界 .. 下界]
             outputTypes = List.of(List.of(SpellValueType.NUMBER));
             precedence = 3;
         }

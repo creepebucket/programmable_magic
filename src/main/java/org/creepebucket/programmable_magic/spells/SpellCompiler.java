@@ -134,6 +134,20 @@ public class SpellCompiler {
          *
          */
 
+        /*
+         * 表内数字对应的当前实现:
+         *  +05: StorageSpell.GetStoreSpell (get_store)
+         *  +04: NumberOperationsSpell.ExponentSpell (exponent, 右结合)
+         *  +03: NumberOperationsSpell 一元运算 (如 sin/cos/tan/asin/acos/atan/...)
+         *  +02: NumberOperationsSpell 二元乘除模 (multiplication/division/remainder)
+         *  +01: NumberOperationsSpell 二元加减 (addition/subtraction)
+         *  000: BoolOperationsSpell 比较/判定与默认优先级 (如 greater_than/less_than/equal_to/...)
+         *  -01: BoolOperationsSpell.NotSpell (not)
+         *  -02: BoolOperationsSpell.OrSpell (or)
+         *  -03: BoolOperationsSpell.AndSpell (and)
+         *  -99: 无输出/跳过后缀转换 (FlowControlSpell/TriggerSpell/VisualEffectSpell/StorageSpell.SetStoreSpell)
+         */
+
         // Shitting(?) Yard
         SpellSequence operatorStack = new SpellSequence();
         SpellSequence spellsRPN = new SpellSequence();

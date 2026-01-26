@@ -23,7 +23,7 @@ public class FlowControlSpell {
             super();
             this.name = "loop_start";
             this.rightSpellType = LoopEndSpell.class;
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -83,7 +83,7 @@ public class FlowControlSpell {
             super();
             this.name = "loop_end";
             this.leftSpellType = LoopStartSpell.class;
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -111,7 +111,7 @@ public class FlowControlSpell {
         public BreakSpell() {
             super();
             this.name = "break";
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -148,7 +148,7 @@ public class FlowControlSpell {
         public ContinueSpell() {
             super();
             this.name = "continue";
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -186,7 +186,7 @@ public class FlowControlSpell {
             super();
             this.name = "if_start";
             this.rightSpellType = IfEndSpell.class;
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
             this.inputTypes = List.of(List.of(SpellValueType.BOOLEAN));
@@ -219,7 +219,7 @@ public class FlowControlSpell {
             super();
             this.name = "if_end";
             this.leftSpellType = IfStartSpell.class;
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -244,7 +244,7 @@ public class FlowControlSpell {
         public StopSpell() {
             super();
             this.name = "stop";
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }
@@ -269,7 +269,7 @@ public class FlowControlSpell {
         public RestartSpell() {
             super();
             this.name = "restart";
-            this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.flow_control");
+            this.subCategory = "spell." + MODID + ".subcategory.flow_control";
             this.precedence = -99;
             this.bypassShunting = true;
         }

@@ -9,10 +9,16 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
+import org.creepebucket.programmable_magic.spells.spells_adjust.TriggerSpell;
+import org.creepebucket.programmable_magic.spells.spells_base.VisualEffectSpell;
 import org.creepebucket.programmable_magic.spells.spells_compute.*;
+import org.creepebucket.programmable_magic.spells.spells_control.BoolOperationsSpell;
+import org.creepebucket.programmable_magic.spells.spells_control.FlowControlSpell;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -22,6 +28,7 @@ public class SpellRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     private static final Map<Identifier, Supplier<SpellItemLogic>> LOGIC_SUPPLIERS = new HashMap<>();
     private static final Map<Supplier<Item>, Supplier<SpellItemLogic>> REGISTERED_SPELLS = new LinkedHashMap<>();
+    public static final Map<String, List<Supplier<Item>>> SPELLS_BY_SUBCATEGORY = new LinkedHashMap<>();
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
@@ -86,10 +93,50 @@ public class SpellRegistry {
 
         registerSpell(DynamicConstantSpell.CasterEntitySpell::new);
         registerSpell(DynamicConstantSpell.SpellEntitySpell::new);
+        registerSpell(DynamicConstantSpell.NearestEntitySpell::new);
 
         // 其他计算
         registerSpell(BlockOperationsSpell.BlockPositionSpell::new);
+        registerSpell(ParenSpell.LParenSpell::new);
+        registerSpell(ParenSpell.RParenSpell::new);
         registerSpell(CommaSpell::new);
+        registerSpell(StorageSpell.SetStoreSpell::new);
+        registerSpell(StorageSpell.GetStoreSpell::new);
+        registerSpell(Vector3OperationsSpell.BuildVectorSpell::new);
+        registerSpell(Vector3OperationsSpell.EntityPositionSpell::new);
+        registerSpell(Vector3OperationsSpell.EntityVelocitySpell::new);
+
+        // 逻辑控制
+        registerSpell(BoolOperationsSpell.GreaterThanSpell::new);
+        registerSpell(BoolOperationsSpell.LessThanSpell::new);
+        registerSpell(BoolOperationsSpell.EqualToSpell::new);
+        registerSpell(BoolOperationsSpell.GreaterEqualToSpell::new);
+        registerSpell(BoolOperationsSpell.LessEqualToSpell::new);
+        registerSpell(BoolOperationsSpell.NotEqualToSpell::new);
+        registerSpell(BoolOperationsSpell.AndSpell::new);
+        registerSpell(BoolOperationsSpell.OrSpell::new);
+        registerSpell(BoolOperationsSpell.NotSpell::new);
+        registerSpell(BoolOperationsSpell.BlockIsAirSpell::new);
+        registerSpell(BoolOperationsSpell.BlockHasGravitySpell::new);
+
+        registerSpell(FlowControlSpell.LoopStartSpell::new);
+        registerSpell(FlowControlSpell.ForLoopSpell::new);
+        registerSpell(FlowControlSpell.LoopEndSpell::new);
+        registerSpell(FlowControlSpell.BreakSpell::new);
+        registerSpell(FlowControlSpell.ContinueSpell::new);
+        registerSpell(FlowControlSpell.IfStartSpell::new);
+        registerSpell(FlowControlSpell.IfEndSpell::new);
+        registerSpell(FlowControlSpell.StopSpell::new);
+        registerSpell(FlowControlSpell.RestartSpell::new);
+
+        // 调整法术
+        registerSpell(TriggerSpell.ConditionInvertSpell::new);
+        registerSpell(TriggerSpell.TouchGroundSpell::new);
+        registerSpell(TriggerSpell.TouchEntitySpell::new);
+        registerSpell(TriggerSpell.DelaySpell::new);
+
+        // 基础法术
+        registerSpell(VisualEffectSpell.DebugPrintSpell::new);
 
         ITEMS.register(eventBus);
     }
@@ -103,6 +150,7 @@ public class SpellRegistry {
         
         LOGIC_SUPPLIERS.put(Identifier.fromNamespaceAndPath(MODID, name), logicSupplier);
         REGISTERED_SPELLS.put(itemSupplier, logicSupplier);
+        SPELLS_BY_SUBCATEGORY.computeIfAbsent(logicInstance.subCategory, k -> new ArrayList<>()).add(itemSupplier);
     }
 
     public static SpellItemLogic createSpellLogic(Item item) {
@@ -118,5 +166,9 @@ public class SpellRegistry {
 
     public static Map<Supplier<Item>, Supplier<SpellItemLogic>> getRegisteredSpells() {
         return REGISTERED_SPELLS;
+    }
+
+    public static Map<String, List<Supplier<Item>>> getSpellsBySubcategory() {
+        return SPELLS_BY_SUBCATEGORY;
     }
 } 

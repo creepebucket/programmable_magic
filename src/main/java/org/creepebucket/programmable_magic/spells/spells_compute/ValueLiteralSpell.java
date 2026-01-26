@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -49,42 +48,42 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
     public static class PiSpell extends ValueLiteralSpell {
         public PiSpell() {
             super(SpellValueType.NUMBER, Math.PI, "pi");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.number");
+            subCategory = "spell." + MODID + ".subcategory.constants.number";
         }
     }
 
     public static class XUnitVectorSpell extends ValueLiteralSpell {
         public XUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(1, 0, 0), "x_unit_vector");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.vector3");
+            subCategory = "spell." + MODID + ".subcategory.constants.vector3";
         }
     }
 
     public static class YUnitVectorSpell extends ValueLiteralSpell {
         public YUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(0, 1, 0), "y_unit_vector");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.vector3");
+            subCategory = "spell." + MODID + ".subcategory.constants.vector3";
         }
     }
 
     public static class ZUnitVectorSpell extends ValueLiteralSpell {
         public ZUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(0, 0, 1), "z_unit_vector");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.vector3");
+            subCategory = "spell." + MODID + ".subcategory.constants.vector3";
         }
     }
 
     public static class TrueSpell extends ValueLiteralSpell {
         public TrueSpell() {
             super(SpellValueType.BOOLEAN, true, "true");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.boolean");
+            subCategory = "spell." + MODID + ".subcategory.constants.boolean";
         }
     }
 
     public static class FalseSpell extends ValueLiteralSpell {
         public FalseSpell() {
             super(SpellValueType.BOOLEAN, false, "false");
-            subCategoryName = Component.translatable("spell." + MODID + ".subcategory.constants.boolean");
+            subCategory = "spell." + MODID + ".subcategory.constants.boolean";
         }
     }
 }

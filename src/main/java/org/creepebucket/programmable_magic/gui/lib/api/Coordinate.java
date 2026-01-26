@@ -113,4 +113,13 @@ public class Coordinate {
     public static Coordinate fromCenter(int deltaX, int deltaY) {
         return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh / 2 + deltaY);
     }
+
+    /**
+     * 计算方法
+     */
+
+    public Coordinate add(Coordinate delta) {
+        return new Coordinate((sw, sh) -> this.x.apply(sw, sh) + delta.x.apply(sw, sh),
+                (sw, sh) -> this.y.apply(sw, sh) + delta.y.apply(sw, sh));
+    }
 }

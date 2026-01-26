@@ -2,7 +2,6 @@ package org.creepebucket.programmable_magic.spells.spells_compute;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.Vec3;
@@ -20,7 +19,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class BlockOperationsSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod{
 
     public BlockOperationsSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.block_operations");
+        subCategory = "spell." + MODID + ".subcategory.block_operations";
     }
 
     public static class BlockPositionSpell extends BlockOperationsSpell {

@@ -39,7 +39,7 @@ public abstract class SpellItemLogic implements Cloneable {
     public String name;
 
     // 法术子类别名
-    public Component subCategoryName = Component.translatable("spell." + MODID + ".subcategory.none");
+    public String subCategory = "spell." + MODID + ".subcategory.none";
 
     @Override
     public SpellItemLogic clone() {

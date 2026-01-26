@@ -11,23 +11,15 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
  * 纹理控件：在指定坐标绘制一张 GUI 纹理。
  */
 public class TextureWidget extends Widget implements Renderable {
-    /** 纹理左上角坐标 */
-    public final Coordinate pos;
     /** 纹理资源标识 */
     public final Identifier texture;
-    /** 纹理宽度 */
-    public final int width;
-    /** 纹理高度 */
-    public final int height;
 
     /**
      * 创建一个纹理控件。
      */
     public TextureWidget(Coordinate pos, Identifier texture, int width, int height) {
-        this.pos = pos;
+        super(pos, width, height);
         this.texture = texture;
-        this.width = width;
-        this.height = height;
     }
 
     /**

@@ -21,7 +21,7 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
 
     public BoolOperationsSpell() {
         outputTypes = List.of(List.of(SpellValueType.BOOLEAN));
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.bool_operations");
+        subCategory = "spell." + MODID + ".subcategory.bool_operations";
     }
 
     // 返回值是布尔值

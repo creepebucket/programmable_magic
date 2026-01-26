@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -18,7 +17,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class Vector3OperationsSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
 
     public Vector3OperationsSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.operations.vector3");
+        subCategory = "spell." + MODID + ".subcategory.operations.vector3";
     }
 
     public static class BuildVectorSpell extends Vector3OperationsSpell {

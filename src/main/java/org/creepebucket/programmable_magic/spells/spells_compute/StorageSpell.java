@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -16,7 +15,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class StorageSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod{
 
     public StorageSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.data_storage");
+        subCategory = "spell." + MODID + ".subcategory.data_storage";
     }
 
     @Override

@@ -19,7 +19,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class VisualEffectSpell extends SpellItemLogic implements SpellItemLogic.BaseSpell {
 
     public VisualEffectSpell() {
-        subCategoryName = Component.translatable("spell." + MODID + ".subcategory.visual");
+        subCategory = "spell." + MODID + ".subcategory.visual";
         precedence = -99;
     }
 

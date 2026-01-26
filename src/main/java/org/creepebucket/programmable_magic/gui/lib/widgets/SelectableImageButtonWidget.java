@@ -15,12 +15,6 @@ import java.util.function.BooleanSupplier;
  * 可选中图片按钮控件：根据选中状态显示不同纹理，点击时触发回调。
  */
 public class SelectableImageButtonWidget extends Widget implements Renderable, Clickable {
-    /** 按钮左上角坐标 */
-    private final Coordinate pos;
-    /** 按钮宽度 */
-    private final int width;
-    /** 按钮高度 */
-    private final int height;
     /** 未选中状态纹理 */
     private final Identifier normal;
     /** 选中状态纹理 */
@@ -31,9 +25,7 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     private final Runnable onPress;
 
     public SelectableImageButtonWidget(Coordinate pos, int width, int height, Identifier normal, Identifier selected, BooleanSupplier isSelected, Runnable onPress) {
-        this.pos = pos;
-        this.width = width;
-        this.height = height;
+        super(pos, width, height);
         this.normal = normal;
         this.selected = selected;
         this.isSelected = isSelected;
@@ -50,9 +42,7 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
         // 检测点击是否在按钮范围内
-        int x = this.pos.toScreenX();
-        int y = this.pos.toScreenY();
-        if (!isInBounds(event.x(), event.y(), x, y, this.width, this.height)) return false;
+        if (!contains(event.x(), event.y())) return false;
         this.onPress.run();
         return true;
     }

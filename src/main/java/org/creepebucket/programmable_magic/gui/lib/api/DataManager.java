@@ -1,158 +1,107 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
-import java.util.LinkedHashSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 
-/**
- * 键值数据管理器：为 UI 提供本地存储与 c2s/s2c 的 KV 同步。
- */
 public class DataManager {
 
-    /**
-     * 拉取模式使用的内部键：客户端上报需要拉取的 keys，服务端返回这些 keys 的当前值。
-     */
-    public static final String KEY_PULL = "data_manager.pull_keys";
+    // 内部协议常量
+    private static final String KEY_PULL_REQUEST = "$internal:pull";
 
-    private static final BiConsumer<String, Object> NOOP = (k, v) -> {};
+    // 核心存储
+    final Map<String, Object> values = new HashMap<>();
+    final Map<String, SyncMode> modes = new HashMap<>();
 
-    /** 数据键的元信息（类型与同步模式） */
-    private record Meta(DataType type, SyncMode syncMode) {}
+    // 待拉取列表 (客户端用)
+    private final Set<String> pendingPulls = new LinkedHashSet<>();
 
-    /** 键 -> 元信息映射 */
-    private final Map<String, Meta> metas = new HashMap<>();
-    /** 键 -> 当前值映射 */
-    private final Map<String, Object> values = new HashMap<>();
-    /** 待拉取的 S2C 键集合（客户端初始化时使用） */
-    private final Set<String> pendingPullKeys = new LinkedHashSet<>();
+    // 网络回调
+    private BiConsumer<String, Object> sendToServer;
+    private BiConsumer<String, Object> sendToClient;
 
-    /** 客户端 -> 服务端的发送函数 */
-    private BiConsumer<String, Object> sendToServer = NOOP;
-    /** 服务端 -> 客户端的发送函数 */
-    private BiConsumer<String, Object> sendToClient = NOOP;
+    // 绑定网络发送器
+    public void bindServerSender(BiConsumer<String, Object> sender) { this.sendToServer = sender; }
+    public void bindClientSender(BiConsumer<String, Object> sender) { this.sendToClient = sender; }
 
     /**
-     * 绑定客户端 -> 服务端发送器。
+     * 1. 注册数据
+     * 如果是 S2C 且当前没有发往客户端的能力(说明是客户端)，自动加入拉取列表。
      */
-    public void bindSendToServer(BiConsumer<String, Object> sender) { this.sendToServer = sender; }
+    public <T> SyncedValue<T> register(String key, SyncMode mode, T initialValue) {
+        if (!values.containsKey(key)) {
 
-    /**
-     * 绑定服务端 -> 客户端发送器。
-     */
-    public void bindSendToClient(BiConsumer<String, Object> sender) { this.sendToClient = sender; }
-
-    /**
-     * 注册一个键并返回实例句柄；若已存在则复用既有元信息与初始值。
-     */
-    public DataInstance request(String key, DataType type, SyncMode syncMode, Object initialValue) {
-        if (initialValue == null) throw new IllegalArgumentException("initialValue is required: " + key);
-
-        // 注册键的元信息与初始值（若已存在则跳过）
-        this.metas.putIfAbsent(key, new Meta(type, syncMode));
-        this.values.putIfAbsent(key, initialValue);
-
-        // 若为 S2C 键且当前在客户端侧，则加入待拉取队列
-        if ((syncMode == SyncMode.S2C || syncMode == SyncMode.BOTH) && this.sendToClient == NOOP) {
-            this.pendingPullKeys.add(key);
+            values.put(key, initialValue);
+            modes.put(key, mode);
         }
-        return new DataInstance(this, key, type, syncMode);
+
+        // 客户端侧逻辑：如果是服务端控制的数据，启动时需要去拉取
+        if ((mode == SyncMode.S2C || mode == SyncMode.BOTH) && sendToClient == null) {
+            pendingPulls.add(key);
+        }
+        return new SyncedValue<>(this, key);
     }
 
     /**
-     * 判断某个键是否已注册。
+     * 2. 发送拉取请求 (客户端调用)
+     * 把所有积压的 key 打包发给服务端
      */
-    public boolean hasKey(String key) { return this.metas.containsKey(key); }
-
-    /**
-     * 读取键的当前值。
-     */
-    public Object get(String key) { return this.values.get(key); }
-
-    /**
-     * 仅写入本地值，不触发同步发送。
-     */
-    public void setLocal(String key, Object value) {
-        metaOrThrow(key);
-        this.values.put(key, value);
+    public void flushPullRequests() {
+        if (!pendingPulls.isEmpty() && sendToServer != null) {
+            sendToServer.accept(KEY_PULL_REQUEST, String.join("\n", pendingPulls));
+            pendingPulls.clear();
+        }
     }
 
     /**
-     * 写入值，并按键的同步模式决定是否发送到对端。
+     * 3. 核心写逻辑 (由 SyncedValue 调用)
+     * 更新本地 -> 判断模式 -> 发送网络包
      */
-    public void set(String key, Object value) {
-        Meta meta = metaOrThrow(key);
+    void update(String key, Object newVal) {
+        // 更新本地
+        values.put(key, newVal);
 
-        // 校验同步方向：客户端不能写 S2C 键，服务端不能写 C2S 键
-        if (this.sendToServer != NOOP && meta.syncMode() == SyncMode.S2C) {
-            throw new IllegalStateException("client cannot set s2c key: " + key);
+        // 尝试发送网络包
+        SyncMode mode = modes.get(key);
+
+        // 如果我是客户端 (有发往服务端的通道) 且模式允许 C2S
+        if (sendToServer != null && (mode == SyncMode.C2S || mode == SyncMode.BOTH)) {
+            sendToServer.accept(key, newVal);
         }
-        if (this.sendToClient != NOOP && meta.syncMode() == SyncMode.C2S) {
-            throw new IllegalStateException("server cannot set c2s key: " + key);
+
+        // 如果我是服务端 (有发往客户端的通道) 且模式允许 S2C
+        if (sendToClient != null && (mode == SyncMode.S2C || mode == SyncMode.BOTH)) {
+            sendToClient.accept(key, newVal);
         }
-
-        // 写入本地值
-        this.values.put(key, value);
-
-        // 按同步模式发送到对端
-        boolean shouldSendToServer = (meta.syncMode() == SyncMode.C2S || meta.syncMode() == SyncMode.BOTH) && this.sendToServer != NOOP;
-        boolean shouldSendToClient = (meta.syncMode() == SyncMode.S2C || meta.syncMode() == SyncMode.BOTH) && this.sendToClient != NOOP;
-        if (shouldSendToServer) this.sendToServer.accept(key, value);
-        if (shouldSendToClient) this.sendToClient.accept(key, value);
     }
 
     /**
-     * 处理客户端 -> 服务端的数据包；返回 {@code true} 表示该键被本管理器消费。
+     * 4. 核心读逻辑 (网络包入口)
+     * 处理拉取请求 OR 处理数据更新
      */
-    public boolean handleC2S(String key, Object value) {
-        // 处理拉取请求：客户端请求服务端返回指定键的当前值
-        if (KEY_PULL.equals(key)) {
-            for (String requestedKey : ((String) value).split("\n")) {
-                metaOrThrow(requestedKey);
-                Object requestedValue = get(requestedKey);
-                if (requestedValue == null) throw new IllegalStateException("null value: " + requestedKey);
-                this.sendToClient.accept(requestedKey, requestedValue);
+    public boolean handlePacket(String key, Object val) {
+        // === 情况 A: 处理拉取请求 (服务端逻辑) ===
+        if (KEY_PULL_REQUEST.equals(key)) {
+            if (sendToClient == null) return true; // 没法回话就忽略
+            // 解析 key 列表，直接把当前值发回去
+            for (String reqKey : ((String) val).split("\n")) {
+                if (values.containsKey(reqKey)) {
+                    sendToClient.accept(reqKey, values.get(reqKey));
+                }
             }
             return true;
         }
 
-        // 普通键：写入本地并广播给客户端
-        if (!this.metas.containsKey(key)) return false;
-        setLocal(key, value);
-        this.sendToClient.accept(key, get(key));
+        // === 情况 B: 普通数据同步 ===
+        if (!values.containsKey(key)) return false; // 未知 key，不处理
+
+        values.put(key, val); // 更新本地
+
+        // 特殊处理：如果是 C2S (客户端改的)，服务端收到后通常要广播回给客户端确认
+        SyncMode mode = modes.get(key);
+        if (sendToClient != null && (mode == SyncMode.C2S || mode == SyncMode.BOTH)) {
+            sendToClient.accept(key, val);
+        }
+
         return true;
-    }
-
-    /**
-     * 处理服务端 -> 客户端的数据包；返回 {@code true} 表示该键被本管理器消费。
-     */
-    public boolean handleS2C(String key, Object value) {
-        // 仅处理已注册的键，写入本地值
-        if (!this.metas.containsKey(key)) return false;
-        setLocal(key, value);
-        return true;
-    }
-
-    /**
-     * 将暂存的拉取 keys 作为一个 KEY_PULL 包发送给服务端。
-     */
-    public void flushPullRequests() {
-        // 若无待拉取键或未绑定发送器则跳过
-        if (this.pendingPullKeys.isEmpty()) return;
-        if (this.sendToServer == NOOP) return;
-
-        // 将所有待拉取键合并为一个请求发送给服务端
-        this.sendToServer.accept(KEY_PULL, String.join("\n", this.pendingPullKeys));
-        this.pendingPullKeys.clear();
-    }
-
-    /**
-     * 获取键的元信息；若未注册则抛出异常。
-     */
-    private Meta metaOrThrow(String key) {
-        Meta meta = this.metas.get(key);
-        if (meta == null) throw new IllegalStateException("unknown key: " + key);
-        return meta;
     }
 }

@@ -13,15 +13,13 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 public class SlotWidget extends Widget implements Tickable, Lifecycle {
     /** 关联的槽位实例 */
     public Slot slot;
-    /** 槽位渲染坐标 */
-    public Coordinate pos;
 
     /**
      * 创建一个槽位控件。
      */
     public SlotWidget(Slot slot, Coordinate pos) {
+        super(pos);
         this.slot = slot;
-        this.pos = pos;
     }
 
     /**

@@ -10,7 +10,7 @@
           95,
           623
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/paint_data.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/debug_print.png"
       },
       {
         "from_top_left": [
@@ -142,7 +142,7 @@
           111,
           671
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/condition_inverter.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/condition_invert.png"
       },
       {
         "from_top_left": [
@@ -153,7 +153,7 @@
           127,
           671
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_entity.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/touch_entity.png"
       },
       {
         "from_top_left": [
@@ -164,7 +164,7 @@
           143,
           671
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/trigger_touch_ground.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/touch_ground.png"
       },
       {
         "from_top_left": [
@@ -175,7 +175,7 @@
           95,
           687
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_lparen.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/l_paren.png"
       },
       {
         "from_top_left": [
@@ -186,7 +186,7 @@
           111,
           687
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mod.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/comma.png"
       },
       {
         "from_top_left": [
@@ -197,7 +197,7 @@
           127,
           687
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rparen.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/r_paren.png"
       },
       {
         "from_top_left": [
@@ -219,7 +219,7 @@
           111,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/for.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/for_loop.png"
       },
       {
         "from_top_left": [
@@ -241,7 +241,7 @@
           143,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_break.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/break.png"
       },
       {
         "from_top_left": [
@@ -252,7 +252,7 @@
           159,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/loop_continue.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/continue.png"
       },
       {
         "from_top_left": [
@@ -263,7 +263,7 @@
           175,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/if.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/if_start.png"
       },
       {
         "from_top_left": [
@@ -274,7 +274,7 @@
           191,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/restart_spell.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/restart.png"
       },
       {
         "from_top_left": [
@@ -285,7 +285,7 @@
           207,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/end_spell.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/stop.png"
       },
       {
         "from_top_left": [
@@ -296,7 +296,7 @@
           223,
           703
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/if_branch_end.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/if_end.png"
       },
       {
         "from_top_left": [
@@ -307,7 +307,7 @@
           95,
           719
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_world_time.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/timestamp.png"
       },
       {
         "from_top_left": [
@@ -318,7 +318,7 @@
           111,
           719
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_random_number.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/random.png"
       },
       {
         "from_top_left": [
@@ -439,7 +439,7 @@
           255,
           735
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pi.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/pi.png"
       },
       {
         "from_top_left": [
@@ -450,7 +450,7 @@
           95,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_add.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/addition.png"
       },
       {
         "from_top_left": [
@@ -461,7 +461,7 @@
           111,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sub.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/subtraction.png"
       },
       {
         "from_top_left": [
@@ -472,7 +472,7 @@
           127,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_mul.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/multiplication.png"
       },
       {
         "from_top_left": [
@@ -483,7 +483,7 @@
           143,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_div.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/division.png"
       },
       {
         "from_top_left": [
@@ -494,7 +494,7 @@
           159,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_rem.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/remainder.png"
       },
       {
         "from_top_left": [
@@ -505,7 +505,7 @@
           175,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_pow.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/exponent.png"
       },
       {
         "from_top_left": [
@@ -516,7 +516,7 @@
           191,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_sin.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/sin.png"
       },
       {
         "from_top_left": [
@@ -527,7 +527,7 @@
           207,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_cos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/cos.png"
       },
       {
         "from_top_left": [
@@ -538,7 +538,7 @@
           223,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_tan.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/tan.png"
       },
       {
         "from_top_left": [
@@ -549,7 +549,7 @@
           239,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_length.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/vector_length.png"
       },
       {
         "from_top_left": [
@@ -560,7 +560,7 @@
           255,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_asin.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/asin.png"
       },
       {
         "from_top_left": [
@@ -571,7 +571,7 @@
           271,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_acos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/acos.png"
       },
       {
         "from_top_left": [
@@ -582,7 +582,7 @@
           287,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_atan.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/atan.png"
       },
       {
         "from_top_left": [
@@ -593,7 +593,7 @@
           303,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_x.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/vector_x.png"
       },
       {
         "from_top_left": [
@@ -604,7 +604,7 @@
           319,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_y.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/vector_y.png"
       },
       {
         "from_top_left": [
@@ -615,7 +615,7 @@
           335,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_z.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/vector_z.png"
       },
       {
         "from_top_left": [
@@ -626,7 +626,7 @@
           351,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_ceil.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/ceil.png"
       },
       {
         "from_top_left": [
@@ -637,7 +637,7 @@
           367,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_floor.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/floor.png"
       },
       {
         "from_top_left": [
@@ -648,7 +648,7 @@
           383,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_armor.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/entity_armor.png"
       },
       {
         "from_top_left": [
@@ -659,7 +659,7 @@
           399,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_max_health.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/entity_max_health.png"
       },
       {
         "from_top_left": [
@@ -670,7 +670,7 @@
           415,
           751
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_health.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/entity_health.png"
       },
       {
         "from_top_left": [
@@ -681,7 +681,7 @@
           95,
           767
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster_pos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/caster_position.png"
       },
       {
         "from_top_left": [
@@ -692,7 +692,7 @@
           111,
           767
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_pos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/spell_position.png"
       },
       {
         "from_top_left": [
@@ -703,7 +703,7 @@
           127,
           767
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_view_vec.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/camera_direction.png"
       },
       {
         "from_top_left": [
@@ -714,7 +714,7 @@
           95,
           783
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_x.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/x_unit_vector.png"
       },
       {
         "from_top_left": [
@@ -725,7 +725,7 @@
           111,
           783
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_y.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/y_unit_vector.png"
       },
       {
         "from_top_left": [
@@ -736,7 +736,7 @@
           127,
           783
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_unit_z.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/z_unit_vector.png"
       },
       {
         "from_top_left": [
@@ -747,7 +747,7 @@
           95,
           799
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_vec_xyz.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/build_vector.png"
       },
       {
         "from_top_left": [
@@ -758,7 +758,7 @@
           111,
           799
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_velocity.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/entity_velocity.png"
       },
       {
         "from_top_left": [
@@ -769,7 +769,7 @@
           127,
           799
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_entity_pos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/entity_position.png"
       },
       {
         "from_top_left": [
@@ -791,7 +791,7 @@
           95,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/is_air.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/block_is_air.png"
       },
       {
         "from_top_left": [
@@ -802,7 +802,7 @@
           111,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/is_gravity_block.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/block_has_gravity.png"
       },
       {
         "from_top_left": [
@@ -813,7 +813,7 @@
           127,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/equal.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/equal_to.png"
       },
       {
         "from_top_left": [
@@ -824,7 +824,7 @@
           143,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/not_equal.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/not_equal_to.png"
       },
       {
         "from_top_left": [
@@ -835,7 +835,7 @@
           159,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/less.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/less_than.png"
       },
       {
         "from_top_left": [
@@ -846,7 +846,7 @@
           175,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/less_equal.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/less_equal_to.png"
       },
       {
         "from_top_left": [
@@ -857,7 +857,7 @@
           191,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/greater.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/greater_than.png"
       },
       {
         "from_top_left": [
@@ -868,7 +868,7 @@
           207,
           815
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/greater_equal.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/greater_equal_to.png"
       },
       {
         "from_top_left": [
@@ -934,7 +934,7 @@
           95,
           847
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_spell_entity.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/spell_entity.png"
       },
       {
         "from_top_left": [
@@ -945,7 +945,7 @@
           111,
           847
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_caster.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/caster_entity.png"
       },
       {
         "from_top_left": [
@@ -956,7 +956,7 @@
           127,
           847
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_nearest_entity.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/nearest_entity.png"
       },
       {
         "from_top_left": [
@@ -967,7 +967,7 @@
           95,
           863
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_block_at_pos.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/block_position.png"
       },
       {
         "from_top_left": [
@@ -978,7 +978,7 @@
           95,
           879
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_get_storage.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/get_store.png"
       },
       {
         "from_top_left": [
@@ -989,7 +989,7 @@
           111,
           879
         ],
-        "target_img_path": "assets/programmable_magic/textures/item/spell/compute_set_storage.png"
+        "target_img_path": "assets/programmable_magic/textures/item/spell/set_store.png"
       },
       {
         "from_top_left": [

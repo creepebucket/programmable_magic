@@ -13,15 +13,13 @@ import java.util.function.Supplier;
  * 文本控件：在指定坐标渲染动态文本。
  */
 public class TextWidget extends Widget implements Renderable {
-    /** 文本左上角坐标 */
-    private final Coordinate pos;
     /** 文本内容提供器 */
     private final Supplier<String> text;
     /** 文本颜色提供器 */
     private final IntSupplier color;
 
     public TextWidget(Coordinate pos, Supplier<String> text, IntSupplier color) {
-        this.pos = pos;
+        super(pos);
         this.text = text;
         this.color = color;
     }

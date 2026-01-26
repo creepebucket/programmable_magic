@@ -4,33 +4,30 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-
 /**
  * 滚动区域控件：在指定区域内响应鼠标滚轮事件，更新滚动值。
  */
 public class ScrollRegionWidget extends Widget implements MouseScrollable {
     /** 区域左上角坐标 */
-    private final Coordinate pos;
+    public final Coordinate pos;
     /** 区域宽度提供器 */
-    private final IntSupplier width;
+    public final int width;
     /** 区域高度提供器 */
-    private final IntSupplier height;
-    /** 当前滚动值获取器 */
-    private final IntSupplier getValue;
-    /** 最大滚动值获取器 */
-    private final IntSupplier maxValue;
-    /** 滚动值设置器 */
-    private final IntConsumer setValue;
+    public final int height;
+    /** 当前滚动值 */
+    public int currentValue;
+    /** 最大滚动值 */
+    public final int maxValue;
+    /** 滚动值倍数 */
+    public final int valueMultiplier;
 
-    public ScrollRegionWidget(Coordinate pos, IntSupplier width, IntSupplier height, IntSupplier getValue, IntSupplier maxValue, IntConsumer setValue) {
+    public ScrollRegionWidget(Coordinate pos, int width, int height, int currentValue, int maxValue, int valueMultiplier) {
         this.pos = pos;
         this.width = width;
         this.height = height;
-        this.getValue = getValue;
+        this.currentValue = currentValue;
         this.maxValue = maxValue;
-        this.setValue = setValue;
+        this.valueMultiplier = valueMultiplier;
     }
 
     @Override
@@ -38,21 +35,21 @@ public class ScrollRegionWidget extends Widget implements MouseScrollable {
         // 检测鼠标是否在滚动区域内
         int x = this.pos.toScreenX();
         int y = this.pos.toScreenY();
-        int w = this.width.getAsInt();
-        int h = this.height.getAsInt();
+        int w = this.width;
+        int h = this.height;
         if (!isInBounds(mouseX, mouseY, x, y, w, h)) return false;
 
         // 计算滚动方向：向上滚动减少值，向下滚动增加值
-        int delta = scrollY > 0 ? -1 : (scrollY < 0 ? 1 : 0);
+        int delta = scrollY > 0 ? -this.valueMultiplier : (scrollY < 0 ? this.valueMultiplier : 0);
         if (delta == 0) return true;
 
         // 计算新值并限制在有效范围内
-        int current = this.getValue.getAsInt();
-        int max = Math.max(0, this.maxValue.getAsInt());
-        int next = Math.max(0, Math.min(max, current + delta));
-        if (next == current) return true;
+        int next = this.currentValue + delta;
+        if (next < 0) next = 0;
+        if (next > this.maxValue) next = this.maxValue;
+        if (next == this.currentValue) return true;
 
-        this.setValue.accept(next);
+        this.currentValue = next;
         return true;
     }
 }

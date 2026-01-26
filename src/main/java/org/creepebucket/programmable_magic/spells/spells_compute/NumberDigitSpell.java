@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -20,7 +19,7 @@ public class NumberDigitSpell extends SpellItemLogic implements SpellItemLogic.C
     public NumberDigitSpell(int digit) {
         this.digit = digit;
         this.name = "number_digit_" + digit;
-        this.subCategoryName = Component.translatable("spell." + MODID + ".subcategory.numbers");
+        this.subCategory = "spell." + MODID + ".subcategory.numbers";
 
         this.outputTypes = List.of(List.of(SpellValueType.NUMBER));
     }
