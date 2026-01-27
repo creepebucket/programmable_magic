@@ -96,8 +96,28 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
     }
 
     public static class DynamicScrollbar extends ScrollbarWidget {
+        private final Coordinate region;
+
         public DynamicScrollbar(Coordinate pos, Coordinate size, Coordinate region, SyncedValue<Integer> value, int color, String axis, boolean reverseDirection) {
-            super(pos, size, region.toScreenX(), region.toScreenY(), value, color, axis, reverseDirection);
+            super(pos, size, 0, 0, value, color, axis, reverseDirection);
+            this.region = region;
+        }
+
+        private void syncRange() {
+            this.minValue = region.toScreenX();
+            this.maxValue = region.toScreenY();
+        }
+
+        @Override
+        public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+            syncRange();
+            return super.mouseDragged(event, dragX, dragY);
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            syncRange();
+            super.render(graphics, mouseX, mouseY, partialTick);
         }
     }
 }

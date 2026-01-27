@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.gui.lib.api.DataManager;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
@@ -56,6 +58,10 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
         if (widget instanceof SlotWidget slotWidget) {
             this.addSlot(slotWidget.slot);
         }
+    }
+
+    public void addClientWidget(Widget widget) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) addWidget(widget);
     }
 
     // 3. 当 Screen 尺寸变化时，Screen 会调用这个方法

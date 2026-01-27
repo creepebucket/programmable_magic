@@ -8,6 +8,8 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.world.entity.player.Inventory;
+import org.creepebucket.programmable_magic.client.ClientUiContext;
+import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
@@ -30,6 +32,8 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         // 1. 把屏幕位置同步给 Menu
         this.menu.guiLeft = this.leftPos;
         this.menu.guiTop = this.topPos;
+        Coordinate.updateContext(this.width, this.height, this.leftPos, this.topPos);
+        ClientUiContext.setFont(this.font);
 
         // 2. 绑定发包
         this.menu.dataManager.bindServerSender((key, value) -> {
@@ -52,6 +56,8 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         // 窗口大小变了，更新 Menu 变量并通知控件重算位置
         this.menu.guiLeft = this.leftPos;
         this.menu.guiTop = this.topPos;
+        Coordinate.updateContext(width, height, this.leftPos, this.topPos);
+        ClientUiContext.setFont(this.font);
         this.menu.reportScreenSize(width, height);
     }
 

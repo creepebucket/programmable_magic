@@ -1,14 +1,23 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-
 import java.util.function.BiFunction;
 
 /**
  * 坐标计算器：以当前窗口缩放后的尺寸为输入，计算屏幕坐标与菜单坐标。
  */
 public class Coordinate {
+
+    private static int screenWidth;
+    private static int screenHeight;
+    private static int guiLeft;
+    private static int guiTop;
+
+    public static void updateContext(int screenWidth, int screenHeight, int guiLeft, int guiTop) {
+        Coordinate.screenWidth = screenWidth;
+        Coordinate.screenHeight = screenHeight;
+        Coordinate.guiLeft = guiLeft;
+        Coordinate.guiTop = guiTop;
+    }
 
     /**
      * 以 (sw, sh) 为输入的 X 计算函数。
@@ -32,51 +41,42 @@ public class Coordinate {
      * 将屏幕坐标转换为当前菜单坐标（要求当前 screen 为 {@link AbstractContainerScreen}）。
      */
     public int toMenuX() {
-        return toScreenX() - ((AbstractContainerScreen<?>) Minecraft.getInstance().screen).getGuiLeft();
+        return toScreenX() - guiLeft;
     }
 
     /**
      * 将屏幕坐标转换为当前菜单坐标（要求当前 screen 为 {@link AbstractContainerScreen}）。
      */
     public int toMenuY() {
-        return toScreenY() - ((AbstractContainerScreen<?>) Minecraft.getInstance().screen).getGuiTop();
+        return toScreenY() - guiTop;
     }
 
     /**
      * 计算屏幕坐标 X。
      */
     public int toScreenX() {
-        var window = Minecraft.getInstance().getWindow();
-        return this.x.apply(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+        return this.x.apply(screenWidth, screenHeight);
     }
 
     /**
      * 计算屏幕坐标 Y。
      */
     public int toScreenY() {
-        var window = Minecraft.getInstance().getWindow();
-        return this.y.apply(window.getGuiScaledWidth(), window.getGuiScaledHeight());
+        return this.y.apply(screenWidth, screenHeight);
     }
 
     /**
      * 一次性计算屏幕坐标 [x, y]，避免重复获取 window。
      */
     public int[] toScreen() {
-        var window = Minecraft.getInstance().getWindow();
-        int sw = window.getGuiScaledWidth();
-        int sh = window.getGuiScaledHeight();
-        return new int[]{this.x.apply(sw, sh), this.y.apply(sw, sh)};
+        return new int[]{this.x.apply(screenWidth, screenHeight), this.y.apply(screenWidth, screenHeight)};
     }
 
     /**
      * 一次性计算菜单坐标 [x, y]，避免重复获取 window 和 screen。
      */
     public int[] toMenu() {
-        var window = Minecraft.getInstance().getWindow();
-        var screen = (AbstractContainerScreen<?>) Minecraft.getInstance().screen;
-        int sw = window.getGuiScaledWidth();
-        int sh = window.getGuiScaledHeight();
-        return new int[]{this.x.apply(sw, sh) - screen.getGuiLeft(), this.y.apply(sw, sh) - screen.getGuiTop()};
+        return new int[]{this.x.apply(screenWidth, screenHeight) - guiLeft, this.y.apply(screenWidth, screenHeight) - guiTop};
     }
 
     /**

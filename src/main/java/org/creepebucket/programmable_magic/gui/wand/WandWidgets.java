@@ -1,34 +1,26 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.InfiniteSupplySlotWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandWidgets {
-    public static class SpellSupplyWidget extends InfiniteSupplySlotWidget implements Renderable {
+    public static class SpellSupplyWidget extends InfiniteSupplySlotWidget implements Tickable {
         public SyncedValue<Integer> deltaY;
         public Coordinate delta;
         public Coordinate original;
@@ -42,8 +34,9 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void tick() {
             pos = original.add(delta);
+            super.tick();
         }
     }
 
@@ -104,7 +97,7 @@ public class WandWidgets {
             graphics.fill(x, y+7, x+79, y+25, COLOR_MAP.getOrDefault(key, 0x80FFFFFF));
             graphics.fill(x, y+26, x+79, y+28, COLOR_MAP.getOrDefault(key, 0x80FFFFFF));
 
-            graphics.drawString(Minecraft.getInstance().font, Component.translatable(key), x+3, y+12, 0x80FFFFFF);
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x+3, y+12, 0x80FFFFFF);
         }
     }
 }

@@ -1,7 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
@@ -26,7 +26,7 @@ public class TextWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.drawString(Minecraft.getInstance().font, this.text.get(),
+        graphics.drawString(ClientUiContext.getFont(), this.text.get(),
                 this.pos.toMenuX(),
                 this.pos.toMenuY(),
                 this.color.getAsInt());

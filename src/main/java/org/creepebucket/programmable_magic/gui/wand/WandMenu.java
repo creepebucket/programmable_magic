@@ -5,6 +5,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
@@ -45,12 +47,12 @@ public class WandMenu extends Menu {
         var dy = 0;
 
         // 可以滚动的部分
-        for(String key: spells.keySet()) {
+        for (String key : spells.keySet()) {
             dx = 0;
 
-            addWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx, dy), key, supplySlotDeltaY));
+            addClientWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx, dy), key, supplySlotDeltaY));
 
-            for(int i = 0; i<spells.get(key).size(); i++) {
+            for (int i = 0; i < spells.get(key).size(); i++) {
                 addWidget(new WandWidgets.SpellSupplyWidget(
                         new ItemStack(spells.get(key).get(i).get()), Coordinate.fromTopLeft(dx % 80, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY
                 ));
@@ -62,9 +64,10 @@ public class WandMenu extends Menu {
 
         int finalDy = dy;
 
-        addWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(0, 0),
+        addClientWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(0, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotDeltaY));
-        addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(80, 0), Coordinate.fromBottomLeft(4, 0),
+        addClientWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(80, 0), Coordinate.fromBottomLeft(4, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotDeltaY, 0xFFFFFFFF, "y", true));
+
     }
 }
