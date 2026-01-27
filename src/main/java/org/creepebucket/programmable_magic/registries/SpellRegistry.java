@@ -7,6 +7,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.spells_adjust.TriggerSpell;
@@ -138,7 +139,26 @@ public class SpellRegistry {
         // 基础法术
         registerSpell(VisualEffectSpell.DebugPrintSpell::new);
 
+        reorderSpellsBySubcategory();
         ITEMS.register(eventBus);
+    }
+
+    private static void reorderSpellsBySubcategory() {
+        LinkedHashMap<String, List<Supplier<Item>>> reordered = new LinkedHashMap<>();
+        for (String key : ModUtils.SPELL_COLORS().keySet()) {
+            List<Supplier<Item>> value = SPELLS_BY_SUBCATEGORY.get(key);
+            if (value != null) {
+                reordered.put(key, value);
+            }
+        }
+        for (Map.Entry<String, List<Supplier<Item>>> entry : SPELLS_BY_SUBCATEGORY.entrySet()) {
+            if (!reordered.containsKey(entry.getKey())) {
+                reordered.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        SPELLS_BY_SUBCATEGORY.clear();
+        SPELLS_BY_SUBCATEGORY.putAll(reordered);
     }
 
     private static void registerSpell(Supplier<SpellItemLogic> logicSupplier) {

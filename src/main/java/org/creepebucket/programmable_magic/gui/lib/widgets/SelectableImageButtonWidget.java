@@ -24,8 +24,8 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     /** 点击回调 */
     private final Runnable onPress;
 
-    public SelectableImageButtonWidget(Coordinate pos, int width, int height, Identifier normal, Identifier selected, BooleanSupplier isSelected, Runnable onPress) {
-        super(pos, width, height);
+    public SelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier selected, BooleanSupplier isSelected, Runnable onPress) {
+        super(pos, size);
         this.normal = normal;
         this.selected = selected;
         this.isSelected = isSelected;
@@ -36,7 +36,9 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // 根据选中状态选择纹理并渲染
         var tex = this.isSelected.getAsBoolean() ? this.selected : this.normal;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, this.pos.toMenuX(), this.pos.toMenuY(), 0, 0, this.width, this.height, this.width, this.height);
+        int w = this.size.toScreenX();
+        int h = this.size.toScreenY();
+        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, this.pos.toMenuX(), this.pos.toMenuY(), 0, 0, w, h, w, h);
     }
 
     @Override

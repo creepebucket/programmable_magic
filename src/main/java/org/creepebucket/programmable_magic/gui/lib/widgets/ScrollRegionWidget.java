@@ -8,12 +8,6 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
  * 滚动区域控件：在指定区域内响应鼠标滚轮事件，更新滚动值。
  */
 public class ScrollRegionWidget extends Widget implements MouseScrollable {
-    /** 区域左上角坐标 */
-    public final Coordinate pos;
-    /** 区域宽度提供器 */
-    public final int width;
-    /** 区域高度提供器 */
-    public final int height;
     /** 当前滚动值 */
     public int currentValue;
     /** 最大滚动值 */
@@ -21,10 +15,8 @@ public class ScrollRegionWidget extends Widget implements MouseScrollable {
     /** 滚动值倍数 */
     public final int valueMultiplier;
 
-    public ScrollRegionWidget(Coordinate pos, int width, int height, int currentValue, int maxValue, int valueMultiplier) {
-        this.pos = pos;
-        this.width = width;
-        this.height = height;
+    public ScrollRegionWidget(Coordinate pos, Coordinate size, int currentValue, int maxValue, int valueMultiplier) {
+        super(pos, size);
         this.currentValue = currentValue;
         this.maxValue = maxValue;
         this.valueMultiplier = valueMultiplier;
@@ -35,8 +27,8 @@ public class ScrollRegionWidget extends Widget implements MouseScrollable {
         // 检测鼠标是否在滚动区域内
         int x = this.pos.toScreenX();
         int y = this.pos.toScreenY();
-        int w = this.width;
-        int h = this.height;
+        int w = this.size.toScreenX();
+        int h = this.size.toScreenY();
         if (!isInBounds(mouseX, mouseY, x, y, w, h)) return false;
 
         // 计算滚动方向：向上滚动减少值，向下滚动增加值

@@ -15,8 +15,11 @@ import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class ModUtils {
     /**
@@ -200,5 +203,27 @@ public class ModUtils {
                     Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
             ).apply(instance, Mana::new)
         );
+    }
+
+    // 法术 -> 颜色
+    public static Map<String, Integer> SPELL_COLORS() {
+        Map<String, Integer> COLOR_MAP = new LinkedHashMap<>();
+        COLOR_MAP.put("spell." + MODID + ".subcategory.visual", 0xFFC832A1);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.entity", 0xFFC82C59);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.block", 0xFFEB3838);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.trigger", 0xFFC8702C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.structure", 0xFFC8902C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.flow_control", 0xFFC8B32C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.number", 0xFF9FE333);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.number", 0xFF5DEE22);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.number", 0xFF31FF7E);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.vector", 0xFF3AFFED);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.vector", 0xFF2DCDFF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.vector", 0xFF3498FF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.boolean", 0xFF424EF9);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0xFF7747F0);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
+        return COLOR_MAP;
     }
 }

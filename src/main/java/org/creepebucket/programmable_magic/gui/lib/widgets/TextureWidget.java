@@ -17,8 +17,8 @@ public class TextureWidget extends Widget implements Renderable {
     /**
      * 创建一个纹理控件。
      */
-    public TextureWidget(Coordinate pos, Identifier texture, int width, int height) {
-        super(pos, width, height);
+    public TextureWidget(Coordinate pos, Identifier texture, Coordinate size) {
+        super(pos, size);
         this.texture = texture;
     }
 
@@ -27,10 +27,12 @@ public class TextureWidget extends Widget implements Renderable {
      */
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        int w = this.size.toScreenX();
+        int h = this.size.toScreenY();
         graphics.blit(RenderPipelines.GUI_TEXTURED, this.texture,
                 this.pos.toMenuX(), this.pos.toMenuY(),
                 0, 0,
-                this.width, this.height,
-                this.width, this.height);
+                w, h,
+                w, h);
     }
 }

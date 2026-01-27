@@ -7,9 +7,8 @@ public abstract class Widget {
     /** 控件位置 */
     protected Coordinate pos;
     /** 控件宽度 */
-    protected int width;
     /** 控件高度 */
-    protected int height;
+    protected Coordinate size;
 
     /**
      * 默认构造函数。
@@ -26,10 +25,9 @@ public abstract class Widget {
     /**
      * 带位置和尺寸的构造函数。
      */
-    protected Widget(Coordinate pos, int width, int height) {
+    protected Widget(Coordinate pos, Coordinate size) {
         this.pos = pos;
-        this.width = width;
-        this.height = height;
+        this.size = size;
     }
 
     /**
@@ -40,12 +38,12 @@ public abstract class Widget {
     /**
      * 获取控件宽度。
      */
-    public int getWidth() { return this.width; }
+    public int getWidth() { return this.size.toScreenX(); }
 
     /**
      * 获取控件高度。
      */
-    public int getHeight() { return this.height; }
+    public int getHeight() { return this.size.toScreenY(); }
 
     /**
      * 判断鼠标坐标是否在指定矩形区域内（静态工具方法）。
@@ -59,6 +57,8 @@ public abstract class Widget {
      */
     public boolean contains(double mx, double my) {
         if (this.pos == null) return false;
-        return isInBounds(mx, my, this.pos.toScreenX(), this.pos.toScreenY(), this.width, this.height);
+        int w = this.size.toScreenX();
+        int h = this.size.toScreenY();
+        return isInBounds(mx, my, this.pos.toScreenX(), this.pos.toScreenY(), w, h);
     }
 }

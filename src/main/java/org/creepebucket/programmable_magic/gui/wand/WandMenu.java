@@ -1,12 +1,14 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
@@ -14,8 +16,6 @@ import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollbarWidget;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
-
-import java.util.Map;
 
 /**
  * 最小菜单：不含复杂数据同步，仅承载 Screen 与槽位布局。
@@ -38,35 +38,51 @@ public class WandMenu extends Menu {
     @Override
     public void init() {
 
-        // 法术供应段
+        /* ===========法术供应段=========== */
         SyncedValue<Integer> supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
 
         // 添加法术供应槽位
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
+
         var dx = 0;
         var dy = 0;
+        var categoriesCount = 0;
 
         // 可以滚动的部分
         for (String key : spells.keySet()) {
+            var subCategorySpells = spells.get(key);
             dx = 0;
 
-            addClientWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx, dy), key, supplySlotDeltaY));
+            // 用于快速跳转到该类别的按钮
+            int finalCategoriesCount = categoriesCount;
+            addClientWidget(new WandWidgets.WandSubcategoryJumpButton(
+                    new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / spells.size())),
+                    new Coordinate((w, h) -> 7, (w, h) -> (((finalCategoriesCount+1) * h / spells.size()) - (finalCategoriesCount * h / spells.size()))),
+                    supplySlotDeltaY, -dy + 20, Component.translatable(key), ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)));
 
-            for (int i = 0; i < spells.get(key).size(); i++) {
+            // 子类别标题
+            addClientWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, dy), key, supplySlotDeltaY));
+
+            // 法术
+            for (int i = 0; i < subCategorySpells.size(); i++) {
                 addWidget(new WandWidgets.SpellSupplyWidget(
-                        new ItemStack(spells.get(key).get(i).get()), Coordinate.fromTopLeft(dx % 80, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY
+                        new ItemStack(subCategorySpells.get(i).get()), Coordinate.fromTopLeft(dx % 80 + 8, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY
                 ));
 
-                dx = dx + 16;
+                dx += 16;
             }
             dy = dy + 64 + Math.floorDiv(dx - 16, 80) * 16; // 奇技淫巧和魔法数字的集大成者
+
+            categoriesCount++;
         }
 
         int finalDy = dy;
 
-        addClientWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(0, 0),
+        // 滚动交互
+        addClientWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(8, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotDeltaY));
-        addClientWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(80, 0), Coordinate.fromBottomLeft(4, 0),
+        // 滚动条
+        addClientWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotDeltaY, 0xFFFFFFFF, "y", true));
 
     }

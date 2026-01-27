@@ -1,15 +1,19 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.InfiniteSupplySlotWidget;
 
 import java.util.HashMap;
@@ -61,41 +65,56 @@ public class WandWidgets {
     public static class WandSubCategoryWidget extends Widget implements Renderable {
         public SyncedValue<Integer> deltaY;
         public String key;
-        public Map<String, Integer> COLOR_MAP = new HashMap<>();
 
         public WandSubCategoryWidget(Coordinate pos, String subCategoryKey, SyncedValue<Integer> deltaY) {
             this.pos = pos;
             this.key = subCategoryKey;
             this.deltaY = deltaY;
-
-            COLOR_MAP.put("spell." + MODID + ".subcategory.visual", 0x80C832A1);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.entity", 0x80C82C59);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.block", 0x80EB3838);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.trigger", 0x80C8702C);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.structure", 0x80C8902C);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.flow_control", 0x80C8B32C);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.number", 0x809FE333);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.constants.number", 0x805DEE22);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.operations.number", 0x8031FF7E);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.vector", 0x803AFFED);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.constants.vector", 0x802DCDFF);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.operations.vector", 0x803498FF);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.operations.boolean", 0x80424EF9);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0x807747F0);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0x808F21FF);
-            COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0x80B53EDF);
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             int x = pos.toScreenX();
             int y = pos.toScreenY() + deltaY.get();
+            Map<String, Integer> COLOR_MAP = ModUtils.SPELL_COLORS();
+            var color = COLOR_MAP.getOrDefault(key, 0xFFFFFFFF);
+            color = (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24);
 
-            graphics.fill(x, y+4, x+79, y+6, COLOR_MAP.getOrDefault(key, 0x80FFFFFF));
-            graphics.fill(x, y+7, x+79, y+25, COLOR_MAP.getOrDefault(key, 0x80FFFFFF));
-            graphics.fill(x, y+26, x+79, y+28, COLOR_MAP.getOrDefault(key, 0x80FFFFFF));
+            graphics.fill(x, y+4, x+79, y+6, color);
+            graphics.fill(x, y+7, x+79, y+25, color);
+            graphics.fill(x, y+26, x+79, y+28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x+3, y+12, 0x80FFFFFF);
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x+3, y+12, 0xFFFFFFFF);
+        }
+    }
+
+    public static class WandSubcategoryJumpButton extends ImageButtonWidget {
+        public SyncedValue<Integer> deltaY;
+        public int target, color;
+
+        public WandSubcategoryJumpButton(Coordinate pos, Coordinate size, SyncedValue<Integer> deltaY, int target, Component tooltip, int color) {
+            super(pos, size, null, null, () -> {}, tooltip);
+            this.deltaY = deltaY;
+            this.target = target;
+            this.color = color;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            if (contains(mouseX, mouseY)) {
+                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), color);
+            } else {
+                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(),
+                        (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24));
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            // 检测点击是否在按钮范围内
+            if (!contains(event.x(), event.y())) return false;
+            this.deltaY.set(target);
+            return true;
         }
     }
 }

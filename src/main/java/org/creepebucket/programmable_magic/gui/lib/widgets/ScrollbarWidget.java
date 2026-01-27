@@ -16,11 +16,9 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
     public SyncedValue<Integer> value;
     public boolean isDragging = false, reverseDirection;
     public String axis;
-    public Coordinate size, pos;
 
     public ScrollbarWidget(Coordinate pos, Coordinate size, int minValue, int maxValue, SyncedValue<Integer> value, int color, String axis, boolean reverseDirection) {
-        super(pos);
-        this.pos = pos;
+        super(pos, size);
         this.minValue = minValue;
         this.maxValue = maxValue;
         // 神秘
@@ -28,7 +26,6 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         this.bgColor = (color & 16777215) | ((int)(((color >>> 24) * 0.2)) << 24);
         this.highLightColor = color;
         this.axis = axis;
-        this.size = size;
         this.value = value;
         this.reverseDirection = reverseDirection;
     }
@@ -40,20 +37,20 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         // 决定缩放因子和值修改
         // h/w -> max 映射
 
-        this.width = size.toMenuX();
-        this.height = size.toMenuY();
+        int w = this.size.toMenuX();
+        int h = this.size.toMenuY();
 
         int screenValue;
-        if(axis == "x" || axis == "X") screenValue = width; else screenValue = height;
+        if(axis == "x" || axis == "X") screenValue = w; else screenValue = h;
 
         double blockLengthRatio = (double) screenValue / (maxValue - minValue);
 
         int delta;
 
         if(axis == "x" || axis == "X") {
-            delta = Math.toIntExact(Math.round(dragX / width * (maxValue - minValue) / (1 - blockLengthRatio)));
+            delta = Math.toIntExact(Math.round(dragX / w * (maxValue - minValue) / (1 - blockLengthRatio)));
         } else {
-            delta = Math.toIntExact(Math.round(dragY / height * (maxValue - minValue) / (1 - blockLengthRatio)));
+            delta = Math.toIntExact(Math.round(dragY / h * (maxValue - minValue) / (1 - blockLengthRatio)));
         }
 
         value.set(Mth.clamp(value.get() + delta * (reverseDirection?-1:1), minValue, maxValue));
@@ -63,6 +60,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+        if (!contains(event.x(), event.y())) return false;
         isDragging = true;
         return true;
     }
@@ -75,15 +73,15 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        int x = pos.toScreenX();
-        int y = pos.toScreenY();
+        int x = this.pos.toScreenX();
+        int y = this.pos.toScreenY();
 
-        this.width = size.toScreenX();
-        this.height = size.toScreenY();
+        int w = this.size.toScreenX();
+        int h = this.size.toScreenY();
 
         // 根据占比动态填充矩形
         int screenValue;
-        if(axis == "x" || axis == "X") screenValue = width; else screenValue = height;
+        if(axis == "x" || axis == "X") screenValue = w; else screenValue = h;
 
         double blockLengthRatio = (double) screenValue / (maxValue - minValue);
         double blockStartRatio = (double) (value.get() - minValue) / (maxValue - minValue);
@@ -94,20 +92,20 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         boolean horizontal = axis == "x" || axis == "X";
 
         if(horizontal) {
-            startX = Math.toIntExact(Math.round(x + width * blockStartRatio));
+            startX = Math.toIntExact(Math.round(x + w * blockStartRatio));
             startY = y;
-            endX = Math.toIntExact(Math.round(x + width * (blockStartRatio + blockLengthRatio)));
-            endY = y + height;
+            endX = Math.toIntExact(Math.round(x + w * (blockStartRatio + blockLengthRatio)));
+            endY = y + h;
         } else {
             startX = x;
-            startY = Math.toIntExact(Math.round(y + height * blockStartRatio));
-            endX = x + width;
-            endY = Math.toIntExact(Math.round(y + height * (blockStartRatio + blockLengthRatio)));
+            startY = Math.toIntExact(Math.round(y + h * blockStartRatio));
+            endX = x + w;
+            endY = Math.toIntExact(Math.round(y + h * (blockStartRatio + blockLengthRatio)));
         }
 
         // 背景
         graphics.fill(x, y, horizontal?startX:endX, horizontal?endY:startY, bgColor);
-        graphics.fill(horizontal?endX:x, horizontal?y:endY, x + width, y + height, bgColor);
+        graphics.fill(horizontal?endX:x, horizontal?y:endY, x + w, y + h, bgColor);
 
         // 主滚动条部分
         if(contains(mouseX, mouseY) || isDragging) {

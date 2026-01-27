@@ -87,6 +87,13 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.lastPartialTick = partialTick;
         super.render(graphics, mouseX, mouseY, partialTick);
+        for (int i = this.menu.widgets.size() - 1; i >= 0; i--) {
+            Widget widget = this.menu.widgets.get(i);
+            if (widget instanceof Tooltipable tooltipable) {
+                if (!widget.contains(mouseX, mouseY)) continue;
+                if (tooltipable.renderTooltip(graphics, mouseX, mouseY)) return;
+            }
+        }
         this.renderTooltip(graphics, mouseX, mouseY);
     }
 
