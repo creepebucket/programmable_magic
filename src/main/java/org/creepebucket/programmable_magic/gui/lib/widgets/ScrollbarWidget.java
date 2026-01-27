@@ -12,17 +12,21 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable, Renderable {
 
-    public int minValue, maxValue, color;
+    public int minValue, maxValue, color, bgColor, highLightColor;
     public SyncedValue<Integer> value;
     public boolean isDragging = false, reverseDirection;
     public String axis;
     public Coordinate size, pos;
 
     public ScrollbarWidget(Coordinate pos, Coordinate size, int minValue, int maxValue, SyncedValue<Integer> value, int color, String axis, boolean reverseDirection) {
+        super(pos);
         this.pos = pos;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.color = color;
+        // 神秘
+        this.color = (color & 16777215) | ((int)(((color >>> 24) * 0.6)) << 24);
+        this.bgColor = (color & 16777215) | ((int)(((color >>> 24) * 0.2)) << 24);
+        this.highLightColor = color;
         this.axis = axis;
         this.size = size;
         this.value = value;
@@ -47,9 +51,9 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         int delta;
 
         if(axis == "x" || axis == "X") {
-            delta = Math.toIntExact(Math.round(dragX / width * (maxValue - minValue) / blockLengthRatio));
+            delta = Math.toIntExact(Math.round(dragX / width * (maxValue - minValue) / (1 - blockLengthRatio)));
         } else {
-            delta = Math.toIntExact(Math.round(dragY / height * (maxValue - minValue) / blockLengthRatio));
+            delta = Math.toIntExact(Math.round(dragY / height * (maxValue - minValue) / (1 - blockLengthRatio)));
         }
 
         value.set(Mth.clamp(value.get() + delta * (reverseDirection?-1:1), minValue, maxValue));
@@ -74,8 +78,8 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         int x = pos.toScreenX();
         int y = pos.toScreenY();
 
-        this.width = size.toMenuX();
-        this.height = size.toMenuY();
+        this.width = size.toScreenX();
+        this.height = size.toScreenY();
 
         // 根据占比动态填充矩形
         int screenValue;
@@ -86,12 +90,31 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (reverseDirection) blockStartRatio = 1 - blockStartRatio;
         blockStartRatio = blockStartRatio * (1 - blockLengthRatio);
 
-        if(axis == "x" || axis == "X") {
-            graphics.fill(Math.toIntExact(Math.round(x + width * blockStartRatio)), y,
-                    Math.toIntExact(Math.round(x + width * (blockStartRatio + blockLengthRatio))), y + height, color);
+        int startX, startY, endX, endY;
+        boolean horizontal = axis == "x" || axis == "X";
+
+        if(horizontal) {
+            startX = Math.toIntExact(Math.round(x + width * blockStartRatio));
+            startY = y;
+            endX = Math.toIntExact(Math.round(x + width * (blockStartRatio + blockLengthRatio)));
+            endY = y + height;
         } else {
-            graphics.fill(x, Math.toIntExact(Math.round(y + height * blockStartRatio)), x + width,
-                    Math.toIntExact(Math.round(y + height * (blockStartRatio + blockLengthRatio))), color);
+            startX = x;
+            startY = Math.toIntExact(Math.round(y + height * blockStartRatio));
+            endX = x + width;
+            endY = Math.toIntExact(Math.round(y + height * (blockStartRatio + blockLengthRatio)));
+        }
+
+        // 背景
+        graphics.fill(x, y, horizontal?startX:endX, horizontal?endY:startY, bgColor);
+        graphics.fill(horizontal?endX:x, horizontal?y:endY, x + width, y + height, bgColor);
+
+        // 主滚动条部分
+        if(contains(mouseX, mouseY) || isDragging) {
+            // 高亮
+            graphics.fill(startX, startY, endX, endY, highLightColor);
+        } else {
+            graphics.fill(startX, startY, endX, endY, color);
         }
     }
 

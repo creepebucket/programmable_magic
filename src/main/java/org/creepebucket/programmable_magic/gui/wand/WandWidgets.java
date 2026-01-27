@@ -10,9 +10,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.InfiniteSupplySlotWidget;
-import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,7 @@ import java.util.Map;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandWidgets {
-    public static class SpellSupplyWidget extends InfiniteSupplySlotWidget implements Tickable {
+    public static class SpellSupplyWidget extends InfiniteSupplySlotWidget {
         public SyncedValue<Integer> deltaY;
         public Coordinate delta;
         public Coordinate original;
@@ -34,9 +32,9 @@ public class WandWidgets {
         }
 
         @Override
-        public void tick() {
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             pos = original.add(delta);
-            super.tick();
+            super.render(graphics, mouseX, mouseY, partialTick);
         }
     }
 
