@@ -1,15 +1,13 @@
 package org.creepebucket.programmable_magic.spells.api;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.advancements.criterion.ShotCrossbowTrigger;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,7 +80,7 @@ public abstract class SpellItemLogic implements Cloneable {
      * 法术实体触发的每tick钩子
      * 供类似"弹丸附加"使用 每刻判断伤害实体碰撞并结算伤害
      */
-    public static void taggedTick(SpellEntity spellEntity) {}
+    public void taggedTick(SpellEntity spellEntity) {}
 
     /*
      * 带检验的法术执行
@@ -90,73 +88,50 @@ public abstract class SpellItemLogic implements Cloneable {
      */
     public ExecutionResult runWithCheck(Player caster, SpellSequence spellSequence, SpellEntity spellEntity) {
 
-        // 根据自身重载长度截取指定长度的参数
-        List<List<Object>> allParamsList = new ArrayList<>();
-        Map<Integer, Boolean> haveStored = new java.util.HashMap<>();
+        // 对法术列表进行预处理, 获取法术前面的参数和类型
+        List<SpellValueType> paramsTypes = new ArrayList<>();
+        List<Object> paramsList = new ArrayList<>();
 
-        for (List<SpellValueType> overload: inputTypes) {
-            // 检查这个长度是否已经获取过
-            if (haveStored.getOrDefault(overload.size(), false)) continue;
+        // 法术参数追踪的指针
+        SpellItemLogic p = this.prev;
 
-            SpellItemLogic p = this; // 追踪参数
-            List<Object> paramsList = new ArrayList<>();
-
-            // 获取参数
-            for (int i = 0; i < overload.size(); i++) {
-                // 先判断null
-                if (p == null) break;
-
-                // 加入参数列表
-                paramsList.add(p);
-                p = p.next;
-            }
-
-            haveStored.put(overload.size(), true);
-            allParamsList.add(paramsList);
+        while (p instanceof ValueLiteralSpell v) { // 获取此法术前的所有 ValueLiteral 序列
+            paramsTypes.addFirst(v.type);
+            paramsList.addFirst(v.value);
+            p = p.prev;
         }
 
-        // 检查参数是否在重载里
         boolean matched = false;
-        boolean partMatched = true;
-        List<Object> matchedParamsList = null;
 
-        for (List<Object> paramsList: allParamsList) {
-            // 对于每个参数列表
+        for (List<SpellValueType> overload : inputTypes) {
 
-            for(List<SpellValueType> overload: inputTypes) {
-                // 先标记部分匹配再检查是否有违反
-                partMatched = true;
+            if (overload.get(0) == SpellValueType.EMPTY) { // 傻逼空入参判断
+                matched = true;
+                paramsList = List.of();
+                break;
+            }
 
-                // 先检查长度
-                if (overload.size() != paramsList.size()) {
-                    partMatched = false;
-                    continue;
-                }
+            if (paramsTypes.size() < overload.size()) continue; // 先比较长度避免截取失败
 
-                // 再进行逐类型检查
-                for (int i = 0; i < overload.size(); i++) {
-                    // 检查类型
-                    SpellValueType type = overload.get(i);
-                    if (type != SpellValueType.ANY && type != SpellValueType.fromValue(paramsList.get(i))) {
-                        partMatched = false;
-                        break;
-                    }
-                }
+            // 长度合法就可以开始截取子列表了
+            var subTypes = new ArrayList<>(paramsTypes.subList(paramsTypes.size() - overload.size(), paramsTypes.size()));
 
-                // 最后整合匹配信息
-                if(partMatched) matchedParamsList = paramsList;
+            // 把所有的ANY替换掉, 避免匹配这些内容
+            for (int i = 0; i < overload.size(); i++) if (overload.get(i) == SpellValueType.ANY) subTypes.set(i, SpellValueType.ANY);
 
-                matched = matched || partMatched;
+            if (overload.equals(subTypes)) { // 现在就可以放心检测了
+                // 如果匹配, 截断paramsList
+                paramsList = new ArrayList<>(paramsList.subList(paramsTypes.size() - overload.size(), paramsTypes.size()));
+                matched = true;
+                // 跳出循环, 避免截取后再截取一遍出错
+                break;
             }
         }
 
-        // 如果未匹配，则返回错误
         if (!matched) {
             SpellExceptions.INVALID_INPUT(caster, this).throwIt();
             return ExecutionResult.ERRORED();
         }
-
-        List<Object> paramsList = matchedParamsList;
 
         // 再检查是否能运行
         if (!canRun(caster, spellSequence, paramsList, spellEntity)) return ExecutionResult.ERRORED();
@@ -189,7 +164,7 @@ public abstract class SpellItemLogic implements Cloneable {
         // 替换原法术
         // 找到L
         SpellItemLogic L = this;
-        for (Object p: paramsList) L = L.prev;
+        for (Object __p: paramsList) L = L.prev;
         // 替换
         spellSequence.replaceSection(L, this, returns);
 

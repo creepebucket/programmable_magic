@@ -10,6 +10,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
@@ -18,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -225,5 +229,49 @@ public class ModUtils {
         COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
         COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
         return COLOR_MAP;
+    }
+
+    /**
+     * 安全地在双端代码中调用客户端逻辑
+     */
+    public static class ClientUtils {
+        /**
+         * 如果在客户端，则执行逻辑。
+         * @param supplier 必须返回一个 Runnable。
+         *                 使用示例: ClientUtils.runIfClient(() -> () -> Minecraft.getInstance().pause());
+         */
+        public static void runIfClient(Supplier<Runnable> supplier) {
+            if (FMLEnvironment.getDist() == Dist.CLIENT) {
+                // 只有在客户端环境下，才会触发 supplier.get()
+                // 进而才会加载包含客户端类的 Runnable
+                supplier.get().run();
+            }
+        }
+        /**
+         * 如果在客户端，则计算并返回一个值，否则返回默认值。
+         * @param supplier 必须返回一个 Supplier。
+         * @param defaultValue 默认值（服务器端返回的值）
+         */
+        public static <T> T computeIfClient(Supplier<Supplier<T>> supplier, T defaultValue) {
+            if (FMLEnvironment.getDist() == Dist.CLIENT) {
+                return supplier.get().get();
+            }
+            return defaultValue;
+        }
+        /**
+         * 如果在客户端，则计算并把值写入指定的 SyncedValue（对应其 key）。
+         * @param supplier 必须返回一个 Supplier。
+         */
+        public static <T> void computeToSyncedValueIfClient(Supplier<Supplier<T>> supplier, SyncedValue<T> syncedValue) {
+            if (FMLEnvironment.getDist() == Dist.CLIENT) {
+                syncedValue.set(supplier.get().get());
+            }
+        }
+        /**
+         * 判断当前是否为客户端环境
+         */
+        public static boolean isClient() {
+            return FMLEnvironment.getDist() == Dist.CLIENT;
+        }
     }
 }

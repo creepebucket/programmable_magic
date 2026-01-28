@@ -34,6 +34,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         this.menu.guiTop = this.topPos;
         Coordinate.updateContext(this.width, this.height, this.leftPos, this.topPos);
         ClientUiContext.setFont(this.font);
+        ClientUiContext.setMc(Minecraft.getInstance());
 
         // 2. 绑定发包
         this.menu.dataManager.bindServerSender((key, value) -> {
@@ -58,6 +59,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         this.menu.guiTop = this.topPos;
         Coordinate.updateContext(width, height, this.leftPos, this.topPos);
         ClientUiContext.setFont(this.font);
+        ClientUiContext.setMc(Minecraft.getInstance());
         this.menu.reportScreenSize(width, height);
     }
 

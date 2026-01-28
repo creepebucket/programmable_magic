@@ -35,19 +35,30 @@ public class SpellCompiler {
 
         for (SpellItemLogic spell = rawSequence.head; spell != null; spell = spell.next) {
             // 左括号为配对计数器+1
-            if (spell instanceof SpellItemLogic.PairedLeftSpell)
-                pairsCount.put((Class<SpellItemLogic.PairedLeftSpell>) spell.getClass(),
-                        pairsCount.getOrDefault(spell.getClass(), 0) + 1);
+            if (spell instanceof SpellItemLogic.PairedLeftSpell left) {
+                try {
+                    var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
+                    pairsCount.put(leftType,pairsCount.getOrDefault(leftType, 0) + 1);
+                } catch (InstantiationException e) { // 我操, 反射好恶心啊
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
             // 右括号为配对计数器-1
-            if (spell instanceof SpellItemLogic.PairedRightSpell) {
+            if (spell instanceof SpellItemLogic.PairedRightSpell right) {
                 // 如果计数器等于0, 直接报错未配对括号
-                if (pairsCount.get(((SpellItemLogic.PairedRightSpell) spell).leftSpellType) <= 0) {
+                if (pairsCount.getOrDefault(right.leftSpellType, 0) <= 0) {
                     SpellExceptions.PAIRS_UNMATCHED(caster, spell).throwIt(); // 这个右括号永远不会配对
                     return new SpellSequence();
                 }
 
-                pairsCount.put(((SpellItemLogic.PairedRightSpell) spell).leftSpellType,
-                        pairsCount.getOrDefault(((SpellItemLogic.PairedRightSpell) spell).leftSpellType, 0) - 1);
+                pairsCount.put(right.leftSpellType,pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
             }
         }
 
@@ -97,10 +108,21 @@ public class SpellCompiler {
         // 需要配对的法术栈
         Map<Class<? extends SpellItemLogic.PairedLeftSpell>, SpellSequence> pairs = new HashMap<>();
         for (SpellItemLogic i = rawSequence.head; i != null; i = i.next) {
-            if (i instanceof SpellItemLogic.PairedLeftSpell) {
-                // 左括号入栈
-                pairs.computeIfAbsent((Class<? extends SpellItemLogic.PairedLeftSpell>) i.getClass(), k -> new SpellSequence())
-                        .pushLeft(i);
+            if (i instanceof SpellItemLogic.PairedLeftSpell left) {
+                try {
+                    var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
+                    // 左括号入栈
+                    pairs.computeIfAbsent(leftType, k -> new SpellSequence())
+                            .pushLeft(i);
+                } catch (InstantiationException e) { // 反射死妈了
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
             }
             if (i instanceof SpellItemLogic.PairedRightSpell) {
                 // 右括号出栈并设置配对
@@ -185,20 +207,18 @@ public class SpellCompiler {
 
                 // 否则出栈直到栈头的优先级小于i
             else {
-                for (SpellItemLogic j = operatorStack.popLeft(); j.precedence <= i.precedence; j = operatorStack.popLeft()) {
+                for (SpellItemLogic j = operatorStack.head; !(j instanceof ParenSpell.LParenSpell) && j.precedence >= i.precedence; j = j.next) {
                     spellsRPN.pushRight(j);
+                    operatorStack.popLeft();
 
                     // 如果栈空跳出循环
                     if (operatorStack.head == null) break;
                 }
+                operatorStack.pushLeft(i);
             }
         }
         // 全部出栈
-        if (operatorStack.head != null) // 操你妈的
-            if (operatorStack.head != operatorStack.tail) // 何意味
-                for (SpellItemLogic j = operatorStack.popLeft(); operatorStack.head != null; j = operatorStack.popLeft())
-                    spellsRPN.pushRight(j);
-            else spellsRPN.pushRight(operatorStack.popLeft()); // byd
+        while (operatorStack.head != null) spellsRPN.pushRight(operatorStack.popLeft());
 
         // Step 6: 编译后检查
         // TODO: 目前还没有
