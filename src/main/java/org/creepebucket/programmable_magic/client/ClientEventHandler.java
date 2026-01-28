@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.client;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -13,6 +14,7 @@ import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 public class ClientEventHandler {
     @SubscribeEvent
     public static void registerScreen(RegisterMenuScreensEvent event) {
+        ClientUiContext.setMc(Minecraft.getInstance());
         event.register(
                 ModMenuTypes.WAND_MENU.get(),
                 (MenuScreens.ScreenConstructor<WandMenu, Screen<WandMenu>>)

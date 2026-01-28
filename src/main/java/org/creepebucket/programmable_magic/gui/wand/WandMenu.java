@@ -48,7 +48,7 @@ public class WandMenu extends Menu {
         var categoriesCount = 0;
 
         // 背景
-        addClientWidget(new RectangleWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromBottomLeft(80, 0), 0x80000000));
+        addClientWidget(() -> () -> new RectangleWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromBottomLeft(80, 0), 0x80000000));
 
         // 可以滚动的部分
         for (String key : spells.keySet()) {
@@ -57,13 +57,16 @@ public class WandMenu extends Menu {
 
             // 用于快速跳转到该类别的按钮
             int finalCategoriesCount = categoriesCount;
-            addClientWidget(new wandWidgetClient.WandSubcategoryJumpButton(
+            int finalJumpOffsetY = -dy + 20;
+            int finalDx = dx;
+            int finalDy1 = dy;
+            addClientWidget(() -> () -> new wandWidgetClient.WandSubcategoryJumpButton(
                     new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / spells.size())),
                     new Coordinate((w, h) -> 8, (w, h) -> (((finalCategoriesCount+1) * h / spells.size()) - (finalCategoriesCount * h / spells.size()))),
-                    supplySlotDeltaY, -dy + 20, Component.translatable(key), ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)));
+                    supplySlotDeltaY, finalJumpOffsetY, Component.translatable(key), ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)));
 
             // 子类别标题
-            addClientWidget(new WandWidgetServer.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, dy), key, supplySlotDeltaY));
+            addClientWidget(() -> () -> new WandWidgetServer.WandSubCategoryWidget(Coordinate.fromTopLeft(finalDx + 8, finalDy1), key, supplySlotDeltaY));
 
             // 法术
             for (int i = 0; i < subCategorySpells.size(); i++) {
@@ -81,10 +84,10 @@ public class WandMenu extends Menu {
         int finalDy = dy;
 
         // 滚动交互
-        addClientWidget(new WandWidgetServer.WandSupplyScrollWidget(Coordinate.fromTopLeft(8, 0),
+        addClientWidget(() -> () -> new WandWidgetServer.WandSupplyScrollWidget(Coordinate.fromTopLeft(8, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotDeltaY));
         // 滚动条
-        addClientWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
+        addClientWidget(() -> () -> new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotDeltaY, 0xFFFFFFFF, "y", true));
 
         /* ===========法术储存段=========== */

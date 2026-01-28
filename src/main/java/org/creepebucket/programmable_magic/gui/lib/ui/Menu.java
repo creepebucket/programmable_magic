@@ -21,6 +21,7 @@ import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2cPacket
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SHandler, SimpleKvS2CHandler {
 
@@ -60,8 +61,8 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
         }
     }
 
-    public void addClientWidget(Widget widget) {
-        if (FMLEnvironment.getDist() == Dist.CLIENT) addWidget(widget);
+    public void addClientWidget(Supplier<Supplier<Widget>> supplier) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) addWidget(supplier.get().get());
     }
 
     // 3. 当 Screen 尺寸变化时，Screen 会调用这个方法

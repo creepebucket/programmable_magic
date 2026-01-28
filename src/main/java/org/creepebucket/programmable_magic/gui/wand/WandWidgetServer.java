@@ -27,12 +27,7 @@ public class WandWidgetServer {
             this.deltaY = deltaY;
             this.delta = new Coordinate((sw, sh) -> 0, (sw, sh) -> deltaY.get());
             this.original = pos;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            pos = original.add(delta);
-            super.render(graphics, mouseX, mouseY, partialTick);
+            this.pos = pos.add(this.delta);
         }
     }
 
