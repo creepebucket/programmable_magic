@@ -18,6 +18,7 @@ import org.creepebucket.programmable_magic.registries.SpellRegistry;
  */
 public class WandMenu extends Menu {
     public SyncedValue<Integer> supplySlotDeltaY;
+    public SyncedValue<Integer> supplySlotTargetDeltaY;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
 
@@ -36,6 +37,7 @@ public class WandMenu extends Menu {
     @Override
     public void init() {
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
+        this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.BOTH, 0);
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();

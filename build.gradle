@@ -307,13 +307,88 @@ tasks.named('runClientAutoJoin') {
 tasks.named('syncGeneratedData') { mustRunAfter tasks.named('processResources') }
 tasks.named('copyGeneratedAssets') { mustRunAfter tasks.named('processResources') }
 
-tasks.register('runClientServer', Exec) {
+tasks.register('runClientServer') {
     group = 'run'
     description = '同时启动开发服务端与客户端，并让客户端自动进服（127.0.0.1:25565）'
+    notCompatibleWithConfigurationCache('需要交互式 stdin 与多进程管理')
+    def projectDir = project.layout.projectDirectory.asFile
 
-    if (isWindows) {
-        commandLine 'cmd', '/c', 'call gradlew.bat runServerAutoJoin --no-daemon & timeout /t 3 >nul & call gradlew.bat runClientAutoJoin --no-daemon'
-    } else {
-        commandLine 'bash', '-lc', './gradlew runServerAutoJoin --no-daemon & sleep 3; ./gradlew runClientAutoJoin --no-daemon; wait'
+    doLast {
+        def serverPort = 25565
+        try {
+            def portCheckSocket = new ServerSocket(serverPort)
+            portCheckSocket.close()
+        } catch (Exception e) {
+            throw new GradleException("server_port_in_use: ${serverPort}", e)
+        }
+
+        def serverCommand = isWindows
+                ? ['cmd', '/c', 'gradlew.bat', 'runServerAutoJoin', '--no-daemon']
+                : ['./gradlew', 'runServerAutoJoin', '--no-daemon']
+        def clientCommand = isWindows
+                ? ['cmd', '/c', 'gradlew.bat', 'runClientAutoJoin', '--no-daemon']
+                : ['./gradlew', 'runClientAutoJoin', '--no-daemon']
+
+        def startProcess = { List<String> command ->
+            new ProcessBuilder(command)
+                    .directory(projectDir)
+                    .redirectErrorStream(true)
+                    .start()
+        }
+
+        def pipeLogs = { Process process, String prefix ->
+            Thread.startDaemon {
+                process.inputStream.withReader { reader ->
+                    reader.eachLine { line ->
+                        println "${prefix} ${line}"
+                    }
+                }
+            }
+        }
+
+        def terminateProcessTree = { Process process ->
+            def handle = process.toHandle()
+            def handles = (handle.descendants().toList() + handle).reverse()
+            handles.each { it.destroy() }
+            handles.each { it.destroyForcibly() }
+        }
+
+        Process serverProcess = null
+        Process clientProcess = null
+
+        try {
+            serverProcess = startProcess(serverCommand)
+            pipeLogs(serverProcess, '[server]')
+
+            def serverInputWriter = new BufferedWriter(new OutputStreamWriter(serverProcess.outputStream))
+            Thread.startDaemon {
+                def inputReader = new BufferedReader(new InputStreamReader(System.in))
+                String line
+                while ((line = inputReader.readLine()) != null) {
+                    if (!serverProcess.isAlive()) {
+                        break
+                    }
+                    serverInputWriter.write(line)
+                    serverInputWriter.newLine()
+                    serverInputWriter.flush()
+                }
+            }
+
+            Thread.sleep(3000)
+
+            clientProcess = startProcess(clientCommand)
+            pipeLogs(clientProcess, '[client]')
+
+            while (serverProcess.isAlive()) {
+                Thread.sleep(200)
+            }
+        } finally {
+            if (clientProcess != null && clientProcess.isAlive()) {
+                terminateProcessTree(clientProcess)
+            }
+            if (serverProcess != null && serverProcess.isAlive()) {
+                terminateProcessTree(serverProcess)
+            }
+        }
     }
 }
