@@ -1,6 +1,9 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 public class DataManager {
@@ -20,8 +23,13 @@ public class DataManager {
     private BiConsumer<String, Object> sendToClient;
 
     // 绑定网络发送器
-    public void bindServerSender(BiConsumer<String, Object> sender) { this.sendToServer = sender; }
-    public void bindClientSender(BiConsumer<String, Object> sender) { this.sendToClient = sender; }
+    public void bindServerSender(BiConsumer<String, Object> sender) {
+        this.sendToServer = sender;
+    }
+
+    public void bindClientSender(BiConsumer<String, Object> sender) {
+        this.sendToClient = sender;
+    }
 
     /**
      * 1. 注册数据

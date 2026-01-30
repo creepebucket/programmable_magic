@@ -8,6 +8,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 public interface Clickable {
     /**
      * 鼠标点击事件。
+     *
      * @return true 表示事件已被消费
      */
     default boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
@@ -16,6 +17,7 @@ public interface Clickable {
 
     /**
      * 鼠标释放事件。
+     *
      * @return true 表示事件已被消费
      */
     default boolean mouseReleased(MouseButtonEvent event) {

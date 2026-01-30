@@ -6,7 +6,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
@@ -16,8 +15,6 @@ import java.util.Map;
 import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 
 public interface StructureUtils {
-    List<List<String>> pattern();
-
     static boolean matches(Level level, BlockPos controller_pos, List<List<String>> pattern, Map<Character, List<String>> map) {
         int controller_z = 0;
         int controller_y = 0;
@@ -53,9 +50,15 @@ public interface StructureUtils {
                     // - "#namespace:tag_id" ：按方块标签匹配
                     for (String v : map.get(ch)) {
                         if (v.startsWith("#")) {
-                            if (target_state.is(TagKey.create(Registries.BLOCK, Identifier.parse(v.substring(1))))) { matched = true; break; }
+                            if (target_state.is(TagKey.create(Registries.BLOCK, Identifier.parse(v.substring(1))))) {
+                                matched = true;
+                                break;
+                            }
                         } else {
-                            if (target_state.is(BuiltInRegistries.BLOCK.getValue(Identifier.parse(v)))) { matched = true; break; }
+                            if (target_state.is(BuiltInRegistries.BLOCK.getValue(Identifier.parse(v)))) {
+                                matched = true;
+                                break;
+                            }
                         }
                     }
                     if (!matched) formed = false;
@@ -64,6 +67,8 @@ public interface StructureUtils {
         }
         return formed;
     }
+
+    List<List<String>> pattern();
 
     default List<List<String>> rotated_mirrored_pattern(BlockState state) {
         // 在“旋转后的坐标系”里，再做一次单轴镜像（只翻 x 或 z 的其中一个轴）。
@@ -78,7 +83,8 @@ public interface StructureUtils {
                 ArrayList<List<String>> out = new ArrayList<>(z_len);
                 for (int z = 0; z < z_len; z++) {
                     ArrayList<String> layer = new ArrayList<>(y_len);
-                    for (int y = 0; y < y_len; y++) layer.add(new StringBuilder(rotated.get(z).get(y)).reverse().toString());
+                    for (int y = 0; y < y_len; y++)
+                        layer.add(new StringBuilder(rotated.get(z).get(y)).reverse().toString());
                     out.add(layer);
                 }
                 yield out;

@@ -56,7 +56,10 @@ public class SpellItemModelProvider implements DataProvider {
             futures.add(DataProvider.saveStable(cache, modelJson, modelPath));
             // 兼容清理：删除此前错误生成的双点扩展文件（如果存在）
             Path wrong = modelsProvider.file(modelId, ".json");
-            try { Files.deleteIfExists(wrong); } catch (Exception ignored) {}
+            try {
+                Files.deleteIfExists(wrong);
+            } catch (Exception ignored) {
+            }
 
             // 2) 生成 1.21.8 必需的 client item：items/spell_display_<name>.json
             JsonObject clientItem = new JsonObject();

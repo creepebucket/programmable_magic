@@ -84,16 +84,24 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     }
 
     @Override
-    public boolean stillValid(Player player) { return true; }
+    public boolean stillValid(Player player) {
+        return true;
+    }
 
     @Override
-    public ItemStack quickMoveStack(Player player, int index) { return ItemStack.EMPTY; }
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY;
+    }
 
     @Override
-    public void handleSimpleKvC2S(String key, Object value) { this.dataManager.handlePacket(key, value); }
+    public void handleSimpleKvC2S(String key, Object value) {
+        this.dataManager.handlePacket(key, value);
+    }
 
     @Override
-    public void handleSimpleKvS2C(String key, Object value) { this.dataManager.handlePacket(key, value); }
+    public void handleSimpleKvS2C(String key, Object value) {
+        this.dataManager.handlePacket(key, value);
+    }
 
     public abstract void init();
 

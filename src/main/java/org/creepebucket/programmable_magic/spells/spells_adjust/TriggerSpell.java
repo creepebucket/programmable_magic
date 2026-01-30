@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_adjust;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +19,16 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
     public TriggerSpell() {
         subCategory = "spell." + MODID + ".subcategory.trigger";
         precedence = -99;
+    }
+
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new ModUtils.Mana();
     }
 
     public static class ConditionInvertSpell extends TriggerSpell {
@@ -43,9 +52,11 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
             // 获取当前方块
             Block block = caster.level().getBlockState(caster.blockPosition()).getBlock();
             if (block.isEmpty(block.defaultBlockState())) {
-                if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this); else return ExecutionResult.FAILED(this);
+                if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this);
+                else return ExecutionResult.FAILED(this);
             } else {
-                if (prev instanceof ConditionInvertSpell) return ExecutionResult.FAILED(this); else return ExecutionResult.SUCCESS(this);
+                if (prev instanceof ConditionInvertSpell) return ExecutionResult.FAILED(this);
+                else return ExecutionResult.SUCCESS(this);
             }
         }
     }
@@ -67,10 +78,12 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
             );
 
             for (Entity entity : spellEntity.level().getEntities(spellEntity, aabb, e -> e != spellEntity)) {
-                if (prev instanceof ConditionInvertSpell) return ExecutionResult.FAILED(this); else return ExecutionResult.SUCCESS(this);
+                if (prev instanceof ConditionInvertSpell) return ExecutionResult.FAILED(this);
+                else return ExecutionResult.SUCCESS(this);
             }
 
-            if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this); else return ExecutionResult.FAILED(this);
+            if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this);
+            else return ExecutionResult.FAILED(this);
         }
     }
 
@@ -83,15 +96,5 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             return new ExecutionResult(next, (int) Math.floor((Double) paramsList.get(0)), false, null, null);
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return true;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
     }
 }

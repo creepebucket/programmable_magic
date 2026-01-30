@@ -9,5 +9,7 @@ public class ModBlocks {
 
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
 
-    public static void register(IEventBus bus) {BLOCKS.register(bus);}    
+    public static void register(IEventBus bus) {
+        BLOCKS.register(bus);
+    }
 }

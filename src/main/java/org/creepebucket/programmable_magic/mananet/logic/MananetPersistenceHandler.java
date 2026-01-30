@@ -11,7 +11,8 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 @EventBusSubscriber(modid = MODID)
 public final class MananetPersistenceHandler {
 
-    private MananetPersistenceHandler() {}
+    private MananetPersistenceHandler() {
+    }
 
     /**
      * chunk 加载：把 chunk 附件里的节点数据装入运行时 manager，并汇总到网络状态。

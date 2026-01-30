@@ -4,13 +4,22 @@ import java.util.function.BiFunction;
 
 /**
  * 坐标计算器：以当前窗口缩放后的尺寸为输入，计算屏幕坐标与菜单坐标。
+ *
+ * @param x 以 (sw, sh) 为输入的 X 计算函数。
+ * @param y 以 (sw, sh) 为输入的 Y 计算函数。
  */
-public class Coordinate {
+public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
 
     private static int screenWidth;
     private static int screenHeight;
     private static int guiLeft;
     private static int guiTop;
+
+    /**
+     * 创建一个坐标计算器。
+     */
+    public Coordinate {
+    }
 
     public static void updateContext(int screenWidth, int screenHeight, int guiLeft, int guiTop) {
         Coordinate.screenWidth = screenWidth;
@@ -20,21 +29,38 @@ public class Coordinate {
     }
 
     /**
-     * 以 (sw, sh) 为输入的 X 计算函数。
+     * 以屏幕左上角为基准创建坐标。
      */
-    public final BiFunction<Integer, Integer, Integer> x;
+    public static Coordinate fromTopLeft(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> deltaY);
+    }
 
     /**
-     * 以 (sw, sh) 为输入的 Y 计算函数。
+     * 以屏幕左下角为基准创建坐标。
      */
-    public final BiFunction<Integer, Integer, Integer> y;
+    public static Coordinate fromBottomLeft(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh - deltaY);
+    }
 
     /**
-     * 创建一个坐标计算器。
+     * 以屏幕右上角为基准创建坐标。
      */
-    public Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
-        this.x = x;
-        this.y = y;
+    public static Coordinate fromTopRight(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> deltaY);
+    }
+
+    /**
+     * 以屏幕右下角为基准创建坐标。
+     */
+    public static Coordinate fromBottomRight(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> sh - deltaY);
+    }
+
+    /**
+     * 以屏幕中心为基准创建坐标。
+     */
+    public static Coordinate fromCenter(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh / 2 + deltaY);
     }
 
     /**
@@ -77,41 +103,6 @@ public class Coordinate {
      */
     public int[] toMenu() {
         return new int[]{this.x.apply(screenWidth, screenHeight) - guiLeft, this.y.apply(screenWidth, screenHeight) - guiTop};
-    }
-
-    /**
-     * 以屏幕左上角为基准创建坐标。
-     */
-    public static Coordinate fromTopLeft(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> deltaY);
-    }
-
-    /**
-     * 以屏幕左下角为基准创建坐标。
-     */
-    public static Coordinate fromBottomLeft(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh - deltaY);
-    }
-
-    /**
-     * 以屏幕右上角为基准创建坐标。
-     */
-    public static Coordinate fromTopRight(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> deltaY);
-    }
-
-    /**
-     * 以屏幕右下角为基准创建坐标。
-     */
-    public static Coordinate fromBottomRight(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> sh - deltaY);
-    }
-
-    /**
-     * 以屏幕中心为基准创建坐标。
-     */
-    public static Coordinate fromCenter(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh / 2 + deltaY);
     }
 
     /**

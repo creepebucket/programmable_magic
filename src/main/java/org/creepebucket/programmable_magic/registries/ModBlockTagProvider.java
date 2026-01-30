@@ -3,7 +3,6 @@ package org.creepebucket.programmable_magic.registries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.minecraft.tags.BlockTags;
 
 import java.util.concurrent.CompletableFuture;
 

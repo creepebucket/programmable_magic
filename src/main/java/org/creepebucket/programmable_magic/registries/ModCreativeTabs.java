@@ -1,10 +1,10 @@
 package org.creepebucket.programmable_magic.registries;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -26,11 +26,15 @@ public class ModCreativeTabs {
                                 var key = BuiltInRegistries.ITEM.getKey(item);
                                 if (!key.getNamespace().equals(MODID)) return false;
                                 return !key.getPath().startsWith("spell_display_");
-                            } catch (Exception e) { return false; }
+                            } catch (Exception e) {
+                                return false;
+                            }
                         })
                         .forEach(output::accept);
             })
             .build());
 
-    public static void register(IEventBus bus) { CREATIVE_MODE_TABS.register(bus); }
+    public static void register(IEventBus bus) {
+        CREATIVE_MODE_TABS.register(bus);
+    }
 }

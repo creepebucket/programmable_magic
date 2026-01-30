@@ -6,10 +6,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
-import org.creepebucket.programmable_magic.registries.*;
 import org.creepebucket.programmable_magic.data.ModDataGenerators;
-import org.creepebucket.programmable_magic.registries.ModAttachments;
-import org.creepebucket.programmable_magic.registries.MananetNodeBlocks;
+import org.creepebucket.programmable_magic.registries.*;
 
 @Mod(Programmable_magic.MODID)
 public class Programmable_magic {

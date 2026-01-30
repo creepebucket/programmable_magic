@@ -5,6 +5,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
+
 import java.util.concurrent.CompletableFuture;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;

@@ -32,7 +32,10 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
         for (int i = 0; i < input.size(); i++) {
             ItemStack st = input.getItem(i);
             if (st.isEmpty()) continue;
-            if (st.getItem() instanceof WandItemPlaceholder) { placeholder++; continue; }
+            if (st.getItem() instanceof WandItemPlaceholder) {
+                placeholder++;
+                continue;
+            }
             others++;
         }
         return placeholder == 1 && others == 1;
@@ -70,9 +73,13 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
         public static final StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> STREAM_CODEC = StreamCodec.unit(DUMMY);
 
         @Override
-        public MapCodec<BindWandItemPlaceholderRecipe> codec() { return CODEC; }
+        public MapCodec<BindWandItemPlaceholderRecipe> codec() {
+            return CODEC;
+        }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> streamCodec() { return STREAM_CODEC; }
+        public StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> streamCodec() {
+            return STREAM_CODEC;
+        }
     }
 }

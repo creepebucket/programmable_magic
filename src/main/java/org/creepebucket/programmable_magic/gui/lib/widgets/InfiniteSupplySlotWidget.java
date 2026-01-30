@@ -1,9 +1,8 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
 
 /**
  * 无限供给槽位：槽位内物品永远保持为指定物品 * 1。
@@ -16,39 +15,4 @@ public class InfiniteSupplySlotWidget extends SlotWidget {
     public InfiniteSupplySlotWidget(ItemStack supplyStack, Coordinate pos) {
         super(new InfiniteSupplySlot(supplyStack), pos);
     }
-
-    private static final class InfiniteSupplySlot extends Slot {
-        private final ItemStack supplyStack;
-
-        private InfiniteSupplySlot(ItemStack supplyStack) {
-            super(new SimpleContainer(1), 0, 0, 0);
-            this.supplyStack = supplyStack.copyWithCount(1);
-        }
-
-        @Override
-        public ItemStack getItem() {
-            return this.supplyStack.copy();
-        }
-
-        @Override
-        public ItemStack remove(int amount) {
-            return this.supplyStack.copy();
-        }
-
-        @Override
-        public void set(ItemStack stack) { }
-
-        @Override
-        public void setByPlayer(ItemStack stack) { }
-
-        @Override
-        public void setByPlayer(ItemStack stack, ItemStack oldStack) { }
-
-        @Override
-        public int getMaxStackSize(ItemStack stack) {
-            if (ItemStack.isSameItemSameComponents(stack, this.supplyStack)) return 1;
-            return stack.getMaxStackSize();
-        }
-    }
 }
-

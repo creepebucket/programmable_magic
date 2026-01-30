@@ -4,14 +4,12 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.Programmable_magic;
-import net.minecraft.world.item.ItemStack;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,14 +34,13 @@ public class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("wand_stacks_small", builder -> builder
                     .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
-    
+
     // 隐藏保存：供左键释放读取
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_SAVED_STACKS =
             DATA_COMPONENTS.registerComponentType("wand_saved_stacks", builder -> builder
                     .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
-    
 
     // 魔杖插件：玩家装配的插件物品列表（顺序即槽位顺序）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> WAND_PLUGINS =
@@ -63,5 +60,7 @@ public class ModDataComponents {
                     .persistent(Codec.LONG)
                     .networkSynchronized(ByteBufCodecs.VAR_LONG));
 
-    public static void register(IEventBus eventBus) {DATA_COMPONENTS.register(eventBus);}
+    public static void register(IEventBus eventBus) {
+        DATA_COMPONENTS.register(eventBus);
+    }
 }

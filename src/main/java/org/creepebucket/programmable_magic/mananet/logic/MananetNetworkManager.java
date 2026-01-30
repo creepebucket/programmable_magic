@@ -1,20 +1,16 @@
 package org.creepebucket.programmable_magic.mananet.logic;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import org.creepebucket.programmable_magic.ModUtils.Mana;
 import org.creepebucket.programmable_magic.mananet.api.ManaMath;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.UUID;
-import net.minecraft.core.BlockPos;
+import java.util.*;
 import java.util.function.Supplier;
-import net.minecraft.core.Direction;
 
 /**
  * Mananet 的运行时管理器（按 {@link ServerLevel} 维度）。
@@ -34,32 +30,6 @@ public final class MananetNetworkManager {
      * 每个服务器维度一个 manager（不跨维度共享网络）。
      */
     private static final Map<ServerLevel, MananetNetworkManager> MANAGERS = new HashMap<>();
-
-    public static MananetNetworkManager get(ServerLevel level) {
-        return MANAGERS.computeIfAbsent(level, ignored -> new MananetNetworkManager());
-    }
-
-    /**
-     * 单个网络的汇总状态（按网络根 id 索引）。
-     *
-     * <p>其中：</p>
-     * <ul>
-     *     <li>{@code cache/load/size} 是节点贡献的求和。</li>
-     *     <li>{@code availableMana} 是当前存量，会被夹紧到 {@code cache}。</li>
-     * </ul>
-     */
-    public static final class NetworkState {
-        public final UUID id;
-        public Mana mana = new Mana();
-        public Mana cache = new Mana();
-        public Mana load = new Mana();
-        public int size = 0;
-
-        private NetworkState(UUID id) {
-            this.id = id;
-        }
-    }
-
     /**
      * 网络根 id -> 汇总状态。
      */
@@ -75,37 +45,23 @@ public final class MananetNetworkManager {
      */
     private final Map<UUID, UUID> parent = new HashMap<>();
     /**
-     * 标记持久化层（SavedData 中的 parent）是否已装载到运行时。
-     */
-    private boolean persistentLoaded = false;
-
-    /**
      * 节点需要 integrate 的位置队列。
      *
      * <p>用 set + queue 做去重：queue 负责顺序，set 负责“一次 tick 内不重复”。</p>
      */
     private final ArrayDeque<Long> dirtyQueue = new ArrayDeque<>();
     private final HashSet<Long> dirtySet = new HashSet<>();
-
-    /**
-     * 连边开关变化事件（由节点侧写入，逻辑层在 tick 中消费）。
-     */
-    public record EdgeChange(long posLong, Direction dir, boolean oldValue, boolean newValue) {}
     private final ArrayDeque<EdgeChange> edgeChangeQueue = new ArrayDeque<>();
-
-    /**
-     * 节点移除事件（包含被移除节点当时的贡献与连通信息）。
-     *
-     * <p>之所以把 cache/load/connectivityMask 打包进事件，是为了在方块已消失后仍能正确扣除贡献/判断是否需要拆分。</p>
-     */
-    public record NodeRemoval(long posLong, UUID oldNetworkId, int connectivityMask, Mana cache, Mana load, int connectedNeighbors) {}
     private final ArrayDeque<NodeRemoval> removalQueue = new ArrayDeque<>();
     private final HashSet<Long> removalSet = new HashSet<>();
-
     /**
-     * 对外暴露的网络信息快照（用于调试/展示）。
+     * 标记持久化层（SavedData 中的 parent）是否已装载到运行时。
      */
-    public record NetworkInfo(UUID id, Mana mana, Mana cache, Mana load, int size) {}
+    private boolean persistentLoaded = false;
+
+    public static MananetNetworkManager get(ServerLevel level) {
+        return MANAGERS.computeIfAbsent(level, ignored -> new MananetNetworkManager());
+    }
 
     public NetworkState getOrCreate(UUID id) {
         return networks.computeIfAbsent(id, NetworkState::new);
@@ -371,5 +327,47 @@ public final class MananetNetworkManager {
             // 每 tick 都收敛一次，保证网络状态始终在合法范围内。
             state.mana = ManaMath.clampToCache(ManaMath.clampNonNegative(state.mana), state.cache);
         }
+    }
+
+    /**
+     * 单个网络的汇总状态（按网络根 id 索引）。
+     *
+     * <p>其中：</p>
+     * <ul>
+     *     <li>{@code cache/load/size} 是节点贡献的求和。</li>
+     *     <li>{@code availableMana} 是当前存量，会被夹紧到 {@code cache}。</li>
+     * </ul>
+     */
+    public static final class NetworkState {
+        public final UUID id;
+        public Mana mana = new Mana();
+        public Mana cache = new Mana();
+        public Mana load = new Mana();
+        public int size = 0;
+
+        private NetworkState(UUID id) {
+            this.id = id;
+        }
+    }
+
+    /**
+     * 连边开关变化事件（由节点侧写入，逻辑层在 tick 中消费）。
+     */
+    public record EdgeChange(long posLong, Direction dir, boolean oldValue, boolean newValue) {
+    }
+
+    /**
+     * 节点移除事件（包含被移除节点当时的贡献与连通信息）。
+     *
+     * <p>之所以把 cache/load/connectivityMask 打包进事件，是为了在方块已消失后仍能正确扣除贡献/判断是否需要拆分。</p>
+     */
+    public record NodeRemoval(long posLong, UUID oldNetworkId, int connectivityMask, Mana cache, Mana load,
+                              int connectedNeighbors) {
+    }
+
+    /**
+     * 对外暴露的网络信息快照（用于调试/展示）。
+     */
+    public record NetworkInfo(UUID id, Mana mana, Mana cache, Mana load, int size) {
     }
 }

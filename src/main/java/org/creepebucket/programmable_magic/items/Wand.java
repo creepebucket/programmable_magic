@@ -1,24 +1,24 @@
 package org.creepebucket.programmable_magic.items;
 
 import net.minecraft.core.particles.TrailParticleOption;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.creepebucket.programmable_magic.gui.wand.WandMenu;
-import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
+import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.gui.wand.WandMenu;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,6 +30,19 @@ public class Wand extends BowItem implements IItemExtension {
 
     private final int slots;
     private final int pluginSlots;
+
+    /**
+     * 构造一个魔杖实例。
+     *
+     * @param properties  物品属性
+     * @param slots       法术槽位最大数量（实际有效容量由插件控制）
+     * @param pluginSlots 插件槽位最大数量
+     */
+    public Wand(Properties properties, int slots, int pluginSlots) {
+        super(properties);
+        this.slots = slots;
+        this.pluginSlots = pluginSlots;
+    }
 
     private static boolean hasAutoChargePlugin(ItemStack stack) {
         java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
@@ -43,25 +56,18 @@ public class Wand extends BowItem implements IItemExtension {
     }
 
     /**
-     * 构造一个魔杖实例。
-     * @param properties 物品属性
-     * @param slots 法术槽位最大数量（实际有效容量由插件控制）
-     * @param pluginSlots 插件槽位最大数量
+     * 获取法术槽位数量。
      */
-    public Wand(Properties properties, int slots, int pluginSlots) {
-        super(properties);
-        this.slots = slots;
-        this.pluginSlots = pluginSlots;
+    public int getSlots() {
+        return slots;
     }
 
     /**
-     * 获取法术槽位数量。
-     */
-    public int getSlots() { return slots; }
-    /**
      * 获取插件槽位数量。
      */
-    public int getPluginSlots() { return pluginSlots; }
+    public int getPluginSlots() {
+        return pluginSlots;
+    }
 
     @Override
     /**
@@ -110,7 +116,7 @@ public class Wand extends BowItem implements IItemExtension {
             double mana = (used / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
 
-            for(int i = 1; i < 5; i++) {
+            for (int i = 1; i < 5; i++) {
                 double n = Math.random() * 2 * Math.PI;
                 double x_offset = Math.sin(n) * 0.5;
                 double z_offset = Math.cos(n) * 0.5;
@@ -136,7 +142,9 @@ public class Wand extends BowItem implements IItemExtension {
      * 允许长按使用（默认 1 小时，足够长）。
      */
     @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) { return 72000; }
+    public int getUseDuration(ItemStack stack, LivingEntity entity) {
+        return 72000;
+    }
 
     /**
      * 物品每 tick：若安装自动充能插件且被玩家手持，则累积被动充能时间；客户端在未按住使用时显示 HUD。

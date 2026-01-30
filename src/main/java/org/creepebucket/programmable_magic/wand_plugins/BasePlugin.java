@@ -53,10 +53,10 @@ public abstract class BasePlugin {
      * 数值调整器：用于由插件对魔杖相关数值进行调整。
      * - 默认不做修改；具体插件可按需覆盖。
      * - values 中的字段语义：
-     *   - manaMult：魔力倍率（参与发射时 supply 计算，0 表示不生效）。
-     *   - chargeRateW：充能功率（W）。
-     *   - spellSlots：法术槽位数（仅供展示或后续扩展，不直接改容器大小）。
-     *   - pluginSlots：插件槽位数（仅供展示或后续扩展，不直接改容器大小）。
+     * - manaMult：魔力倍率（参与发射时 supply 计算，0 表示不生效）。
+     * - chargeRateW：充能功率（W）。
+     * - spellSlots：法术槽位数（仅供展示或后续扩展，不直接改容器大小）。
+     * - pluginSlots：插件槽位数（仅供展示或后续扩展，不直接改容器大小）。
      */
     public abstract void adjustWandValues(WandValues values, ItemStack pluginStack);
 }

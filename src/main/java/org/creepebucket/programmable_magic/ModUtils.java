@@ -2,47 +2,36 @@ package org.creepebucket.programmable_magic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
+import java.util.*;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class ModUtils {
-    /**
-     * 插件数值聚合对象：所有字段默认 0，由插件按需调整。
-     */
-    public static class WandValues {
-        public double manaMult = 0.0;   // 魔力倍率：0 表示无倍率（按现有计算规则处理）
-        public double chargeRateW = 0.0; // 充能功率（W）
-        public int spellSlots = 0;       // 法术槽位有效容量
-        public int pluginSlots = 0;      // 插件槽有效容量（当前未使用）
-    }
     public static List<ItemStack> getItemsFromTag(TagKey<Item> tagKey) {
         List<ItemStack> items = new ArrayList<>();
 
-        BuiltInRegistries.ITEM.stream().filter(item -> {try {
-            return item.getDefaultInstance().is(tagKey);
-        } catch (Exception e) {return false;}
-        }).forEach(item -> {try{
-            items.add(new ItemStack(item));} catch (Exception e) {}
+        BuiltInRegistries.ITEM.stream().filter(item -> {
+            try {
+                return item.getDefaultInstance().is(tagKey);
+            } catch (Exception e) {
+                return false;
+            }
+        }).forEach(item -> {
+            try {
+                items.add(new ItemStack(item));
+            } catch (Exception e) {
+            }
         });
 
         return items;
@@ -114,13 +103,52 @@ public class ModUtils {
         return values;
     }
 
+    // 法术 -> 颜色
+    public static Map<String, Integer> SPELL_COLORS() {
+        Map<String, Integer> COLOR_MAP = new LinkedHashMap<>();
+        COLOR_MAP.put("spell." + MODID + ".subcategory.visual", 0xFFC832A1);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.entity", 0xFFC82C59);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.block", 0xFFEB3838);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.trigger", 0xFFC8702C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.structure", 0xFFC8902C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.flow_control", 0xFFC8B32C);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.number", 0xFF9FE333);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.number", 0xFF5DEE22);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.number", 0xFF31FF7E);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.vector", 0xFF3AFFED);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.vector", 0xFF2DCDFF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.vector", 0xFF3498FF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.boolean", 0xFF424EF9);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0xFF7747F0);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
+        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
+        return COLOR_MAP;
+    }
+
+    /**
+     * 插件数值聚合对象：所有字段默认 0，由插件按需调整。
+     */
+    public static class WandValues {
+        public double manaMult = 0.0;   // 魔力倍率：0 表示无倍率（按现有计算规则处理）
+        public double chargeRateW = 0.0; // 充能功率（W）
+        public int spellSlots = 0;       // 法术槽位有效容量
+        public int pluginSlots = 0;      // 插件槽有效容量（当前未使用）
+    }
+
     public static final class Mana {
 
         public static final String RADIATION = "radiation";
         public static final String TEMPERATURE = "temperature";
         public static final String MOMENTUM = "momentum";
         public static final String PRESSURE = "pressure";
-
+        public static final Codec<Mana> CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        Codec.DOUBLE.fieldOf("radiation").forGetter(Mana::getRadiation),
+                        Codec.DOUBLE.fieldOf("temperature").forGetter(Mana::getTemperature),
+                        Codec.DOUBLE.fieldOf("momentum").forGetter(Mana::getMomentum),
+                        Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
+                ).apply(instance, Mana::new)
+        );
         private final Map<String, Double> values;
 
         public Mana(Double radiation, Double temperature, Double momentum, Double pressure) {
@@ -135,7 +163,7 @@ public class ModUtils {
         public Mana() {
             this(0.0, 0.0, 0.0, 0.0);
         }
-    
+
         public Map<String, Double> toMap() {
             return values;
         }
@@ -159,12 +187,15 @@ public class ModUtils {
         public Double getRadiation() {
             return values.get(RADIATION);
         }
+
         public Double getTemperature() {
             return values.get(TEMPERATURE);
         }
+
         public Double getMomentum() {
             return values.get(MOMENTUM);
         }
+
         public Double getPressure() {
             return values.get(PRESSURE);
         }
@@ -197,81 +228,6 @@ public class ModUtils {
                     values.get(TEMPERATURE) > mana.getTemperature() ||
                     values.get(MOMENTUM) > mana.getMomentum() ||
                     values.get(PRESSURE) > mana.getPressure();
-        }
-
-        public static final Codec<Mana> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(
-                    Codec.DOUBLE.fieldOf("radiation").forGetter(Mana::getRadiation),
-                    Codec.DOUBLE.fieldOf("temperature").forGetter(Mana::getTemperature),
-                    Codec.DOUBLE.fieldOf("momentum").forGetter(Mana::getMomentum),
-                    Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
-            ).apply(instance, Mana::new)
-        );
-    }
-
-    // 法术 -> 颜色
-    public static Map<String, Integer> SPELL_COLORS() {
-        Map<String, Integer> COLOR_MAP = new LinkedHashMap<>();
-        COLOR_MAP.put("spell." + MODID + ".subcategory.visual", 0xFFC832A1);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.entity", 0xFFC82C59);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.block", 0xFFEB3838);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.trigger", 0xFFC8702C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.structure", 0xFFC8902C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.flow_control", 0xFFC8B32C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.number", 0xFF9FE333);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.number", 0xFF5DEE22);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.number", 0xFF31FF7E);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.vector", 0xFF3AFFED);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.vector", 0xFF2DCDFF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.vector", 0xFF3498FF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.boolean", 0xFF424EF9);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0xFF7747F0);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
-        return COLOR_MAP;
-    }
-
-    /**
-     * 安全地在双端代码中调用客户端逻辑
-     */
-    public static class ClientUtils {
-        /**
-         * 如果在客户端，则执行逻辑。
-         * @param supplier 必须返回一个 Runnable。
-         *                 使用示例: ClientUtils.runIfClient(() -> () -> Minecraft.getInstance().pause());
-         */
-        public static void runIfClient(Supplier<Runnable> supplier) {
-            if (FMLEnvironment.getDist() == Dist.CLIENT) {
-                // 只有在客户端环境下，才会触发 supplier.get()
-                // 进而才会加载包含客户端类的 Runnable
-                supplier.get().run();
-            }
-        }
-        /**
-         * 如果在客户端，则计算并返回一个值，否则返回默认值。
-         * @param supplier 必须返回一个 Supplier。
-         * @param defaultValue 默认值（服务器端返回的值）
-         */
-        public static <T> T computeIfClient(Supplier<Supplier<T>> supplier, T defaultValue) {
-            if (FMLEnvironment.getDist() == Dist.CLIENT) {
-                return supplier.get().get();
-            }
-            return defaultValue;
-        }
-        /**
-         * 如果在客户端，则计算并把值写入指定的 SyncedValue（对应其 key）。
-         * @param supplier 必须返回一个 Supplier。
-         */
-        public static <T> void computeToSyncedValueIfClient(Supplier<Supplier<T>> supplier, SyncedValue<T> syncedValue) {
-            if (FMLEnvironment.getDist() == Dist.CLIENT) {
-                syncedValue.set(supplier.get().get());
-            }
-        }
-        /**
-         * 判断当前是否为客户端环境
-         */
-        public static boolean isClient() {
-            return FMLEnvironment.getDist() == Dist.CLIENT;
         }
     }
 }

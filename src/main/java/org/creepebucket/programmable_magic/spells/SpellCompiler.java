@@ -124,9 +124,8 @@ public class SpellCompiler {
                     throw new RuntimeException(e);
                 }
             }
-            if (i instanceof SpellItemLogic.PairedRightSpell) {
+            if (i instanceof SpellItemLogic.PairedRightSpell r) {
                 // 右括号出栈并设置配对
-                SpellItemLogic.PairedRightSpell r = (SpellItemLogic.PairedRightSpell) i;
                 SpellItemLogic.PairedLeftSpell l = (SpellItemLogic.PairedLeftSpell) pairs.get(r.leftSpellType).popLeft();
                 r.leftSpell = l;
                 l.rightSpell = r;

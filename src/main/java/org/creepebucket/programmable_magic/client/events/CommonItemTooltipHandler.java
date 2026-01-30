@@ -10,11 +10,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.Wand;
-import org.lwjgl.glfw.GLFW;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.ModUtils;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.Set;
 

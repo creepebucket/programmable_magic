@@ -5,7 +5,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,8 @@ public class BaseControllerBlockEntity extends BlockEntity {
         be.tick_formed(level, pos, state);
     }
 
-    protected void tick_formed(Level level, BlockPos pos, BlockState state) {}
+    protected void tick_formed(Level level, BlockPos pos, BlockState state) {
+    }
 
     private void checkStructure() {
         Level level = this.getLevel();

@@ -7,15 +7,18 @@ public interface Lifecycle {
     /**
      * 控件加入 UI 运行时时调用。
      */
-    default void onInitialize() {}
+    default void onInitialize() {
+    }
 
     /**
      * 控件从 UI 运行时移除时调用。
      */
-    default void onRemoved() {}
+    default void onRemoved() {
+    }
 
     /**
      * 屏幕尺寸变化时调用。
      */
-    default void onResize(int width, int height) {}
+    default void onResize(int width, int height) {
+    }
 }

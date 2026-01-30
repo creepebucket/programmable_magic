@@ -10,8 +10,8 @@ import net.minecraft.world.level.redstone.Orientation;
 import org.creepebucket.programmable_magic.ModUtils.Mana;
 import org.creepebucket.programmable_magic.mananet.logic.MananetNetworkLogic;
 
-import java.util.UUID;
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * “节点方块”的基类。
@@ -34,7 +34,8 @@ public abstract class AbstractNodeBlock extends Block implements MananetNode {
     public final void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         // 节点方块放置后，交由逻辑层在后续 tick 中完成 integrate（分配 network_id / 合并邻接网络）。
-        if (level instanceof ServerLevel serverLevel && !state.hasBlockEntity()) MananetNetworkLogic.markDirty(serverLevel, pos);
+        if (level instanceof ServerLevel serverLevel && !state.hasBlockEntity())
+            MananetNetworkLogic.markDirty(serverLevel, pos);
     }
 
     @Override
@@ -61,7 +62,8 @@ public abstract class AbstractNodeBlock extends Block implements MananetNode {
      *     <li>设置默认的 {@link MananetNodeState#connectivityMask}</li>
      * </ul>
      */
-    public void init_node_state(ServerLevel level, BlockPos pos, BlockState state, MananetNodeState node_state) {}
+    public void init_node_state(ServerLevel level, BlockPos pos, BlockState state, MananetNodeState node_state) {
+    }
 
     @Override
     public final Mana getCache() {

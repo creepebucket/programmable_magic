@@ -12,10 +12,16 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
-public abstract class StorageSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod{
+public abstract class StorageSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
 
     public StorageSpell() {
         subCategory = "spell." + MODID + ".subcategory.data_storage";
+    }
+
+    public static String getStoreKey(int index) {
+
+        // 拼接存储key
+        return "data_storage_" + index;
     }
 
     @Override
@@ -62,11 +68,5 @@ public abstract class StorageSpell extends SpellItemLogic implements SpellItemLo
             Object value = spellEntity.spellData.get(getStoreKey(index));
             return ExecutionResult.RETURNED(this, List.of(value), List.of(SpellValueType.fromValue(value)));
         }
-    }
-
-    public static String getStoreKey(int index) {
-
-        // 拼接存储key
-        return "data_storage_" + index;
     }
 }

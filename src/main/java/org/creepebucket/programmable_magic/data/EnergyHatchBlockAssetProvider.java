@@ -34,6 +34,30 @@ public class EnergyHatchBlockAssetProvider extends AbstractAssetProvider {
         super(output);
     }
 
+    private static JsonObject variant_apply(String model, Integer x, Integer y, boolean uvlock) {
+        JsonObject apply = new JsonObject();
+        apply.addProperty("model", model);
+        if (x != null) apply.addProperty("x", x);
+        if (y != null) apply.addProperty("y", y);
+        if (uvlock) apply.addProperty("uvlock", true);
+        return apply;
+    }
+
+    private static JsonObject textures_for_tier(int tier) {
+        String side = SIDE_TEXTURE[tier];
+        String front = FRONT_TEXTURE[tier];
+
+        JsonObject textures = new JsonObject();
+        textures.addProperty("down", side);
+        textures.addProperty("up", side);
+        textures.addProperty("north", front);
+        textures.addProperty("south", side);
+        textures.addProperty("east", side);
+        textures.addProperty("west", side);
+        textures.addProperty("particle", side);
+        return textures;
+    }
+
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
@@ -76,30 +100,6 @@ public class EnergyHatchBlockAssetProvider extends AbstractAssetProvider {
         futures.add(save_item(cache, name, clientItem));
 
         return futures;
-    }
-
-    private static JsonObject variant_apply(String model, Integer x, Integer y, boolean uvlock) {
-        JsonObject apply = new JsonObject();
-        apply.addProperty("model", model);
-        if (x != null) apply.addProperty("x", x);
-        if (y != null) apply.addProperty("y", y);
-        if (uvlock) apply.addProperty("uvlock", true);
-        return apply;
-    }
-
-    private static JsonObject textures_for_tier(int tier) {
-        String side = SIDE_TEXTURE[tier];
-        String front = FRONT_TEXTURE[tier];
-
-        JsonObject textures = new JsonObject();
-        textures.addProperty("down", side);
-        textures.addProperty("up", side);
-        textures.addProperty("north", front);
-        textures.addProperty("south", side);
-        textures.addProperty("east", side);
-        textures.addProperty("west", side);
-        textures.addProperty("particle", side);
-        return textures;
     }
 
     @Override

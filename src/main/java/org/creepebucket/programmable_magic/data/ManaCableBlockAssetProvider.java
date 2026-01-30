@@ -17,6 +17,120 @@ public class ManaCableBlockAssetProvider extends AbstractAssetProvider {
         super(output);
     }
 
+    private static JsonObject textures_block(String texturePath) {
+        JsonObject textures = new JsonObject();
+        textures.addProperty("0", MODID + ":" + texturePath);
+        textures.addProperty("particle", MODID + ":" + texturePath);
+        return textures;
+    }
+
+    private static JsonArray elements(List<JsonObject> elements) {
+        JsonArray arr = new JsonArray();
+        for (JsonObject element : elements) arr.add(element);
+        return arr;
+    }
+
+    private static JsonObject element_cube(String name, int fx, int fy, int fz, int tx, int ty, int tz, JsonObject rotation, JsonObject faces) {
+        JsonObject element = new JsonObject();
+        element.addProperty("name", name);
+        element.add("from", vec3(fx, fy, fz));
+        element.add("to", vec3(tx, ty, tz));
+        element.add("rotation", rotation);
+        element.add("faces", faces);
+        return element;
+    }
+
+    private static JsonObject rotation(int angle, String axis, int ox, int oy, int oz) {
+        JsonObject rotation = new JsonObject();
+        rotation.addProperty("angle", angle);
+        rotation.addProperty("axis", axis);
+        rotation.add("origin", vec3(ox, oy, oz));
+        return rotation;
+    }
+
+    private static JsonObject faces_all(JsonArray uv, String texture) {
+        JsonObject faces = new JsonObject();
+        faces.add("north", face(uv, texture, null));
+        faces.add("east", face(uv, texture, null));
+        faces.add("south", face(uv, texture, null));
+        faces.add("west", face(uv, texture, null));
+        faces.add("up", face(uv, texture, null));
+        faces.add("down", face(uv, texture, null));
+        return faces;
+    }
+
+    private static JsonObject face(JsonArray uv, String texture, Integer rotation) {
+        JsonObject face = new JsonObject();
+        face.add("uv", uv);
+        face.addProperty("texture", texture);
+        if (rotation != null) face.addProperty("rotation", rotation);
+        return face;
+    }
+
+    private static JsonArray uv(int u1, int v1, int u2, int v2) {
+        JsonArray arr = new JsonArray();
+        arr.add(u1);
+        arr.add(v1);
+        arr.add(u2);
+        arr.add(v2);
+        return arr;
+    }
+
+    private static JsonArray vec3(int x, int y, int z) {
+        JsonArray arr = new JsonArray();
+        arr.add(x);
+        arr.add(y);
+        arr.add(z);
+        return arr;
+    }
+
+    private static JsonObject when_true(String property) {
+        JsonObject when = new JsonObject();
+        when.addProperty(property, "true");
+        return when;
+    }
+
+    private static JsonObject when_state(boolean north, boolean east, boolean south, boolean west, boolean up, boolean down) {
+        JsonObject when = new JsonObject();
+        when.addProperty("north", north ? "true" : "false");
+        when.addProperty("east", east ? "true" : "false");
+        when.addProperty("south", south ? "true" : "false");
+        when.addProperty("west", west ? "true" : "false");
+        when.addProperty("up", up ? "true" : "false");
+        when.addProperty("down", down ? "true" : "false");
+        return when;
+    }
+
+    private static JsonObject when_or(List<JsonObject> whens) {
+        JsonObject when = new JsonObject();
+        JsonArray arr = new JsonArray();
+        for (JsonObject w : whens) arr.add(w);
+        when.add("OR", arr);
+        return when;
+    }
+
+    private static JsonObject apply(String model, Integer x, Integer y, boolean uvlock) {
+        JsonObject apply = new JsonObject();
+        apply.addProperty("model", model);
+        if (x != null) apply.addProperty("x", x);
+        if (y != null) apply.addProperty("y", y);
+        if (uvlock) apply.addProperty("uvlock", true);
+        return apply;
+    }
+
+    private static JsonObject part(JsonObject apply) {
+        JsonObject part = new JsonObject();
+        part.add("apply", apply);
+        return part;
+    }
+
+    private static JsonObject part(JsonObject when, JsonObject apply) {
+        JsonObject part = new JsonObject();
+        part.add("when", when);
+        part.add("apply", apply);
+        return part;
+    }
+
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
         List<CompletableFuture<?>> futures = new ArrayList<>();
@@ -318,120 +432,6 @@ public class ManaCableBlockAssetProvider extends AbstractAssetProvider {
         futures.add(save_item(cache, "mana_cable", clientItem));
 
         return futures;
-    }
-
-    private static JsonObject textures_block(String texturePath) {
-        JsonObject textures = new JsonObject();
-        textures.addProperty("0", MODID + ":" + texturePath);
-        textures.addProperty("particle", MODID + ":" + texturePath);
-        return textures;
-    }
-
-    private static JsonArray elements(List<JsonObject> elements) {
-        JsonArray arr = new JsonArray();
-        for (JsonObject element : elements) arr.add(element);
-        return arr;
-    }
-
-    private static JsonObject element_cube(String name, int fx, int fy, int fz, int tx, int ty, int tz, JsonObject rotation, JsonObject faces) {
-        JsonObject element = new JsonObject();
-        element.addProperty("name", name);
-        element.add("from", vec3(fx, fy, fz));
-        element.add("to", vec3(tx, ty, tz));
-        element.add("rotation", rotation);
-        element.add("faces", faces);
-        return element;
-    }
-
-    private static JsonObject rotation(int angle, String axis, int ox, int oy, int oz) {
-        JsonObject rotation = new JsonObject();
-        rotation.addProperty("angle", angle);
-        rotation.addProperty("axis", axis);
-        rotation.add("origin", vec3(ox, oy, oz));
-        return rotation;
-    }
-
-    private static JsonObject faces_all(JsonArray uv, String texture) {
-        JsonObject faces = new JsonObject();
-        faces.add("north", face(uv, texture, null));
-        faces.add("east", face(uv, texture, null));
-        faces.add("south", face(uv, texture, null));
-        faces.add("west", face(uv, texture, null));
-        faces.add("up", face(uv, texture, null));
-        faces.add("down", face(uv, texture, null));
-        return faces;
-    }
-
-    private static JsonObject face(JsonArray uv, String texture, Integer rotation) {
-        JsonObject face = new JsonObject();
-        face.add("uv", uv);
-        face.addProperty("texture", texture);
-        if (rotation != null) face.addProperty("rotation", rotation);
-        return face;
-    }
-
-    private static JsonArray uv(int u1, int v1, int u2, int v2) {
-        JsonArray arr = new JsonArray();
-        arr.add(u1);
-        arr.add(v1);
-        arr.add(u2);
-        arr.add(v2);
-        return arr;
-    }
-
-    private static JsonArray vec3(int x, int y, int z) {
-        JsonArray arr = new JsonArray();
-        arr.add(x);
-        arr.add(y);
-        arr.add(z);
-        return arr;
-    }
-
-    private static JsonObject when_true(String property) {
-        JsonObject when = new JsonObject();
-        when.addProperty(property, "true");
-        return when;
-    }
-
-    private static JsonObject when_state(boolean north, boolean east, boolean south, boolean west, boolean up, boolean down) {
-        JsonObject when = new JsonObject();
-        when.addProperty("north", north ? "true" : "false");
-        when.addProperty("east", east ? "true" : "false");
-        when.addProperty("south", south ? "true" : "false");
-        when.addProperty("west", west ? "true" : "false");
-        when.addProperty("up", up ? "true" : "false");
-        when.addProperty("down", down ? "true" : "false");
-        return when;
-    }
-
-    private static JsonObject when_or(List<JsonObject> whens) {
-        JsonObject when = new JsonObject();
-        JsonArray arr = new JsonArray();
-        for (JsonObject w : whens) arr.add(w);
-        when.add("OR", arr);
-        return when;
-    }
-
-    private static JsonObject apply(String model, Integer x, Integer y, boolean uvlock) {
-        JsonObject apply = new JsonObject();
-        apply.addProperty("model", model);
-        if (x != null) apply.addProperty("x", x);
-        if (y != null) apply.addProperty("y", y);
-        if (uvlock) apply.addProperty("uvlock", true);
-        return apply;
-    }
-
-    private static JsonObject part(JsonObject apply) {
-        JsonObject part = new JsonObject();
-        part.add("apply", apply);
-        return part;
-    }
-
-    private static JsonObject part(JsonObject when, JsonObject apply) {
-        JsonObject part = new JsonObject();
-        part.add("when", when);
-        part.add("apply", apply);
-        return part;
     }
 
     @Override

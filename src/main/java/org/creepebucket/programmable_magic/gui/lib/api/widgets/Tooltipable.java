@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 public interface Tooltipable {
     /**
      * 渲染 tooltip。
+     *
      * @return true 表示 tooltip 已被渲染（将阻止 Screen 渲染默认 tooltip）
      */
     boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY);

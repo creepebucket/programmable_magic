@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.mananet.api;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -11,9 +12,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-import java.util.function.Supplier;
 import java.util.function.Function;
-import net.minecraft.resources.Identifier;
+import java.util.function.Supplier;
 
 /**
  * Mananet 相关方块/物品/方块实体的注册辅助。
@@ -22,13 +22,14 @@ import net.minecraft.resources.Identifier;
  */
 public final class MananetNodeRegistrar {
 
-    private MananetNodeRegistrar() {}
+    private MananetNodeRegistrar() {
+    }
 
     /**
      * 注册节点方块（或其它方块）。
      *
-     * @param blocks NeoForge 的方块延迟注册器
-     * @param id 资源 id（不含命名空间）
+     * @param blocks  NeoForge 的方块延迟注册器
+     * @param id      资源 id（不含命名空间）
      * @param factory 使用 registryName 构造方块实例的工厂
      */
     public static <T extends Block> DeferredBlock<T> registerBlock(DeferredRegister.Blocks blocks, String id, Function<Identifier, ? extends T> factory) {

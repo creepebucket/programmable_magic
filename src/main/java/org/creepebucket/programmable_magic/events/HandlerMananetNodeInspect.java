@@ -8,8 +8,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.ModUtils.Mana;
-import org.creepebucket.programmable_magic.mananet.api.MananetNodes;
 import org.creepebucket.programmable_magic.mananet.api.MananetNode;
+import org.creepebucket.programmable_magic.mananet.api.MananetNodes;
 import org.creepebucket.programmable_magic.mananet.logic.MananetNetworkManager;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;

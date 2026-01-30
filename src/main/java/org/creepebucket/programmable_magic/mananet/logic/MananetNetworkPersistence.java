@@ -1,16 +1,16 @@
 package org.creepebucket.programmable_magic.mananet.logic;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import org.creepebucket.programmable_magic.mananet.api.AbstractNodeBlock;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
 import java.util.UUID;
 
 /**
@@ -27,7 +27,8 @@ import java.util.UUID;
  */
 public final class MananetNetworkPersistence {
 
-    private MananetNetworkPersistence() {}
+    private MananetNetworkPersistence() {
+    }
 
     /**
      * chunk 加载：装载节点状态并汇总网络贡献。

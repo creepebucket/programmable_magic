@@ -32,16 +32,6 @@ public enum SpellValueType {
         this.javaClass = javaClass;
     }
 
-    public Component typed() {
-        return Component.literal(display).withStyle(color);
-    }
-
-    public String id() { return id; }
-
-    public boolean matches(Object value) {
-        return javaClass != null && javaClass.isInstance(value);
-    }
-
     public static SpellValueType fromValue(Object value) {
         for (SpellValueType t : values()) {
             if (t.matches(value)) return t;
@@ -61,6 +51,23 @@ public enum SpellValueType {
         return out;
     }
 
-    public ChatFormatting color() { return color; }
-    public String display() { return display; }
+    public Component typed() {
+        return Component.literal(display).withStyle(color);
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public boolean matches(Object value) {
+        return javaClass != null && javaClass.isInstance(value);
+    }
+
+    public ChatFormatting color() {
+        return color;
+    }
+
+    public String display() {
+        return display;
+    }
 }

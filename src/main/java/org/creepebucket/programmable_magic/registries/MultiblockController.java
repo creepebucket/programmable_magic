@@ -34,10 +34,10 @@ public class MultiblockController {
     );
 
     public static <BE extends BaseControllerBlockEntity> DeferredBlock<UniversalMultiblockControllerBlock<BE>> registerController(
-                    String controllerBlockId,
-                    List<List<String>> pattern,
-                    Map<Character, List<String>> blockMap,
-                    BlockEntityType.BlockEntitySupplier<BE> blockEntitySupplier) {
+            String controllerBlockId,
+            List<List<String>> pattern,
+            Map<Character, List<String>> blockMap,
+            BlockEntityType.BlockEntitySupplier<BE> blockEntitySupplier) {
 
         DeferredBlock<UniversalMultiblockControllerBlock<BE>> controller = BLOCKS.register(controllerBlockId, registerName ->
                 new UniversalMultiblockControllerBlock<>(

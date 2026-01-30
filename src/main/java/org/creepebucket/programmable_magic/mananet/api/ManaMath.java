@@ -9,7 +9,8 @@ import org.creepebucket.programmable_magic.ModUtils.Mana;
  */
 public final class ManaMath {
 
-    private ManaMath() {}
+    private ManaMath() {
+    }
 
     /**
      * 复制一份 Mana。

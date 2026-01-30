@@ -107,7 +107,8 @@ final class MananetBlockNode implements MananetNode {
         if (old == connectivity) return;
         int bit = 1 << direction.ordinal();
         // 只修改本端掩码位，是否真正连通由双方掩码共同决定。
-        if (connectivity) state.connectivityMask |= bit; else state.connectivityMask &= ~bit;
+        if (connectivity) state.connectivityMask |= bit;
+        else state.connectivityMask &= ~bit;
         // 连边变化不在这里直接做合并/拆分：排队交给逻辑层在 tick 中统一处理。
         MananetNetworkLogic.enqueueConnectivityChange(level, pos, direction, old, connectivity);
         // 回写 chunk 附件，持久化 connectivity_mask。

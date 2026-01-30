@@ -1,11 +1,8 @@
 package org.creepebucket.programmable_magic.spells.spells_control;
 
-import net.minecraft.client.gui.screens.ShareToLanScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FallingBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
@@ -25,6 +22,16 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
     }
 
     // 返回值是布尔值
+
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new ModUtils.Mana();
+    }
 
     public static class GreaterThanSpell extends BoolOperationsSpell {
         public GreaterThanSpell() {
@@ -58,7 +65,7 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) == (Double) paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
+            return ExecutionResult.RETURNED(this, List.of(paramsList.get(0) == paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
         }
     }
 
@@ -94,7 +101,7 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) != (Double) paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
+            return ExecutionResult.RETURNED(this, List.of(paramsList.get(0) != paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
         }
     }
 
@@ -159,15 +166,5 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             return ExecutionResult.RETURNED(this, List.of((paramsList.get(0) instanceof FallingBlock)), List.of(SpellValueType.BOOLEAN));
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return true;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
     }
 }

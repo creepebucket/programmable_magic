@@ -14,11 +14,10 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
-public record SpellReleasePacket(List<ItemStack> spells, double charge, List<ItemStack> plugins) implements CustomPacketPayload {
-    private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellReleasePacket");
-
+public record SpellReleasePacket(List<ItemStack> spells, double charge,
+                                 List<ItemStack> plugins) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<SpellReleasePacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(MODID, "spell_release"));
-
+    private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellReleasePacket");
     public static final StreamCodec<RegistryFriendlyByteBuf, SpellReleasePacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.collection(ArrayList::new, ItemStack.STREAM_CODEC),
             SpellReleasePacket::spells,

@@ -4,27 +4,27 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.mananet.api.AbstractNodeBlock;
-import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.creepebucket.programmable_magic.mananet.api.AbstractNodeBlock;
 import org.creepebucket.programmable_magic.mananet.api.MananetNode;
+import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 import org.creepebucket.programmable_magic.mananet.logic.MananetNetworkLogic;
 
 /**
@@ -40,7 +40,10 @@ public class ManaCableBlock extends AbstractNodeBlock {
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
     public static final BooleanProperty UP = BlockStateProperties.UP;
     public static final BooleanProperty DOWN = BlockStateProperties.DOWN;
-
+    /**
+     * 资源 id（不含命名空间）。
+     */
+    public static final String ID = "mana_cable";
     private static final VoxelShape CORE_SHAPE = box(5.0, 5.0, 5.0, 11.0, 11.0, 11.0);
     private static final VoxelShape NORTH_SHAPE = box(5.0, 5.0, 0.0, 11.0, 11.0, 5.0);
     private static final VoxelShape EAST_SHAPE = box(11.0, 5.0, 5.0, 16.0, 11.0, 11.0);
@@ -48,8 +51,8 @@ public class ManaCableBlock extends AbstractNodeBlock {
     private static final VoxelShape WEST_SHAPE = box(0.0, 5.0, 5.0, 5.0, 11.0, 11.0);
     private static final VoxelShape UP_SHAPE = box(5.0, 11.0, 5.0, 11.0, 16.0, 11.0);
     private static final VoxelShape DOWN_SHAPE = box(5.0, 0.0, 5.0, 11.0, 5.0, 11.0);
-
     private static final VoxelShape[] SHAPES = new VoxelShape[64];
+
     static {
         for (int mask = 0; mask < 64; mask++) {
             VoxelShape shape = CORE_SHAPE;
@@ -62,11 +65,6 @@ public class ManaCableBlock extends AbstractNodeBlock {
             SHAPES[mask] = shape;
         }
     }
-
-    /**
-     * 资源 id（不含命名空间）。
-     */
-    public static final String ID = "mana_cable";
 
     public ManaCableBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -93,6 +91,23 @@ public class ManaCableBlock extends AbstractNodeBlock {
         ));
         items.registerSimpleBlockItem(ID, block::get);
         return block;
+    }
+
+    private static int shape_index(BlockState state) {
+        int mask = 0;
+        if (state.getValue(DOWN)) mask |= 0b000001;
+        if (state.getValue(UP)) mask |= 0b000010;
+        if (state.getValue(NORTH)) mask |= 0b000100;
+        if (state.getValue(EAST)) mask |= 0b001000;
+        if (state.getValue(SOUTH)) mask |= 0b010000;
+        if (state.getValue(WEST)) mask |= 0b100000;
+        return mask;
+    }
+
+    private static boolean can_connect(ServerLevel level, BlockPos pos, Direction direction) {
+        MananetNode neighbor = MananetNetworkLogic.getNodeAccess(level, pos.relative(direction));
+        if (neighbor == null) return false;
+        return neighbor.getConnectivity(direction.getOpposite());
     }
 
     @Override
@@ -141,23 +156,6 @@ public class ManaCableBlock extends AbstractNodeBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPES[shape_index(state)];
-    }
-
-    private static int shape_index(BlockState state) {
-        int mask = 0;
-        if (state.getValue(DOWN)) mask |= 0b000001;
-        if (state.getValue(UP)) mask |= 0b000010;
-        if (state.getValue(NORTH)) mask |= 0b000100;
-        if (state.getValue(EAST)) mask |= 0b001000;
-        if (state.getValue(SOUTH)) mask |= 0b010000;
-        if (state.getValue(WEST)) mask |= 0b100000;
-        return mask;
-    }
-
-    private static boolean can_connect(ServerLevel level, BlockPos pos, Direction direction) {
-        MananetNode neighbor = MananetNetworkLogic.getNodeAccess(level, pos.relative(direction));
-        if (neighbor == null) return false;
-        return neighbor.getConnectivity(direction.getOpposite());
     }
 
     @Override

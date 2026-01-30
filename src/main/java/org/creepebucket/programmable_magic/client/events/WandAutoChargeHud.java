@@ -1,17 +1,17 @@
 package org.creepebucket.programmable_magic.client.events;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.ModUtils;
-import net.minecraft.core.registries.BuiltInRegistries;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -38,7 +38,9 @@ public class WandAutoChargeHud {
         ItemStack main = player.getMainHandItem();
         ItemStack off = player.getOffhandItem();
         ItemStack wand = ItemStack.EMPTY;
-        if (main.getItem() instanceof Wand) wand = main; else if (off.getItem() instanceof Wand) wand = off; else return;
+        if (main.getItem() instanceof Wand) wand = main;
+        else if (off.getItem() instanceof Wand) wand = off;
+        else return;
 
         java.util.List<ItemStack> plugins = wand.get(ModDataComponents.WAND_PLUGINS.get());
         boolean hasAuto = false;
@@ -46,7 +48,10 @@ public class WandAutoChargeHud {
             for (ItemStack it : plugins) {
                 if (it == null || it.isEmpty()) continue;
                 var id = BuiltInRegistries.ITEM.getKey(it.getItem());
-                if (id != null && "wand_plugin_auto_charge".equals(id.getPath())) { hasAuto = true; break; }
+                if (id != null && "wand_plugin_auto_charge".equals(id.getPath())) {
+                    hasAuto = true;
+                    break;
+                }
             }
         }
         if (!hasAuto) return;

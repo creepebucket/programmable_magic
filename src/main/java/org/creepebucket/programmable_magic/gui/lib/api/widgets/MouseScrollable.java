@@ -6,6 +6,7 @@ package org.creepebucket.programmable_magic.gui.lib.api.widgets;
 public interface MouseScrollable {
     /**
      * 鼠标滚轮事件。
+     *
      * @return true 表示事件已被消费
      */
     boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY);

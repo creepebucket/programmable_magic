@@ -1,19 +1,25 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 
 /**
  * 滚动区域控件：在指定区域内响应鼠标滚轮事件，更新滚动值。
  */
 public class ScrollRegionWidget extends Widget implements MouseScrollable {
-    /** 当前滚动值 */
-    public int currentValue;
-    /** 最大滚动值 */
+    /**
+     * 最大滚动值
+     */
     public final int maxValue;
-    /** 滚动值倍数 */
+    /**
+     * 滚动值倍数
+     */
     public final int valueMultiplier;
+    /**
+     * 当前滚动值
+     */
+    public int currentValue;
 
     public ScrollRegionWidget(Coordinate pos, Coordinate size, int currentValue, int maxValue, int valueMultiplier) {
         super(pos, size);

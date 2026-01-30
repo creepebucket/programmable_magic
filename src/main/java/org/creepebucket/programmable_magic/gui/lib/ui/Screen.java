@@ -110,10 +110,12 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) { }
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+    }
 
     @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) { }
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    }
 
     // --- 下面全是把输入事件转发给 menu.widgets ---
 

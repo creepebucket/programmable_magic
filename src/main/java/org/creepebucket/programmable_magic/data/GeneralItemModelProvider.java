@@ -60,5 +60,7 @@ public class GeneralItemModelProvider implements DataProvider {
     }
 
     @Override
-    public String getName() { return "General Item Models"; }
+    public String getName() {
+        return "General Item Models";
+    }
 }

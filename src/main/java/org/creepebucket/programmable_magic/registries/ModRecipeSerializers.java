@@ -18,5 +18,7 @@ public class ModRecipeSerializers {
             RECIPE_SERIALIZERS.register("bind_wand_item_placeholder",
                     () -> BindWandItemPlaceholderRecipe.Serializer.INSTANCE);
 
-    public static void register(IEventBus bus) { RECIPE_SERIALIZERS.register(bus); }
+    public static void register(IEventBus bus) {
+        RECIPE_SERIALIZERS.register(bus);
+    }
 }

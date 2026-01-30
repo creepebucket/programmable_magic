@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +23,16 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
     }
 
     // 返回为数字的运算统一放在这里
+
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new ModUtils.Mana();
+    }
 
     public static class AdditionSpell extends NumberOperationsSpell {
 
@@ -80,16 +89,15 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             // 数字*向量 将向量每个分量乘以数字
             else if (paramsList.get(0) instanceof Double && paramsList.get(1) instanceof Vec3) {
                 return ExecutionResult.RETURNED(this, List.of(new Vec3(
-                        ((Vec3) paramsList.get(1)).x * (Double) paramsList.get(0),
-                        ((Vec3) paramsList.get(1)).y * (Double) paramsList.get(0),
-                        ((Vec3) paramsList.get(1)).z * (Double) paramsList.get(0))),
+                                ((Vec3) paramsList.get(1)).x * (Double) paramsList.get(0),
+                                ((Vec3) paramsList.get(1)).y * (Double) paramsList.get(0),
+                                ((Vec3) paramsList.get(1)).z * (Double) paramsList.get(0))),
                         List.of(SpellValueType.VECTOR3));
-            }
-            else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Double) {
+            } else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Double) {
                 return ExecutionResult.RETURNED(this, List.of(new Vec3(
-                        ((Vec3) paramsList.get(0)).x * (Double) paramsList.get(1),
-                        ((Vec3) paramsList.get(0)).y * (Double) paramsList.get(1),
-                        ((Vec3) paramsList.get(0)).z * (Double) paramsList.get(1))),
+                                ((Vec3) paramsList.get(0)).x * (Double) paramsList.get(1),
+                                ((Vec3) paramsList.get(0)).y * (Double) paramsList.get(1),
+                                ((Vec3) paramsList.get(0)).z * (Double) paramsList.get(1))),
                         List.of(SpellValueType.VECTOR3)
                 );
             }
@@ -124,12 +132,11 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             // 数字/向量 每个分量除以数字
             else if (paramsList.get(0) instanceof Double && paramsList.get(1) instanceof Vec3) {
                 return ExecutionResult.RETURNED(this, List.of(new Vec3(
-                        ((Vec3) paramsList.get(1)).x / (Double) paramsList.get(0),
-                        ((Vec3) paramsList.get(1)).y / (Double) paramsList.get(0),
-                        ((Vec3) paramsList.get(1)).z / (Double) paramsList.get(0))),
+                                ((Vec3) paramsList.get(1)).x / (Double) paramsList.get(0),
+                                ((Vec3) paramsList.get(1)).y / (Double) paramsList.get(0),
+                                ((Vec3) paramsList.get(1)).z / (Double) paramsList.get(0))),
                         List.of(SpellValueType.VECTOR3));
-            }
-            else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Double) {
+            } else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Double) {
                 return ExecutionResult.RETURNED(this, List.of(new Vec3(
                                 ((Vec3) paramsList.get(0)).x / (Double) paramsList.get(1),
                                 ((Vec3) paramsList.get(0)).y / (Double) paramsList.get(1),
@@ -142,6 +149,8 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             return ExecutionResult.ERRORED();
         }
     }
+
+    // 剩下的是一元操作
 
     public static class RemainderSpell extends NumberOperationsSpell {
         public RemainderSpell() {
@@ -173,8 +182,6 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             return ExecutionResult.RETURNED(this, List.of(Math.pow((Double) paramsList.get(0), (Double) paramsList.get(1))), List.of(SpellValueType.NUMBER));
         }
     }
-
-    // 剩下的是一元操作
 
     public static class SinSpell extends NumberOperationsSpell {
         public SinSpell() {
@@ -266,6 +273,8 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         }
     }
 
+    // 其他复杂运算
+
     public static class CeilSpell extends NumberOperationsSpell {
         public CeilSpell() {
             super();
@@ -281,6 +290,8 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         }
     }
 
+    // 向量运算
+
     public static class FloorSpell extends NumberOperationsSpell {
         public FloorSpell() {
             super();
@@ -295,8 +306,6 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             return ExecutionResult.RETURNED(this, List.of(Math.floor((Double) paramsList.get(0))), List.of(SpellValueType.NUMBER));
         }
     }
-
-    // 其他复杂运算
 
     public static class RandomNumberSpell extends NumberOperationsSpell {
         public RandomNumberSpell() {
@@ -314,8 +323,6 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             return ExecutionResult.RETURNED(this, List.of(Math.random() * (max - min) + min), List.of(SpellValueType.NUMBER));
         }
     }
-
-    // 向量运算
 
     public static class VectorLengthSpell extends NumberOperationsSpell {
         public VectorLengthSpell() {
@@ -347,6 +354,8 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         }
     }
 
+    // 生物信息
+
     public static class VectorYSpell extends NumberOperationsSpell {
         public VectorYSpell() {
             super();
@@ -376,8 +385,6 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
             return ExecutionResult.RETURNED(this, List.of(((Vec3) paramsList.get(0)).z), List.of(SpellValueType.NUMBER));
         }
     }
-
-    // 生物信息
 
     public static class EntityHealthSpell extends NumberOperationsSpell {
         public EntityHealthSpell() {
@@ -422,15 +429,5 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             return ExecutionResult.RETURNED(this, List.of(((LivingEntity) paramsList.get(0)).getArmorValue()), List.of(SpellValueType.NUMBER));
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return true;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
     }
 }

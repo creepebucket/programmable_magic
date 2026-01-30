@@ -48,8 +48,24 @@ neoForge {
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
+        clientAutoJoin {
+            client()
+
+            gameDirectory = project.file('run/client')
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            programArguments.addAll '--quickPlayMultiplayer', '127.0.0.1:25565'
+        }
+
         server {
             server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        serverAutoJoin {
+            server()
+
+            gameDirectory = project.file('run/server')
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
@@ -211,6 +227,7 @@ if (!isWindows) {
 
     // 仅在 runClient / build 前生成 GUI 资产，避免与 runData 的依赖链形成环
     tasks.named('runClient') { dependsOn 'buildAssets' }
+    tasks.named('runClientAutoJoin') { dependsOn 'buildAssets' }
     tasks.named('build') { dependsOn 'buildAssets' }
 }
 
@@ -280,6 +297,23 @@ tasks.named('runClient') {
     dependsOn 'copyGeneratedAssets'
 }
 
+tasks.named('runClientAutoJoin') {
+    dependsOn 'runData'
+    dependsOn 'syncGeneratedData'
+    dependsOn 'copyGeneratedAssets'
+}
+
 // 顺序约束：数据同步在处理资源后执行，避免不确定顺序
 tasks.named('syncGeneratedData') { mustRunAfter tasks.named('processResources') }
 tasks.named('copyGeneratedAssets') { mustRunAfter tasks.named('processResources') }
+
+tasks.register('runClientServer', Exec) {
+    group = 'run'
+    description = '同时启动开发服务端与客户端，并让客户端自动进服（127.0.0.1:25565）'
+
+    if (isWindows) {
+        commandLine 'cmd', '/c', 'call gradlew.bat runServerAutoJoin --no-daemon & timeout /t 3 >nul & call gradlew.bat runClientAutoJoin --no-daemon'
+    } else {
+        commandLine 'bash', '-lc', './gradlew runServerAutoJoin --no-daemon & sleep 3; ./gradlew runClientAutoJoin --no-daemon; wait'
+    }
+}

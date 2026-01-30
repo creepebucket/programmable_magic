@@ -4,10 +4,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 import java.util.function.BooleanSupplier;
 
@@ -15,13 +15,21 @@ import java.util.function.BooleanSupplier;
  * 可选中图片按钮控件：根据选中状态显示不同纹理，点击时触发回调。
  */
 public class SelectableImageButtonWidget extends Widget implements Renderable, Clickable {
-    /** 未选中状态纹理 */
+    /**
+     * 未选中状态纹理
+     */
     private final Identifier normal;
-    /** 选中状态纹理 */
+    /**
+     * 选中状态纹理
+     */
     private final Identifier selected;
-    /** 是否选中的状态提供器 */
+    /**
+     * 是否选中的状态提供器
+     */
     private final BooleanSupplier isSelected;
-    /** 点击回调 */
+    /**
+     * 点击回调
+     */
     private final Runnable onPress;
 
     public SelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier selected, BooleanSupplier isSelected, Runnable onPress) {

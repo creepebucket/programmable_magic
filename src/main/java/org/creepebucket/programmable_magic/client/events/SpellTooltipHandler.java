@@ -46,7 +46,7 @@ public class SpellTooltipHandler {
 
         // 结合性
         if (logic.rightConnectivity) tmp.append(Component.literal(" / 右结合性"));
-                else tmp.append(Component.literal(" / 左结合性"));
+        else tmp.append(Component.literal(" / 左结合性"));
 
         tooltip.add(tmp.withStyle(ChatFormatting.GRAY));
 

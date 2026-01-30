@@ -6,8 +6,8 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.items.Wand;
+import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -20,8 +20,7 @@ public class ModItems {
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
                     .stacksTo(64)
                     .component(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
-                    .setId(ResourceKey.create(Registries.ITEM, registryName))))
-    ;
+                    .setId(ResourceKey.create(Registries.ITEM, registryName))));
 
     public static final DeferredItem<Wand> WAND = ITEMS.register(
             "rg_alloy_wand", registryName -> new Wand(
@@ -31,5 +30,7 @@ public class ModItems {
             )
     );
 
-    public static void register(IEventBus eventBus) {ITEMS.register(eventBus);}
+    public static void register(IEventBus eventBus) {
+        ITEMS.register(eventBus);
+    }
 }

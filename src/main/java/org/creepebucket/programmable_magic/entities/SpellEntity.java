@@ -10,30 +10,25 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
-import java.util.List;
-import java.util.Map;
-
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
-import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
-import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
+import java.util.List;
+import java.util.Map;
 
 public class SpellEntity extends Entity {
     private static final Logger LOGGER = LoggerFactory.getLogger("ProgrammableMagic:SpellEntity");
-    private static final EntityDataAccessor<Boolean> DATA_ACTIVE = 
+    private static final EntityDataAccessor<Boolean> DATA_ACTIVE =
             SynchedEntityData.defineId(SpellEntity.class, EntityDataSerializers.BOOLEAN);
 
     // 一些数据定义
@@ -58,9 +53,9 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana,List<ItemStack> plugins) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins) {
         // 创建实体
-        this(ModEntityTypes.SPELL_ENTITY.get(),  level);
+        this(ModEntityTypes.SPELL_ENTITY.get(), level);
 
         // 设置数据
         this.caster = caster;
@@ -89,7 +84,7 @@ public class SpellEntity extends Entity {
             return;
         }
 
-        while(delayTicks <= 0) {
+        while (delayTicks <= 0) {
             // 执行法术序列逻辑
             ExecutionResult result = currentSpell.runWithCheck(caster, spellSequence, this);
             // 设置延迟
@@ -114,7 +109,7 @@ public class SpellEntity extends Entity {
     public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float v) {
         return false;
     }
-    
+
     private void spawnParticles() {
         // 生成附魔台粒子效果
         for (int i = 0; i < Math.floor(this.getDeltaMovement().length() * 3); i++) {
@@ -144,7 +139,7 @@ public class SpellEntity extends Entity {
     public boolean isActive() {
         return this.entityData.get(DATA_ACTIVE);
     }
-    
+
     public void setActive(boolean active) {
         this.entityData.set(DATA_ACTIVE, active);
     }

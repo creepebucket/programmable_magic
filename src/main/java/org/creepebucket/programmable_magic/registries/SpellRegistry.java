@@ -2,8 +2,8 @@ package org.creepebucket.programmable_magic.registries;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -16,20 +16,16 @@ import org.creepebucket.programmable_magic.spells.spells_compute.*;
 import org.creepebucket.programmable_magic.spells.spells_control.BoolOperationsSpell;
 import org.creepebucket.programmable_magic.spells.spells_control.FlowControlSpell;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class SpellRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    public static final Map<String, List<Supplier<Item>>> SPELLS_BY_SUBCATEGORY = new LinkedHashMap<>();
     private static final Map<Identifier, Supplier<SpellItemLogic>> LOGIC_SUPPLIERS = new HashMap<>();
     private static final Map<Supplier<Item>, Supplier<SpellItemLogic>> REGISTERED_SPELLS = new LinkedHashMap<>();
-    public static final Map<String, List<Supplier<Item>>> SPELLS_BY_SUBCATEGORY = new LinkedHashMap<>();
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
@@ -167,7 +163,7 @@ public class SpellRegistry {
         Supplier<Item> itemSupplier = ITEMS.register(name,
                 registryName -> new BaseSpellItem(new Item.Properties()
                         .setId(ResourceKey.create(Registries.ITEM, registryName)), logicInstance));
-        
+
         LOGIC_SUPPLIERS.put(Identifier.fromNamespaceAndPath(MODID, name), logicSupplier);
         REGISTERED_SPELLS.put(itemSupplier, logicSupplier);
         SPELLS_BY_SUBCATEGORY.computeIfAbsent(logicInstance.subCategory, k -> new ArrayList<>()).add(itemSupplier);

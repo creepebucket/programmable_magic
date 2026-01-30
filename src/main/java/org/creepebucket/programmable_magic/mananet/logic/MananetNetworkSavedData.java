@@ -37,7 +37,8 @@ public final class MananetNetworkSavedData extends SavedData {
     private static final Codec<Map<UUID, UUID>> PARENT_CODEC = Codec.unboundedMap(Codec.STRING, Codec.STRING).xmap(
             map -> {
                 Map<UUID, UUID> out = new HashMap<>();
-                for (var entry : map.entrySet()) out.put(UUID.fromString(entry.getKey()), UUID.fromString(entry.getValue()));
+                for (var entry : map.entrySet())
+                    out.put(UUID.fromString(entry.getKey()), UUID.fromString(entry.getValue()));
                 return out;
             },
             map -> {
@@ -61,7 +62,8 @@ public final class MananetNetworkSavedData extends SavedData {
     private final Map<UUID, UUID> parent = new HashMap<>();
     private final Map<UUID, Mana> manaById = new HashMap<>();
 
-    public MananetNetworkSavedData() {}
+    public MananetNetworkSavedData() {
+    }
 
     public MananetNetworkSavedData(Map<UUID, UUID> parent, Map<UUID, Mana> manaById) {
         if (parent != null) this.parent.putAll(parent);

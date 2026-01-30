@@ -33,5 +33,7 @@ public record SimpleKvPacket(String key, Object value) implements CustomPacketPa
     };
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

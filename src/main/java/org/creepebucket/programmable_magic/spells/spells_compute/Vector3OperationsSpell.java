@@ -20,6 +20,16 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
         subCategory = "spell." + MODID + ".subcategory.operations.vector";
     }
 
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return false;
+    }
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return null;
+    }
+
     public static class BuildVectorSpell extends Vector3OperationsSpell {
         public BuildVectorSpell() {
             name = "build_vector";
@@ -58,15 +68,5 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             return ExecutionResult.RETURNED(this, List.of(((LivingEntity) paramsList.get(0)).getDeltaMovement()), List.of(SpellValueType.VECTOR3));
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return false;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return null;
     }
 }

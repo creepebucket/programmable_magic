@@ -23,6 +23,16 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
         precedence = -99;
     }
 
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new ModUtils.Mana();
+    }
+
     public static class DebugPrintSpell extends VisualEffectSpell {
         public DebugPrintSpell() {
             name = "debug_print";
@@ -45,15 +55,5 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
 
             return ExecutionResult.SUCCESS(this);
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return true;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
     }
 }

@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -19,6 +18,18 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
     // 数字
 
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    // 向量
+
+    @Override
+    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new ModUtils.Mana();
+    }
+
     public static class TimestampSpell extends DynamicConstantSpell {
         public TimestampSpell() {
             subCategory = "spell." + MODID + ".subcategory.dynamic_constant.number";
@@ -32,8 +43,6 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
         }
     }
 
-    // 向量
-
     public static class CameraDirectionSpell extends DynamicConstantSpell {
         public CameraDirectionSpell() {
             subCategory = "spell." + MODID + ".subcategory.dynamic_constant.vector";
@@ -46,6 +55,8 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
             return ExecutionResult.RETURNED(this, List.of(caster.getLookAngle().normalize()), List.of(SpellValueType.VECTOR3));
         }
     }
+
+    // 实体
 
     public static class CasterPositionSpell extends DynamicConstantSpell {
         public CasterPositionSpell() {
@@ -72,8 +83,6 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
             return ExecutionResult.RETURNED(this, List.of(spellEntity.position()), List.of(SpellValueType.VECTOR3));
         }
     }
-
-    // 实体
 
     public static class CasterEntitySpell extends DynamicConstantSpell {
         public CasterEntitySpell() {
@@ -138,15 +147,5 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
             return ExecutionResult.RETURNED(this, List.of(nearest), List.of(SpellValueType.ENTITY));
         }
-    }
-
-    @Override
-    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return true;
-    }
-
-    @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
     }
 }

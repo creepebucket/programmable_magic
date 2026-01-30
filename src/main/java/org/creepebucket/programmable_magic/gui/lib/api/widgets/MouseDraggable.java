@@ -8,6 +8,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 public interface MouseDraggable {
     /**
      * 鼠标拖拽事件。
+     *
      * @return true 表示事件已被消费
      */
     boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY);

@@ -29,6 +29,8 @@ public record SimpleKvS2cPacket(String key, Object value) implements CustomPacke
     };
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }
 

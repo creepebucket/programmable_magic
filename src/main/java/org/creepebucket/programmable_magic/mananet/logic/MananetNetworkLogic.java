@@ -1,5 +1,8 @@
 package org.creepebucket.programmable_magic.mananet.logic;
 
+import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
+import it.unimi.dsi.fastutil.longs.LongArrayList;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -11,13 +14,8 @@ import org.creepebucket.programmable_magic.mananet.api.ManaMath;
 import org.creepebucket.programmable_magic.mananet.api.MananetNode;
 import org.creepebucket.programmable_magic.mananet.api.MananetNodeState;
 
-import it.unimi.dsi.fastutil.longs.LongArrayFIFOQueue;
-import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,7 +40,8 @@ import java.util.UUID;
  */
 public final class MananetNetworkLogic {
 
-    private MananetNetworkLogic() {}
+    private MananetNetworkLogic() {
+    }
 
     /**
      * 获取节点访问器（不做 integrate 的副作用）。
@@ -183,7 +182,10 @@ public final class MananetNetworkLogic {
         // 快路径：若所有被移除节点都不可能充当“割点”（连接邻居数<=1），则不会引起网络拆分。
         boolean needsSplit = false;
         for (MananetNetworkManager.NodeRemoval removal : removals) {
-            if (removal.connectedNeighbors() > 1) { needsSplit = true; break; }
+            if (removal.connectedNeighbors() > 1) {
+                needsSplit = true;
+                break;
+            }
         }
         if (!needsSplit) {
             for (MananetNetworkManager.NodeRemoval removal : removals) {
@@ -359,7 +361,10 @@ public final class MananetNetworkLogic {
             UUID root = manager.resolveNetworkId(neighborState.networkId);
             boolean exists = false;
             for (int i = 0; i < neighborRootCount; i++) {
-                if (neighborRoots[i].equals(root)) { exists = true; break; }
+                if (neighborRoots[i].equals(root)) {
+                    exists = true;
+                    break;
+                }
             }
             if (exists) continue;
             neighborRoots[neighborRootCount++] = root;
@@ -495,8 +500,6 @@ public final class MananetNetworkLogic {
         manager.setNetwork(idB, split.manaB, cacheB, loadB, sizeB);
     }
 
-    private record ManaSplit(Mana manaA, Mana manaB) {}
-
     /**
      * 按两侧 cache 占比拆分当前 availableMana（逐分量分配）。
      *
@@ -537,7 +540,7 @@ public final class MananetNetworkLogic {
     /**
      * 从 start 出发按“双方连通”收集连通分量（基于 {@link MananetNode} 访问器）。
      *
-     * @param excludedPos 若不为 null，则跳过该位置（用于拆分时排除被移除节点）
+     * @param excludedPos   若不为 null，则跳过该位置（用于拆分时排除被移除节点）
      * @param edgeA/edgeDir 若不为 null，则把 edgeA 与其在 edgeDir 方向的那条边视为禁用（用于断边拆分）
      */
     private static RebuildResult collectComponent(ServerLevel level, BlockPos start, Set<Long> visited, BlockPos excludedPos, BlockPos edgeA, Direction edgeDir) {
@@ -554,7 +557,7 @@ public final class MananetNetworkLogic {
         while (!queue.isEmpty()) {
             BlockPos pos = queue.removeFirst();
             // 需要排除的点（例如被移除节点）：直接跳过。
-            if (excludedPos != null && pos.equals(excludedPos)) continue;
+            if (pos.equals(excludedPos)) continue;
             long key = pos.asLong();
             // visited 去重：保证每个位置只处理一次。
             if (!visited.add(key)) continue;
@@ -572,7 +575,7 @@ public final class MananetNetworkLogic {
 
             for (Direction dir : Direction.values()) {
                 BlockPos np = pos.relative(dir);
-                if (excludedPos != null && np.equals(excludedPos)) continue;
+                if (np.equals(excludedPos)) continue;
                 if (edgeA != null && edgeDir != null && isForbiddenEdge(pos, dir, edgeA, edgeDir)) continue;
 
                 // 邻居也必须是节点，且双方该方向都允许连通。
@@ -706,7 +709,13 @@ public final class MananetNetworkLogic {
         return new Component(positions, cache, load, size);
     }
 
-    private record Component(LongArrayList positions, Mana cache, Mana load, int size) {}
+    private record ManaSplit(Mana manaA, Mana manaB) {
+    }
 
-    private record RebuildResult(BlockPos startPos, Set<BlockPos> positions, Set<UUID> oldNetworkIds, Mana cache, Mana load, int size) {}
+    private record Component(LongArrayList positions, Mana cache, Mana load, int size) {
+    }
+
+    private record RebuildResult(BlockPos startPos, Set<BlockPos> positions, Set<UUID> oldNetworkIds, Mana cache,
+                                 Mana load, int size) {
+    }
 }

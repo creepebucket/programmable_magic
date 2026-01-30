@@ -4,14 +4,16 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 /**
  * 纹理控件：在指定坐标绘制一张 GUI 纹理。
  */
 public class TextureWidget extends Widget implements Renderable {
-    /** 纹理资源标识 */
+    /**
+     * 纹理资源标识
+     */
     public final Identifier texture;
 
     /**

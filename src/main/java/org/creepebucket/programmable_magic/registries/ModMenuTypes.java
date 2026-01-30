@@ -14,7 +14,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, MODID);
 
-    public static final Supplier<MenuType<WandMenu>> WAND_MENU = MENUS.register("wand_menu", () -> IMenuTypeExtension.create(WandMenu::new));
+    public static void register(IEventBus modEventBus) {
+        MENUS.register(modEventBus);
+    }    public static final Supplier<MenuType<WandMenu>> WAND_MENU = MENUS.register("wand_menu", () -> IMenuTypeExtension.create(WandMenu::new));
 
-    public static void register(IEventBus modEventBus) {MENUS.register(modEventBus);}
+
 }

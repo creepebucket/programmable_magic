@@ -9,6 +9,7 @@ import net.minecraft.client.input.KeyEvent;
 public interface KeyInputable {
     /**
      * 按键按下事件。
+     *
      * @return true 表示事件已被消费
      */
     default boolean keyPressed(KeyEvent event) {
@@ -17,6 +18,7 @@ public interface KeyInputable {
 
     /**
      * 按键释放事件。
+     *
      * @return true 表示事件已被消费
      */
     default boolean keyReleased(KeyEvent event) {
@@ -25,6 +27,7 @@ public interface KeyInputable {
 
     /**
      * 字符输入事件。
+     *
      * @return true 表示事件已被消费
      */
     default boolean charTyped(CharacterEvent event) {

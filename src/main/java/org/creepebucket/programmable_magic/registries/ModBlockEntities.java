@@ -11,5 +11,7 @@ public class ModBlockEntities {
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 
-    public static void register(IEventBus bus) {BLOCK_ENTITIES.register(bus);}    
+    public static void register(IEventBus bus) {
+        BLOCK_ENTITIES.register(bus);
+    }
 }

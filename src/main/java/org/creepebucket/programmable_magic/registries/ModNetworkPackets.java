@@ -3,11 +3,7 @@ package org.creepebucket.programmable_magic.registries;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import org.creepebucket.programmable_magic.network.dataPackets.ClientPacketHandler;
-import org.creepebucket.programmable_magic.network.dataPackets.ServerPacketHandler;
-import org.creepebucket.programmable_magic.network.dataPackets.SpellReleasePacket;
-import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
-import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2cPacket;
+import org.creepebucket.programmable_magic.network.dataPackets.*;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
