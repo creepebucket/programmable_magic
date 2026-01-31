@@ -68,6 +68,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
+        if (!isDragging) return false;
         isDragging = false;
         return true;
     }

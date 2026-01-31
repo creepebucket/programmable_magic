@@ -1,15 +1,22 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
+import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 最小菜单：不含复杂数据同步，仅承载 Screen 与槽位布局。
@@ -21,6 +28,10 @@ public class WandMenu extends Menu {
     public SyncedValue<Integer> supplySlotTargetDeltaY;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
+    public Container storedSpells;
+    public List<Slot> spellStoreSlots;
+    public List<Slot> hotbarSlots;
+    public List<Slot> backpackSlots;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, Menu::init);
@@ -38,6 +49,9 @@ public class WandMenu extends Menu {
     public void init() {
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
         this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.BOTH, 0);
+        this.spellStoreSlots = new ArrayList<>(1024);
+        this.hotbarSlots = new ArrayList<>(9);
+        this.backpackSlots = new ArrayList<>(27);
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();
@@ -50,5 +64,13 @@ public class WandMenu extends Menu {
                 this.supplySlotsCount++;
             }
         }
+
+        // 法术槽位 固定1024个
+        this.storedSpells = new SimpleContainer(1024);
+        for (int i = 0; i < 1024; i++) spellStoreSlots.add(addSlot(new OneItemOnlySlot(storedSpells, i, -99, -99)));
+
+        // 背包
+        for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new Slot(playerInv, i, -99, -99)));
+        for (int i = 0; i < 27; i++) backpackSlots.add(addSlot(new Slot(playerInv, 9 + i, -99, -99)));
     }
 }

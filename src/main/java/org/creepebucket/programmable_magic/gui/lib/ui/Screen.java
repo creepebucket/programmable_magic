@@ -194,4 +194,8 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         }
         return super.charTyped(event);
     }
+
+    public void addWidget(Widget widget) {
+        this.menu.widgets.add(widget);
+    }
 }

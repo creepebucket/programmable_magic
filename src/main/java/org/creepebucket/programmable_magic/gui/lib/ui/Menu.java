@@ -29,7 +29,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     public final DataManager dataManager = new DataManager();
 
     // 1. 控件列表现在放在 Menu 里，这样你在写 Menu 逻辑时就能塞控件进去了
-    public final List<Widget> widgets = new ArrayList<>();
+    public List<Widget> widgets = new ArrayList<>();
 
     // 屏幕信息
     public int screenWidth;
