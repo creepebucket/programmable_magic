@@ -3,19 +3,20 @@ package org.creepebucket.programmable_magic.gui.wand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
-import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollbarWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandScreen extends Screen<WandMenu> {
 
@@ -88,8 +89,8 @@ public class WandScreen extends Screen<WandMenu> {
         var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 14;
         for (int i = 0;i < spellCountCanFit; i++) {
             int finalI = i;
-            addWidget(new SlotWidget(menu.spellStoreSlots.get(i),
-                    new Coordinate((w, h) -> (w-spellCountCanFit*16) / 2 + finalI * 16, (w, h) -> h - 40)));
+            // addWidget(new SlotWidget(menu.spellStoreSlots.get(i),
+            //         new Coordinate((w, h) -> (w-spellCountCanFit*16) / 2 + finalI * 16, (w, h) -> h - 40)));
         }
 
         /* ===========玩家物品栏=========== */
@@ -97,23 +98,46 @@ public class WandScreen extends Screen<WandMenu> {
         List<Slot> inventorySlots = menu.hotbarSlots;
         inventorySlots.addAll(menu.backpackSlots);
 
-        for (int i = 0; i< 36; i++) addWidget(new SlotWidget(inventorySlots.get(i)));
-
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 9; col++) {
-                int finalRow = row;
-                int finalCol = col;
-                int finalI = row * 9 + col;
-                addWidget(new SlotWidget(menu.backpackSlots.get(finalI),
-                        new Coordinate((w, h) -> (w - 9 * 16) / 2 + finalCol * 16, (w, h) -> h - 72 + finalRow * 16)));
-            }
+        for (int i = 0; i< 36; i++) {
+            addWidget(new SlotWidget(inventorySlots.get(i), Coordinate.fromBottomLeft(97 + 18 * (i % 9), 18 * (i / 9) - 72)));
+            addWidget(new RectangleWidget(Coordinate.fromBottomLeft(97 + 18 * (i % 9), 18 * (i / 9) - 72), Coordinate.fromTopLeft(16, 16), i < 9 ? 0x80606060 : -2147483648));
         }
 
-        for (int i = 0; i < 9; i++) {
-            int finalI = i;
-            addWidget(new SlotWidget(menu.hotbarSlots.get(i),
-                    new Coordinate((w, h) -> (w - 9 * 16) / 2 + finalI * 16, (w, h) -> h - 20)));
-        }
+        /* ===========法术调试器=========== */
+
+        addWidget(new TextureWidget(Coordinate.fromBottomRight(-16, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger.png"), Coordinate.fromTopLeft(16, 16)));
+
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"),
+                () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 2), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"),
+                () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_tick")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 3), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"),
+                () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_resume")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 4), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"),
+                () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")));
+
+        /* ===========边界装饰=========== */
+
+        // 法术储存段
+        addWidget(new RectangleWidget(Coordinate.fromTopLeft(93, 0), Coordinate.fromBottomLeft(2, 0), -1));
+
+        // 玩家物品栏
+        addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95, -76 - 16), Coordinate.fromTopRight(0, 2), -1));
+
+        addWidget(new TextureWidget(Coordinate.fromBottomLeft(95, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/backpack.png"), Coordinate.fromTopLeft(16, 16)));
+        addWidget(new TextureWidget(Coordinate.fromBottomLeft(98 + 9 * 18 - 48, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/slant_end_bar_up.png"), Coordinate.fromTopLeft(48, 16)));
+        addWidget(new TextWidget(Coordinate.fromBottomLeft(95 + 16, - 76 - 10), Component.translatable("gui.programmable_magic.wand.inventory"), -1));
+
+        addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95 + 18 * 9 + 2, -76 - 16), Coordinate.fromTopLeft(2, 92), -1));
+
+        // 法术调试器
+        addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92), Coordinate.fromTopLeft(2, 92), -1));
+        addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
+
     }
 
     @Override

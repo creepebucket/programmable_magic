@@ -39,21 +39,21 @@ public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Int
      * 以屏幕左下角为基准创建坐标。
      */
     public static Coordinate fromBottomLeft(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh - deltaY);
+        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh + deltaY);
     }
 
     /**
      * 以屏幕右上角为基准创建坐标。
      */
     public static Coordinate fromTopRight(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> deltaY);
+        return new Coordinate((sw, sh) -> sw + deltaX, (sw, sh) -> deltaY);
     }
 
     /**
      * 以屏幕右下角为基准创建坐标。
      */
     public static Coordinate fromBottomRight(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> sw - deltaX, (sw, sh) -> sh - deltaY);
+        return new Coordinate((sw, sh) -> sw + deltaX, (sw, sh) -> sh + deltaY);
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
@@ -16,13 +17,13 @@ public class TextWidget extends Widget implements Renderable {
     /**
      * 文本内容提供器
      */
-    private final Supplier<String> text;
+    private final Component text;
     /**
      * 文本颜色提供器
      */
-    private final IntSupplier color;
+    private final int color;
 
-    public TextWidget(Coordinate pos, Supplier<String> text, IntSupplier color) {
+    public TextWidget(Coordinate pos, Component text, int color) {
         super(pos);
         this.text = text;
         this.color = color;
@@ -30,9 +31,6 @@ public class TextWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.drawString(ClientUiContext.getFont(), this.text.get(),
-                this.pos.toMenuX(),
-                this.pos.toMenuY(),
-                this.color.getAsInt());
+        graphics.drawString(ClientUiContext.getFont(), this.text, this.pos.toMenuX(), this.pos.toMenuY(), this.color);
     }
 }
