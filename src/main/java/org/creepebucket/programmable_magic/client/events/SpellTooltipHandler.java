@@ -47,7 +47,6 @@ public class SpellTooltipHandler {
         tooltip.add(Component.translatable(
                 "tooltip." + MODID + ".spell_tooltip.summary",
                 Component.translatable(typeKey),
-                logic.rightParamOffset,
                 logic.precedence,
                 Component.translatable(assocKey)
         ).withStyle(ChatFormatting.GRAY));

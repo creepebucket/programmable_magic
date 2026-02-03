@@ -23,7 +23,6 @@ public abstract class SpellItemLogic implements Cloneable {
     // 运算属性
     public int precedence = 0;
     public boolean rightConnectivity = false;
-    public int rightParamOffset = 0;
 
     // 是否跳过编译的后缀转换
     public boolean bypassShunting = false;

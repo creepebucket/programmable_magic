@@ -57,6 +57,8 @@ public class ImageButtonWidget extends Widget implements Renderable, Clickable, 
         var tex = hovered ? this.hover : this.normal;
         int w = this.size.toScreenX();
         int h = this.size.toScreenY();
+
+        graphics.nextStratum();
         graphics.blit(RenderPipelines.GUI_TEXTURED, tex, this.pos.toMenuX(), this.pos.toMenuY(), 0, 0, w, h, w, h);
     }
 

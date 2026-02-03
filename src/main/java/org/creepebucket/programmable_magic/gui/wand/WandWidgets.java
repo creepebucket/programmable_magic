@@ -16,6 +16,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 
+import java.util.List;
 import java.util.Map;
 
 public class WandWidgets {
@@ -39,23 +40,35 @@ public class WandWidgets {
         }
     }
 
-    public static class WandSupplyScrollWidget extends Widget implements MouseScrollable {
-        public Coordinate region;
-        public int valueMultiplier;
-        public SyncedValue<Integer> deltaY;
+    public static class SpellStorageWidget extends SlotWidget {
+        public SyncedValue<Integer> deltaX;
+        public Coordinate delta;
+        public Coordinate original;
+        public SyncedValue<Integer> deltaI;
+        public List<Slot> slots;
+        public int i;
 
-        public WandSupplyScrollWidget(Coordinate pos, Coordinate region, int valueMultiplier, SyncedValue<Integer> deltaY) {
-            this.pos = pos;
-            this.region = region;
-            this.valueMultiplier = valueMultiplier;
-            this.deltaY = deltaY;
+        public SpellStorageWidget(List<Slot> slots, Coordinate pos, SyncedValue<Integer> deltaX, int i, SyncedValue<Integer> deltaI) {
+            super(slots.get(i + deltaI.get()), pos);
+
+            this.deltaX = deltaX;
+            this.deltaI = deltaI;
+            this.slots = slots;
+            this.i = i;
+            this.delta = new Coordinate((sw, sh) -> deltaX.get() % 16, (sw, sh) -> 0);
+            this.original = pos;
         }
 
         @Override
-        public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-            if(!isInBounds(mouseX, mouseY, pos.toScreenX(), pos.toScreenY(), 80, 999)) return false;
-            deltaY.set((int) Mth.clamp(deltaY.get() + Math.floor(scrollY * 16), region.toScreenX(), region.toScreenY()));
-            return true;
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            pos = original.add(delta);
+
+            if ((0 > i + deltaI.get()) || (i + deltaI.get() >= 1024)) return;
+
+            super.render(graphics, mouseX, mouseY, partialTick);
+            this.slot = slots.get(i + deltaI.get());
+
+            graphics.fill(pos.toScreenX() + 1, pos.toScreenY() + 1, pos.toScreenX() + 15, pos.toScreenY() + 15, -2147483648);
         }
     }
 

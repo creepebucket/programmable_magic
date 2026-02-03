@@ -314,7 +314,7 @@
   "tooltip.programmable_magic.spell_tooltip.assoc.right": "Right Associative",
   "tooltip.programmable_magic.spell_tooltip.description": "Description:",
   "tooltip.programmable_magic.spell_tooltip.overloads": "Overloads:",
-  "tooltip.programmable_magic.spell_tooltip.summary": "%s / right_params %s / precedence %s / %s",
+  "tooltip.programmable_magic.spell_tooltip.summary": "%s / precedence %s / %s",
   "tooltip.programmable_magic.spell_tooltip.type.adjust_mod": "Adjust Mod",
   "tooltip.programmable_magic.spell_tooltip.type.base_spell": "Base Spell",
   "tooltip.programmable_magic.spell_tooltip.type.compute_mod": "Compute Mod",

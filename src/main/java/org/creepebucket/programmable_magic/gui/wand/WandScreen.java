@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
@@ -22,6 +21,8 @@ public class WandScreen extends Screen<WandMenu> {
 
     public double spellSupplyDeltaYSpeed = 0;
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
+    public double spellSlotDeltaXSpeed = 0;
+    public double spellSlotAccurateDeltaX = this.menu.spellSlotDeltaX.get();
     public Double lastFrame = System.nanoTime() / 1e9;
     public Double dt;
 
@@ -37,6 +38,9 @@ public class WandScreen extends Screen<WandMenu> {
         var supplySlotDeltaY = this.menu.supplySlotDeltaY;
         var supplySlotTargetDeltaY = this.menu.supplySlotTargetDeltaY;
         var slotIndex = this.menu.supplySlotsStartIndex;
+        var spellSlotDeltaX = this.menu.spellSlotDeltaX;
+        var spellSlotTargetDeltaX = this.menu.spellSlotTargetDeltaX;
+        var spellSlotDeltaI = this.menu.spellSlotDeltaI;
 
         // 添加法术供应槽位
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
@@ -79,19 +83,40 @@ public class WandScreen extends Screen<WandMenu> {
         int finalDy = dy;
 
         // 滚动交互
-        addWidget(new WandWidgets.WandSupplyScrollWidget(Coordinate.fromTopLeft(8, 0),
+        addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromTopLeft(80, 999),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotTargetDeltaY));
         // 滚动条
         addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotTargetDeltaY, 0xFFFFFFFF, "y", true));
 
         /* ===========法术储存段=========== */
-        var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 14;
-        for (int i = 0;i < spellCountCanFit; i++) {
-            int finalI = i;
-            // addWidget(new SlotWidget(menu.spellStoreSlots.get(i),
-            //         new Coordinate((w, h) -> (w-spellCountCanFit*16) / 2 + finalI * 16, (w, h) -> h - 40)));
+        var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 8;
+
+        for (int i = -2; i < spellCountCanFit; i++) {
+            // 做一下检测
+            if (0 > i + spellSlotDeltaI.get() || i + spellSlotDeltaI.get() >= 1024) continue;
+
+            int finalI = i + 2;
+            addWidget(new WandWidgets.SpellStorageWidget(menu.spellStoreSlots, new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + finalI * 16 + 16, (w, h) -> h - 113)
+                    , spellSlotDeltaX, i, spellSlotDeltaI));
         }
+
+        var targetMin = -1024 * 16 + spellCountCanFit * 16;
+
+        // 两边遮挡
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(32, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
+                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -113), Coordinate.fromTopLeft(32, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
+                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
+
+        // 滚动条
+        addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromBottomLeft(96, -112 + 15), Coordinate.fromTopRight(-96, 4),
+                Coordinate.fromTopLeft(targetMin, 0), spellSlotTargetDeltaX, -1, "X", false));
+
+        // 滚轮区域
+        addWidget(new ScrollRegionWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(999, 16), Coordinate.fromTopLeft(targetMin, 0), 80, spellSlotTargetDeltaX));
 
         /* ===========玩家物品栏=========== */
 
@@ -129,7 +154,7 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95, -76 - 16), Coordinate.fromTopRight(0, 2), -1));
 
         addWidget(new TextureWidget(Coordinate.fromBottomLeft(95, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/backpack.png"), Coordinate.fromTopLeft(16, 16)));
-        addWidget(new TextureWidget(Coordinate.fromBottomLeft(98 + 9 * 18 - 48, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/slant_end_bar_up.png"), Coordinate.fromTopLeft(48, 16)));
+        addWidget(new TextureWidget(Coordinate.fromBottomLeft(98 + 9 * 18 - 49, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/slant_end_bar_up.png"), Coordinate.fromTopLeft(48, 16)));
         addWidget(new TextWidget(Coordinate.fromBottomLeft(95 + 16, - 76 - 10), Component.translatable("gui.programmable_magic.wand.inventory"), -1));
 
         addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95 + 18 * 9 + 2, -76 - 16), Coordinate.fromTopLeft(2, 92), -1));
@@ -148,13 +173,20 @@ public class WandScreen extends Screen<WandMenu> {
         dt = System.nanoTime() / 1e9 - lastFrame;
         lastFrame = System.nanoTime() / 1e9;
 
+        /* ========================================== */
+
+        var MaGiCaL_CoNsTaNt_1 = 200;
+        var MaGiCaL_CoNsTaNt_2 = 30;
+
+        /* ========================================== */
+
         // 平滑 SupplySlotDeltaY
 
         var current = spellSupplyAccurateDeltaY;
         var target = (double) menu.supplySlotTargetDeltaY.get();
 
         // 核心科技, 从chatgpt偷的
-        spellSupplyDeltaYSpeed += (target - spellSupplyAccurateDeltaY) * 200 * dt - spellSupplyDeltaYSpeed * 30 * dt;
+        spellSupplyDeltaYSpeed += (target - spellSupplyAccurateDeltaY) * MaGiCaL_CoNsTaNt_1 * dt - spellSupplyDeltaYSpeed * MaGiCaL_CoNsTaNt_2 * dt;
 
         double newDy = current + spellSupplyDeltaYSpeed * dt;
 
@@ -165,6 +197,26 @@ public class WandScreen extends Screen<WandMenu> {
         }
         spellSupplyAccurateDeltaY = newDy;
         menu.supplySlotDeltaY.set((int) newDy);
+
+        // 平滑 spellSlotDeltaX
+
+        current = spellSlotAccurateDeltaX;
+        target = (double) menu.spellSlotTargetDeltaX.get();
+
+        // 核心科技, 从chatgpt偷的
+        spellSlotDeltaXSpeed += (target - spellSlotAccurateDeltaX) * MaGiCaL_CoNsTaNt_1 * dt - spellSlotDeltaXSpeed * MaGiCaL_CoNsTaNt_2 * dt;
+
+        newDy = current + spellSlotDeltaXSpeed * dt;
+
+        // 过冲检测
+        if (target > current ^ target > newDy) {
+            newDy = target;
+            spellSlotDeltaXSpeed = 0;
+        }
+        spellSlotAccurateDeltaX = newDy;
+        menu.spellSlotDeltaX.set((int) newDy);
+
+        menu.spellSlotDeltaI.set(-menu.spellSlotDeltaX.get() / 16);
     }
 
     @Override

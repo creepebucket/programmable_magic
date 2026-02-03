@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 
@@ -8,23 +9,14 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
  * 滚动区域控件：在指定区域内响应鼠标滚轮事件，更新滚动值。
  */
 public class ScrollRegionWidget extends Widget implements MouseScrollable {
-    /**
-     * 最大滚动值
-     */
-    public final int maxValue;
-    /**
-     * 滚动值倍数
-     */
+    public Coordinate region;
     public final int valueMultiplier;
-    /**
-     * 当前滚动值
-     */
-    public int currentValue;
+    public SyncedValue<Integer> value;
 
-    public ScrollRegionWidget(Coordinate pos, Coordinate size, int currentValue, int maxValue, int valueMultiplier) {
+    public ScrollRegionWidget(Coordinate pos, Coordinate size, Coordinate region, int valueMultiplier, SyncedValue<Integer> value) {
         super(pos, size);
-        this.currentValue = currentValue;
-        this.maxValue = maxValue;
+        this.region = region;
+        this.value = value;
         this.valueMultiplier = valueMultiplier;
     }
 
@@ -42,12 +34,7 @@ public class ScrollRegionWidget extends Widget implements MouseScrollable {
         if (delta == 0) return true;
 
         // 计算新值并限制在有效范围内
-        int next = this.currentValue + delta;
-        if (next < 0) next = 0;
-        if (next > this.maxValue) next = this.maxValue;
-        if (next == this.currentValue) return true;
-
-        this.currentValue = next;
+        value.set(Math.clamp(value.get() + delta, region.toScreenX(), region.toScreenY()));
         return true;
     }
 }

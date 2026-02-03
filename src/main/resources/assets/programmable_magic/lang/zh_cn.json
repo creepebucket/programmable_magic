@@ -314,7 +314,7 @@
   "tooltip.programmable_magic.spell_tooltip.assoc.right": "右结合性",
   "tooltip.programmable_magic.spell_tooltip.description": "描述:",
   "tooltip.programmable_magic.spell_tooltip.overloads": "重载:",
-  "tooltip.programmable_magic.spell_tooltip.summary": "%s / 右置%s参 / 优先级%s / %s",
+  "tooltip.programmable_magic.spell_tooltip.summary": "%s / 优先级%s / %s",
   "tooltip.programmable_magic.spell_tooltip.type.adjust_mod": "调整修饰",
   "tooltip.programmable_magic.spell_tooltip.type.base_spell": "基础法术",
   "tooltip.programmable_magic.spell_tooltip.type.compute_mod": "计算修饰",

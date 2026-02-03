@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
 import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
+import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
@@ -107,6 +108,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        ClientSlotManager.clearAll();
         // 遍历 menu.widgets 进行渲染
         for (Widget widget : this.menu.widgets) {
             if (widget instanceof Renderable renderable) {

@@ -26,6 +26,9 @@ import java.util.List;
 public class WandMenu extends Menu {
     public SyncedValue<Integer> supplySlotDeltaY;
     public SyncedValue<Integer> supplySlotTargetDeltaY;
+    public SyncedValue<Integer> spellSlotDeltaX;
+    public SyncedValue<Integer> spellSlotTargetDeltaX;
+    public SyncedValue<Integer> spellSlotDeltaI;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
     public Container storedSpells;
@@ -49,6 +52,9 @@ public class WandMenu extends Menu {
     public void init() {
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
         this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.BOTH, 0);
+        this.spellSlotDeltaX = dataManager.register("spell_slot_delta_y", SyncMode.BOTH, 0);
+        this.spellSlotTargetDeltaX = dataManager.register("spell_slot_target_delta_y", SyncMode.BOTH, 0);
+        this.spellSlotDeltaI = dataManager.register("spell_slot_delta_i", SyncMode.BOTH, 0);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);

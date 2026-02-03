@@ -30,7 +30,7 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
      */
     @Override
     public void onInitialize() {
-        render(null, 0, 0, 0);
+        ClientSlotManager.setClientPosition(this.slot, this.pos.toMenuX(), this.pos.toMenuY());
     }
 
     /**

@@ -19,7 +19,6 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
 
     public NumberOperationsSpell() {
         subCategory = "spell." + MODID + ".subcategory.operations.number";
-        rightParamOffset = 1;
     }
 
     // 返回为数字的运算统一放在这里

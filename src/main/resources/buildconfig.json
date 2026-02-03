@@ -1066,7 +1066,9 @@
       {"from_top_left": [240, 0], "from_bottom_right": [255, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/adjust_spell.png"},
       {"from_top_left": [256, 0], "from_bottom_right": [271, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/backpack.png"},
       {"from_top_left": [0, 16], "from_bottom_right": [47, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_up.png"},
-      {"from_top_left": [48, 16], "from_bottom_right": [95, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_down.png"}
+      {"from_top_left": [48, 16], "from_bottom_right": [95, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_down.png"},
+      {"from_top_left": [96, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_left.png"},
+      {"from_top_left": [128, 16], "from_bottom_right": [159, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_right.png"}
     ]
   }
 ]
