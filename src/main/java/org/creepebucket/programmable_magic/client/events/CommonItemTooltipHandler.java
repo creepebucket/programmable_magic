@@ -58,10 +58,10 @@ public class CommonItemTooltipHandler {
             String mult = String.format("%.2f", values.manaMult);
             String energyPerSec = ModUtils.formattedNumber(values.chargeRateW);
 
-            event.getToolTip().add(Component.literal("魔力修正 x" + mult).withStyle(ChatFormatting.BLUE));
-            event.getToolTip().add(Component.literal("槽位数 " + slots).withStyle(ChatFormatting.YELLOW));
-            event.getToolTip().add(Component.literal("充能速率 " + energyPerSec + "W").withStyle(ChatFormatting.GREEN));
-            event.getToolTip().add(Component.literal("插件槽位 " + pluginSlots).withStyle(ChatFormatting.AQUA));
+            event.getToolTip().add(Component.translatable("tooltip." + MODID + ".wand.mana_mult", mult).withStyle(ChatFormatting.BLUE));
+            event.getToolTip().add(Component.translatable("tooltip." + MODID + ".wand.spell_slots", slots).withStyle(ChatFormatting.YELLOW));
+            event.getToolTip().add(Component.translatable("tooltip." + MODID + ".wand.charge_rate", energyPerSec).withStyle(ChatFormatting.GREEN));
+            event.getToolTip().add(Component.translatable("tooltip." + MODID + ".wand.plugin_slots", pluginSlots).withStyle(ChatFormatting.AQUA));
         }
     }
 }

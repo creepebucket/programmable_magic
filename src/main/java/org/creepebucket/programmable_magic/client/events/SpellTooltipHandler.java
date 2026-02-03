@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.client.events;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.api.distmarker.Dist;
@@ -32,27 +33,28 @@ public class SpellTooltipHandler {
         // TODO: 本地化
 
         // 法术类型
-        if (logic instanceof SpellItemLogic.BaseSpell) tmp = Component.literal("基础法术");
-        else if (logic instanceof SpellItemLogic.ComputeMod) tmp = Component.literal("计算修饰");
-        else if (logic instanceof SpellItemLogic.ControlMod) tmp = Component.literal("控制修饰");
-        else if (logic instanceof SpellItemLogic.AdjustMod) tmp = Component.literal("调整修饰");
-        else tmp = Component.literal("未知法术");
+        String typeKey;
+        if (logic instanceof SpellItemLogic.BaseSpell) typeKey = "tooltip." + MODID + ".spell_tooltip.type.base_spell";
+        else if (logic instanceof SpellItemLogic.ComputeMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.compute_mod";
+        else if (logic instanceof SpellItemLogic.ControlMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.control_mod";
+        else if (logic instanceof SpellItemLogic.AdjustMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.adjust_mod";
+        else typeKey = "tooltip." + MODID + ".spell_tooltip.type.unknown";
 
-        // 参数偏移
-        tmp.append(Component.literal(" / 右置" + logic.rightParamOffset + "参"));
+        String assocKey = logic.rightConnectivity
+                ? "tooltip." + MODID + ".spell_tooltip.assoc.right"
+                : "tooltip." + MODID + ".spell_tooltip.assoc.left";
 
-        // 优先级
-        tmp.append(Component.literal(" / 优先级" + logic.precedence));
-
-        // 结合性
-        if (logic.rightConnectivity) tmp.append(Component.literal(" / 右结合性"));
-        else tmp.append(Component.literal(" / 左结合性"));
-
-        tooltip.add(tmp.withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(
+                "tooltip." + MODID + ".spell_tooltip.summary",
+                Component.translatable(typeKey),
+                logic.rightParamOffset,
+                logic.precedence,
+                Component.translatable(assocKey)
+        ).withStyle(ChatFormatting.GRAY));
 
         // 重载
 
-        tooltip.add(Component.literal("重载:").withStyle(ChatFormatting.AQUA));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".spell_tooltip.overloads").withStyle(ChatFormatting.AQUA));
 
         for (int i = 0; i < logic.inputTypes.size(); i++) { // 应该不会NPE
             tmp = Component.literal("    (").withStyle(ChatFormatting.GRAY);
@@ -82,8 +84,12 @@ public class SpellTooltipHandler {
 
         // 描述
 
-        tooltip.add(Component.literal("描述:").withStyle(ChatFormatting.LIGHT_PURPLE));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".spell_tooltip.description").withStyle(ChatFormatting.LIGHT_PURPLE));
 
-        tooltip.add(Component.translatable("spell." + MODID + "." + logic.name + ".desc").withStyle(ChatFormatting.GRAY));
+        String descBaseKey = "tooltip." + MODID + ".spell." + logic.name + ".";
+        tooltip.add(Component.translatable(descBaseKey + "desc1").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable(descBaseKey + "desc2").withStyle(ChatFormatting.GRAY));
+        String desc3Key = descBaseKey + "desc3";
+        if (I18n.exists(desc3Key)) tooltip.add(Component.translatable(desc3Key).withStyle(ChatFormatting.GRAY));
     }
 }
