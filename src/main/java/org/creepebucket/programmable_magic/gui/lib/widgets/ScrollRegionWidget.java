@@ -30,7 +30,7 @@ public class ScrollRegionWidget extends Widget implements MouseScrollable {
         if (!isInBounds(mouseX, mouseY, x, y, w, h)) return false;
 
         // 计算滚动方向：向上滚动减少值，向下滚动增加值
-        int delta = scrollY > 0 ? -this.valueMultiplier : (scrollY < 0 ? this.valueMultiplier : 0);
+        int delta = scrollY < 0 ? -this.valueMultiplier : (scrollY > 0 ? this.valueMultiplier : 0);
         if (delta == 0) return true;
 
         // 计算新值并限制在有效范围内

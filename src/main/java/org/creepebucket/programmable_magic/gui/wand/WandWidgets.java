@@ -14,6 +14,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 
 import java.util.List;
@@ -125,6 +126,106 @@ public class WandWidgets {
             if (!contains(event.x(), event.y())) return false;
             this.deltaY.set(target);
             return true;
+        }
+    }
+
+    public static class SpellIndexWidget extends Widget implements Renderable {
+        public int index, color;
+        public SyncedValue<Integer> dx, di;
+
+        public SpellIndexWidget(Coordinate pos, int index, SyncedValue<Integer> dx, SyncedValue<Integer> di, int color) {
+            this.pos = pos;
+            this.size = Coordinate.fromTopLeft(3, 5);
+            this.index = index;
+            this.color = color;
+            this.dx = dx;
+            this.di = di;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            int i = index + di.get();
+            if (i < 0 || i >= 1024) return;
+            int count = 0;
+            while (i > 0 || count < 3) {
+                renderNumber(graphics, i % 10, pos.toScreenX() - count * 5 + dx.get(), pos.toScreenY(), mouseX, mouseY);
+                count++;
+                i /= 10;
+            }
+        }
+
+        public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY) {
+            // 根据距离计算透明度并显示数字
+            double distance = Math.sqrt(Math.pow(mouseX - x + 1, 2) + Math.pow(mouseY - y + 2, 2));
+            int renderColor = (color & 16777215) | ((int) (((color >>> 24) * Math.clamp(1000 / Math.pow(distance, 2), 0, 1))) << 24);
+
+            switch (n) {
+                case 0 -> {
+                    graphics.renderOutline(x, y, 4, 5, renderColor);
+                }
+                case 1 -> {
+                    graphics.fill(x, y + 1, x + 2, y + 2, renderColor);
+                    graphics.fill(x + 2, y, x + 3, y + 5, renderColor);
+                    graphics.fill(x, y + 4, x + 4, y + 5, renderColor);
+                }
+                case 2 -> {
+                    graphics.fill(x, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x + 3, y + 1, x + 4, y + 2, renderColor);
+                    graphics.fill(x + 2, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x + 1, y + 3, x + 2, y + 4, renderColor);
+                    graphics.fill(x, y + 4, x + 4, y + 5, renderColor);
+                }
+                case 3 -> {
+                    graphics.fill(x, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x + 3, y + 1, x + 4, y + 2, renderColor);
+                    graphics.fill(x + 2, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x + 3, y + 3, x + 4, y + 4, renderColor);
+                    graphics.fill(x, y + 4, x + 4, y + 5, renderColor);
+                }
+                case 4 -> {
+                    graphics.fill(x + 2, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x + 1, y + 1, x + 2, y + 2, renderColor);
+                    graphics.fill(x, y + 2, x + 1, y + 4, renderColor);
+                    graphics.fill(x + 3, y + 2, x + 4, y + 5, renderColor);
+                    graphics.fill(x, y + 3, x + 4, y + 4, renderColor);
+                }
+                case 5 ->{
+                    graphics.fill(x, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x, y + 1, x + 1, y + 2, renderColor);
+                    graphics.fill(x + 1, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x + 3, y + 3, x + 4, y + 4, renderColor);
+                    graphics.fill(x, y + 4, x + 3, y + 5, renderColor);
+                }
+                case 6 -> {
+                    graphics.fill(x + 1, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x, y + 1, x + 1, y + 4, renderColor);
+                    graphics.fill(x + 1, y + 4, x + 4, y + 5, renderColor);
+                    graphics.fill(x + 1, y + 2, x + 4, y + 3, renderColor);
+                    graphics.fill(x + 3, y + 2, x + 4, y + 5, renderColor);
+                }
+                case 7 -> {
+                    graphics.fill(x, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x + 3, y + 1, x + 4, y + 2, renderColor);
+                    graphics.fill(x + 2, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x + 1, y + 3, x + 2, y + 5, renderColor);
+                }
+                case 8 -> {
+                    graphics.fill(x, y, x + 4, y + 1, renderColor);
+                    graphics.fill(x, y + 1, x + 1, y + 2, renderColor);
+                    graphics.fill(x + 3, y + 1, x + 4, y + 2, renderColor);
+                    graphics.fill(x + 1, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x, y + 3, x + 1, y + 4, renderColor);
+                    graphics.fill(x + 3, y + 3, x + 4, y + 4, renderColor);
+                    graphics.fill(x, y + 4, x + 4, y + 5, renderColor);
+                }
+                case 9 -> {
+                    graphics.fill(x, y, x + 3, y + 1, renderColor);
+                    graphics.fill(x, y + 1, x + 1, y + 2, renderColor);
+                    graphics.fill(x + 1, y + 2, x + 3, y + 3, renderColor);
+                    graphics.fill(x, y + 4, x + 3, y + 5, renderColor);
+                    graphics.fill(x + 3, y, x + 4, y + 4, renderColor);
+                }
+            }
         }
     }
 }

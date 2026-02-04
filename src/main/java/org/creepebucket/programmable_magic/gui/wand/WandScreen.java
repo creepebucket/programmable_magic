@@ -22,7 +22,7 @@ public class WandScreen extends Screen<WandMenu> {
     public double spellSupplyDeltaYSpeed = 0;
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
     public double spellSlotDeltaXSpeed = 0;
-    public double spellSlotAccurateDeltaX = this.menu.spellSlotDeltaX.get();
+    public double spellSlotAccurateDeltaX = 16;
     public Double lastFrame = System.nanoTime() / 1e9;
     public Double dt;
 
@@ -97,8 +97,12 @@ public class WandScreen extends Screen<WandMenu> {
             if (0 > i + spellSlotDeltaI.get() || i + spellSlotDeltaI.get() >= 1024) continue;
 
             int finalI = i + 2;
-            addWidget(new WandWidgets.SpellStorageWidget(menu.spellStoreSlots, new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + finalI * 16 + 16, (w, h) -> h - 113)
-                    , spellSlotDeltaX, i, spellSlotDeltaI));
+            var pos = new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + finalI * 16, (w, h) -> h - 113);
+
+            addWidget(new WandWidgets.SpellStorageWidget(menu.spellStoreSlots, pos, spellSlotDeltaX, i, spellSlotDeltaI));
+
+            // 编号
+            addWidget(new WandWidgets.SpellIndexWidget(pos.add(Coordinate.fromTopLeft(11, -5)), i, spellSlotDeltaX, spellSlotDeltaI, -1));
         }
 
         var targetMin = -1024 * 16 + spellCountCanFit * 16;
@@ -106,17 +110,17 @@ public class WandScreen extends Screen<WandMenu> {
         // 两边遮挡
         addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
-                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
+                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 16));}, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -113), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
-                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
+                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 16));}, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
 
         // 滚动条
         addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromBottomLeft(96, -112 + 15), Coordinate.fromTopRight(-96, 4),
-                Coordinate.fromTopLeft(targetMin, 0), spellSlotTargetDeltaX, -1, "X", false));
+                Coordinate.fromTopLeft(targetMin, 16), spellSlotTargetDeltaX, -1, "X", false));
 
         // 滚轮区域
-        addWidget(new ScrollRegionWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(999, 16), Coordinate.fromTopLeft(targetMin, 0), 80, spellSlotTargetDeltaX));
+        addWidget(new ScrollRegionWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(999, 16), Coordinate.fromTopLeft(targetMin, 16), 80, spellSlotTargetDeltaX));
 
         /* ===========玩家物品栏=========== */
 
@@ -162,7 +166,6 @@ public class WandScreen extends Screen<WandMenu> {
         // 法术调试器
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92), Coordinate.fromTopLeft(2, 92), -1));
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
-
     }
 
     @Override
@@ -223,7 +226,6 @@ public class WandScreen extends Screen<WandMenu> {
     public void resize(int width, int height) {
         // 动态地在大小改变时重建控件
         this.menu.widgets = new ArrayList<>();
-        init();
         super.resize(width, height);
     }
 }
