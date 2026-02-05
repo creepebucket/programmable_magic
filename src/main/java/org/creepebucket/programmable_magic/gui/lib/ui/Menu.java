@@ -45,6 +45,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     protected Menu(MenuType<?> type, int containerId, Inventory playerInv, Definition definition) {
         super(type, containerId);
         this.playerInv = playerInv;
+        this.hooks.bindMenuPlayer(playerInv.player);
 
         // 服务端发包逻辑
         if (playerInv.player instanceof ServerPlayer serverPlayer) {

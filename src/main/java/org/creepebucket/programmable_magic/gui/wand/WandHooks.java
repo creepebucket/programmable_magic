@@ -20,6 +20,7 @@ public class WandHooks {
         public void handle(Player player, Object... args) {
             int index = (Integer) args[0];
             boolean deleteBlank = (Boolean) args[1];
+            if (index < 0) index = 0;
 
             if (deleteBlank) {
                 for (int i = index; i < storage.getContainerSize() - 1; i++) {
@@ -50,7 +51,6 @@ public class WandHooks {
             String string = (String) args[0];
             Container imported = ModUtils.deSerializeSpells(string);
             for (int i = 0; i < storage.getContainerSize(); i++) storage.setItem(i, imported.getItem(i).copy());
-            player.containerMenu.broadcastChanges();
         }
     }
 
@@ -65,7 +65,6 @@ public class WandHooks {
         @Override
         public void handle(Player player, Object... args) {
             for (int i = 0; i < storage.getContainerSize(); i++) storage.setItem(i, ItemStack.EMPTY);
-            player.containerMenu.broadcastChanges();
         }
     }
 }

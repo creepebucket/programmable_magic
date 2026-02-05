@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 
 public class HookManager {
     private final Map<String, Hook> hooks = new HashMap<>();
+    private Player menuPlayer;
     private BiConsumer<String, Object[]> sendToServer;
 
     public <T extends Hook> T hook(T hook) {
@@ -16,11 +17,16 @@ public class HookManager {
         return hook;
     }
 
+    public void bindMenuPlayer(Player player) {
+        this.menuPlayer = player;
+    }
+
     public void bindServerSender(BiConsumer<String, Object[]> sender) {
         this.sendToServer = sender;
     }
 
     void trigger(String id, Object[] args) {
+        hooks.get(id).handle(this.menuPlayer, args);
         this.sendToServer.accept(id, args);
     }
 
@@ -28,4 +34,3 @@ public class HookManager {
         hooks.get(id).handle(player, args);
     }
 }
-

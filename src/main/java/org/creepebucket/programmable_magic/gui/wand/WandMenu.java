@@ -28,11 +28,7 @@ import java.util.List;
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends Menu {
-    public SyncedValue<Integer> supplySlotDeltaY;
-    public SyncedValue<Integer> supplySlotTargetDeltaY;
-    public SyncedValue<Integer> spellSlotDeltaX;
-    public SyncedValue<Integer> spellSlotTargetDeltaX;
-    public SyncedValue<Integer> spellSlotDeltaI;
+    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
     public WandHooks.ClearSpellsHook clearSpellsHook;
@@ -70,11 +66,9 @@ public class WandMenu extends Menu {
 
     @Override
     public void init() {
-        this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.BOTH, 0);
-        this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.BOTH, 0);
-        this.spellSlotDeltaX = dataManager.register("spell_slot_delta_y", SyncMode.BOTH, 16);
-        this.spellSlotTargetDeltaX = dataManager.register("spell_slot_target_delta_y", SyncMode.BOTH, 16);
-        this.spellSlotDeltaI = dataManager.register("spell_slot_delta_i", SyncMode.BOTH, 0);
+        this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.LOCAL_ONLY, 0);
+        this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.LOCAL_ONLY, 0);
+        this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);
