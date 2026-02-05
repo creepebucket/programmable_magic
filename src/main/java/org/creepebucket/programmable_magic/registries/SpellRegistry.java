@@ -163,7 +163,6 @@ public class SpellRegistry {
         Supplier<Item> itemSupplier = ITEMS.register(name,
                 registryName -> new BaseSpellItem(new Item.Properties()
                         .setId(ResourceKey.create(Registries.ITEM, registryName)), logicInstance));
-
         LOGIC_SUPPLIERS.put(Identifier.fromNamespaceAndPath(MODID, name), logicSupplier);
         REGISTERED_SPELLS.put(itemSupplier, logicSupplier);
         SPELLS_BY_SUBCATEGORY.computeIfAbsent(logicInstance.subCategory, k -> new ArrayList<>()).add(itemSupplier);

@@ -27,6 +27,12 @@ public class ModNetworkPackets {
                 ServerPacketHandler::handleWandMenuKV
         );
 
+        registrar.playToServer(
+                HookTriggerPacket.TYPE,
+                HookTriggerPacket.STREAM_CODEC,
+                ServerPacketHandler::handleHookTrigger
+        );
+
         registrar.playToClient(
                 SimpleKvS2cPacket.TYPE,
                 SimpleKvS2cPacket.STREAM_CODEC,

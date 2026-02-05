@@ -14,6 +14,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
+import org.creepebucket.programmable_magic.network.dataPackets.HookTriggerPacket;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 
 public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
@@ -50,6 +51,11 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
             Minecraft.getInstance().getConnection().send(packet);
         });
         this.menu.dataManager.flushPullRequests();
+
+        this.menu.hooks.bindServerSender((hookId, args) -> {
+            var packet = new ServerboundCustomPayloadPacket(new HookTriggerPacket(hookId, args));
+            Minecraft.getInstance().getConnection().send(packet);
+        });
 
         // 3. 关键点：调用 Menu 的 reportScreenSize
         // 这会触发 Menu 里所有控件的 onInitialize()，让它们根据新的 guiLeft/Top 计算位置

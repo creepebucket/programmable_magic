@@ -1,18 +1,24 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
+import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
@@ -148,7 +154,7 @@ public class WandWidgets {
             if (i < 0 || i >= 1024) return;
             int count = 0;
             while (i > 0 || count < 3) {
-                renderNumber(graphics, i % 10, pos.toScreenX() - count * 5 + dx.get(), pos.toScreenY(), mouseX, mouseY);
+                renderNumber(graphics, i % 10, pos.toScreenX() - count * 5 + dx.get() % 16, pos.toScreenY(), mouseX, mouseY);
                 count++;
                 i /= 10;
             }
@@ -156,8 +162,9 @@ public class WandWidgets {
 
         public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY) {
             // 根据距离计算透明度并显示数字
-            double distance = Math.sqrt(Math.pow(mouseX - x + 1, 2) + Math.pow(mouseY - y + 2, 2));
-            int renderColor = (color & 16777215) | ((int) (((color >>> 24) * Math.clamp(1000 / Math.pow(distance, 2), 0, 1))) << 24);
+            double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
+            int renderColor = (color & 16777215) | ((int) (((color >>> 24) * (Math.clamp(1000 / distance, 0.1, 1.1) - 0.1))) << 24);
+            if (renderColor >>> 24 == 0)return;
 
             switch (n) {
                 case 0 -> {
@@ -187,7 +194,7 @@ public class WandWidgets {
                     graphics.fill(x + 1, y + 1, x + 2, y + 2, renderColor);
                     graphics.fill(x, y + 2, x + 1, y + 4, renderColor);
                     graphics.fill(x + 3, y + 2, x + 4, y + 5, renderColor);
-                    graphics.fill(x, y + 3, x + 4, y + 4, renderColor);
+                    graphics.fill(x + 1, y + 3, x + 3, y + 4, renderColor);
                 }
                 case 5 ->{
                     graphics.fill(x, y, x + 4, y + 1, renderColor);
@@ -201,7 +208,7 @@ public class WandWidgets {
                     graphics.fill(x, y + 1, x + 1, y + 4, renderColor);
                     graphics.fill(x + 1, y + 4, x + 4, y + 5, renderColor);
                     graphics.fill(x + 1, y + 2, x + 4, y + 3, renderColor);
-                    graphics.fill(x + 3, y + 2, x + 4, y + 5, renderColor);
+                    graphics.fill(x + 3, y + 3, x + 4, y + 4, renderColor);
                 }
                 case 7 -> {
                     graphics.fill(x, y, x + 4, y + 1, renderColor);
@@ -226,6 +233,58 @@ public class WandWidgets {
                     graphics.fill(x + 3, y, x + 4, y + 4, renderColor);
                 }
             }
+        }
+    }
+
+    public static class SpellInsertWidget extends Widget implements Renderable, Clickable, Tooltipable {
+        public int i;
+        public SyncedValue<Integer> deltaI, deltaX;
+        public Hook editHook;
+        public Container storage;
+
+        public SpellInsertWidget(Coordinate pos, Coordinate size, int i, SyncedValue<Integer> deltaI, SyncedValue<Integer> deltaX, Hook editHook, Container storage) {
+            this.pos = pos;
+            this.size = size;
+            this.i = i;
+            this.deltaI = deltaI;
+            this.deltaX = deltaX;
+            this.editHook = editHook;
+            this.storage = storage;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if (!contains(event.x(), event.y())) return false;
+
+            // FUCK MOJANG
+
+            int index = this.i + deltaI.get();
+            if (0 > index || index >= 1024) return false;
+
+            if (event.hasShiftDown()) {
+                editHook.trigger(index, true);
+                return true;
+            }
+
+            editHook.trigger(index, false);
+
+            return true;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            if(contains(mouseX, mouseY)) graphics.fill(pos.toScreenX() + deltaX.get() % 16, pos.toScreenY(), pos.toScreenX() + deltaX.get() % 16 + size.toScreenX(), pos.toScreenY() + size.toScreenY(), -1);
+        }
+
+        @Override
+        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+            if(contains(mouseX, mouseY)) {
+                graphics.renderTooltip(ClientUiContext.getFont(),
+                        List.of(ClientTooltipComponent.create(Component.translatable("gui.programmable_magic.wand.spells.insertion").getVisualOrderText())),
+                        mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -97,21 +97,24 @@ public class WandScreen extends Screen<WandMenu> {
             if (0 > i + spellSlotDeltaI.get() || i + spellSlotDeltaI.get() >= 1024) continue;
 
             int finalI = i + 2;
-            var pos = new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + finalI * 16, (w, h) -> h - 113);
+            var pos = new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + finalI * 16 + 16, (w, h) -> h - 115);
 
             addWidget(new WandWidgets.SpellStorageWidget(menu.spellStoreSlots, pos, spellSlotDeltaX, i, spellSlotDeltaI));
 
             // 编号
             addWidget(new WandWidgets.SpellIndexWidget(pos.add(Coordinate.fromTopLeft(11, -5)), i, spellSlotDeltaX, spellSlotDeltaI, -1));
+
+            // 插入/删除按钮
+            addWidget(new WandWidgets.SpellInsertWidget(pos.add(Coordinate.fromTopLeft(-8, 16)), Coordinate.fromTopLeft(16, 2), i, spellSlotDeltaI, spellSlotDeltaX, menu.storedSpellsEditHook, menu.storedSpells));
         }
 
-        var targetMin = -1024 * 16 + spellCountCanFit * 16;
+        var targetMin = -1001 * 16 + spellCountCanFit * 16;
 
         // 两边遮挡
-        addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(32, 16),
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -115), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
                 () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 16));}, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
-        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -113), Coordinate.fromTopLeft(32, 16),
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -115), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
                 () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 16));}, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
 
@@ -136,6 +139,7 @@ public class WandScreen extends Screen<WandMenu> {
 
         addWidget(new TextureWidget(Coordinate.fromBottomRight(-16, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger.png"), Coordinate.fromTopLeft(16, 16)));
 
+        // 调试
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"),
                 () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")));
@@ -148,6 +152,23 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 4), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"),
                 () -> {}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")));
+
+        // 编辑
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-32 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/right_shift.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/right_shift.png"),
+                () -> {menu.storedSpellsEditHook.trigger(-1, false);}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_right_shift")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-48 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"),
+                () -> {Minecraft.getInstance().keyboardHandler.setClipboard(ModUtils.serializeSpells(menu.storedSpells));}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_export")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-64 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"),
+                () -> {menu.clearSpellsHook.trigger();}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_delete")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-80 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"),
+                () -> {menu.importSpellsHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard());}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_import")));
+        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-96 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"),
+                () -> {menu.storedSpellsEditHook.trigger(-1, true);}, Component.translatable("gui.programmable_magic.wand.inventory.debugger_left_shift")));
 
         /* ===========边界装饰=========== */
 
@@ -166,6 +187,10 @@ public class WandScreen extends Screen<WandMenu> {
         // 法术调试器
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92), Coordinate.fromTopLeft(2, 92), -1));
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
+
+
+
+        // addWidget(new MouseCursorWidget());
     }
 
     @Override

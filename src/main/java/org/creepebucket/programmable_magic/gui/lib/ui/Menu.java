@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -12,8 +13,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.gui.lib.api.DataManager;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
+import org.creepebucket.programmable_magic.gui.lib.api.hooks.HookManager;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
+import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2CHandler;
@@ -27,6 +31,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
 
     public final Inventory playerInv;
     public final DataManager dataManager = new DataManager();
+    public final HookManager hooks = new HookManager();
 
     // 1. 控件列表现在放在 Menu 里，这样你在写 Menu 逻辑时就能塞控件进去了
     public List<Widget> widgets = new ArrayList<>();
@@ -81,6 +86,10 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
 
     public <T> SyncedValue<T> registerData(String key, SyncMode syncMode, T initialValue) {
         return this.dataManager.register(key, syncMode, initialValue);
+    }
+
+    public <T extends Hook> T hook(T hook) {
+        return this.hooks.hook(hook);
     }
 
     @Override
