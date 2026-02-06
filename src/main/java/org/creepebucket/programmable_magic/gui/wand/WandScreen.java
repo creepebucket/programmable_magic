@@ -19,11 +19,11 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandScreen extends Screen<WandMenu> {
 
+    public static double dt;
     public double spellSupplyDeltaYSpeed = 0;
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public Double lastFrame = System.nanoTime() / 1e9;
-    public static double dt;
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -102,10 +102,14 @@ public class WandScreen extends Screen<WandMenu> {
         // 两边遮挡
         addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -115), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
-                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
+                () -> {
+                    spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 0));
+                }, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -115), Coordinate.fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
-                () -> {spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 0));}, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
+                () -> {
+                    spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 0));
+                }, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
 
         // 滚动条
         addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromBottomLeft(96, -112 + 15), Coordinate.fromTopRight(-96, 4),
@@ -119,7 +123,7 @@ public class WandScreen extends Screen<WandMenu> {
         List<Slot> inventorySlots = menu.hotbarSlots;
         inventorySlots.addAll(menu.backpackSlots);
 
-        for (int i = 0; i< 36; i++) {
+        for (int i = 0; i < 36; i++) {
             addWidget(new SlotWidget(inventorySlots.get(i), Coordinate.fromBottomLeft(97 + 18 * (i % 9), 18 * (i / 9) - 72)));
             addWidget(new RectangleWidget(Coordinate.fromBottomLeft(97 + 18 * (i % 9), 18 * (i / 9) - 72), Coordinate.fromTopLeft(16, 16), i < 9 ? 0x80606060 : -2147483648));
         }
@@ -151,7 +155,7 @@ public class WandScreen extends Screen<WandMenu> {
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/right_shift.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/right_shift.png"),
                 () -> {
                     menu.storedSpellsEditHook.trigger(-1, false);
-                    for(WandWidgets.SpellStorageWidget widget: storageSlots) widget.delta2X -= 16;
+                    for (WandWidgets.SpellStorageWidget widget : storageSlots) widget.delta2X -= 16;
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_right_shift")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-48 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"),
@@ -161,7 +165,8 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-64 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"),
                 () -> {
-                    for(WandWidgets.SpellStorageWidget widget: storageSlots) widget.acc2 = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 1.2;
+                    for (WandWidgets.SpellStorageWidget widget : storageSlots)
+                        widget.acc2 = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 1.2;
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_delete")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-80 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"),
@@ -172,7 +177,7 @@ public class WandScreen extends Screen<WandMenu> {
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"),
                 () -> {
                     menu.storedSpellsEditHook.trigger(-1, true);
-                    for(WandWidgets.SpellStorageWidget widget: storageSlots) widget.delta2X += 16;
+                    for (WandWidgets.SpellStorageWidget widget : storageSlots) widget.delta2X += 16;
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_left_shift")));
 
         /* ===========边界装饰=========== */
@@ -185,14 +190,13 @@ public class WandScreen extends Screen<WandMenu> {
 
         addWidget(new TextureWidget(Coordinate.fromBottomLeft(95, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/backpack.png"), Coordinate.fromTopLeft(16, 16)));
         addWidget(new TextureWidget(Coordinate.fromBottomLeft(98 + 9 * 18 - 49, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/slant_end_bar_up.png"), Coordinate.fromTopLeft(48, 16)));
-        addWidget(new TextWidget(Coordinate.fromBottomLeft(95 + 16, - 76 - 10), Component.translatable("gui.programmable_magic.wand.inventory"), -1));
+        addWidget(new TextWidget(Coordinate.fromBottomLeft(95 + 16, -76 - 10), Component.translatable("gui.programmable_magic.wand.inventory"), -1));
 
         addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95 + 18 * 9 + 2, -76 - 16), Coordinate.fromTopLeft(2, 92), -1));
 
         // 法术调试器
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92), Coordinate.fromTopLeft(2, 92), -1));
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
-
 
 
         // addWidget(new MouseCursorWidget());

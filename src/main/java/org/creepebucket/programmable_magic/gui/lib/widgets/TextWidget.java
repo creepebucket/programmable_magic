@@ -7,9 +7,6 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
-
 /**
  * 文本控件：在指定坐标渲染动态文本。
  */

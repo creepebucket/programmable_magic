@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -32,14 +31,15 @@ public class WandHooks {
                 return;
             }
 
-            for (int i = storage.getContainerSize() - 1; i > index; i--) storage.setItem(i, storage.getItem(i - 1).copy());
+            for (int i = storage.getContainerSize() - 1; i > index; i--)
+                storage.setItem(i, storage.getItem(i - 1).copy());
             storage.setItem(index, ItemStack.EMPTY);
             player.containerMenu.broadcastChanges();
         }
     }
 
     public static class ImportSpellsHook extends Hook {
-        private Container storage;
+        private final Container storage;
 
         public ImportSpellsHook(Container storage) {
             super("import_spells");
@@ -55,7 +55,7 @@ public class WandHooks {
     }
 
     public static class ClearSpellsHook extends Hook {
-        private Container storage;
+        private final Container storage;
 
         public ClearSpellsHook(Container storage) {
             super("clear_spells");

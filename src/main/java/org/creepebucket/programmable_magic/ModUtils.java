@@ -130,6 +130,121 @@ public class ModUtils {
     }
 
     /**
+     * 用于法术序列化的 id -> 名称映射表.
+     * 将法术id字符串替换为一种接近代码的格式
+     *
+     * @return 映射表, k=原id, v=映射后
+     */
+    public static Map<String, String> getSpellSerializeMap() {
+        Map<String, String> map = new LinkedHashMap<>();
+
+        map.put("number_digit_0", "0");
+        map.put("number_digit_1", "1");
+        map.put("number_digit_2", "2");
+        map.put("number_digit_3", "3");
+        map.put("number_digit_4", "4");
+        map.put("number_digit_5", "5");
+        map.put("number_digit_6", "6");
+        map.put("number_digit_7", "7");
+        map.put("number_digit_8", "8");
+        map.put("number_digit_9", "9");
+        map.put("addition", "+");
+        map.put("subtraction", "-");
+        map.put("multiplication", "*");
+        map.put("division", "/");
+        map.put("remainder", "%");
+        map.put("exponent", "^");
+        map.put("vector_length", "length_of");
+        map.put("vector_x", "x_of");
+        map.put("vector_y", "y_of");
+        map.put("vector_z", "z_of");
+        map.put("entity_armor", "armor_of");
+        map.put("entity_health", "hp_of");
+        map.put("entity_max_health", "max_hp_of");
+        map.put("block_position", "block_of");
+        map.put("l_paren", "(");
+        map.put("r_paren", ")");
+        map.put("comma", ",");
+        map.put("entity_position", "position_of");
+        map.put("entity_velocity", "velocity_of");
+        map.put("greater_than", ">");
+        map.put("less_than", "<");
+        map.put("equal_to", "==");
+        map.put("greater_equal_to", ">=");
+        map.put("less_equal_to", "<=");
+        map.put("not_equal_to", "!=");
+        map.put("and", "&");
+        map.put("or", "|");
+        map.put("not", "!");
+        map.put("block_is_air", "is_air?");
+        map.put("block_has_gravity", "has_gravity?");
+        map.put("loop_start", "\nloop{\n");
+        map.put("for_loop", "\nfor{\n");
+        map.put("loop_end", "\n}\n");
+        map.put("if_start", "if_true_do[\n");
+        map.put("if_end", "]\n");
+        map.put("condition_invert", "inverted");
+        map.put("touch_ground", "wait_until_touch_ground");
+        map.put("touch_entity", "wait_until_touch_entity");
+        map.put("debug_print", "print");
+
+        return map;
+    }
+
+    public static String serializeSpells(Container spell) {
+        // 取出每个法术(只序列化法术, 不要序列化其他物品和空格) 提取name属性 然后映射
+        Map<String, String> map = getSpellSerializeMap();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < spell.getContainerSize(); i++) {
+            ItemStack stack = spell.getItem(i);
+            if (stack.isEmpty() || !(stack.getItem() instanceof BaseSpellItem spellItem)) continue;
+            String logicName = spellItem.getLogic().name;
+            String mapped = map.get(logicName);
+            if (mapped == null || mapped.isEmpty()) mapped = logicName;
+            stringBuilder.append(mapped);
+        }
+        return stringBuilder.toString();
+    }
+
+    public static Container deSerializeSpells(String string) {
+        // 丢弃所有空格, 再反查映射
+        Map<String, String> map = getSpellSerializeMap();
+        Map<String, String> reverseMap = new LinkedHashMap<>();
+        for (Map.Entry<String, String> entry : map.entrySet()) reverseMap.put(entry.getValue(), entry.getKey());
+        BuiltInRegistries.ITEM.stream()
+                .filter(item -> item instanceof BaseSpellItem)
+                .forEach(item -> reverseMap.putIfAbsent(((BaseSpellItem) item).getLogic().name, ((BaseSpellItem) item).getLogic().name));
+
+        String input = string.replace(" ", "");
+        Container container = new SimpleContainer(1024);
+
+        int index = 0;
+        int slot = 0;
+        while (index < input.length()) {
+            String matched = null;
+            for (String token : reverseMap.keySet()) {
+                if (!input.startsWith(token, index)) continue;
+                if (matched == null || token.length() > matched.length()) matched = token;
+            }
+            if (matched == null) {
+                index++;
+                continue;
+            }
+
+            String logicName = reverseMap.getOrDefault(matched, "");
+            var itemHolder = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(MODID, "spell_display_" + logicName)).orElse(null);
+            if (itemHolder != null) {
+                container.setItem(slot, new ItemStack(itemHolder.value()));
+                slot++;
+            }
+
+            index += matched.length();
+        }
+
+        return container;
+    }
+
+    /**
      * 插件数值聚合对象：所有字段默认 0，由插件按需调整。
      */
     public static class WandValues {
@@ -233,123 +348,5 @@ public class ModUtils {
                     values.get(MOMENTUM) > mana.getMomentum() ||
                     values.get(PRESSURE) > mana.getPressure();
         }
-    }
-
-    /**
-     * 用于法术序列化的 id -> 名称映射表.
-     * 将法术id字符串替换为一种接近代码的格式
-     * @return 映射表, k=原id, v=映射后
-     */
-    public static Map<String, String> getSpellSerializeMap() {
-        Map<String, String> map = new LinkedHashMap<>();
-
-        // 注意, 添加须满足哈夫曼编码要求 不能是其他项的前缀
-
-        map.put("number_digit_0", "0");
-        map.put("number_digit_1", "1");
-        map.put("number_digit_2", "2");
-        map.put("number_digit_3", "3");
-        map.put("number_digit_4", "4");
-        map.put("number_digit_5", "5");
-        map.put("number_digit_6", "6");
-        map.put("number_digit_7", "7");
-        map.put("number_digit_8", "8");
-        map.put("number_digit_9", "9");
-        map.put("addition", "+");
-        map.put("subtraction", "-");
-        map.put("multiplication", "*");
-        map.put("division", "/");
-        map.put("remainder", "%");
-        map.put("exponent", "^");
-        map.put("vector_length", "length_of");
-        map.put("vector_x", "x_of");
-        map.put("vector_y", "y_of");
-        map.put("vector_z", "z_of");
-        map.put("entity_armor", "armor_of");
-        map.put("entity_health", "hp_of");
-        map.put("entity_max_health", "max_hp_of");
-        map.put("block_position", "block_of");
-        map.put("l_paren", "(");
-        map.put("r_paren", ")");
-        map.put("comma", ",");
-        map.put("entity_position", "position_of");
-        map.put("entity_velocity", "velocity_of");
-        map.put("greater_than", ">>");
-        map.put("less_than", "<<");
-        map.put("equal_to", "==");
-        map.put("greater_equal_to", ">=");
-        map.put("less_equal_to", "<=");
-        map.put("not_equal_to", "=!");
-        map.put("and", "&");
-        map.put("or", "|");
-        map.put("not", "!");
-        map.put("block_is_air", "is_air?");
-        map.put("block_has_gravity", "has_gravity?");
-        map.put("loop_start", "\nloop{\n");
-        map.put("for_loop", "\nfor{\n");
-        map.put("loop_end", "\n}\n");
-        map.put("if_start", "if_true_do[\n");
-        map.put("if_end", "]\n");
-        map.put("condition_invert", "inverted");
-        map.put("touch_ground", "wait_until_touch_ground");
-        map.put("touch_entity", "wait_until_touch_entity");
-        map.put("debug_print", "print");
-
-        return map;
-    }
-
-    public static String serializeSpells(Container spell) {
-        // 取出每个法术(只序列化法术, 不要序列化其他物品和空格) 提取name属性 然后映射
-        Map<String, String> map = getSpellSerializeMap();
-        if (map == null) map = Collections.emptyMap();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < spell.getContainerSize(); i++) {
-            ItemStack stack = spell.getItem(i);
-            if (stack.isEmpty() || !(stack.getItem() instanceof BaseSpellItem spellItem)) continue;
-            String logicName = spellItem.getLogic().name;
-            String mapped = map.get(logicName);
-            if (mapped == null || mapped.isEmpty()) mapped = logicName;
-            stringBuilder.append(mapped);
-        }
-        return stringBuilder.toString();
-    }
-
-    public static Container deSerializeSpells(String string) {
-        // 丢弃所有空格, 再反查映射
-        Map<String, String> map = getSpellSerializeMap();
-        if (map == null) map = Collections.emptyMap();
-        Map<String, String> reverseMap = new LinkedHashMap<>();
-        for (Map.Entry<String, String> entry : map.entrySet()) reverseMap.put(entry.getValue(), entry.getKey());
-        BuiltInRegistries.ITEM.stream()
-                .filter(item -> item instanceof BaseSpellItem)
-                .forEach(item -> reverseMap.putIfAbsent(((BaseSpellItem) item).getLogic().name, ((BaseSpellItem) item).getLogic().name));
-
-        String input = string.replace(" ", "");
-        Container container = new SimpleContainer(1024);
-
-        int index = 0;
-        int slot = 0;
-        while (index < input.length()) {
-            String matched = null;
-            for (String token : reverseMap.keySet()) {
-                if (!input.startsWith(token, index)) continue;
-                if (matched == null || token.length() > matched.length()) matched = token;
-            }
-            if (matched == null) {
-                index++;
-                continue;
-            }
-
-            String logicName = reverseMap.getOrDefault(matched, "");
-            var itemHolder = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(MODID, "spell_display_" + logicName)).orElse(null);
-            if (itemHolder != null) {
-                container.setItem(slot, new ItemStack(itemHolder.value()));
-                slot++;
-            }
-
-            index += matched.length();
-        }
-
-        return container;
     }
 }

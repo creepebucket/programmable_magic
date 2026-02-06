@@ -72,7 +72,7 @@ public class ImageButtonWidget extends Widget implements Renderable, Clickable, 
 
     @Override
     public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        if(!contains(mouseX, mouseY)) return false;
+        if (!contains(mouseX, mouseY)) return false;
 
         graphics.renderTooltip(
                 ClientUiContext.getFont(),

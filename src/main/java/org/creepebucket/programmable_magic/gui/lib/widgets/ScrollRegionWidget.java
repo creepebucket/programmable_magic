@@ -9,8 +9,8 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
  * 滚动区域控件：在指定区域内响应鼠标滚轮事件，更新滚动值。
  */
 public class ScrollRegionWidget extends Widget implements MouseScrollable {
-    public Coordinate region;
     public final int valueMultiplier;
+    public Coordinate region;
     public SyncedValue<Integer> value;
 
     public ScrollRegionWidget(Coordinate pos, Coordinate size, Coordinate region, int valueMultiplier, SyncedValue<Integer> value) {

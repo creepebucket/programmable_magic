@@ -16,7 +16,9 @@ public class ModMenuTypes {
 
     public static void register(IEventBus modEventBus) {
         MENUS.register(modEventBus);
-    }    public static final Supplier<MenuType<WandMenu>> WAND_MENU = MENUS.register("wand_menu", () -> IMenuTypeExtension.create(WandMenu::new));
+    }
+
+    public static final Supplier<MenuType<WandMenu>> WAND_MENU = MENUS.register("wand_menu", () -> IMenuTypeExtension.create(WandMenu::new));
 
 
 }

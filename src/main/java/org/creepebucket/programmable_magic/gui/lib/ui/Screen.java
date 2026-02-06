@@ -105,7 +105,9 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         super.render(graphics, mouseX, mouseY, partialTick);
 
         graphics.nextStratum();
-        for (Widget widget : this.menu.widgets) if (widget instanceof ImageButtonWidget imageButtonWidget) imageButtonWidget.render(graphics, mouseX, mouseY, partialTick);
+        for (Widget widget : this.menu.widgets)
+            if (widget instanceof ImageButtonWidget imageButtonWidget)
+                imageButtonWidget.render(graphics, mouseX, mouseY, partialTick);
 
         for (int i = this.menu.widgets.size() - 1; i >= 0; i--) {
             Widget widget = this.menu.widgets.get(i);

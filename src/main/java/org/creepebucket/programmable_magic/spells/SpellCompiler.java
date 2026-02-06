@@ -38,7 +38,7 @@ public class SpellCompiler {
             if (spell instanceof SpellItemLogic.PairedLeftSpell left) {
                 try {
                     var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
-                    pairsCount.put(leftType,pairsCount.getOrDefault(leftType, 0) + 1);
+                    pairsCount.put(leftType, pairsCount.getOrDefault(leftType, 0) + 1);
                 } catch (InstantiationException e) { // 我操, 反射好恶心啊
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
@@ -58,7 +58,7 @@ public class SpellCompiler {
                     return new SpellSequence();
                 }
 
-                pairsCount.put(right.leftSpellType,pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
+                pairsCount.put(right.leftSpellType, pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
             }
         }
 

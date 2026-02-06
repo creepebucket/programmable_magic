@@ -3,12 +3,9 @@ package org.creepebucket.programmable_magic.gui.wand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
@@ -17,11 +14,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseScrollable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ScrollRegionWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 
 import java.util.List;
@@ -170,7 +165,8 @@ public class WandWidgets {
             editHook.trigger(index, event.hasShiftDown());
 
             // 处理动画
-            for (int j = i; j < storageSlots.size(); j++) storageSlots.get(j).delta2X += event.hasShiftDown()? 16 : -16; // 不用dx dx会被取模
+            for (int j = i; j < storageSlots.size(); j++)
+                storageSlots.get(j).delta2X += event.hasShiftDown() ? 16 : -16; // 不用dx dx会被取模
 
             return true;
         }
@@ -197,7 +193,7 @@ public class WandWidgets {
             // 删除整个法术序列的条件 只能被acc2触发
             if (this.i == 0 && original.toScreenX() + delta2X > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
                 deleteHook.trigger();
-                for (SpellStorageWidget widget: storageSlots) widget.acc2 = 0;
+                for (SpellStorageWidget widget : storageSlots) widget.acc2 = 0;
             }
 
             // 渲染格子
@@ -216,7 +212,7 @@ public class WandWidgets {
             }
 
             // 渲染空格插入按钮
-            if(isInBounds(mouseX, mouseY, pos.toScreenX() - 8, pos.toScreenY() + 16, 16, 2))
+            if (isInBounds(mouseX, mouseY, pos.toScreenX() - 8, pos.toScreenY() + 16, 16, 2))
                 graphics.fill(pos.toScreenX() - 8, pos.toScreenY() + 16, pos.toScreenX() + 8, pos.toScreenY() + 18, -1);
 
             super.render(graphics, mouseX, mouseY, partialTick);
@@ -242,11 +238,11 @@ public class WandWidgets {
             var color = COLOR_MAP.getOrDefault(key, 0xFFFFFFFF);
             color = (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24);
 
-            graphics.fill(x, y+4, x+79, y+6, color);
-            graphics.fill(x, y+7, x+79, y+25, color);
-            graphics.fill(x, y+26, x+79, y+28, color);
+            graphics.fill(x, y + 4, x + 79, y + 6, color);
+            graphics.fill(x, y + 7, x + 79, y + 25, color);
+            graphics.fill(x, y + 26, x + 79, y + 28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x+3, y+12, 0xFFFFFFFF);
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x + 3, y + 12, 0xFFFFFFFF);
         }
     }
 
@@ -255,7 +251,8 @@ public class WandWidgets {
         public int target, color;
 
         public WandSubcategoryJumpButton(Coordinate pos, Coordinate size, SyncedValue<Integer> deltaY, int target, Component tooltip, int color) {
-            super(pos, size, null, null, () -> {}, tooltip);
+            super(pos, size, null, null, () -> {
+            }, tooltip);
             this.deltaY = deltaY;
             this.target = target;
             this.color = color;

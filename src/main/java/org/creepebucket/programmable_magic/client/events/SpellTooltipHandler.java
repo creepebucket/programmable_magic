@@ -35,9 +35,12 @@ public class SpellTooltipHandler {
         // 法术类型
         String typeKey;
         if (logic instanceof SpellItemLogic.BaseSpell) typeKey = "tooltip." + MODID + ".spell_tooltip.type.base_spell";
-        else if (logic instanceof SpellItemLogic.ComputeMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.compute_mod";
-        else if (logic instanceof SpellItemLogic.ControlMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.control_mod";
-        else if (logic instanceof SpellItemLogic.AdjustMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.adjust_mod";
+        else if (logic instanceof SpellItemLogic.ComputeMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.compute_mod";
+        else if (logic instanceof SpellItemLogic.ControlMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.control_mod";
+        else if (logic instanceof SpellItemLogic.AdjustMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.adjust_mod";
         else typeKey = "tooltip." + MODID + ".spell_tooltip.type.unknown";
 
         String assocKey = logic.rightConnectivity
