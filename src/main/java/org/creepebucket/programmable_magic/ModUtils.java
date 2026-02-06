@@ -234,6 +234,9 @@ public class ModUtils {
             String logicName = reverseMap.getOrDefault(matched, "");
             var itemHolder = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(MODID, "spell_display_" + logicName)).orElse(null);
             if (itemHolder != null) {
+                // 越界检查
+                if (slot == 1024) return container;
+
                 container.setItem(slot, new ItemStack(itemHolder.value()));
                 slot++;
             }

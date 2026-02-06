@@ -39,6 +39,7 @@ public class WandMenu extends Menu {
     public List<Slot> hotbarSlots;
     public List<Slot> backpackSlots;
     public InteractionHand hand;
+    public boolean quickMoved = false;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         this(containerId, playerInv, InteractionHand.values()[extra.readVarInt()]);
@@ -131,5 +132,50 @@ public class WandMenu extends Menu {
             return;
         }
         super.clicked(slotId, button, clickType, player);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+
+        if (quickMoved) return ItemStack.EMPTY;
+        quickMoved = true;
+
+        var slot = getSlot(index);
+        if (slot instanceof InfiniteSupplySlot) { // 是法术供应槽
+
+            // 放到存储
+            if (!moveItemStackTo(slot.getItem().copy(), supplySlotsCount, supplySlotsCount + 1024, false))
+                return ItemStack.EMPTY;
+            slot.set(ItemStack.EMPTY);
+        } else if (slot instanceof OneItemOnlySlot) { // 是法术存储槽
+
+            if (SpellRegistry.isSpell(slot.getItem().getItem())) {
+
+                // 是法术就删除
+                slot.set(ItemStack.EMPTY);
+            } else {
+
+                // 不是放回背包
+                if (!moveItemStackTo(slot.getItem().copy(), supplySlotsCount + 1024, supplySlotsCount + 1060, false))
+                    return ItemStack.EMPTY;
+                slot.set(ItemStack.EMPTY);
+            }
+        } else { // 是背包
+
+            // 放到存储
+            if (!moveItemStackTo(slot.getItem().copy(), supplySlotsCount, supplySlotsCount + 1024, false))
+                return ItemStack.EMPTY;
+            slot.set(slot.getItem().copy().split(slot.getItem().getCount() - 1));
+        }
+
+        return slot.getItem().copy();
+    }
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+
+        // mojang wdnmd 这其实是tick逻辑
+        quickMoved = false;
     }
 }

@@ -15,12 +15,15 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 
 import java.util.List;
 import java.util.Map;
+
+import static net.minecraft.util.Mth.hsvToRgb;
 
 public class WandWidgets {
     public static class SpellSupplyWidget extends SlotWidget {
@@ -192,7 +195,7 @@ public class WandWidgets {
 
             // 删除整个法术序列的条件 只能被acc2触发
             if (this.i == 0 && original.toScreenX() + delta2X > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
-                deleteHook.trigger();
+                deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard()); // 权宜之计... 这个hook会调用 delete 和 import
                 for (SpellStorageWidget widget : storageSlots) widget.acc2 = 0;
             }
 
@@ -274,6 +277,56 @@ public class WandWidgets {
             if (!contains(event.x(), event.y())) return false;
             this.deltaY.set(target);
             return true;
+        }
+    }
+
+    public static class SpellReleaseWidget extends Widget implements Renderable, Tooltipable, Clickable, Tickable {
+        public int chargedTick = 0;
+        public boolean isCharging = false;
+
+        public SpellReleaseWidget(Coordinate pos, Coordinate size) { super(pos, size); }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            if (isCharging) graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
+            else if (contains(mouseX, mouseY)) graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), 0x80FFFFFF);
+            else graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), -2147483647);
+        }
+
+        @Override
+        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+            if (!contains(mouseX, mouseY) && !isCharging) return false;
+
+            Component tooltip;
+
+            if (!isCharging) tooltip = Component.translatable("gui.programmable_magic.wand.release");
+            else tooltip = Component.literal(ModUtils.FormattedManaString(chargedTick)).withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
+
+            graphics.renderTooltip(
+                    ClientUiContext.getFont(),
+                    List.of(ClientTooltipComponent.create(tooltip.getVisualOrderText())),
+                    mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null
+            );
+            return true;
+        }
+
+        @Override
+        public boolean mouseReleased(MouseButtonEvent event) {
+            chargedTick = 0;
+            isCharging = false;
+            return false;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if (!contains(event.x(), event.y())) return false;
+            isCharging = true;
+            return true;
+        }
+
+        @Override
+        public void tick() {
+            if (isCharging) chargedTick++;
         }
     }
 }

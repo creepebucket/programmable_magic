@@ -1,5 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
+
 /**
  * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。
  */
@@ -26,6 +28,8 @@ public abstract class Widget {
     protected Widget(Coordinate pos) {
         this.pos = pos;
     }
+
+    public Screen<?> screen;
 
     /**
      * 带位置和尺寸的构造函数。

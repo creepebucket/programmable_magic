@@ -210,6 +210,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     }
 
     public void addWidget(Widget widget) {
+        widget.screen = this;
         this.menu.widgets.add(widget);
     }
 }
