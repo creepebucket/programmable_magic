@@ -105,7 +105,7 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
                 return ExecutionResult.RETURNED(this, List.of(((Vec3) paramsList.get(0)).dot((Vec3) paramsList.get(1))), List.of(SpellValueType.NUMBER));
             }
             // 剩下情况需要报错
-            SpellExceptions.INVALID_INPUT(caster, this).throwIt();
+            SpellExceptions.INVALID_INPUT(this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
     }
@@ -144,7 +144,7 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
                 );
             }
             // 剩下情况需要报错
-            SpellExceptions.INVALID_INPUT(caster, this).throwIt();
+            SpellExceptions.INVALID_INPUT(this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
     }

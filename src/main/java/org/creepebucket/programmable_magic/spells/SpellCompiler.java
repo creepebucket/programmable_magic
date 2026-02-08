@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.spells;
 
+import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
@@ -12,6 +13,7 @@ import org.creepebucket.programmable_magic.spells.spells_compute.ParenSpell;
 import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +21,19 @@ import java.util.Map;
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
 public class SpellCompiler {
-    public static SpellSequence compile(List<ItemStack> spells, Player caster) {
+    public List<SpellExceptions> errors = new ArrayList<>();
+
+    public SpellSequence compile(Container spells) {
 
         // Step 1: List<ItemStack>转换为SpellSequence
 
         SpellSequence rawSequence = new SpellSequence();
         for (ItemStack spell : spells) {
+            if (!SpellRegistry.isSpell(spell.getItem())) {
+                rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.getItem(), "name"));
+                continue;
+            }
+
             rawSequence.pushRight(SpellRegistry.createSpellLogic(spell.getItem()));
         }
 
@@ -54,8 +63,7 @@ public class SpellCompiler {
             if (spell instanceof SpellItemLogic.PairedRightSpell right) {
                 // 如果计数器等于0, 直接报错未配对括号
                 if (pairsCount.getOrDefault(right.leftSpellType, 0) <= 0) {
-                    SpellExceptions.PAIRS_UNMATCHED(caster, spell).throwIt(); // 这个右括号永远不会配对
-                    return new SpellSequence();
+                    errors.add(SpellExceptions.PAIRS_UNMATCHED(spell)); // 这个右括号永远不会配对
                 }
 
                 pairsCount.put(right.leftSpellType, pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
@@ -66,8 +74,7 @@ public class SpellCompiler {
         for (Class<? extends SpellItemLogic.PairedLeftSpell> leftSpell : pairsCount.keySet()) {
             if (pairsCount.get(leftSpell) != 0) {
                 try {
-                    SpellExceptions.PAIRS_UNMATCHED(caster, leftSpell.getDeclaredConstructor().newInstance()).throwIt();
-                    return new SpellSequence();
+                    errors.add(SpellExceptions.PAIRS_UNMATCHED(leftSpell.getDeclaredConstructor().newInstance()));
                 } catch (InstantiationException e) { // 何意味
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
@@ -126,6 +133,8 @@ public class SpellCompiler {
             }
             if (i instanceof SpellItemLogic.PairedRightSpell r) {
                 // 右括号出栈并设置配对
+                if (pairs.get(r.leftSpellType) == null || pairs.get(r.leftSpellType).head == null) continue;
+
                 SpellItemLogic.PairedLeftSpell l = (SpellItemLogic.PairedLeftSpell) pairs.get(r.leftSpellType).popLeft();
                 r.leftSpell = l;
                 l.rightSpell = r;
@@ -182,7 +191,7 @@ public class SpellCompiler {
                 // 遇到右括号出栈运算符, 直到遇到左括号
             else if (i instanceof ParenSpell.RParenSpell) {
                 // 遍历栈
-                for (SpellItemLogic j = operatorStack.popLeft(); !(j instanceof ParenSpell.LParenSpell); j = operatorStack.popLeft())
+                for (SpellItemLogic j = operatorStack.head == null ? null : operatorStack.popLeft(); j != null && !(j instanceof ParenSpell.LParenSpell); j = operatorStack.head == null ? null : operatorStack.popLeft())
                     spellsRPN.pushRight(j);
             }
 
@@ -192,7 +201,7 @@ public class SpellCompiler {
             else if (i instanceof ValueLiteralSpell) spellsRPN.pushRight(i);
 
                 // 如果这个法术没有入参, 当作数值处理
-            else if (i.inputTypes.get(0).get(0) == SpellValueType.EMPTY) { // 绝对不会NPE(?
+            else if (i.inputTypes != null && !i.inputTypes.isEmpty() && i.inputTypes.get(0) != null && !i.inputTypes.get(0).isEmpty() && i.inputTypes.get(0).get(0) == SpellValueType.EMPTY) { // 绝对不会NPE(?
                 // 只检查第一个重载的第一个元素, 我们无法区分同时含有无参和有参的法术作为数字还是作为算符
                 spellsRPN.pushRight(i);
             }

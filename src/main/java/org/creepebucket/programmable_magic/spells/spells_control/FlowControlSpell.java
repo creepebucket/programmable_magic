@@ -129,7 +129,7 @@ public class FlowControlSpell {
             }
 
             // 找不到则报错
-            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.break_not_found_end"), caster, this).throwIt();
+            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.break_not_found_end"), this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 
@@ -166,7 +166,7 @@ public class FlowControlSpell {
             }
 
             // 找不到则报错
-            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.continue_not_found_start"), caster, this).throwIt();
+            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.continue_not_found_start"), this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 

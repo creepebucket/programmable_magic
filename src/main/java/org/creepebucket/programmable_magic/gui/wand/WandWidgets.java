@@ -19,6 +19,8 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
 import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
+import org.creepebucket.programmable_magic.spells.SpellCompiler;
+import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 
 import java.util.List;
 import java.util.Map;
@@ -329,4 +331,31 @@ public class WandWidgets {
             if (isCharging) chargedTick++;
         }
     }
-}
+
+    public static class CompileErrorWidget extends Widget implements Renderable, Tickable {
+        public List<SpellExceptions> errors = List.of();
+
+        public CompileErrorWidget(Coordinate pos) {
+            super(pos, Coordinate.fromTopLeft(0, 0));
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+
+            var count = 0;
+            for(SpellExceptions error: errors) {
+                graphics.drawString(ClientUiContext.getFont(), error.message(), pos.toScreenX(), pos.toScreenY() + count * 16, 0xFFFF0000);
+                count++;
+            }
+
+        }
+
+        @Override
+	        public void tick() {
+	            var compiler = new SpellCompiler();
+
+	            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+	            errors = compiler.errors;
+	        }
+	    }
+	}

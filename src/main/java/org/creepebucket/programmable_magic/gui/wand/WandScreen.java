@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
@@ -24,6 +25,7 @@ public class WandScreen extends Screen<WandMenu> {
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public Double lastFrame = System.nanoTime() / 1e9;
+    public SelectableImageButtonWidget bypassCompileWidget;
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -186,9 +188,14 @@ public class WandScreen extends Screen<WandMenu> {
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_left_shift")));
 
         // 编译相关
-        addWidget(new SelectableImageButtonWidget(Coordinate.fromBottomLeft(261, -90), Coordinate.fromTopLeft(16, 16),
+        bypassCompileWidget = new SelectableImageButtonWidget(Coordinate.fromBottomLeft(261, -90), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/compile.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/bypass_compile.png"),
-                Component.translatable("gui.programmable_magic.wand.inventory.debugger_bypass_compile")));
+                Component.translatable("gui.programmable_magic.wand.inventory.debugger_bypass_compile"));
+        addWidget(bypassCompileWidget);
+
+        addWidget(new TextureWidget(Coordinate.fromBottomLeft(261, -72), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/errors.png"), Coordinate.fromTopLeft(16, 16)));
+        addWidget(new TextWidget(Coordinate.fromBottomLeft(261 + 16, -68), Component.translatable("gui.programmable_magic.wand.inventory.debugger_compile_errors"), -1));
+        addWidget(new WandWidgets.CompileErrorWidget(Coordinate.fromBottomLeft(261 + 16, -68 + 16)));
 
         // 发射按钮
         addWidget(new WandWidgets.SpellReleaseWidget(Coordinate.fromBottomLeft(261 + 16, -88), Coordinate.fromTopRight(-261 - 16 - 98, 12)));
@@ -210,8 +217,9 @@ public class WandScreen extends Screen<WandMenu> {
         // 法术调试器
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92), Coordinate.fromTopLeft(2, 92), -1));
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
+        addWidget(new RectangleWidget(Coordinate.fromBottomLeft(261, -90 + 16), Coordinate.fromTopRight(-261 - 18, 2), -1));
 
-        addWidget(new MouseCursorWidget());
+        // addWidget(new MouseCursorWidget());
     }
 
     @Override

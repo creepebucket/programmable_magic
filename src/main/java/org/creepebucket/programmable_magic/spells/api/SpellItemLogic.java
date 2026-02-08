@@ -149,7 +149,7 @@ public abstract class SpellItemLogic implements Cloneable {
 
         // 如果未匹配，则返回错误
         if (!matched) {
-            SpellExceptions.INVALID_INPUT(caster, this).throwIt();
+            SpellExceptions.INVALID_INPUT(this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 
@@ -160,7 +160,7 @@ public abstract class SpellItemLogic implements Cloneable {
 
         // 最后检查魔力是否足够
         if (getManaCost(caster, spellSequence, paramsList, spellEntity).anyGreaterThan(spellEntity.availableMana)) {
-            SpellExceptions.NOT_ENOUGH_MANA(caster, this).throwIt();
+            SpellExceptions.NOT_ENOUGH_MANA(this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 

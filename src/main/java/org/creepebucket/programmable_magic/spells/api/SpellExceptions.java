@@ -12,48 +12,48 @@ public class SpellExceptions {
     public SpellItemLogic spell;
 
     // 构造函数
-    public SpellExceptions(String errorType, Component message, Player player, SpellItemLogic spell) {
+    public SpellExceptions(String errorType, Component message, SpellItemLogic spell) {
         this.errorType = errorType;
         this.message = message;
-        this.player = player;
         this.spell = spell;
     }
 
-    public static SpellExceptions COMPILE(Component message, Player player, SpellItemLogic spell) {
-        return new SpellExceptions(COMPILE, message, player, spell);
+    public static SpellExceptions COMPILE(Component message, SpellItemLogic spell) {
+        return new SpellExceptions(COMPILE, message, spell);
     }
 
-    public static SpellExceptions RUNTIME(Component message, Player player, SpellItemLogic spell) {
-        return new SpellExceptions(RUNTIME, message, player, spell);
+    public static SpellExceptions RUNTIME(Component message, SpellItemLogic spell) {
+        return new SpellExceptions(RUNTIME, message, spell);
     }
 
     // 需要配对的法术未配对
-    public static SpellExceptions PAIRS_UNMATCHED(Player player, SpellItemLogic spell) {
-        return SpellExceptions.COMPILE(Component.translatable("message.programmable_magic.error.pairs_unmatched"), player, spell);
+    public static SpellExceptions PAIRS_UNMATCHED(SpellItemLogic spell) {
+        return SpellExceptions.COMPILE(Component.translatable("message.programmable_magic.error.pairs_unmatched"), spell);
     }
 
     // 无效输入
-    public static SpellExceptions INVALID_INPUT(Player player, SpellItemLogic spell) {
-        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.invalid_input"), player, spell);
+    public static SpellExceptions INVALID_INPUT(SpellItemLogic spell) {
+        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.invalid_input"), spell);
     }
 
     // 编译错误
 
     // 魔力不足
-    public static SpellExceptions NOT_ENOUGH_MANA(Player player, SpellItemLogic spell) {
-        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.not_enough_mana"), player, spell);
+    public static SpellExceptions NOT_ENOUGH_MANA(SpellItemLogic spell) {
+        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.not_enough_mana"), spell);
     }
 
     // 运行时错误
 
     // 异常的本地化报错文本
     public Component message() {
-        return Component.translatable(this.errorType).append(": ").append(message).append(
-                Component.translatable("message.programmable_magic.error.detail.at_spell")).append(spell.name);
+        return Component.translatable(this.errorType).append(": ").append(
+                Component.translatable("message.programmable_magic.error.detail.at_spell",
+                        Component.translatable("item.programmable_magic.spell_display_" + spell.name), message));
     }
 
     // 实际抛出这个错误
-    public void throwIt() {
+    public void throwIt(Player player) {
         player.displayClientMessage(message, false);
     }
 }

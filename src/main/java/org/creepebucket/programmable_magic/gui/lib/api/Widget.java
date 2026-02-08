@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 
 /**
@@ -29,7 +30,7 @@ public abstract class Widget {
         this.pos = pos;
     }
 
-    public Screen<?> screen;
+    public Screen<? extends Menu> screen;
 
     /**
      * 带位置和尺寸的构造函数。
