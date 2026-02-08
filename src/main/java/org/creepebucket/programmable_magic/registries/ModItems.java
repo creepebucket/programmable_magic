@@ -19,7 +19,7 @@ public class ModItems {
     public static final DeferredItem<WandItemPlaceholder> WAND_ITEM_PLACEHOLDER = ITEMS.register(
             "wand_item_placeholder", registryName -> new WandItemPlaceholder(new Item.Properties()
                     .stacksTo(64)
-                    .component(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
+                    .component(ModDataComponents.PLACEHOLDER_ITEM_ID.get(), "minecraft:air")
                     .setId(ResourceKey.create(Registries.ITEM, registryName))));
 
     public static final DeferredItem<Wand> WAND = ITEMS.register(

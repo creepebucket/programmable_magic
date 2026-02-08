@@ -49,7 +49,7 @@ public class CommonItemTooltipHandler {
 
         // 对于所有魔杖（Wand），永远在底部追加绿色属性说明
         if (event.getItemStack().getItem() instanceof Wand wand) {
-            java.util.List<net.minecraft.world.item.ItemStack> plugins = event.getItemStack().get(ModDataComponents.WAND_PLUGINS.get());
+            java.util.List<net.minecraft.world.item.ItemStack> plugins = event.getItemStack().get(ModDataComponents.PLUGINS.get());
             var values = ModUtils.computeWandValues(plugins);
             int slotsCap = (int) Math.floor(values.spellSlots);
             String slots = String.valueOf(slotsCap);

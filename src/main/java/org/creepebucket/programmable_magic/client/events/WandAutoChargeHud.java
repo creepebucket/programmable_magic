@@ -42,7 +42,7 @@ public class WandAutoChargeHud {
         else if (off.getItem() instanceof Wand) wand = off;
         else return;
 
-        java.util.List<ItemStack> plugins = wand.get(ModDataComponents.WAND_PLUGINS.get());
+        java.util.List<ItemStack> plugins = wand.get(ModDataComponents.PLUGINS.get());
         boolean hasAuto = false;
         if (plugins != null) {
             for (ItemStack it : plugins) {
@@ -61,7 +61,7 @@ public class WandAutoChargeHud {
 
         double rate = ModUtils.computeWandValues(plugins).chargeRateW;
 
-        Long last_release = wand.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+        Long last_release = wand.get(ModDataComponents.LAST_RELEASE_TIME.get());
         long now = mc.level != null ? mc.level.getGameTime() : 0L;
         if (last_release == null) last_release = now;
         long dt = Math.max(0L, now - last_release);

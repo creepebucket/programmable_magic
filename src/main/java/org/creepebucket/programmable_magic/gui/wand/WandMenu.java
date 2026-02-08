@@ -56,7 +56,7 @@ public class WandMenu extends Menu {
         // chatgpt 给的持久化逻辑
         if (!(this.playerInv.player instanceof ServerPlayer serverPlayer)) return;
         ItemStack wand = serverPlayer.getItemInHand(this.hand);
-        List<ItemStack> saved = wand.get(ModDataComponents.WAND_SAVED_STACKS.get());
+        List<ItemStack> saved = wand.get(ModDataComponents.SPELLS.get());
         if (saved == null) return;
 
         for (int i = 0; i < saved.size() && i < this.storedSpells.getContainerSize(); i++) {
@@ -120,7 +120,7 @@ public class WandMenu extends Menu {
             saved.add(ItemStack.EMPTY);
         }
 
-        wand.set(ModDataComponents.WAND_SAVED_STACKS.get(), saved);
+        wand.set(ModDataComponents.SPELLS.get(), saved);
         this.clearContainer(player, this.storedSpells);
     }
 

@@ -993,6 +993,17 @@
       },
       {
         "from_top_left": [
+          112,
+          864
+        ],
+        "from_bottom_right": [
+          127,
+          879
+        ],
+        "target_img_path": "assets/programmable_magic/textures/item/packed_spell_default.png"
+      },
+      {
+        "from_top_left": [
           208,
           128
         ],

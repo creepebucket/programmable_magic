@@ -45,7 +45,7 @@ public class Wand extends BowItem implements IItemExtension {
     }
 
     private static boolean hasAutoChargePlugin(ItemStack stack) {
-        java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
+        java.util.List<ItemStack> plugins = stack.get(ModDataComponents.PLUGINS.get());
         if (plugins == null) return false;
         for (ItemStack it : plugins) {
             if (it == null || it.isEmpty()) continue;
@@ -76,7 +76,7 @@ public class Wand extends BowItem implements IItemExtension {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (player.isCrouching()) {
             ItemStack stack = player.getItemInHand(hand);
-            stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
+            stack.set(ModDataComponents.LAST_RELEASE_TIME.get(), level.getGameTime());
             if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.openMenu(
                         new SimpleMenuProvider(
@@ -91,7 +91,7 @@ public class Wand extends BowItem implements IItemExtension {
 
         // 非潜行：进入“使用”态（按住右键充能，松手释放）
         ItemStack stack = player.getItemInHand(hand);
-        if (!hasAutoChargePlugin(stack)) stack.set(ModDataComponents.WAND_LAST_RELEASE_TIME.get(), level.getGameTime());
+        if (!hasAutoChargePlugin(stack)) stack.set(ModDataComponents.LAST_RELEASE_TIME.get(), level.getGameTime());
         player.startUsingItem(hand);
         return InteractionResult.SUCCESS;
     }
@@ -106,13 +106,13 @@ public class Wand extends BowItem implements IItemExtension {
         if (level.isClientSide()) {
             int total = getUseDuration(stack, living);
             int holdUsed = Math.max(0, total - remainingUseDuration);
-            Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+            Long last = stack.get(ModDataComponents.LAST_RELEASE_TIME.get());
             long now = level.getGameTime();
             if (last == null) last = now;
             long dt = Math.max(0L, now - last);
             int used = Math.max(holdUsed, (int) Math.max(0L, dt));
 
-            double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.WAND_PLUGINS.get())).chargeRateW;
+            double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get())).chargeRateW;
             double mana = (used / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
 
@@ -156,7 +156,7 @@ public class Wand extends BowItem implements IItemExtension {
         boolean isHeld = player.isHolding(stack.getItem());
         if (!isHeld) return;
 
-        java.util.List<ItemStack> plugins = stack.get(ModDataComponents.WAND_PLUGINS.get());
+        java.util.List<ItemStack> plugins = stack.get(ModDataComponents.PLUGINS.get());
         if (!hasAutoChargePlugin(stack)) return;
 
         if (level.isClientSide()) {
@@ -166,7 +166,7 @@ public class Wand extends BowItem implements IItemExtension {
 
             double rate = ModUtils.computeWandValues(plugins).chargeRateW;
 
-            Long last = stack.get(ModDataComponents.WAND_LAST_RELEASE_TIME.get());
+            Long last = stack.get(ModDataComponents.LAST_RELEASE_TIME.get());
             long now = level.getGameTime();
             if (last == null) last = now;
             long dt = Math.max(0L, now - last);

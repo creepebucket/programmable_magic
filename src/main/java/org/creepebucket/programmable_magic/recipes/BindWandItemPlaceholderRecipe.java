@@ -54,7 +54,7 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
         if (placeholder.isEmpty() || target.isEmpty()) return ItemStack.EMPTY;
         ItemStack out = new ItemStack(ModItems.WAND_ITEM_PLACEHOLDER.get());
         var key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(target.getItem());
-        if (key != null) out.set(ModDataComponents.WAND_PLACEHOLDER_ITEM_ID.get(), key.toString());
+        if (key != null) out.set(ModDataComponents.PLACEHOLDER_ITEM_ID.get(), key.toString());
         return out;
     }
 
