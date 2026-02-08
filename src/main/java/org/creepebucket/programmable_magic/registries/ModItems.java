@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
+import org.creepebucket.programmable_magic.spells.PackedSpell;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -29,6 +30,11 @@ public class ModItems {
                     5     // 插件槽位最大数量
             )
     );
+
+    public static final DeferredItem<PackedSpell> PACKED_SPELL = ITEMS.register(
+            "packed_spell", registryName -> new PackedSpell(new Item.Properties()
+                    .stacksTo(64)
+                    .setId(ResourceKey.create(Registries.ITEM, registryName))));
 
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
