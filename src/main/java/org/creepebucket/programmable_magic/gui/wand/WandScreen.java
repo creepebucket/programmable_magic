@@ -200,6 +200,39 @@ public class WandScreen extends Screen<WandMenu> {
         // 发射按钮
         addWidget(new WandWidgets.SpellReleaseWidget(Coordinate.fromBottomLeft(261 + 16, -88), Coordinate.fromTopRight(-261 - 16 - 98, 12)));
 
+        /* ===========法术包装器=========== */
+
+        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-16, 0), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"),
+                () -> {
+                    // 导出至包装法术
+                    // TODO
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell")));
+        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-32, 0), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"),
+                () -> {
+                    // 导出至包装法术
+                    // TODO
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_wand")));
+        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-64, 0), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"),
+                () -> {
+                    // 导出至包装法术
+                    // TODO
+                }, Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand")));
+        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-80, 0), Coordinate.fromTopLeft(16, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"),
+                () -> {
+                    // 导出至包装法术
+                    // TODO
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_clipboard")));
+
+        addWidget(new SlotWidget(menu.packedSpellSlots.get(0), Coordinate.fromTopRight(-48, 0)));
+        addWidget(new RectangleWidget(Coordinate.fromTopRight(-47, 1), Coordinate.fromTopLeft(14, 14), -2147483648));
+
+        addWidget(new InputBoxWidget(Coordinate.fromTopRight(-100, 100), Coordinate.fromTopLeft(48, 16), Component.literal("Hello World")));
+
+
         /* ===========边界装饰=========== */
 
         // 法术储存段

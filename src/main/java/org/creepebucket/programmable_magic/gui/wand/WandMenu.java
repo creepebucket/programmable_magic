@@ -38,6 +38,7 @@ public class WandMenu extends Menu {
     public List<Slot> spellStoreSlots;
     public List<Slot> hotbarSlots;
     public List<Slot> backpackSlots;
+    public List<Slot> packedSpellSlots;
     public InteractionHand hand;
     public boolean quickMoved = false;
 
@@ -73,6 +74,7 @@ public class WandMenu extends Menu {
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);
+        this.packedSpellSlots = new ArrayList<>(1);
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();
@@ -96,6 +98,8 @@ public class WandMenu extends Menu {
         // 背包
         for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new Slot(playerInv, i, -99, -99)));
         for (int i = 0; i < 27; i++) backpackSlots.add(addSlot(new Slot(playerInv, 9 + i, -99, -99)));
+
+        packedSpellSlots.add(addSlot(new Slot(new SimpleContainer(1), 0, -99, -99)));
     }
 
     @Override
