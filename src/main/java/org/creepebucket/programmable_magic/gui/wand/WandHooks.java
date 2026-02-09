@@ -1,10 +1,21 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
+import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.ModItems;
+import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.PackedSpell;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 
 public class WandHooks {
     public static class StoredSpellsEditHook extends Hook {
@@ -65,6 +76,41 @@ public class WandHooks {
         @Override
         public void handle(Player player, Object... args) {
             for (int i = 0; i < storage.getContainerSize(); i++) storage.setItem(i, ItemStack.EMPTY);
+        }
+    }
+
+    public static class PackSpellHook extends Hook{
+        public Container packedSpellStorage;
+
+        public PackSpellHook(Container packedSpellStorage) {
+            super("pack_spell");
+            this.packedSpellStorage = packedSpellStorage;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            var storage = ((WandMenu) player.containerMenu).storedSpells;
+            var name = (String) args[0];
+            var desc = (String) args[1];
+            var path = (String) args[2];
+
+            var stack = new ItemStack(ModItems.PACKED_SPELL.get());
+            stack.set(ModDataComponents.AUTHER, player.getGameProfile().name());
+            stack.set(CUSTOM_NAME, Component.literal(name));
+            stack.set(ModDataComponents.DESCRIPTION, desc);
+            stack.set(ModDataComponents.RESOURCE_LOCATION, path);
+
+            List<ItemStack> spells = new ArrayList<>(1024);
+            for (ItemStack spell:storage) {
+                if (spell.isEmpty()) continue;
+                if (!SpellRegistry.isSpell(spell.getItem()) && !(spell.getItem() instanceof PackedSpell || spell.getItem() instanceof WandItemPlaceholder)) continue;
+
+                spells.add(spell);
+            }
+
+            stack.set(ModDataComponents.SPELLS, spells);
+
+            packedSpellStorage.setItem(0, stack);
         }
     }
 }

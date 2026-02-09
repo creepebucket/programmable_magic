@@ -13,6 +13,7 @@ import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
+import javax.annotation.RegEx;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class WandScreen extends Screen<WandMenu> {
     public Double lastFrame = System.nanoTime() / 1e9;
     public SelectableImageButtonWidget bypassCompileWidget;
     public InputBoxWidget nameInputbox, descInputbox, textureInputbox;
+    public WandWidgets.WandNotificationWidget notificationWidget;
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -143,18 +145,22 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"),
                 () -> {
+                    notificationWidget.addDebug(Component.literal("im a debug message"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 2), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"),
                 () -> {
+                    notificationWidget.addInfo(Component.literal("im an info"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_tick")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 3), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"),
                 () -> {
+                    notificationWidget.addWarning(Component.literal("im a warning"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_resume")));
         addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 4), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"),
                 () -> {
+                    notificationWidget.addError(Component.literal("im an error hehe"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")));
 
         // 编辑
@@ -210,8 +216,11 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-16 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"),
                 () -> {
-                    // 导出至包装法术
-                    // TODO
+                    if (!textureInputbox.box.getValue().matches("[0-9a-z_./]+")) {
+                        notificationWidget.addError(Component.translatable("gui.programmable_magic.wand.errors.invalid_input"));
+                        return;
+                    }
+                    menu.packSpellHook.trigger(nameInputbox.box.getValue(), descInputbox.box.getValue(), textureInputbox.box.getValue());
                 }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell"), packedSpellDeltaY));
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-32 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"),
@@ -226,11 +235,11 @@ public class WandScreen extends Screen<WandMenu> {
                     // TODO
                 }, Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand"), packedSpellDeltaY));
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-80 - 2, 0), Coordinate.fromTopLeft(16, 16),
-                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"),
                 () -> {
                     // 导出至包装法术
                     // TODO
-                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_clipboard"), packedSpellDeltaY));
+                }, Component.translatable("gui.programmable_magic.wand.inventory.add_to_supply"), packedSpellDeltaY));
 
         addWidget(new WandWidgets.DySlotWidget(menu.packedSpellSlots.get(0), Coordinate.fromTopRight(-48 - 2, 0), packedSpellDeltaY));
         addWidget(new WandWidgets.DyRectangleWidget(Coordinate.fromTopRight(-47 - 2, 1), Coordinate.fromTopLeft(14, 14), -2147483648, packedSpellDeltaY));
@@ -255,7 +264,7 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-64 - 2, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir"), -1, packedSpellDeltaY));
 
         addWidget(new WandWidgets.DyRectangleButtonWidget(Coordinate.fromTopRight(-80 - 2, 114), Coordinate.fromTopLeft(80, 5),
-                -2147483648, 0x80FFFFFF, packedSpellDeltaY, () -> {if (packedSpellTargetDeltaY.get() == -114) packedSpellTargetDeltaY.set(0); else packedSpellTargetDeltaY.set(-114);}));
+                -2147483648, 0x80FFFFFF, packedSpellDeltaY, () -> {if (packedSpellTargetDeltaY.get() != 7) packedSpellTargetDeltaY.set(7); else packedSpellTargetDeltaY.set(-114);}));
 
         /* ===========边界装饰=========== */
 
@@ -276,7 +285,12 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new RectangleWidget(Coordinate.fromBottomRight(-9, -92 + 16 + 5), Coordinate.fromTopLeft(2, 2), -1));
         addWidget(new RectangleWidget(Coordinate.fromBottomLeft(261, -90 + 16), Coordinate.fromTopRight(-261 - 18, 2), -1));
 
-        // addWidget(new MouseCursorWidget());
+        /* ===========其他=========== */
+
+        notificationWidget = new WandWidgets.WandNotificationWidget(Coordinate.fromTopLeft(100, 0), Coordinate.fromTopLeft(128, 0));
+        addWidget(notificationWidget);
+
+        addWidget(new MouseCursorWidget());
     }
 
     @Override

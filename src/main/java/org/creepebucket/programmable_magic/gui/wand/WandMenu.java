@@ -32,6 +32,7 @@ public class WandMenu extends Menu {
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
     public WandHooks.ClearSpellsHook clearSpellsHook;
+    public WandHooks.PackSpellHook packSpellHook;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
     public Container storedSpells;
@@ -71,8 +72,8 @@ public class WandMenu extends Menu {
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
-        this.packedSpellDeltaY = dataManager.register("packed_spell_delta_y", SyncMode.LOCAL_ONLY, 0);
-        this.packedSpellTargetDeltaY = dataManager.register("packed_spell_target_delta_y", SyncMode.LOCAL_ONLY, 0);
+        this.packedSpellDeltaY = dataManager.register("packed_spell_delta_y", SyncMode.LOCAL_ONLY, -113);
+        this.packedSpellTargetDeltaY = dataManager.register("packed_spell_target_delta_y", SyncMode.LOCAL_ONLY, -113);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);
@@ -101,7 +102,10 @@ public class WandMenu extends Menu {
         for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new Slot(playerInv, i, -99, -99)));
         for (int i = 0; i < 27; i++) backpackSlots.add(addSlot(new Slot(playerInv, 9 + i, -99, -99)));
 
-        packedSpellSlots.add(addSlot(new Slot(new SimpleContainer(1), 0, -99, -99)));
+        var packedSpellContainer = new SimpleContainer(1);
+        packedSpellSlots.add(addSlot(new Slot(packedSpellContainer, 0, -99, -99)));
+        packSpellHook = hook(new WandHooks.PackSpellHook(packedSpellContainer));
+
     }
 
     @Override

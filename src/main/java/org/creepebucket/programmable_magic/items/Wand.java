@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -18,15 +19,20 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
+import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 /**
  * 最小魔杖基类：
  * - 右键（use）在服务端打开菜单，客户端由已注册的 Screen 渲染。
  * - 暴露法术倍率、法术槽位数、充能功率（W）、插件槽位数四个属性供工具提示与法术逻辑使用。
  */
-public class Wand extends BowItem implements IItemExtension {
+public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
 
     private final int slots;
     private final int pluginSlots;
@@ -67,6 +73,16 @@ public class Wand extends BowItem implements IItemExtension {
      */
     public int getPluginSlots() {
         return pluginSlots;
+    }
+
+    @Override
+    public void append_tooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
+        var values = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get()));
+
+        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.mana_mult", String.format("%.2f", values.manaMult)).withStyle(ChatFormatting.BLUE));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.spell_slots", String.valueOf((int) Math.floor(values.spellSlots))).withStyle(ChatFormatting.YELLOW));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.charge_rate", ModUtils.formattedNumber(values.chargeRateW)).withStyle(ChatFormatting.GREEN));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.plugin_slots", String.valueOf(getPluginSlots())).withStyle(ChatFormatting.AQUA));
     }
 
     @Override

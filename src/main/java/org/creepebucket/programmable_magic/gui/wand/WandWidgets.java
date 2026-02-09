@@ -8,7 +8,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
-import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
@@ -24,11 +23,13 @@ import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static net.minecraft.util.Mth.hsvToRgb;
+import static org.creepebucket.programmable_magic.gui.wand.WandScreen.dt;
 
 public class WandWidgets {
     public static class SpellSupplyWidget extends SlotWidget {
@@ -519,5 +520,96 @@ public class WandWidgets {
             graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), contains(mouseX, mouseY)?hoverColor:color);
             graphics.fill(pos.toScreenX() + size.toScreenX() / 3, pos.toScreenY() + size.toScreenY() / 2, pos.toScreenX() + size.toScreenX() * 2 / 3, pos.toScreenY() + size.toScreenY() / 2 + 1, contains(mouseX, mouseY)?0xFF000000:-1);
         }
+    }
+
+    public static class WandNotificationWidget extends Widget implements Renderable, Clickable {
+        public static class Notification {
+            public int color, textColor; // duration 秒
+            public Component content;
+            public double duration, dy = -50, targetDy = 7, created, speed = 0;
+        }
+        public List<Notification> notifications = new LinkedList<>();
+
+        public WandNotificationWidget(Coordinate pos, Coordinate size) {
+            this.pos = pos;
+            this.size = size;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            // 通知的点击取消逻辑
+            var deleted = false;
+
+            for(Notification notification:notifications) {
+                if (isInBounds(event.x(), event.y(), pos.toScreenX(), (int) (pos.toScreenY() + notification.dy), size.toScreenX(), 16)) {
+                    // 设置其期限为现在 (需要播放删除动画)
+                    double now = System.nanoTime() / 1e9;
+                    notification.created = now - 1;
+                    notification.duration = 1; // 除零
+                    deleted = true;
+                }
+            }
+
+            return deleted;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            // 对于每个通知
+            var deletedCount = 0;
+
+            for(Notification notification: List.copyOf(notifications).reversed()) {
+                // 平滑dy
+                notification.speed += (notification.targetDy - notification.dy) * 200 * dt - notification.speed * 30 * dt;
+                notification.dy += notification.speed * dt;
+
+                // 检查是否超时
+                double now = System.nanoTime() / 1e9;
+                if (notification.created + notification.duration < now - .3) {
+                    // 在超时0.3秒之后移除
+                    notifications.remove(notification);
+                    deletedCount++;
+                    continue;
+                }
+
+                // 计算超时动画的dx
+                var dx = now > notification.created + notification.duration? (now - notification.created - notification.duration) * (now - notification.created - notification.duration) * 1000 :0;
+                // 计算透明度
+                var alphaMult = 1 - dx / 90;
+
+                // 渲染通知背景和持续时间提示条
+                var x = pos.toScreenX() + (int) dx;
+                var y = pos.toScreenY() + (int) notification.dy;
+                var w = ClientUiContext.getFont().width(notification.content) + 8;
+
+                graphics.fill(x, y, x + w, y + 15, (notification.color & 16777215) | ((int) (((notification.color >>> 24) * alphaMult)) << 24));
+                graphics.fill(x, y + 14, (int) (x + w * Math.min(1, (now - notification.created) / notification.duration)), y + 15, (16777215) | ((int) (((-1 >>> 24) * alphaMult)) << 24));
+
+                // 渲染文本
+                graphics.drawString(ClientUiContext.getFont(), notification.content, x + 2, y + 3, (notification.textColor & 16777215) | ((int) (((notification.textColor >>> 24) * alphaMult)) << 24));
+
+                // 如果有删除, 修改通知targetDy
+                notification.targetDy -= deletedCount * 16;
+            }
+        }
+
+        public void addNotification(int color, Component content, double duration) {
+            var n = new Notification();
+            n.duration = duration;
+            n.created = System.nanoTime() / 1e9;
+            n.color = color;
+            n.textColor = -1;
+            n.content = content;
+
+            // 对于所有通知, 增加其dy
+            for(Notification notification:notifications) notification.targetDy += 16;
+
+            notifications.add(n);
+        }
+
+        public void addDebug(Component content) {addNotification(-2147483647, content, 1);}
+        public void addInfo(Component content) {addNotification(-2147483647, content, 3);}
+        public void addError(Component content) {addNotification(0x80FF0000, content, 5);}
+        public void addWarning(Component content) {addNotification(0x80FFFF00, content, 3);}
     }
 }

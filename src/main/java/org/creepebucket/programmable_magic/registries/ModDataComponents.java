@@ -26,10 +26,14 @@ public class ModDataComponents {
 
     // 隐藏保存：供左键释放读取
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> SPELLS =
-            DATA_COMPONENTS.registerComponentType("saved_stacks", builder -> builder
+            DATA_COMPONENTS.registerComponentType("spells", builder -> builder
                     .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> SAVED_PACKS =
+            DATA_COMPONENTS.registerComponentType("saved_packs", builder -> builder
+                    .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
+                    .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     // 魔杖插件：玩家装配的插件物品列表（顺序即槽位顺序）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> PLUGINS =
@@ -56,6 +60,11 @@ public class ModDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> RESOURCE_LOCATION =
             DATA_COMPONENTS.registerComponentType("resource_location", builder -> builder
+                    .persistent(Codec.STRING)
+                    .networkSynchronized(ByteBufCodecs.STRING_UTF8));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> AUTHER =
+            DATA_COMPONENTS.registerComponentType("auther", builder -> builder
                     .persistent(Codec.STRING)
                     .networkSynchronized(ByteBufCodecs.STRING_UTF8));
 
