@@ -1087,6 +1087,8 @@
       {"from_top_left": [400, 0], "from_bottom_right": [415, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/import_from_wand.png"},
       {"from_top_left": [416, 0], "from_bottom_right": [431, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_wand.png"},
       {"from_top_left": [432, 0], "from_bottom_right": [447, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_packed_spell.png"},
+      {"from_top_left": [448, 0], "from_bottom_right": [463, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/directory.png"},
+      {"from_top_left": [464, 0], "from_bottom_right": [479, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/description.png"},
       {"from_top_left": [0, 16], "from_bottom_right": [47, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_up.png"},
       {"from_top_left": [48, 16], "from_bottom_right": [95, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_down.png"},
       {"from_top_left": [96, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_left.png"},

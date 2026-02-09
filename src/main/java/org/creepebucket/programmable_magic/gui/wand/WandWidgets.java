@@ -6,9 +6,12 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
+import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
@@ -17,13 +20,13 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static net.minecraft.util.Mth.hsvToRgb;
 
@@ -356,6 +359,165 @@ public class WandWidgets {
 
 	            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
 	            errors = compiler.errors;
-	        }
-	    }
-	}
+        }
+    }
+
+    public static class DyTextureWidget extends TextureWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        /**
+         * 创建一个纹理控件。
+         *
+         * @param pos
+         * @param texture
+         * @param size
+         */
+        public DyTextureWidget(Coordinate pos, Identifier texture, Coordinate size, SyncedValue<Integer> dy) {
+            super(pos, texture, size);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DyImageButtonWidget extends ImageButtonWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        public DyImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier hover, Consumer<MouseButtonEvent> onPress, Component tooltip, SyncedValue<Integer> dy) {
+            super(pos, size, normal, hover, onPress, tooltip);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        public DyImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier hover, Runnable onPress, Component tooltip, SyncedValue<Integer> dy) {
+            super(pos, size, normal, hover, onPress, tooltip);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DyTextWidget extends TextWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        public DyTextWidget(Coordinate pos, Component text, int color, SyncedValue<Integer> dy) {
+            super(pos, text, color);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DySlotWidget extends SlotWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        /**
+         * 创建一个槽位控件。
+         *
+         * @param slot
+         * @param pos
+         */
+        public DySlotWidget(Slot slot, Coordinate pos, SyncedValue<Integer> dy) {
+            super(slot, pos);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            ClientSlotManager.setClientPosition(slot, pos.toScreenX(), pos.toScreenY());
+        }
+    }
+
+    public static class DxDyInputBoxWidget extends InputBoxWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate originalPos, originalSize;
+        public double dx, speed, target;
+
+        public DxDyInputBoxWidget(Coordinate pos, Coordinate size, String initialValue, int maxLength, int mainColor, int borderColor, int backgroundColor, SyncedValue<Integer> dy) {
+            super(pos, size, initialValue, maxLength, mainColor, borderColor, backgroundColor);
+            this.originalPos = pos;
+            this.originalSize = size;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            // 平滑dx
+            if (box.isFocused()) target = -200; else target = 0;
+            double dt = WandScreen.dt;
+
+            speed += (target - dx) * 200 * dt - speed * 30 * dt;
+            dx += speed * dt;
+
+            this.pos = originalPos.add(Coordinate.fromTopLeft((int) dx, dy.get()));
+            this.size = originalSize.add(Coordinate.fromTopLeft(-(int) dx, 0));
+            onInitialize();
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DyRectangleWidget extends RectangleWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        public DyRectangleWidget(Coordinate pos, Coordinate size, int color, SyncedValue<Integer> dy) {
+            super(pos, size, color);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DyRectangleButtonWidget extends DyRectangleWidget implements Clickable{
+        public Runnable onPress;
+        public int hoverColor;
+
+        public DyRectangleButtonWidget(Coordinate pos, Coordinate size, int color, int hoverColor, SyncedValue<Integer> dy, Runnable onPress) {
+            super(pos, size, color, dy);
+            this.onPress = onPress;
+            this.hoverColor = hoverColor;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if(!contains(event.x(), event.y())) return false;
+
+            onPress.run();
+            return true;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+
+            graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), contains(mouseX, mouseY)?hoverColor:color);
+            graphics.fill(pos.toScreenX() + size.toScreenX() / 3, pos.toScreenY() + size.toScreenY() / 2, pos.toScreenX() + size.toScreenX() * 2 / 3, pos.toScreenY() + size.toScreenY() / 2 + 1, contains(mouseX, mouseY)?0xFF000000:-1);
+        }
+    }
+}

@@ -28,7 +28,7 @@ import java.util.List;
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends Menu {
-    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX;
+    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX, packedSpellDeltaY, packedSpellTargetDeltaY;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
     public WandHooks.ClearSpellsHook clearSpellsHook;
@@ -71,6 +71,8 @@ public class WandMenu extends Menu {
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
+        this.packedSpellDeltaY = dataManager.register("packed_spell_delta_y", SyncMode.LOCAL_ONLY, 0);
+        this.packedSpellTargetDeltaY = dataManager.register("packed_spell_target_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);

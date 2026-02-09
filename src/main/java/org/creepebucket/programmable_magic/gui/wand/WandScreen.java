@@ -22,10 +22,13 @@ public class WandScreen extends Screen<WandMenu> {
 
     public static double dt;
     public double spellSupplyDeltaYSpeed = 0;
+    public double packedSpellDeltaYSpeed = 0;
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
+    public double packedSpellAccurateDeltaY = this.menu.packedSpellDeltaY.get();
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public Double lastFrame = System.nanoTime() / 1e9;
     public SelectableImageButtonWidget bypassCompileWidget;
+    public InputBoxWidget nameInputbox, descInputbox, textureInputbox;
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -40,6 +43,8 @@ public class WandScreen extends Screen<WandMenu> {
         var supplySlotTargetDeltaY = this.menu.supplySlotTargetDeltaY;
         var spellSlotTargetDeltaX = this.menu.spellSlotTargetDeltaX;
         var slotIndex = this.menu.supplySlotsStartIndex;
+        var packedSpellDeltaY = this.menu.packedSpellDeltaY;
+        var packedSpellTargetDeltaY = this.menu.packedSpellTargetDeltaY;
 
         // 添加法术供应槽位
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
@@ -202,36 +207,55 @@ public class WandScreen extends Screen<WandMenu> {
 
         /* ===========法术包装器=========== */
 
-        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-16, 0), Coordinate.fromTopLeft(16, 16),
+        addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-16 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"),
                 () -> {
                     // 导出至包装法术
                     // TODO
-                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell")));
-        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-32, 0), Coordinate.fromTopLeft(16, 16),
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell"), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-32 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"),
                 () -> {
                     // 导出至包装法术
                     // TODO
-                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_wand")));
-        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-64, 0), Coordinate.fromTopLeft(16, 16),
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_wand"), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-64 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"),
                 () -> {
                     // 导出至包装法术
                     // TODO
-                }, Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand")));
-        addWidget(new ImageButtonWidget(Coordinate.fromTopRight(-80, 0), Coordinate.fromTopLeft(16, 16),
+                }, Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand"), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-80 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/clipboard.png"),
                 () -> {
                     // 导出至包装法术
                     // TODO
-                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_clipboard")));
+                }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_clipboard"), packedSpellDeltaY));
 
-        addWidget(new SlotWidget(menu.packedSpellSlots.get(0), Coordinate.fromTopRight(-48, 0)));
-        addWidget(new RectangleWidget(Coordinate.fromTopRight(-47, 1), Coordinate.fromTopLeft(14, 14), -2147483648));
+        addWidget(new WandWidgets.DySlotWidget(menu.packedSpellSlots.get(0), Coordinate.fromTopRight(-48 - 2, 0), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyRectangleWidget(Coordinate.fromTopRight(-47 - 2, 1), Coordinate.fromTopLeft(14, 14), -2147483648, packedSpellDeltaY));
 
-        addWidget(new InputBoxWidget(Coordinate.fromTopRight(-100, 100), Coordinate.fromTopLeft(48, 16), Component.literal("Hello World")));
+        nameInputbox = new WandWidgets.DxDyInputBoxWidget(Coordinate.fromTopRight(-80 - 2, 32), Coordinate.fromTopLeft(80, 16),
+                Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_name_example").getString(), 1024, -1, 0, -2147483647, packedSpellDeltaY);
+        descInputbox = new WandWidgets.DxDyInputBoxWidget(Coordinate.fromTopRight(-80 - 2, 64), Coordinate.fromTopLeft(80, 16),
+                Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc_example").getString(), 1024, -1, 0, -2147483647, packedSpellDeltaY);
+        textureInputbox = new WandWidgets.DxDyInputBoxWidget(Coordinate.fromTopRight(-80 - 2, 96), Coordinate.fromTopLeft(80, 16),
+                Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_texture_example").getString(), 1024, -1, 0, -2147483647, packedSpellDeltaY);
 
+        addWidget(nameInputbox);
+        addWidget(descInputbox);
+        addWidget(textureInputbox);
+
+        addWidget(new WandWidgets.DyTextureWidget(Coordinate.fromTopRight(-80 - 2, 16), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/nametag.png"), Coordinate.fromTopLeft(16, 16), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyTextureWidget(Coordinate.fromTopRight(-80 - 2, 48), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/description.png"), Coordinate.fromTopLeft(16, 16), packedSpellDeltaY));
+        addWidget(new WandWidgets.DyTextureWidget(Coordinate.fromTopRight(-80 - 2, 80), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/directory.png"), Coordinate.fromTopLeft(16, 16), packedSpellDeltaY));
+
+        addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-64 - 2, 20), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_name"), -1, packedSpellDeltaY));
+        addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-64 - 2, 52), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc"), -1, packedSpellDeltaY));
+        addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-64 - 2, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir"), -1, packedSpellDeltaY));
+
+        addWidget(new WandWidgets.DyRectangleButtonWidget(Coordinate.fromTopRight(-80 - 2, 114), Coordinate.fromTopLeft(80, 5),
+                -2147483648, 0x80FFFFFF, packedSpellDeltaY, () -> {if (packedSpellTargetDeltaY.get() == -114) packedSpellTargetDeltaY.set(0); else packedSpellTargetDeltaY.set(-114);}));
 
         /* ===========边界装饰=========== */
 
@@ -279,14 +303,20 @@ public class WandScreen extends Screen<WandMenu> {
         spellSupplyDeltaYSpeed += (target - spellSupplyAccurateDeltaY) * MaGiCaL_CoNsTaNt_1 * dt - spellSupplyDeltaYSpeed * MaGiCaL_CoNsTaNt_2 * dt;
 
         double newDy = current + spellSupplyDeltaYSpeed * dt;
-
-        // 过冲检测
-        if (target > current ^ target > newDy) {
-            newDy = target;
-            spellSupplyDeltaYSpeed = 0;
-        }
         spellSupplyAccurateDeltaY = newDy;
         menu.supplySlotDeltaY.set((int) newDy);
+
+        // 平滑 packedSpellDeltaY
+
+        current = packedSpellAccurateDeltaY;
+        target = (double) menu.packedSpellTargetDeltaY.get();
+
+        // 核心科技, 从chatgpt偷的
+        packedSpellDeltaYSpeed += (target - packedSpellAccurateDeltaY) * MaGiCaL_CoNsTaNt_1 * dt - packedSpellDeltaYSpeed * MaGiCaL_CoNsTaNt_2 * dt;
+
+        newDy = current + packedSpellDeltaYSpeed * dt;
+        packedSpellAccurateDeltaY = newDy;
+        menu.packedSpellDeltaY.set((int) newDy);
     }
 
     @Override
