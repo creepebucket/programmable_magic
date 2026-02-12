@@ -113,6 +113,15 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
 
     public abstract void init();
 
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        tick();
+    }
+
+    public void tick() {
+    }
+
     @FunctionalInterface
     public interface Definition {
         void build(Menu menu);

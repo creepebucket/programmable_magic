@@ -29,17 +29,21 @@ import java.util.List;
  */
 public class WandMenu extends Menu {
     public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX, packedSpellDeltaY, packedSpellTargetDeltaY;
+    public SyncedValue<Boolean> customSupplySlotSupplyMode;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
     public WandHooks.ClearSpellsHook clearSpellsHook;
     public WandHooks.PackSpellHook packSpellHook;
+    public WandHooks.PackedToStorageHook packedToStorageHook;
+    public WandHooks.PackAndSupplyHook packAndSupplyHook;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
-    public Container storedSpells;
+    public Container storedSpells, packedSpellContainer, customSupplyContainer;
     public List<Slot> spellStoreSlots;
     public List<Slot> hotbarSlots;
     public List<Slot> backpackSlots;
     public List<Slot> packedSpellSlots;
+    public List<WandSlots.CustomSupplySlot> customSupplySlots;
     public InteractionHand hand;
     public boolean quickMoved = false;
 
@@ -74,10 +78,12 @@ public class WandMenu extends Menu {
         this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
         this.packedSpellDeltaY = dataManager.register("packed_spell_delta_y", SyncMode.LOCAL_ONLY, -113);
         this.packedSpellTargetDeltaY = dataManager.register("packed_spell_target_delta_y", SyncMode.LOCAL_ONLY, -113);
+        this.customSupplySlotSupplyMode = dataManager.register("custom_supply_slot_supply_mode", SyncMode.BOTH, true);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
         this.backpackSlots = new ArrayList<>(27);
         this.packedSpellSlots = new ArrayList<>(1);
+        this.customSupplySlots = new ArrayList<>(50);
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();
@@ -102,10 +108,16 @@ public class WandMenu extends Menu {
         for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new Slot(playerInv, i, -99, -99)));
         for (int i = 0; i < 27; i++) backpackSlots.add(addSlot(new Slot(playerInv, 9 + i, -99, -99)));
 
-        var packedSpellContainer = new SimpleContainer(1);
+        packedSpellContainer = new SimpleContainer(1);
         packedSpellSlots.add(addSlot(new Slot(packedSpellContainer, 0, -99, -99)));
         packSpellHook = hook(new WandHooks.PackSpellHook(packedSpellContainer));
+        packedToStorageHook = hook(new WandHooks.PackedToStorageHook(storedSpells, packedSpellContainer));
 
+        customSupplyContainer = new SimpleContainer(50);
+        for (int i = 0; i < 50; i++)
+            customSupplySlots.add(new WandSlots.CustomSupplySlot(customSupplyContainer, i, -99, -99, customSupplySlotSupplyMode));
+        for (WandSlots.CustomSupplySlot slot : customSupplySlots) addSlot(slot);
+        packAndSupplyHook = hook(new WandHooks.PackAndSupplyHook(customSupplyContainer));
     }
 
     @Override
@@ -182,10 +194,7 @@ public class WandMenu extends Menu {
     }
 
     @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-
-        // mojang wdnmd 这其实是tick逻辑
+    public void tick() {
         quickMoved = false;
     }
 }

@@ -126,6 +126,8 @@ public class ModUtils {
         COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0xFF7747F0);
         COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
         COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
+
+        COLOR_MAP.put("spell." + MODID + ".subcategory.custom", 0xFF000000);
         return COLOR_MAP;
     }
 

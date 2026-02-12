@@ -25,6 +25,7 @@
   "gui.programmable_magic.wand.inventory.export_to_wand": "Export to Wand",
   "gui.programmable_magic.wand.inventory.import_from_wand": "Import from Wand",
   "gui.programmable_magic.wand.inventory.add_to_supply": "Add to Spell Supply",
+  "gui.programmable_magic.wand.spells.unlock_custom": "Toggle Custom Supply Mode",
   "gui.programmable_magic.wand.inventory.packed_spell_name": "Name",
   "gui.programmable_magic.wand.inventory.packed_spell_desc": "Description",
   "gui.programmable_magic.wand.inventory.packed_spell_dir": "Texture Path",

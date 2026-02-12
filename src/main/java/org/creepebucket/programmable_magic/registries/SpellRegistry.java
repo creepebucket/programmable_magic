@@ -23,9 +23,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class SpellRegistry {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    public static final Map<String, List<Supplier<Item>>> SPELLS_BY_SUBCATEGORY = new LinkedHashMap<>();
     private static final Map<Identifier, Supplier<SpellItemLogic>> LOGIC_SUPPLIERS = new HashMap<>();
     private static final Map<Supplier<Item>, Supplier<SpellItemLogic>> REGISTERED_SPELLS = new LinkedHashMap<>();
+    public static Map<String, List<Supplier<Item>>> SPELLS_BY_SUBCATEGORY = new LinkedHashMap<>();
 
     public static void registerSpells(IEventBus eventBus) {
         // 在这里注册所有法术
