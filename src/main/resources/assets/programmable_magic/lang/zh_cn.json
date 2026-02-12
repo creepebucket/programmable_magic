@@ -25,6 +25,7 @@
   "gui.programmable_magic.wand.inventory.export_to_wand": "导出到魔杖",
   "gui.programmable_magic.wand.inventory.import_from_wand": "从魔杖导入",
   "gui.programmable_magic.wand.inventory.add_to_supply": "添加到法术供应",
+  "gui.programmable_magic.wand.spells.unlock_custom": "切换自定义供应模式",
   "gui.programmable_magic.wand.inventory.packed_spell_name": "名称",
   "gui.programmable_magic.wand.inventory.packed_spell_desc": "描述",
   "gui.programmable_magic.wand.inventory.packed_spell_dir": "贴图路径",

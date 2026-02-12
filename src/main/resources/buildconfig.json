@@ -1059,40 +1059,402 @@
       }
     ],
     "gui_big.png": [
-      {"from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_spell.png"},
-      {"from_top_left": [16, 0], "from_bottom_right": [31, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_step.png"},
-      {"from_top_left": [32, 0], "from_bottom_right": [47, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_tick.png"},
-      {"from_top_left": [48, 0], "from_bottom_right": [63, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_resume.png"},
-      {"from_top_left": [64, 0], "from_bottom_right": [79, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_pause.png"},
-      {"from_top_left": [80, 0], "from_bottom_right": [95, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger.png"},
-      {"from_top_left": [96, 0], "from_bottom_right": [111, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/trashcan.png"},
-      {"from_top_left": [112, 0], "from_bottom_right": [127, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/errors.png"},
-      {"from_top_left": [128, 0], "from_bottom_right": [143, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/copy_to_spell.png"},
-      {"from_top_left": [144, 0], "from_bottom_right": [159, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/copy_to_text.png"},
-      {"from_top_left": [160, 0], "from_bottom_right": [175, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/nametag.png"},
-      {"from_top_left": [176, 0], "from_bottom_right": [191, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/spell_count.png"},
-      {"from_top_left": [192, 0], "from_bottom_right": [207, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/delay.png"},
-      {"from_top_left": [208, 0], "from_bottom_right": [223, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/compute_mod.png"},
-      {"from_top_left": [224, 0], "from_bottom_right": [239, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/control_mod.png"},
-      {"from_top_left": [240, 0], "from_bottom_right": [255, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/adjust_spell.png"},
-      {"from_top_left": [256, 0], "from_bottom_right": [271, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/backpack.png"},
-      {"from_top_left": [272, 0], "from_bottom_right": [287, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/import.png"},
-      {"from_top_left": [288, 0], "from_bottom_right": [303, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/export.png"},
-      {"from_top_left": [304, 0], "from_bottom_right": [319, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/left_shift.png"},
-      {"from_top_left": [320, 0], "from_bottom_right": [335, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/right_shift.png"},
-      {"from_top_left": [336, 0], "from_bottom_right": [351, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/compile.png"},
-      {"from_top_left": [352, 0], "from_bottom_right": [367, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/bypass_compile.png"},
-      {"from_top_left": [368, 0], "from_bottom_right": [383, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/add_to_supply.png"},
-      {"from_top_left": [384, 0], "from_bottom_right": [399, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/wand_plugins.png"},
-      {"from_top_left": [400, 0], "from_bottom_right": [415, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/import_from_wand.png"},
-      {"from_top_left": [416, 0], "from_bottom_right": [431, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_wand.png"},
-      {"from_top_left": [432, 0], "from_bottom_right": [447, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_packed_spell.png"},
-      {"from_top_left": [448, 0], "from_bottom_right": [463, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/directory.png"},
-      {"from_top_left": [464, 0], "from_bottom_right": [479, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/description.png"},
-      {"from_top_left": [0, 16], "from_bottom_right": [47, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_up.png"},
-      {"from_top_left": [48, 16], "from_bottom_right": [95, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_down.png"},
-      {"from_top_left": [96, 16], "from_bottom_right": [127, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_left.png"},
-      {"from_top_left": [128, 16], "from_bottom_right": [159, 31], "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_right.png"}
+      {
+        "from_top_left": [
+          0,
+          0
+        ],
+        "from_bottom_right": [
+          15,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_spell.png"
+      },
+      {
+        "from_top_left": [
+          16,
+          0
+        ],
+        "from_bottom_right": [
+          31,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_step.png"
+      },
+      {
+        "from_top_left": [
+          32,
+          0
+        ],
+        "from_bottom_right": [
+          47,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_tick.png"
+      },
+      {
+        "from_top_left": [
+          48,
+          0
+        ],
+        "from_bottom_right": [
+          63,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_resume.png"
+      },
+      {
+        "from_top_left": [
+          64,
+          0
+        ],
+        "from_bottom_right": [
+          79,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_pause.png"
+      },
+      {
+        "from_top_left": [
+          80,
+          0
+        ],
+        "from_bottom_right": [
+          95,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          0
+        ],
+        "from_bottom_right": [
+          111,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/trashcan.png"
+      },
+      {
+        "from_top_left": [
+          112,
+          0
+        ],
+        "from_bottom_right": [
+          127,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/errors.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          0
+        ],
+        "from_bottom_right": [
+          143,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/copy_to_spell.png"
+      },
+      {
+        "from_top_left": [
+          144,
+          0
+        ],
+        "from_bottom_right": [
+          159,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/copy_to_text.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          0
+        ],
+        "from_bottom_right": [
+          175,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/nametag.png"
+      },
+      {
+        "from_top_left": [
+          176,
+          0
+        ],
+        "from_bottom_right": [
+          191,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/spell_count.png"
+      },
+      {
+        "from_top_left": [
+          192,
+          0
+        ],
+        "from_bottom_right": [
+          207,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/delay.png"
+      },
+      {
+        "from_top_left": [
+          208,
+          0
+        ],
+        "from_bottom_right": [
+          223,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/compute_mod.png"
+      },
+      {
+        "from_top_left": [
+          224,
+          0
+        ],
+        "from_bottom_right": [
+          239,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/control_mod.png"
+      },
+      {
+        "from_top_left": [
+          240,
+          0
+        ],
+        "from_bottom_right": [
+          255,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/adjust_spell.png"
+      },
+      {
+        "from_top_left": [
+          256,
+          0
+        ],
+        "from_bottom_right": [
+          271,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/backpack.png"
+      },
+      {
+        "from_top_left": [
+          272,
+          0
+        ],
+        "from_bottom_right": [
+          287,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/import.png"
+      },
+      {
+        "from_top_left": [
+          288,
+          0
+        ],
+        "from_bottom_right": [
+          303,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/export.png"
+      },
+      {
+        "from_top_left": [
+          304,
+          0
+        ],
+        "from_bottom_right": [
+          319,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/left_shift.png"
+      },
+      {
+        "from_top_left": [
+          320,
+          0
+        ],
+        "from_bottom_right": [
+          335,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/right_shift.png"
+      },
+      {
+        "from_top_left": [
+          336,
+          0
+        ],
+        "from_bottom_right": [
+          351,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/compile.png"
+      },
+      {
+        "from_top_left": [
+          352,
+          0
+        ],
+        "from_bottom_right": [
+          367,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/bypass_compile.png"
+      },
+      {
+        "from_top_left": [
+          368,
+          0
+        ],
+        "from_bottom_right": [
+          383,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/add_to_supply.png"
+      },
+      {
+        "from_top_left": [
+          384,
+          0
+        ],
+        "from_bottom_right": [
+          399,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/wand_plugins.png"
+      },
+      {
+        "from_top_left": [
+          400,
+          0
+        ],
+        "from_bottom_right": [
+          415,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/import_from_wand.png"
+      },
+      {
+        "from_top_left": [
+          416,
+          0
+        ],
+        "from_bottom_right": [
+          431,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_wand.png"
+      },
+      {
+        "from_top_left": [
+          432,
+          0
+        ],
+        "from_bottom_right": [
+          447,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/export_to_packed_spell.png"
+      },
+      {
+        "from_top_left": [
+          448,
+          0
+        ],
+        "from_bottom_right": [
+          463,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/directory.png"
+      },
+      {
+        "from_top_left": [
+          464,
+          0
+        ],
+        "from_bottom_right": [
+          479,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/description.png"
+      },
+      {
+        "from_top_left": [
+          0,
+          16
+        ],
+        "from_bottom_right": [
+          47,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_up.png"
+      },
+      {
+        "from_top_left": [
+          48,
+          16
+        ],
+        "from_bottom_right": [
+          95,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/slant_end_bar_down.png"
+      },
+      {
+        "from_top_left": [
+          96,
+          16
+        ],
+        "from_bottom_right": [
+          127,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_left.png"
+      },
+      {
+        "from_top_left": [
+          128,
+          16
+        ],
+        "from_bottom_right": [
+          159,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/stright_end_bar_right.png"
+      },
+      {
+        "from_top_left": [
+          160,
+          16
+        ],
+        "from_bottom_right": [
+          239,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/wand_lock_button.png"
+      },
+      {
+        "from_top_left": [
+          240,
+          16
+        ],
+        "from_bottom_right": [
+          319,
+          31
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/ui/wand_unlock_button.png"
+      }
     ]
   }
 ]

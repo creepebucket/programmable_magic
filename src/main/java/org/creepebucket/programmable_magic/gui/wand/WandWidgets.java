@@ -290,13 +290,18 @@ public class WandWidgets {
         public int chargedTick = 0;
         public boolean isCharging = false;
 
-        public SpellReleaseWidget(Coordinate pos, Coordinate size) { super(pos, size); }
+        public SpellReleaseWidget(Coordinate pos, Coordinate size) {
+            super(pos, size);
+        }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            if (isCharging) graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
-            else if (contains(mouseX, mouseY)) graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), 0x80FFFFFF);
-            else graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), -2147483647);
+            if (isCharging)
+                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
+            else if (contains(mouseX, mouseY))
+                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), 0x80FFFFFF);
+            else
+                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), -2147483647);
         }
 
         @Override
@@ -306,7 +311,8 @@ public class WandWidgets {
             Component tooltip;
 
             if (!isCharging) tooltip = Component.translatable("gui.programmable_magic.wand.release");
-            else tooltip = Component.literal(ModUtils.FormattedManaString(chargedTick)).withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
+            else
+                tooltip = Component.literal(ModUtils.FormattedManaString(chargedTick)).withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
 
             graphics.renderTooltip(
                     ClientUiContext.getFont(),
@@ -347,7 +353,7 @@ public class WandWidgets {
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 
             var count = 0;
-            for(SpellExceptions error: errors) {
+            for (SpellExceptions error : errors) {
                 graphics.drawString(ClientUiContext.getFont(), error.message(), pos.toScreenX(), pos.toScreenY() + count * 16, 0xFFFF0000);
                 count++;
             }
@@ -355,11 +361,11 @@ public class WandWidgets {
         }
 
         @Override
-	        public void tick() {
-	            var compiler = new SpellCompiler();
+        public void tick() {
+            var compiler = new SpellCompiler();
 
-	            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
-	            errors = compiler.errors;
+            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+            errors = compiler.errors;
         }
     }
 
@@ -399,6 +405,23 @@ public class WandWidgets {
 
         public DyImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier hover, Runnable onPress, Component tooltip, SyncedValue<Integer> dy) {
             super(pos, size, normal, hover, onPress, tooltip);
+            this.original = pos;
+            this.dy = dy;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
+            super.render(graphics, mouseX, mouseY, partialTick);
+        }
+    }
+
+    public static class DySelectableImageButtonWidget extends SelectableImageButtonWidget {
+        public SyncedValue<Integer> dy;
+        public Coordinate original;
+
+        public DySelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier selected, Component tooltip, SyncedValue<Integer> dy) {
+            super(pos, size, normal, selected, tooltip);
             this.original = pos;
             this.dy = dy;
         }
@@ -465,7 +488,8 @@ public class WandWidgets {
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             // 平滑dx
-            if (box.isFocused()) target = -200; else target = 0;
+            if (box.isFocused()) target = -200;
+            else target = 0;
             double dt = WandScreen.dt;
 
             speed += (target - dx) * 200 * dt - speed * 30 * dt;
@@ -495,7 +519,7 @@ public class WandWidgets {
         }
     }
 
-    public static class DyRectangleButtonWidget extends DyRectangleWidget implements Clickable{
+    public static class DyRectangleButtonWidget extends DyRectangleWidget implements Clickable {
         public Runnable onPress;
         public int hoverColor;
 
@@ -507,7 +531,7 @@ public class WandWidgets {
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-            if(!contains(event.x(), event.y())) return false;
+            if (!contains(event.x(), event.y())) return false;
 
             onPress.run();
             return true;
@@ -517,17 +541,12 @@ public class WandWidgets {
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
 
-            graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), contains(mouseX, mouseY)?hoverColor:color);
-            graphics.fill(pos.toScreenX() + size.toScreenX() / 3, pos.toScreenY() + size.toScreenY() / 2, pos.toScreenX() + size.toScreenX() * 2 / 3, pos.toScreenY() + size.toScreenY() / 2 + 1, contains(mouseX, mouseY)?0xFF000000:-1);
+            graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), contains(mouseX, mouseY) ? hoverColor : color);
+            graphics.fill(pos.toScreenX() + size.toScreenX() / 3, pos.toScreenY() + size.toScreenY() / 2, pos.toScreenX() + size.toScreenX() * 2 / 3, pos.toScreenY() + size.toScreenY() / 2 + 1, contains(mouseX, mouseY) ? 0xFF000000 : -1);
         }
     }
 
     public static class WandNotificationWidget extends Widget implements Renderable, Clickable {
-        public static class Notification {
-            public int color, textColor; // duration 秒
-            public Component content;
-            public double duration, dy = -50, targetDy = 7, created, speed = 0;
-        }
         public List<Notification> notifications = new LinkedList<>();
 
         public WandNotificationWidget(Coordinate pos, Coordinate size) {
@@ -540,7 +559,7 @@ public class WandWidgets {
             // 通知的点击取消逻辑
             var deleted = false;
 
-            for(Notification notification:notifications) {
+            for (Notification notification : notifications) {
                 if (isInBounds(event.x(), event.y(), pos.toScreenX(), (int) (pos.toScreenY() + notification.dy), size.toScreenX(), 16)) {
                     // 设置其期限为现在 (需要播放删除动画)
                     double now = System.nanoTime() / 1e9;
@@ -558,7 +577,7 @@ public class WandWidgets {
             // 对于每个通知
             var deletedCount = 0;
 
-            for(Notification notification: List.copyOf(notifications).reversed()) {
+            for (Notification notification : List.copyOf(notifications).reversed()) {
                 // 平滑dy
                 notification.speed += (notification.targetDy - notification.dy) * 200 * dt - notification.speed * 30 * dt;
                 notification.dy += notification.speed * dt;
@@ -573,7 +592,7 @@ public class WandWidgets {
                 }
 
                 // 计算超时动画的dx
-                var dx = now > notification.created + notification.duration? (now - notification.created - notification.duration) * (now - notification.created - notification.duration) * 1000 :0;
+                var dx = now > notification.created + notification.duration ? (now - notification.created - notification.duration) * (now - notification.created - notification.duration) * 1000 : 0;
                 // 计算透明度
                 var alphaMult = 1 - dx / 90;
 
@@ -602,14 +621,31 @@ public class WandWidgets {
             n.content = content;
 
             // 对于所有通知, 增加其dy
-            for(Notification notification:notifications) notification.targetDy += 16;
+            for (Notification notification : notifications) notification.targetDy += 16;
 
             notifications.add(n);
         }
 
-        public void addDebug(Component content) {addNotification(-2147483647, content, 1);}
-        public void addInfo(Component content) {addNotification(-2147483647, content, 3);}
-        public void addError(Component content) {addNotification(0x80FF0000, content, 5);}
-        public void addWarning(Component content) {addNotification(0x80FFFF00, content, 3);}
+        public void addDebug(Component content) {
+            addNotification(-2147483647, content, 1);
+        }
+
+        public void addInfo(Component content) {
+            addNotification(-2147483647, content, 3);
+        }
+
+        public void addError(Component content) {
+            addNotification(0x80FF0000, content, 5);
+        }
+
+        public void addWarning(Component content) {
+            addNotification(0x80FFFF00, content, 3);
+        }
+
+        public static class Notification {
+            public int color, textColor; // duration 秒
+            public Component content;
+            public double duration, dy = -50, targetDy = 7, created, speed = 0;
+        }
     }
 }

@@ -11,12 +11,13 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
-import javax.annotation.RegEx;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandScreen extends Screen<WandMenu> {
@@ -31,6 +32,7 @@ public class WandScreen extends Screen<WandMenu> {
     public SelectableImageButtonWidget bypassCompileWidget;
     public InputBoxWidget nameInputbox, descInputbox, textureInputbox;
     public WandWidgets.WandNotificationWidget notificationWidget;
+    public WandWidgets.DySelectableImageButtonWidget lockButton;
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -55,8 +57,8 @@ public class WandScreen extends Screen<WandMenu> {
         var dy = 0;
         var categoriesCount = 0;
 
-        // 背景
-        addWidget(new RectangleWidget(Coordinate.fromTopLeft(7, 0), Coordinate.fromBottomLeft(81, 0), 0x80000000));
+        // 由于背景需要在最后时候绘制, 所以创建一个组件缓冲区
+        List<Widget> buffer = new ArrayList<>();
 
         // 可以滚动的部分
         for (String key : spells.keySet()) {
@@ -65,17 +67,17 @@ public class WandScreen extends Screen<WandMenu> {
 
             // 用于快速跳转到该类别的按钮
             int finalCategoriesCount = categoriesCount;
-            addWidget(new WandWidgets.WandSubcategoryJumpButton(
-                    new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / spells.size())),
-                    new Coordinate((w, h) -> 7, (w, h) -> (((finalCategoriesCount + 1) * h / spells.size()) - (finalCategoriesCount * h / spells.size()))),
+            buffer.add(new WandWidgets.WandSubcategoryJumpButton(
+                    new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / (spells.size() + 1))),
+                    new Coordinate((w, h) -> 7, (w, h) -> (((finalCategoriesCount + 1) * h / (spells.size() + 1)) - (finalCategoriesCount * h / (spells.size() + 1)))),
                     supplySlotTargetDeltaY, -dy + 20, Component.translatable(key), ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)));
 
             // 子类别标题
-            addWidget(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, dy), key, supplySlotDeltaY));
+            buffer.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, dy), key, supplySlotDeltaY));
 
             // 法术
             for (int i = 0; i < subCategorySpells.size(); i++) {
-                addWidget(new WandWidgets.SpellSupplyWidget(this.menu.slots.get(slotIndex),
+                buffer.add(new WandWidgets.SpellSupplyWidget(this.menu.slots.get(slotIndex),
                         Coordinate.fromTopLeft(dx % 80 + 8, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY));
                 slotIndex++;
 
@@ -86,7 +88,32 @@ public class WandScreen extends Screen<WandMenu> {
             categoriesCount++;
         }
 
-        int finalDy = dy;
+        dx = 0;
+        // 自定义法术供应栏
+        buffer.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(8, dy), "spell." + MODID + ".subcategory.custom", supplySlotDeltaY));
+        buffer.add(new WandWidgets.WandSubcategoryJumpButton(
+                new Coordinate((w, h) -> 0, (w, h) -> (h - 1 - h / (spells.size() + 1))),
+                new Coordinate((w, h) -> 7, (w, h) -> 1 + h / (spells.size() + 1)),
+                supplySlotTargetDeltaY, -dy + 20, Component.translatable("spell." + MODID + ".subcategory.custom"), ModUtils.SPELL_COLORS().getOrDefault("spell." + MODID + ".subcategory.custom", 0xFFFFFFFF)));
+
+        for (WandSlots.CustomSupplySlot slot : menu.customSupplySlots) {
+            buffer.add(new WandWidgets.SpellSupplyWidget(slot, Coordinate.fromTopLeft(dx % 80 + 8, Math.floorDiv(dx, 80) * 16 + dy + 32), supplySlotDeltaY));
+            dx += 16;
+        }
+
+        int finalDy = dy + 160 + 64;
+
+        // 背景
+        addWidget(new WandWidgets.DyRectangleWidget(Coordinate.fromTopLeft(7, 0), Coordinate.fromTopLeft(81, finalDy - 30), 0x80000000, supplySlotDeltaY));
+
+        // 添加缓冲区widget
+        for (Widget widget : buffer) addWidget(widget);
+
+        // 自定义供应的锁定按钮
+        lockButton = new WandWidgets.DySelectableImageButtonWidget(Coordinate.fromTopLeft(7, finalDy - 28), Coordinate.fromTopLeft(80, 16),
+                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_lock_button.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_unlock_button.png"),
+                Component.translatable("gui.programmable_magic.wand.spells.unlock_custom"), supplySlotDeltaY);
+        addWidget(lockButton);
 
         // 滚动交互
         addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromTopLeft(80, 999),
@@ -221,24 +248,41 @@ public class WandScreen extends Screen<WandMenu> {
                         return;
                     }
                     menu.packSpellHook.trigger(nameInputbox.box.getValue(), descInputbox.box.getValue(), textureInputbox.box.getValue());
+                    notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.export_successful"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell"), packedSpellDeltaY));
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-32 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"),
                 () -> {
-                    // 导出至包装法术
-                    // TODO
+                    if (menu.packedSpellContainer.isEmpty()) {
+                        notificationWidget.addError(Component.translatable("gui.programmable_magic.wand.errors.input_slot_empty"));
+                        return;
+                    }
+                    for (WandWidgets.SpellStorageWidget widget : storageSlots) {
+                        widget.deleteHook = menu.packedToStorageHook;
+                        widget.acc2 = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 1.2;
+                    }
+                    notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.export_successful"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.export_to_wand"), packedSpellDeltaY));
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-64 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"),
                 () -> {
-                    // 导出至包装法术
-                    // TODO
+                    if (menu.packedSpellContainer.isEmpty()) {
+                        notificationWidget.addError(Component.translatable("gui.programmable_magic.wand.errors.input_slot_empty"));
+                        return;
+                    }
+                    menu.packSpellHook.trigger(menu.packedSpellContainer.getItem(0).get(CUSTOM_NAME).getString(), menu.packedSpellContainer.getItem(0).get(ModDataComponents.DESCRIPTION), menu.packedSpellContainer.getItem(0).get(ModDataComponents.RESOURCE_LOCATION));
+                    notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.packing_successful"));
+
                 }, Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand"), packedSpellDeltaY));
         addWidget(new WandWidgets.DyImageButtonWidget(Coordinate.fromTopRight(-80 - 2, 0), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"),
                 () -> {
-                    // 导出至包装法术
-                    // TODO
+                    if (!textureInputbox.box.getValue().matches("[0-9a-z_./]+")) {
+                        notificationWidget.addError(Component.translatable("gui.programmable_magic.wand.errors.invalid_input"));
+                        return;
+                    }
+                    menu.packAndSupplyHook.trigger(nameInputbox.box.getValue(), descInputbox.box.getValue(), textureInputbox.box.getValue());
+                    notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.packing_successful"));
                 }, Component.translatable("gui.programmable_magic.wand.inventory.add_to_supply"), packedSpellDeltaY));
 
         addWidget(new WandWidgets.DySlotWidget(menu.packedSpellSlots.get(0), Coordinate.fromTopRight(-48 - 2, 0), packedSpellDeltaY));
@@ -264,7 +308,10 @@ public class WandScreen extends Screen<WandMenu> {
         addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-64 - 2, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir"), -1, packedSpellDeltaY));
 
         addWidget(new WandWidgets.DyRectangleButtonWidget(Coordinate.fromTopRight(-80 - 2, 114), Coordinate.fromTopLeft(80, 5),
-                -2147483648, 0x80FFFFFF, packedSpellDeltaY, () -> {if (packedSpellTargetDeltaY.get() != 7) packedSpellTargetDeltaY.set(7); else packedSpellTargetDeltaY.set(-114);}));
+                -2147483648, 0x80FFFFFF, packedSpellDeltaY, () -> {
+            if (packedSpellTargetDeltaY.get() != 7) packedSpellTargetDeltaY.set(7);
+            else packedSpellTargetDeltaY.set(-114);
+        }));
 
         /* ===========边界装饰=========== */
 
@@ -331,6 +378,9 @@ public class WandScreen extends Screen<WandMenu> {
         newDy = current + packedSpellDeltaYSpeed * dt;
         packedSpellAccurateDeltaY = newDy;
         menu.packedSpellDeltaY.set((int) newDy);
+
+        // 同步 customSupplySlotSupplyMode
+        menu.customSupplySlotSupplyMode.set(!lockButton.isSelected);
     }
 
     @Override
