@@ -6,19 +6,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
-import org.creepebucket.programmable_magic.registries.SpellRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
 
 public class WandScreen extends Screen<WandMenu> {
 
@@ -44,119 +44,17 @@ public class WandScreen extends Screen<WandMenu> {
     protected void init() {
         super.init();
 
+        for (ItemStack plugin : menu.pluginContainer) {
+            if (plugin.isEmpty()) continue;
+            getPlugin(plugin.getItem()).onAdd(this);
+        }
+
         /* ===========法术供应段=========== */
-        var supplySlotDeltaY = this.menu.supplySlotDeltaY;
-        var supplySlotTargetDeltaY = this.menu.supplySlotTargetDeltaY;
-        var spellSlotTargetDeltaX = this.menu.spellSlotTargetDeltaX;
-        var slotIndex = this.menu.supplySlotsStartIndex;
         var packedSpellDeltaY = this.menu.packedSpellDeltaY;
         var packedSpellTargetDeltaY = this.menu.packedSpellTargetDeltaY;
         var pluginDeltaY = this.menu.pluginDeltaY;
         var pluginTargetDeltaY = this.menu.pluginTargetDeltaY;
-
-        // 添加法术供应槽位
-        var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
-
-        var dx = 0;
-        var dy = 0;
-        var categoriesCount = 0;
-
-        // 由于背景需要在最后时候绘制, 所以创建一个组件缓冲区
-        List<Widget> buffer = new ArrayList<>();
-
-        // 可以滚动的部分
-        for (String key : spells.keySet()) {
-            var subCategorySpells = spells.get(key);
-            dx = 0;
-
-            // 用于快速跳转到该类别的按钮
-            int finalCategoriesCount = categoriesCount;
-            buffer.add(new WandWidgets.WandSubcategoryJumpButton(
-                    new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / (spells.size() + 1))),
-                    new Coordinate((w, h) -> 7, (w, h) -> (((finalCategoriesCount + 1) * h / (spells.size() + 1)) - (finalCategoriesCount * h / (spells.size() + 1)))),
-                    supplySlotTargetDeltaY, -dy + 20, Component.translatable(key), ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)));
-
-            // 子类别标题
-            buffer.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, dy), key, supplySlotDeltaY));
-
-            // 法术
-            for (int i = 0; i < subCategorySpells.size(); i++) {
-                buffer.add(new WandWidgets.SpellSupplyWidget(this.menu.slots.get(slotIndex),
-                        Coordinate.fromTopLeft(dx % 80 + 8, dy + Math.floorDiv(dx, 80) * 16 + 32), supplySlotDeltaY));
-                slotIndex++;
-
-                dx += 16;
-            }
-            dy = dy + 64 + Math.floorDiv(dx - 16, 80) * 16; // 奇技淫巧和魔法数字的集大成者
-
-            categoriesCount++;
-        }
-
-        dx = 0;
-        // 自定义法术供应栏
-        buffer.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(8, dy), "spell." + MODID + ".subcategory.custom", supplySlotDeltaY));
-        buffer.add(new WandWidgets.WandSubcategoryJumpButton(
-                new Coordinate((w, h) -> 0, (w, h) -> (h - 1 - h / (spells.size() + 1))),
-                new Coordinate((w, h) -> 7, (w, h) -> 1 + h / (spells.size() + 1)),
-                supplySlotTargetDeltaY, -dy + 20, Component.translatable("spell." + MODID + ".subcategory.custom"), ModUtils.SPELL_COLORS().getOrDefault("spell." + MODID + ".subcategory.custom", 0xFFFFFFFF)));
-
-        for (WandSlots.CustomSupplySlot slot : menu.customSupplySlots) {
-            buffer.add(new WandWidgets.SpellSupplyWidget(slot, Coordinate.fromTopLeft(dx % 80 + 8, Math.floorDiv(dx, 80) * 16 + dy + 32), supplySlotDeltaY));
-            dx += 16;
-        }
-
-        int finalDy = dy + 160 + 64;
-
-        // 背景
-        addWidget(new WandWidgets.DyRectangleWidget(Coordinate.fromTopLeft(7, 0), Coordinate.fromTopLeft(81, finalDy - 30), 0x80000000, supplySlotDeltaY));
-
-        // 添加缓冲区widget
-        for (Widget widget : buffer) addWidget(widget);
-
-        // 自定义供应的锁定按钮
-        lockButton = new WandWidgets.DySelectableImageButtonWidget(Coordinate.fromTopLeft(7, finalDy - 28), Coordinate.fromTopLeft(80, 16),
-                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_lock_button.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_unlock_button.png"),
-                Component.translatable("gui.programmable_magic.wand.spells.unlock_custom"), supplySlotDeltaY);
-        addWidget(lockButton);
-
-        // 滚动交互
-        addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromTopLeft(80, 999),
-                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplySlotTargetDeltaY));
-        // 滚动条
-        addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
-                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplySlotTargetDeltaY, 0xFFFFFFFF, "y", true));
-
         /* ===========法术储存段=========== */
-        var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 8;
-
-        for (int i = 0; i < spellCountCanFit; i++) {
-            var pos = new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + 64, (w, h) -> h - 115);
-
-            var storage = new WandWidgets.SpellStorageWidget(menu.spellStoreSlots, pos, i, menu.storedSpellsEditHook, menu.clearSpellsHook, storageSlots, spellSlotTargetDeltaX);
-            addWidget(storage);
-            storageSlots.add(storage);
-        }
-
-        var targetMin = -1002 * 16 + spellCountCanFit * 16;
-
-        // 两边遮挡
-        addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -115), Coordinate.fromTopLeft(32, 16),
-                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
-                () -> {
-                    spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() + 80, targetMin, 0));
-                }, Component.translatable("gui.programmable_magic.wand.spells.left_shift")));
-        addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -115), Coordinate.fromTopLeft(32, 16),
-                Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
-                () -> {
-                    spellSlotTargetDeltaX.set(Math.clamp(spellSlotTargetDeltaX.get() - 80, targetMin, 0));
-                }, Component.translatable("gui.programmable_magic.wand.spells.right_shift")));
-
-        // 滚动条
-        addWidget(new ScrollbarWidget.DynamicScrollbar(Coordinate.fromBottomLeft(96, -112 + 15), Coordinate.fromTopRight(-96, 4),
-                Coordinate.fromTopLeft(targetMin, 0), spellSlotTargetDeltaX, -1, "X", false));
-
-        // 滚轮区域
-        addWidget(new ScrollRegionWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(999, 16), Coordinate.fromTopLeft(targetMin, 0), 80, spellSlotTargetDeltaX));
 
         /* ===========玩家物品栏=========== */
 
@@ -337,7 +235,6 @@ public class WandScreen extends Screen<WandMenu> {
         /* ===========边界装饰=========== */
 
         // 法术储存段
-        addWidget(new RectangleWidget(Coordinate.fromTopLeft(93, 0), Coordinate.fromBottomLeft(2, 0), -1));
 
         // 玩家物品栏
         addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95, -76 - 16), Coordinate.fromTopRight(0, 2), -1));
@@ -399,9 +296,6 @@ public class WandScreen extends Screen<WandMenu> {
         newDy = current + packedSpellDeltaYSpeed * dt;
         packedSpellAccurateDeltaY = newDy;
         menu.packedSpellDeltaY.set((int) newDy);
-
-        // 同步 customSupplySlotSupplyMode
-        menu.customSupplySlotSupplyMode.set(!lockButton.isSelected);
 
         // 平滑 pluginDeltaY
 

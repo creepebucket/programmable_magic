@@ -690,9 +690,10 @@ public class WandWidgets {
                     function = Component.literal("baka").withColor(0xFFFF0000);
                 } else {
                     name = lastStack.getHoverName();
-                    function = getPlugin(lastStack.getItem()).function();
                 }
             }
+
+            if (!lastStack.isEmpty()) function = getPlugin(lastStack.getItem()).function();
 
             // 哈哈 气笑了
             graphics.drawString(ClientUiContext.getFont(), name, (int) (pos.toScreenX() - 64 - Math.pow(Math.clamp(0.3 - now + lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() - 1, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(now - lastChange, 0, 0.3), 1) / 0.3)) << 24));

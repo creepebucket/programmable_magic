@@ -8,7 +8,7 @@ public class InfiniteSupplySlot extends Slot {
     private final ItemStack supplyStack;
 
     public InfiniteSupplySlot(ItemStack supplyStack) {
-        super(new SimpleContainer(1), 0, 0, 0);
+        super(new SimpleContainer(1), 0, -99, -99);
         this.supplyStack = supplyStack.copyWithCount(1);
     }
 

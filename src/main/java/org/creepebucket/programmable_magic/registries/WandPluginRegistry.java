@@ -8,7 +8,8 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
-import org.creepebucket.programmable_magic.wand_plugins.TestPlugin;
+import org.creepebucket.programmable_magic.wand_plugins.SpellStoragePlugin;
+import org.creepebucket.programmable_magic.wand_plugins.SpellSupplyPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,16 @@ public class WandPluginRegistry {
     public static void registerPlugins(IEventBus eventBus) {
         // 在这里注册所有插件（分等级）
 
-        registerPlugin(TestPlugin::new);
+        registerPlugin(() -> new SpellSupplyPlugin(1));
+        registerPlugin(() -> new SpellSupplyPlugin(2));
+        registerPlugin(() -> new SpellSupplyPlugin(3));
+        registerPlugin(() -> new SpellSupplyPlugin(4));
+        registerPlugin(() -> new SpellSupplyPlugin(5));
+
+        registerPlugin(() -> new SpellStoragePlugin(1));
+        registerPlugin(() -> new SpellStoragePlugin(2));
+        registerPlugin(() -> new SpellStoragePlugin(3));
+        registerPlugin(() -> new SpellStoragePlugin(4));
 
         ITEMS.register(eventBus);
     }

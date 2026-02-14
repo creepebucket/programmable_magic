@@ -331,7 +331,6 @@
   "tooltip.programmable_magic.spell.vector_y.desc2": "Input a vector (vector3); returns its y (number)",
   "tooltip.programmable_magic.spell.vector_z.desc1": "Gets the z component of a vector",
   "tooltip.programmable_magic.spell.vector_z.desc2": "Input a vector (vector3); returns its z (number)",
-  "tooltip.programmable_magic.spell.x_unit_vector.desc1": "Returns the unit vector on the X axis",
   "tooltip.programmable_magic.spell.x_unit_vector.desc2": "No input; returns (1, 0, 0) (vector3)",
   "tooltip.programmable_magic.spell.y_unit_vector.desc1": "Returns the unit vector on the Y axis",
   "tooltip.programmable_magic.spell.y_unit_vector.desc2": "No input; returns (0, 1, 0) (vector3)",

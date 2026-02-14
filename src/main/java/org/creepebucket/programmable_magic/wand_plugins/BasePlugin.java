@@ -1,10 +1,11 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
-import org.creepebucket.programmable_magic.gui.wand.WandMenu;
+import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
@@ -33,22 +34,35 @@ public abstract class BasePlugin {
     /**
      * 实体每 tick 回调：可用于持续效果或可视化。
      */
-    public abstract void onEntityTick(SpellEntity spellEntity);
+    public void onEntityTick(SpellEntity spellEntity) {
+    }
 
     /**
-     * 构建魔杖界面：用于创建槽位布局与按钮/渲染等控件。
+     * 插件被添加时钩子
      */
-    public abstract void buildUi(WandMenu menu);
+    public void onAdd(WandScreen screen) {
+    }
+
+    /**
+     * 插件被移除时钩子
+     */
+    public void onRemove(WandScreen screen) {
+    }
 
     /**
      * 法术执行前回调：可读取/修改将要执行的参数。
      */
-    public abstract void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams);
+    public void beforeSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams) {
+    }
 
     /**
      * 法术执行后回调：根据执行结果进行后处理。
      */
-    public abstract void afterSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams);
+    public void afterSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams) {
+    }
+
+    public void render(WandScreen screen, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    }
 
     /**
      * 数值调整器：用于由插件对魔杖相关数值进行调整。
@@ -59,7 +73,8 @@ public abstract class BasePlugin {
      * - spellSlots：法术槽位数（仅供展示或后续扩展，不直接改容器大小）。
      * - pluginSlots：插件槽位数（仅供展示或后续扩展，不直接改容器大小）。
      */
-    public abstract void adjustWandValues(WandValues values, ItemStack pluginStack);
+    public void adjustWandValues(WandValues values, ItemStack pluginStack) {
+    }
 
     /**
      * 获取功能提示组件
