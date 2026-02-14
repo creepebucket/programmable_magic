@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
+import org.creepebucket.programmable_magic.wand_plugins.TestPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +31,8 @@ public class WandPluginRegistry {
      */
     public static void registerPlugins(IEventBus eventBus) {
         // 在这里注册所有插件（分等级）
+
+        registerPlugin(TestPlugin::new);
 
         ITEMS.register(eventBus);
     }

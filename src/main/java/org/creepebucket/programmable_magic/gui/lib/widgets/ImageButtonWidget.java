@@ -51,6 +51,11 @@ public class ImageButtonWidget extends Widget implements Renderable, Clickable, 
     }
 
     @Override
+    public boolean renderInForeground() {
+        return true;
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // 判断鼠标是否悬停在按钮上，选择对应纹理
         boolean hovered = contains(mouseX, mouseY);

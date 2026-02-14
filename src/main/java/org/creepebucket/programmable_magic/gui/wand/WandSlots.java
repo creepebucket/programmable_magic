@@ -4,6 +4,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
+import org.creepebucket.programmable_magic.spells.PackedSpell;
+
+import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.isPlugin;
 
 public class WandSlots {
     public static class CustomSupplySlot extends OneItemOnlySlot {
@@ -12,6 +15,11 @@ public class WandSlots {
         public CustomSupplySlot(Container container, int slot, int x, int y, SyncedValue<Boolean> supplyMode) {
             super(container, slot, x, y);
             this.supplyMode = supplyMode;
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return !supplyMode.get() && stack.getItem() instanceof PackedSpell;
         }
 
         @Override
@@ -33,6 +41,18 @@ public class WandSlots {
         @Override
         public void setByPlayer(ItemStack stack, ItemStack oldStack) {
             if (!supplyMode.get()) super.setByPlayer(stack, oldStack);
+        }
+    }
+
+    public static class PluginSlot extends OneItemOnlySlot {
+
+        public PluginSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return isPlugin(stack.getItem());
         }
     }
 }

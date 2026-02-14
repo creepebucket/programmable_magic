@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.wand_plugins;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -20,7 +21,7 @@ public abstract class BasePlugin {
     /**
      * 插件名称（用于注册名后缀），例如：spell_supply。
      */
-    public String pluginName;
+    public String pluginName = "test";
 
     /**
      * 获取用于注册的路径名："wand_plugin_" + plugin_name。
@@ -59,4 +60,9 @@ public abstract class BasePlugin {
      * - pluginSlots：插件槽位数（仅供展示或后续扩展，不直接改容器大小）。
      */
     public abstract void adjustWandValues(WandValues values, ItemStack pluginStack);
+
+    /**
+     * 获取功能提示组件
+     */
+    public abstract Component function();
 }

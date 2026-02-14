@@ -14,7 +14,6 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SlotManipulationScreen;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ImageButtonWidget;
 import org.creepebucket.programmable_magic.network.dataPackets.HookTriggerPacket;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 
@@ -106,8 +105,8 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
         graphics.nextStratum();
         for (Widget widget : this.menu.widgets)
-            if (widget instanceof ImageButtonWidget imageButtonWidget)
-                imageButtonWidget.render(graphics, mouseX, mouseY, partialTick);
+            if (widget.renderInForeground() && widget instanceof Renderable renderable)
+                renderable.render(graphics, mouseX, mouseY, partialTick);
 
         for (int i = this.menu.widgets.size() - 1; i >= 0; i--) {
             Widget widget = this.menu.widgets.get(i);
@@ -123,9 +122,9 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         ClientSlotManager.clearAll();
         // 遍历 menu.widgets 进行渲染
         for (Widget widget : this.menu.widgets) {
-            if (widget instanceof Renderable renderable && !(widget instanceof ImageButtonWidget)) {
+            if (widget.renderInForeground()) continue;
+            if (widget instanceof Renderable renderable)
                 renderable.render(graphics, mouseX, mouseY, this.lastPartialTick);
-            }
         }
     }
 

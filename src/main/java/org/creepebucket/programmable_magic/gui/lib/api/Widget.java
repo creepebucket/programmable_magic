@@ -32,6 +32,10 @@ public abstract class Widget {
 
     public Screen<? extends Menu> screen;
 
+    public boolean renderInForeground() {
+        return false;
+    }
+
     /**
      * 带位置和尺寸的构造函数。
      */

@@ -30,15 +30,15 @@ public class ModDataComponents {
                     .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> SAVED_PACKS =
-            DATA_COMPONENTS.registerComponentType("saved_packs", builder -> builder
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> CUSTOM_SUPPLY =
+            DATA_COMPONENTS.registerComponentType("custom_supply", builder -> builder
                     .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     // 魔杖插件：玩家装配的插件物品列表（顺序即槽位顺序）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> PLUGINS =
             DATA_COMPONENTS.registerComponentType("plugins", builder -> builder
-                    .persistent(Codec.list(ItemStack.CODEC))
+                    .persistent(Codec.list(ItemStack.OPTIONAL_CODEC))
                     .networkSynchronized(ByteBufCodecs.collection(ArrayList::new, ItemStack.OPTIONAL_STREAM_CODEC)));
 
     // 被动充能：安装自动充能插件时，手持时每tick累积的充能时长（以 tick 计）

@@ -15,12 +15,16 @@ import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
 import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.spells.PackedSpell;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.isPlugin;
 
 /**
  * 最小菜单：不含复杂数据同步，仅承载 Screen 与槽位布局。
@@ -28,7 +32,7 @@ import java.util.List;
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends Menu {
-    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX, packedSpellDeltaY, packedSpellTargetDeltaY;
+    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX, packedSpellDeltaY, packedSpellTargetDeltaY, pluginDeltaY, pluginTargetDeltaY;
     public SyncedValue<Boolean> customSupplySlotSupplyMode;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
@@ -38,14 +42,11 @@ public class WandMenu extends Menu {
     public WandHooks.PackAndSupplyHook packAndSupplyHook;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
-    public Container storedSpells, packedSpellContainer, customSupplyContainer;
-    public List<Slot> spellStoreSlots;
-    public List<Slot> hotbarSlots;
-    public List<Slot> backpackSlots;
-    public List<Slot> packedSpellSlots;
+    public Container storedSpells, packedSpellContainer, customSupplyContainer, pluginContainer;
+    public List<Slot> spellStoreSlots, hotbarSlots, backpackSlots, packedSpellSlots, pluginSlots;
     public List<WandSlots.CustomSupplySlot> customSupplySlots;
-    public InteractionHand hand;
     public boolean quickMoved = false;
+    public ItemStack wand;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         this(containerId, playerInv, InteractionHand.values()[extra.readVarInt()]);
@@ -56,23 +57,17 @@ public class WandMenu extends Menu {
     }
 
     public WandMenu(int containerId, Inventory playerInv, InteractionHand hand) {
-        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, Menu::init);
-        this.hand = hand;
-
-        // chatgpt 给的持久化逻辑
-        if (!(this.playerInv.player instanceof ServerPlayer serverPlayer)) return;
-        ItemStack wand = serverPlayer.getItemInHand(this.hand);
-        List<ItemStack> saved = wand.get(ModDataComponents.SPELLS.get());
-        if (saved == null) return;
-
-        for (int i = 0; i < saved.size() && i < this.storedSpells.getContainerSize(); i++) {
-            ItemStack stack = saved.get(i);
-            if (!stack.isEmpty() && SpellRegistry.isSpell(stack.getItem())) this.storedSpells.setItem(i, stack.copy());
-        }
+        super(ModMenuTypes.WAND_MENU.get(), containerId, playerInv, hand, Menu::init);
     }
 
     @Override
     public void init() {
+        // if (!(this.playerInv.player instanceof ServerPlayer serverPlayer)) return;
+        wand = playerInv.player.getItemInHand(this.hand);
+        List<ItemStack> saved = wand.get(ModDataComponents.SPELLS.get());
+        List<ItemStack> savedPacks = wand.get(ModDataComponents.CUSTOM_SUPPLY.get());
+        List<ItemStack> savedPlugins = wand.get(ModDataComponents.PLUGINS.get());
+
         this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.LOCAL_ONLY, 0);
         this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
@@ -84,6 +79,7 @@ public class WandMenu extends Menu {
         this.backpackSlots = new ArrayList<>(27);
         this.packedSpellSlots = new ArrayList<>(1);
         this.customSupplySlots = new ArrayList<>(50);
+        this.pluginSlots = new ArrayList<>(((Wand) wand.getItem()).pluginSlots);
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();
@@ -118,6 +114,40 @@ public class WandMenu extends Menu {
             customSupplySlots.add(new WandSlots.CustomSupplySlot(customSupplyContainer, i, -99, -99, customSupplySlotSupplyMode));
         for (WandSlots.CustomSupplySlot slot : customSupplySlots) addSlot(slot);
         packAndSupplyHook = hook(new WandHooks.PackAndSupplyHook(customSupplyContainer));
+
+        // 插件
+        pluginContainer = new SimpleContainer(((Wand) wand.getItem()).pluginSlots);
+        this.pluginDeltaY = dataManager.register("plugin_delta_y", SyncMode.LOCAL_ONLY, -(20 + 20 * pluginContainer.getContainerSize()) + 1);
+        this.pluginTargetDeltaY = dataManager.register("plugin_target_delta_y", SyncMode.LOCAL_ONLY, -(20 + 20 * pluginContainer.getContainerSize()) + 1);
+        for (int i = 0; i < pluginContainer.getContainerSize(); i++)
+            pluginSlots.add(new WandSlots.PluginSlot(pluginContainer, i, -99, -99));
+        for (Slot slot : pluginSlots) addSlot(slot);
+
+        // chatgpt 给的持久化逻辑
+
+        if (saved != null) {
+            for (int i = 0; i < saved.size() && i < this.storedSpells.getContainerSize(); i++) {
+                ItemStack stack = saved.get(i);
+                if (!stack.isEmpty() && SpellRegistry.isSpell(stack.getItem()))
+                    this.storedSpells.setItem(i, stack.copy());
+            }
+        }
+
+        if (savedPacks != null) {
+            for (int i = 0; i < savedPacks.size() && i < this.customSupplyContainer.getContainerSize(); i++) {
+                ItemStack stack = savedPacks.get(i);
+                if (!stack.isEmpty() && stack.getItem() instanceof PackedSpell)
+                    this.customSupplyContainer.setItem(i, stack.copy());
+            }
+        }
+
+        if (savedPlugins != null) {
+            for (int i = 0; i < savedPlugins.size() && i < this.pluginContainer.getContainerSize(); i++) {
+                ItemStack stack = savedPlugins.get(i);
+                if (!stack.isEmpty() && isPlugin(stack.getItem()))
+                    this.pluginContainer.setItem(i, stack.copy());
+            }
+        }
     }
 
     @Override
@@ -144,6 +174,42 @@ public class WandMenu extends Menu {
 
         wand.set(ModDataComponents.SPELLS.get(), saved);
         this.clearContainer(player, this.storedSpells);
+
+        ArrayList<ItemStack> savedPacks = new ArrayList<>(this.customSupplyContainer.getContainerSize());
+        for (int i = 0; i < this.customSupplyContainer.getContainerSize(); i++) {
+            ItemStack stack = this.customSupplyContainer.getItem(i);
+            if (stack.isEmpty()) {
+                savedPacks.add(ItemStack.EMPTY);
+                continue;
+            }
+            if (stack.getItem() instanceof PackedSpell) {
+                savedPacks.add(stack.copy());
+                this.customSupplyContainer.setItem(i, ItemStack.EMPTY);
+                continue;
+            }
+            savedPacks.add(ItemStack.EMPTY);
+        }
+
+        wand.set(ModDataComponents.CUSTOM_SUPPLY.get(), savedPacks);
+        this.clearContainer(player, this.customSupplyContainer);
+
+        ArrayList<ItemStack> savedPlugins = new ArrayList<>(this.pluginContainer.getContainerSize());
+        for (int i = 0; i < this.pluginContainer.getContainerSize(); i++) {
+            ItemStack stack = this.pluginContainer.getItem(i);
+            if (stack.isEmpty()) {
+                savedPlugins.add(ItemStack.EMPTY);
+                continue;
+            }
+            if (isPlugin(stack.getItem())) {
+                savedPlugins.add(stack.copy());
+                this.pluginContainer.setItem(i, ItemStack.EMPTY);
+                continue;
+            }
+            savedPlugins.add(ItemStack.EMPTY);
+        }
+
+        wand.set(ModDataComponents.PLUGINS.get(), savedPlugins);
+        this.clearContainer(player, this.pluginContainer);
     }
 
     @Override

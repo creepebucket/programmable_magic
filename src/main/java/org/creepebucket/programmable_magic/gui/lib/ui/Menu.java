@@ -2,6 +2,7 @@ package org.creepebucket.programmable_magic.gui.lib.ui;
 
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -39,9 +40,11 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     public int screenHeight;
     public int guiLeft;
     public int guiTop;
+    public InteractionHand hand;
 
-    protected Menu(MenuType<?> type, int containerId, Inventory playerInv, Definition definition) {
+    protected Menu(MenuType<?> type, int containerId, Inventory playerInv, InteractionHand hand, Definition definition) {
         super(type, containerId);
+        this.hand = hand;
         this.playerInv = playerInv;
         this.hooks.bindMenuPlayer(playerInv.player);
 

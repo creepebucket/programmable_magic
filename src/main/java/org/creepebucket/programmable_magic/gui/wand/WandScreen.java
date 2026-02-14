@@ -25,8 +25,10 @@ public class WandScreen extends Screen<WandMenu> {
     public static double dt;
     public double spellSupplyDeltaYSpeed = 0;
     public double packedSpellDeltaYSpeed = 0;
+    public double pluginDeltaYSpeed = 0;
     public double spellSupplyAccurateDeltaY = this.menu.supplySlotDeltaY.get();
     public double packedSpellAccurateDeltaY = this.menu.packedSpellDeltaY.get();
+    public double pluginAccurateDeltaY = this.menu.pluginDeltaY.get();
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public Double lastFrame = System.nanoTime() / 1e9;
     public SelectableImageButtonWidget bypassCompileWidget;
@@ -49,6 +51,8 @@ public class WandScreen extends Screen<WandMenu> {
         var slotIndex = this.menu.supplySlotsStartIndex;
         var packedSpellDeltaY = this.menu.packedSpellDeltaY;
         var packedSpellTargetDeltaY = this.menu.packedSpellTargetDeltaY;
+        var pluginDeltaY = this.menu.pluginDeltaY;
+        var pluginTargetDeltaY = this.menu.pluginTargetDeltaY;
 
         // 添加法术供应槽位
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
@@ -313,6 +317,23 @@ public class WandScreen extends Screen<WandMenu> {
             else packedSpellTargetDeltaY.set(-114);
         }));
 
+        /* ===========插件=========== */
+
+        // 标题
+        addWidget(new WandWidgets.DyTextureWidget(Coordinate.fromTopRight(-164, 0), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/wand_plugins.png"), Coordinate.fromTopLeft(16, 16), pluginDeltaY));
+        addWidget(new WandWidgets.DyTextWidget(Coordinate.fromTopRight(-164 + 16, 3), Component.translatable("gui.programmable_magic.wand.inventory.plugins"), -1, pluginDeltaY));
+
+        // 插件
+        for (int i = 0; i < menu.pluginContainer.getContainerSize(); i++)
+            addWidget(new WandWidgets.PluginWidget(menu.pluginSlots.get(i), Coordinate.fromTopRight(-164, 20 + 20 * i), pluginDeltaY, -1, -2147483648));
+
+        // 按钮
+        addWidget(new WandWidgets.DyRectangleButtonWidget(Coordinate.fromTopRight(-164, 20 + 20 * menu.pluginContainer.getContainerSize()), Coordinate.fromTopLeft(80, 5),
+                -2147483648, 0x80FFFFFF, pluginDeltaY, () -> {
+            if (pluginTargetDeltaY.get() != 7) pluginTargetDeltaY.set(7);
+            else pluginTargetDeltaY.set(-(20 + 20 * menu.pluginContainer.getContainerSize()));
+        }));
+
         /* ===========边界装饰=========== */
 
         // 法术储存段
@@ -381,6 +402,18 @@ public class WandScreen extends Screen<WandMenu> {
 
         // 同步 customSupplySlotSupplyMode
         menu.customSupplySlotSupplyMode.set(!lockButton.isSelected);
+
+        // 平滑 pluginDeltaY
+
+        current = pluginAccurateDeltaY;
+        target = (double) menu.pluginTargetDeltaY.get();
+
+        // 核心科技, 从chatgpt偷的
+        pluginDeltaYSpeed += (target - pluginAccurateDeltaY) * MaGiCaL_CoNsTaNt_1 * dt - pluginDeltaYSpeed * MaGiCaL_CoNsTaNt_2 * dt;
+
+        newDy = current + pluginDeltaYSpeed * dt;
+        pluginAccurateDeltaY = newDy;
+        menu.pluginDeltaY.set((int) newDy);
     }
 
     @Override

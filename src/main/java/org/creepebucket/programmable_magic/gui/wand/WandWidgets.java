@@ -8,6 +8,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
 
 import static net.minecraft.util.Mth.hsvToRgb;
 import static org.creepebucket.programmable_magic.gui.wand.WandScreen.dt;
+import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
 
 public class WandWidgets {
     public static class SpellSupplyWidget extends SlotWidget {
@@ -646,6 +648,59 @@ public class WandWidgets {
             public int color, textColor; // duration 秒
             public Component content;
             public double duration, dy = -50, targetDy = 7, created, speed = 0;
+        }
+    }
+
+    public static class PluginWidget extends DySlotWidget {
+        public double lastChange = 0;
+        public Component name = Component.empty(), function = Component.empty(), lastName = Component.empty(), lastFunction = Component.empty();
+        public int textColor, bgColor;
+        public ItemStack lastStack;
+
+        /**
+         * 创建一个槽位控件。
+         *
+         * @param slot
+         * @param pos
+         * @param dy
+         */
+        public PluginWidget(Slot slot, Coordinate pos, SyncedValue<Integer> dy, int textColor, int bgColor) {
+            super(slot, pos, dy);
+
+            this.bgColor = bgColor;
+            this.textColor = textColor;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            this.pos = original.add(Coordinate.fromTopLeft(64, dy.get()));
+            ClientSlotManager.setClientPosition(slot, pos.toScreenX(), pos.toScreenY() + 1);
+
+            // 检测Slot是否变化
+            var now = System.nanoTime() / 1e9;
+            if (!slot.getItem().equals(lastStack)) {
+                lastChange = now;
+                lastStack = slot.getItem();
+
+                lastName = name;
+                lastFunction = function;
+
+                if (lastStack.isEmpty()) {
+                    name = Component.literal("test");
+                    function = Component.literal("baka").withColor(0xFFFF0000);
+                } else {
+                    name = lastStack.getHoverName();
+                    function = getPlugin(lastStack.getItem()).function();
+                }
+            }
+
+            // 哈哈 气笑了
+            graphics.drawString(ClientUiContext.getFont(), name, (int) (pos.toScreenX() - 64 - Math.pow(Math.clamp(0.3 - now + lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() - 1, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(now - lastChange, 0, 0.3), 1) / 0.3)) << 24));
+            graphics.drawString(ClientUiContext.getFont(), function, (int) (pos.toScreenX() - 64 - Math.pow(Math.clamp(0.35 - now + lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() + 9, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(now - lastChange - 0.05, 0, 0.3), 1) / 0.3)) << 24));
+            graphics.drawString(ClientUiContext.getFont(), lastName, (int) (pos.toScreenX() - 64 + Math.pow(Math.clamp(now - lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() - 1, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(0.3 - now + lastChange, 0, 0.3), 1) / 0.3)) << 24));
+            graphics.drawString(ClientUiContext.getFont(), lastFunction, (int) (pos.toScreenX() - 64 + Math.pow(Math.clamp(now - lastChange - 0.05, 0, 0.3), 2.7) * 1000), pos.toScreenY() + 9, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(0.35 - now + lastChange, 0, 0.3), 1) / 0.3)) << 24));
+
+            graphics.fill(pos.toScreenX(), pos.toScreenY() + 1, pos.toScreenX() + 16, pos.toScreenY() + 17, bgColor);
         }
     }
 }

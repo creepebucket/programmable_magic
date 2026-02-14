@@ -34,8 +34,8 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
  */
 public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
 
-    private final int slots;
-    private final int pluginSlots;
+    public final int slots;
+    public final int pluginSlots;
 
     /**
      * 构造一个魔杖实例。
@@ -61,20 +61,6 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
         return false;
     }
 
-    /**
-     * 获取法术槽位数量。
-     */
-    public int getSlots() {
-        return slots;
-    }
-
-    /**
-     * 获取插件槽位数量。
-     */
-    public int getPluginSlots() {
-        return pluginSlots;
-    }
-
     @Override
     public void append_tooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
         var values = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get()));
@@ -82,7 +68,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
         tooltip.add(Component.translatable("tooltip." + MODID + ".wand.mana_mult", String.format("%.2f", values.manaMult)).withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable("tooltip." + MODID + ".wand.spell_slots", String.valueOf((int) Math.floor(values.spellSlots))).withStyle(ChatFormatting.YELLOW));
         tooltip.add(Component.translatable("tooltip." + MODID + ".wand.charge_rate", ModUtils.formattedNumber(values.chargeRateW)).withStyle(ChatFormatting.GREEN));
-        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.plugin_slots", String.valueOf(getPluginSlots())).withStyle(ChatFormatting.AQUA));
+        tooltip.add(Component.translatable("tooltip." + MODID + ".wand.plugin_slots", pluginSlots).withStyle(ChatFormatting.AQUA));
     }
 
     @Override
