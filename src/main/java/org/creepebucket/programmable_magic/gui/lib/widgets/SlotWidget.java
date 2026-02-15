@@ -21,7 +21,7 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
      * 创建一个槽位控件。
      */
     public SlotWidget(Slot slot, Coordinate pos) {
-        super(pos);
+        super(pos, Coordinate.ZERO);
         this.slot = slot;
     }
 
@@ -30,19 +30,19 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
      */
     @Override
     public void onInitialize() {
-        ClientSlotManager.setClientPosition(this.slot, this.pos.toMenuX(), this.pos.toMenuY());
+        ClientSlotManager.setClientPosition(this.slot, menuX(), menuY());
     }
 
     /**
      * 控件移除时清理槽位坐标映射。
      */
     @Override
-    public void onRemoved() {
+    public void onDestroy() {
         ClientSlotManager.removeClientPosition(this.slot);
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ClientSlotManager.setClientPosition(this.slot, this.pos.toMenuX(), this.pos.toMenuY());
+        ClientSlotManager.setClientPosition(this.slot, menuX(), menuY());
     }
 }

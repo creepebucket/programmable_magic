@@ -14,20 +14,15 @@ public class TextWidget extends Widget implements Renderable {
     /**
      * 文本内容提供器
      */
-    private final Component text;
-    /**
-     * 文本颜色提供器
-     */
-    private final int color;
+    public Component text;
 
-    public TextWidget(Coordinate pos, Component text, int color) {
-        super(pos);
+    public TextWidget(Coordinate pos, Component text) {
+        super(pos, Coordinate.ZERO);
         this.text = text;
-        this.color = color;
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.drawString(ClientUiContext.getFont(), this.text, this.pos.toMenuX(), this.pos.toMenuY(), this.color);
+        graphics.drawString(ClientUiContext.getFont(), this.text, menuX(), menuY(), mainColor());
     }
 }

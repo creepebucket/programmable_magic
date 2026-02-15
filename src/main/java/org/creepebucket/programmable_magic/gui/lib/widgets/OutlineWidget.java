@@ -6,17 +6,12 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 public class OutlineWidget extends Widget implements Renderable {
-
-    public int color;
-
-    public OutlineWidget(Coordinate pos, Coordinate size, int color) {
-        this.pos = pos;
-        this.size = size;
-        this.color = color;
+    public OutlineWidget(Coordinate pos, Coordinate size) {
+        super(pos, size);
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.renderOutline(pos.toScreenX(), pos.toScreenY(), size.toScreenX(), size.toScreenY(), color);
+        graphics.renderOutline(x(), y(), w(), h(), mainColor());
     }
 }

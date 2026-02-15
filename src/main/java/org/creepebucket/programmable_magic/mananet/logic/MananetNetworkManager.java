@@ -41,7 +41,7 @@ public final class MananetNetworkManager {
      */
     private final Long2ObjectOpenHashMap<MananetNodeState> blockNodes = new Long2ObjectOpenHashMap<>();
     /**
-     * union-find 的 parent 指针：child -> parent。
+     * union-find 的 parent 指针：children -> parent。
      */
     private final Map<UUID, UUID> parent = new HashMap<>();
     /**

@@ -349,5 +349,16 @@
   "tooltip.programmable_magic.wand.charge_rate": "Charge Rate %sW",
   "tooltip.programmable_magic.wand.mana_mult": "Mana Mult x%s",
   "tooltip.programmable_magic.wand.plugin_slots": "Plugin Slots %s",
-  "tooltip.programmable_magic.wand.spell_slots": "Spell Slots %s"
+  "tooltip.programmable_magic.wand.spell_slots": "Spell Slots %s",
+  "gui.programmable_magic.wand.plugin.no_plugin": "No Plugin",
+  "gui.programmable_magic.wand.plugin.no_plugin_desc": "Insert to modify wand",
+  "gui.programmable_magic.wand.inventory.plugins": "Plugins",
+  "gui.programmable_magic.wand.errors.packing_successful": "Packing successful",
+  "gui.programmable_magic.wand.errors.input_slot_empty": "Input slot is empty",
+  "gui.programmable_magic.wand.errors.export_successful": "Export successful",
+  "gui.programmable_magic.wand.plugin.charge_rate": "Charge Rate: ",
+  "gui.programmable_magic.wand.plugin.spell_storage": "Spell Storage: ",
+  "gui.programmable_magic.wand.plugin.mana_mult_mult": "Mana Mult: ",
+  "gui.programmable_magic.wand.plugin.spell_packing": "",
+  "gui.programmable_magic.wand.plugin.provide_ability": ""
 }

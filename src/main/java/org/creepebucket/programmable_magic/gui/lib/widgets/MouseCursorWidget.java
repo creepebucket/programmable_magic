@@ -2,15 +2,16 @@ package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 import static net.minecraft.util.Mth.hsvToRgb;
 
 public class MouseCursorWidget extends Widget implements Renderable {
-    @Override
-    public boolean renderInForeground() {
-        return true;
+    public MouseCursorWidget() {
+        super(Coordinate.ZERO, Coordinate.ZERO);
+        renderInForeground = true;
     }
 
     @Override

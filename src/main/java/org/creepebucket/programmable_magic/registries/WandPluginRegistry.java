@@ -7,9 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
-import org.creepebucket.programmable_magic.wand_plugins.SpellStoragePlugin;
-import org.creepebucket.programmable_magic.wand_plugins.SpellSupplyPlugin;
+import org.creepebucket.programmable_magic.gui.wand.wand_plugins.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +41,14 @@ public class WandPluginRegistry {
         registerPlugin(() -> new SpellStoragePlugin(2));
         registerPlugin(() -> new SpellStoragePlugin(3));
         registerPlugin(() -> new SpellStoragePlugin(4));
+
+        registerPlugin(() -> new SpellReleasePlugin(1));
+        registerPlugin(() -> new SpellReleasePlugin(2));
+        registerPlugin(() -> new SpellReleasePlugin(3));
+        registerPlugin(() -> new SpellReleasePlugin(4));
+        registerPlugin(() -> new SpellReleasePlugin(5));
+
+        registerPlugin(SpellPackerPlugin::new);
 
         ITEMS.register(eventBus);
     }

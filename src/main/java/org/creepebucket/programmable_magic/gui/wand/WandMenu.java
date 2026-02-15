@@ -32,7 +32,6 @@ import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends Menu {
-    public SyncedValue<Integer> supplySlotDeltaY, supplySlotTargetDeltaY, spellSlotTargetDeltaX, packedSpellDeltaY, packedSpellTargetDeltaY, pluginDeltaY, pluginTargetDeltaY;
     public SyncedValue<Boolean> customSupplySlotSupplyMode;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
@@ -67,12 +66,6 @@ public class WandMenu extends Menu {
         List<ItemStack> saved = wand.get(ModDataComponents.SPELLS.get());
         List<ItemStack> savedPacks = wand.get(ModDataComponents.CUSTOM_SUPPLY.get());
         List<ItemStack> savedPlugins = wand.get(ModDataComponents.PLUGINS.get());
-
-        this.supplySlotDeltaY = dataManager.register("supply_slot_delta_y", SyncMode.LOCAL_ONLY, 0);
-        this.supplySlotTargetDeltaY = dataManager.register("supply_slot_target_delta_y", SyncMode.LOCAL_ONLY, 0);
-        this.spellSlotTargetDeltaX = dataManager.register("storage_slot_target_delta_x", SyncMode.LOCAL_ONLY, 0);
-        this.packedSpellDeltaY = dataManager.register("packed_spell_delta_y", SyncMode.LOCAL_ONLY, -113);
-        this.packedSpellTargetDeltaY = dataManager.register("packed_spell_target_delta_y", SyncMode.LOCAL_ONLY, -113);
         this.customSupplySlotSupplyMode = dataManager.register("custom_supply_slot_supply_mode", SyncMode.BOTH, true);
         this.spellStoreSlots = new ArrayList<>(1024);
         this.hotbarSlots = new ArrayList<>(9);
@@ -117,8 +110,6 @@ public class WandMenu extends Menu {
 
         // 插件
         pluginContainer = new SimpleContainer(((Wand) wand.getItem()).pluginSlots);
-        this.pluginDeltaY = dataManager.register("plugin_delta_y", SyncMode.LOCAL_ONLY, -(20 + 20 * pluginContainer.getContainerSize()) + 1);
-        this.pluginTargetDeltaY = dataManager.register("plugin_target_delta_y", SyncMode.LOCAL_ONLY, -(20 + 20 * pluginContainer.getContainerSize()) + 1);
         for (int i = 0; i < pluginContainer.getContainerSize(); i++)
             pluginSlots.add(new WandSlots.PluginSlot(pluginContainer, i, -99, -99));
         for (Slot slot : pluginSlots) addSlot(slot);

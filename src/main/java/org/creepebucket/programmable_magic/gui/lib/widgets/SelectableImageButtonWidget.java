@@ -5,7 +5,6 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
@@ -15,44 +14,47 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 /**
  * 可选中图片按钮控件：根据选中状态显示不同纹理，点击时触发回调。
  */
 public class SelectableImageButtonWidget extends Widget implements Renderable, Clickable, Tooltipable {
     private final Identifier normal;
-    private final Identifier selected;
-    private final Component tooltip;
     public boolean isSelected = false;
+    private Identifier selected;
 
-    public SelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier selected, Component tooltip) {
+    public SelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier texture) {
         super(pos, size);
-        this.normal = normal;
-        this.selected = selected;
-        this.tooltip = tooltip;
+        this.normal = texture;
+        this.selected = texture;
+    }
+
+    public SelectableImageButtonWidget selectedTexture(Identifier texture) {
+        selected = texture;
+        return this;
+    }
+
+    public SelectableImageButtonWidget defaultSelected() {
+        this.isSelected = true;
+        return this;
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // 根据选中状态选择纹理并渲染
         var tex = isSelected ? this.selected : this.normal;
-        int w = this.size.toScreenX();
-        int h = this.size.toScreenY();
-        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, this.pos.toMenuX(), this.pos.toMenuY(), 0, 0, w, h, w, h);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColor());
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-        // 检测点击是否在按钮范围内
-        if (!contains(event.x(), event.y())) return false;
+    public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
         isSelected = !isSelected;
         return true;
     }
 
     @Override
     public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-        if (!contains(mouseX, mouseY)) return false;
+        if (!isInBounds(mouseX, mouseY)) return false;
 
         graphics.renderTooltip(
                 ClientUiContext.getFont(),

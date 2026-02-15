@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.wand_plugins;
+package org.creepebucket.programmable_magic.gui.wand.wand_plugins;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;

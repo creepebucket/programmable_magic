@@ -8,8 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
 import org.creepebucket.programmable_magic.gui.lib.api.DataManager;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
@@ -17,23 +15,16 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.HookManager;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2CHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2cPacket;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SHandler, SimpleKvS2CHandler {
 
     public final Inventory playerInv;
     public final DataManager dataManager = new DataManager();
     public final HookManager hooks = new HookManager();
-
-    // 1. 控件列表现在放在 Menu 里，这样你在写 Menu 逻辑时就能塞控件进去了
-    public List<Widget> widgets = new ArrayList<>();
+    public Widget root = new Widget.Root();
 
     // 屏幕信息
     public int screenWidth;
@@ -62,14 +53,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
 
     // 傻瓜式添加控件方法
     public void addWidget(Widget widget) {
-        this.widgets.add(widget);
-        if (widget instanceof SlotWidget slotWidget) {
-            this.addSlot(slotWidget.slot);
-        }
-    }
-
-    public void addClientWidget(Supplier<Supplier<Widget>> supplier) {
-        if (FMLEnvironment.getDist() == Dist.CLIENT) addWidget(supplier.get().get());
+        root.addChild(widget);
     }
 
     // 3. 当 Screen 尺寸变化时，Screen 会调用这个方法
@@ -79,7 +63,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
         this.screenHeight = screenHeight;
 
         // 遍历所有控件，触发它们的初始化逻辑（通常用于重新计算位置）
-        for (Widget widget : this.widgets) {
+        for (Widget widget : this.root.allChild()) {
             if (widget instanceof Lifecycle lifecycle) {
                 lifecycle.onInitialize();
             }

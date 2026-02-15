@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
  */
 public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
 
+    public static Coordinate ZERO = Coordinate.fromTopLeft(0, 0);
     private static int screenWidth;
     private static int screenHeight;
     private static int guiLeft;

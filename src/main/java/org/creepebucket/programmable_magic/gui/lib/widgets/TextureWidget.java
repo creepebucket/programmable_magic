@@ -29,12 +29,6 @@ public class TextureWidget extends Widget implements Renderable {
      */
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        int w = this.size.toScreenX();
-        int h = this.size.toScreenY();
-        graphics.blit(RenderPipelines.GUI_TEXTURED, this.texture,
-                this.pos.toMenuX(), this.pos.toMenuY(),
-                0, 0,
-                w, h,
-                w, h);
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColor());
     }
 }

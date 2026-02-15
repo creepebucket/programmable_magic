@@ -13,7 +13,7 @@ public interface Lifecycle {
     /**
      * 控件从 UI 运行时移除时调用。
      */
-    default void onRemoved() {
+    default void onDestroy() {
     }
 
     /**

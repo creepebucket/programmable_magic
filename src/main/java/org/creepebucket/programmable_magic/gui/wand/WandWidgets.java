@@ -6,77 +6,49 @@ import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
-import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
-import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
-import org.creepebucket.programmable_magic.gui.lib.api.Widget;
+import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
-import org.creepebucket.programmable_magic.gui.lib.widgets.*;
+import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
+import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static net.minecraft.util.Mth.hsvToRgb;
-import static org.creepebucket.programmable_magic.gui.wand.WandScreen.dt;
 import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
 
 public class WandWidgets {
-    public static class SpellSupplyWidget extends SlotWidget {
-        public SyncedValue<Integer> deltaY;
-        public Coordinate delta;
-        public Coordinate original;
-
-        public SpellSupplyWidget(Slot slot, Coordinate pos, SyncedValue<Integer> deltaY) {
-            super(slot, pos);
-
-            this.deltaY = deltaY;
-            this.delta = new Coordinate((sw, sh) -> 0, (sw, sh) -> deltaY.get());
-            this.original = pos;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            pos = original.add(delta);
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class SpellStorageWidget extends SlotWidget implements Tooltipable, Clickable {
-        public Coordinate original;
+    public static class SpellStorageWidget extends SlotWidget {
         public List<Slot> slots;
         public int i;
-        public double deltaX = -400;
-        public double delta2X = 0;
-        public SyncedValue<Integer> target;
         public Hook editHook, deleteHook;
         public List<SpellStorageWidget> storageSlots;
-        public double speed = 1000;
-        public double speed2 = 0;
-        public double acc2 = 0;
+        public SmoothedValue delta2X = new SmoothedValue(0);
 
-        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots, SyncedValue<Integer> target) {
+        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots) {
             super(slots.get(i), pos);
             this.slots = slots;
             this.i = i;
-            this.original = pos;
             this.editHook = editHook;
             this.deleteHook = deleteHook;
             this.storageSlots = storageSlots;
-            this.target = target;
-            this.size = Coordinate.fromTopLeft(16, 16);
+            this.originalSize = Coordinate.fromTopLeft(16, 16);
+
+            addChild(new BlankInsertionWidget(Coordinate.fromTopLeft(-8, 16)).mainColor(originalMainColor));
         }
 
         public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY) {
@@ -155,61 +127,27 @@ public class WandWidgets {
         }
 
         @Override
-        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-            if (!isInBounds(mouseX, mouseY, pos.toScreenX() - 8, pos.toScreenY() + 16, 16, 2)) return false;
+        public int x() {
+            double x = (int) (originalPos.toScreenX() + parent.x() + dx.get() % 16 + delta2X.get());
 
-            graphics.renderTooltip(ClientUiContext.getFont(),
-                    List.of(ClientTooltipComponent.create(Component.translatable("gui.programmable_magic.wand.spells.insertion").getVisualOrderText())),
-                    mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
-            return true;
-        }
+            var allAnimations = new ArrayList<Animation>();
+            Widget parent = this;
 
-        @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-            if (!isInBounds(event.x(), event.y(), pos.toScreenX() - 8, pos.toScreenY() + 16, 16, 2)) return false;
+            while (!(parent instanceof Widget.Root)) {
+                allAnimations.addAll(parent.animations);
+                parent = parent.parent;
+            }
 
-            // FUCK MOJANG
-
-            int index = this.i - (int) deltaX / 16;
-            if (0 > index || index >= 1024) return false;
-
-            editHook.trigger(index, event.hasShiftDown());
-
-            // 处理动画
-            for (int j = i; j < storageSlots.size(); j++)
-                storageSlots.get(j).delta2X += event.hasShiftDown() ? 16 : -16; // 不用dx dx会被取模
-
-            return true;
+            for (Animation animation : allAnimations) {
+                if (animation.isActive()) x += animation.dx;
+            }
+            return (int) x;
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-
-            int i = this.i - (int) deltaX / 16;
+            int i = this.i - (int) dx.get() / 16;
             if (0 > i || i >= 1000) return;
-
-            pos = original.add(Coordinate.fromTopLeft((int) (deltaX % 16) + this.i * 16 + (int) delta2X, 0));
-
-            // 平滑dx
-            double dt = WandScreen.dt;
-
-            speed += ((double) target.get() - deltaX) * 200 * dt - speed * 30 * dt;
-            deltaX += speed * dt;
-
-            // d2x用于插入/删除动画, target始终为0
-            speed2 += -delta2X * 200 * dt - speed2 * 30 * dt + acc2;
-            delta2X += speed2 * dt;
-            acc2 = Math.max(acc2 - 100 * dt, 0); // acc2 用于删除动画
-
-            // 删除整个法术序列的条件 只能被acc2触发
-            if (this.i == 0 && original.toScreenX() + delta2X > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
-                deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard()); // 权宜之计... 这个hook会调用 delete 和 import
-                for (SpellStorageWidget widget : storageSlots) widget.acc2 = 0;
-            }
-
-            // 渲染格子
-
-            graphics.fill(pos.toScreenX() + 1, pos.toScreenY() + 1, pos.toScreenX() + 15, pos.toScreenY() + 15, -2147483648);
 
             // 更新自身Slot
             slot = slots.get(i);
@@ -217,72 +155,124 @@ public class WandWidgets {
             // 渲染编号
             int count = 0;
             while (i > 0 || count < 3) {
-                renderNumber(graphics, i % 10, pos.toScreenX() - count * 5 + 11, pos.toScreenY() - 5, mouseX, mouseY);
+                renderNumber(graphics, i % 10, x() - count * 5 + 11, y() - 5, mouseX, mouseY);
                 count++;
                 i /= 10;
             }
 
-            // 渲染空格插入按钮
-            if (isInBounds(mouseX, mouseY, pos.toScreenX() - 8, pos.toScreenY() + 16, 16, 2))
-                graphics.fill(pos.toScreenX() - 8, pos.toScreenY() + 16, pos.toScreenX() + 8, pos.toScreenY() + 18, -1);
+            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, -2147483648);
 
-            super.render(graphics, mouseX, mouseY, partialTick);
+            ClientSlotManager.setClientPosition(slot, (int) (x() + dx.get() % 16 + delta2X.get()), y());
 
+            if (this.i == 0 && delta2X.get() + x() > Minecraft.getInstance().getWindow().getGuiScaledWidth())
+                deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard());
+        }
+
+        public static class BlankInsertionWidget extends Widget implements Clickable, Renderable {
+            public BlankInsertionWidget(Coordinate pos) {
+                super(pos, Coordinate.fromTopLeft(16, 2));
+
+                tooltip(Component.translatable("gui.programmable_magic.wand.spells.insertion"));
+            }
+
+            @Override
+            public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                if (!isInBounds(mouseX, mouseY)) return;
+                graphics.fill(left(), top(), right(), bottom(), mainColor());
+            }
+
+            @Override
+            public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
+                // FUCK MOJANG
+
+                var parent = (SpellStorageWidget) this.parent;
+                int index = parent.i - (int) parent.dx.current / 16;
+
+                parent.editHook.trigger(index, event.hasShiftDown());
+
+                for (SpellStorageWidget widget : ((WandScreen) screen).storageSlots)
+                    if (widget.i >= parent.i)
+                        widget.addAnimation(event.hasShiftDown() ? new MoveLeft() : new MoveRight(), 0);
+                return true;
+            }
+        }
+
+        public static class MoveLeft extends Animation {
+            public SmoothedValue deltaX;
+
+            public MoveLeft() {
+                duration = 2;
+                deltaX = new SmoothedValue(16).set(0);
+            }
+
+            @Override
+            public void step(double dt) {
+                deltaX.doStep(dt);
+                dx = deltaX.get();
+            }
+        }
+
+        public static class MoveRight extends Animation {
+            public SmoothedValue deltaX;
+
+            public MoveRight() {
+                duration = 2;
+                deltaX = new SmoothedValue(-16).set(0);
+            }
+
+            @Override
+            public void step(double dt) {
+                deltaX.doStep(dt);
+                dx = deltaX.get();
+            }
         }
     }
 
     public static class WandSubCategoryWidget extends Widget implements Renderable {
-        public SyncedValue<Integer> deltaY;
         public String key;
 
-        public WandSubCategoryWidget(Coordinate pos, String subCategoryKey, SyncedValue<Integer> deltaY) {
-            this.pos = pos;
+        public WandSubCategoryWidget(Coordinate pos, String subCategoryKey) {
+            super(pos, Coordinate.ZERO);
             this.key = subCategoryKey;
-            this.deltaY = deltaY;
+
+
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            int x = pos.toScreenX();
-            int y = pos.toScreenY() + deltaY.get();
             Map<String, Integer> COLOR_MAP = ModUtils.SPELL_COLORS();
             var color = COLOR_MAP.getOrDefault(key, 0xFFFFFFFF);
             color = (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24);
 
-            graphics.fill(x, y + 4, x + 79, y + 6, color);
-            graphics.fill(x, y + 7, x + 79, y + 25, color);
-            graphics.fill(x, y + 26, x + 79, y + 28, color);
+            graphics.fill(x(), y() + 4, x() + 79, y() + 6, color);
+            graphics.fill(x(), y() + 7, x() + 79, y() + 25, color);
+            graphics.fill(x(), y() + 26, x() + 79, y() + 28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x + 3, y + 12, 0xFFFFFFFF);
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, 0xFFFFFFFF);
         }
     }
 
-    public static class WandSubcategoryJumpButton extends ImageButtonWidget {
-        public SyncedValue<Integer> deltaY;
+    public static class WandSubcategoryJumpButton extends Widget implements Renderable, Clickable {
+        public SmoothedValue deltaY;
         public int target, color;
 
-        public WandSubcategoryJumpButton(Coordinate pos, Coordinate size, SyncedValue<Integer> deltaY, int target, Component tooltip, int color) {
-            super(pos, size, null, null, () -> {
-            }, tooltip);
+        public WandSubcategoryJumpButton(Coordinate pos, Coordinate size, SmoothedValue deltaY, int target) {
+            super(pos, size);
             this.deltaY = deltaY;
             this.target = target;
-            this.color = color;
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            if (contains(mouseX, mouseY)) {
-                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), color);
+            if (isInBounds(mouseX, mouseY)) {
+                graphics.fill(x(), y(), x() + w(), y() + h(), mainColor());
             } else {
-                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(),
-                        (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24));
+                graphics.fill(x(), y(), x() + w(), y() + h(), originalMainColor.toArgbWithAlphaMult(0.6));
             }
         }
 
         @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-            // 检测点击是否在按钮范围内
-            if (!contains(event.x(), event.y())) return false;
+        public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
             this.deltaY.set(target);
             return true;
         }
@@ -299,16 +289,16 @@ public class WandWidgets {
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             if (isCharging)
-                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
-            else if (contains(mouseX, mouseY))
-                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), 0x80FFFFFF);
+                graphics.fill(x(), y(), x() + w(), y() + h(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
+            else if (isInBounds(mouseX, mouseY))
+                graphics.fill(x(), y(), x() + w(), y() + h(), bgColor());
             else
-                graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), -2147483647);
+                graphics.fill(x(), y(), x() + w(), y() + h(), mainColor());
         }
 
         @Override
         public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
-            if (!contains(mouseX, mouseY) && !isCharging) return false;
+            if (!isInBounds(mouseX, mouseY) && !isCharging) return false;
 
             Component tooltip;
 
@@ -332,8 +322,7 @@ public class WandWidgets {
         }
 
         @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-            if (!contains(event.x(), event.y())) return false;
+        public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
             isCharging = true;
             return true;
         }
@@ -356,7 +345,7 @@ public class WandWidgets {
 
             var count = 0;
             for (SpellExceptions error : errors) {
-                graphics.drawString(ClientUiContext.getFont(), error.message(), pos.toScreenX(), pos.toScreenY() + count * 16, 0xFFFF0000);
+                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, 0xFFFF0000);
                 count++;
             }
 
@@ -371,180 +360,24 @@ public class WandWidgets {
         }
     }
 
-    public static class DyTextureWidget extends TextureWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        /**
-         * 创建一个纹理控件。
-         *
-         * @param pos
-         * @param texture
-         * @param size
-         */
-        public DyTextureWidget(Coordinate pos, Identifier texture, Coordinate size, SyncedValue<Integer> dy) {
-            super(pos, texture, size);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DyImageButtonWidget extends ImageButtonWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        public DyImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier hover, Consumer<MouseButtonEvent> onPress, Component tooltip, SyncedValue<Integer> dy) {
-            super(pos, size, normal, hover, onPress, tooltip);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        public DyImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier hover, Runnable onPress, Component tooltip, SyncedValue<Integer> dy) {
-            super(pos, size, normal, hover, onPress, tooltip);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DySelectableImageButtonWidget extends SelectableImageButtonWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        public DySelectableImageButtonWidget(Coordinate pos, Coordinate size, Identifier normal, Identifier selected, Component tooltip, SyncedValue<Integer> dy) {
-            super(pos, size, normal, selected, tooltip);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DyTextWidget extends TextWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        public DyTextWidget(Coordinate pos, Component text, int color, SyncedValue<Integer> dy) {
-            super(pos, text, color);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DySlotWidget extends SlotWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        /**
-         * 创建一个槽位控件。
-         *
-         * @param slot
-         * @param pos
-         */
-        public DySlotWidget(Slot slot, Coordinate pos, SyncedValue<Integer> dy) {
-            super(slot, pos);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            ClientSlotManager.setClientPosition(slot, pos.toScreenX(), pos.toScreenY());
-        }
-    }
-
-    public static class DxDyInputBoxWidget extends InputBoxWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate originalPos, originalSize;
-        public double dx, speed, target;
-
-        public DxDyInputBoxWidget(Coordinate pos, Coordinate size, String initialValue, int maxLength, int mainColor, int borderColor, int backgroundColor, SyncedValue<Integer> dy) {
-            super(pos, size, initialValue, maxLength, mainColor, borderColor, backgroundColor);
-            this.originalPos = pos;
-            this.originalSize = size;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            // 平滑dx
-            if (box.isFocused()) target = -200;
-            else target = 0;
-            double dt = WandScreen.dt;
-
-            speed += (target - dx) * 200 * dt - speed * 30 * dt;
-            dx += speed * dt;
-
-            this.pos = originalPos.add(Coordinate.fromTopLeft((int) dx, dy.get()));
-            this.size = originalSize.add(Coordinate.fromTopLeft(-(int) dx, 0));
-            onInitialize();
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DyRectangleWidget extends RectangleWidget {
-        public SyncedValue<Integer> dy;
-        public Coordinate original;
-
-        public DyRectangleWidget(Coordinate pos, Coordinate size, int color, SyncedValue<Integer> dy) {
-            super(pos, size, color);
-            this.original = pos;
-            this.dy = dy;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-            super.render(graphics, mouseX, mouseY, partialTick);
-        }
-    }
-
-    public static class DyRectangleButtonWidget extends DyRectangleWidget implements Clickable {
+    public static class RectangleButtonWidget extends Widget implements Renderable, Clickable {
         public Runnable onPress;
-        public int hoverColor;
 
-        public DyRectangleButtonWidget(Coordinate pos, Coordinate size, int color, int hoverColor, SyncedValue<Integer> dy, Runnable onPress) {
-            super(pos, size, color, dy);
+        public RectangleButtonWidget(Coordinate pos, Coordinate size, Runnable onPress) {
+            super(pos, size);
             this.onPress = onPress;
-            this.hoverColor = hoverColor;
         }
 
         @Override
-        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-            if (!contains(event.x(), event.y())) return false;
-
+        public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
             onPress.run();
             return true;
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(0, dy.get()));
-
-            graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), contains(mouseX, mouseY) ? hoverColor : color);
-            graphics.fill(pos.toScreenX() + size.toScreenX() / 3, pos.toScreenY() + size.toScreenY() / 2, pos.toScreenX() + size.toScreenX() * 2 / 3, pos.toScreenY() + size.toScreenY() / 2 + 1, contains(mouseX, mouseY) ? 0xFF000000 : -1);
+            graphics.fill(left(), top(), right(), bottom(), isInBounds(mouseX, mouseY) ? mainColor() : bgColor());
+            graphics.fill(x() + w() / 3, y() + h() / 2, x() + w() * 2 / 3, y() + h() / 2 + 1, isInBounds(mouseX, mouseY) ? bgColor() : mainColor());
         }
     }
 
@@ -552,8 +385,7 @@ public class WandWidgets {
         public List<Notification> notifications = new LinkedList<>();
 
         public WandNotificationWidget(Coordinate pos, Coordinate size) {
-            this.pos = pos;
-            this.size = size;
+            super(pos, size);
         }
 
         @Override
@@ -562,7 +394,7 @@ public class WandWidgets {
             var deleted = false;
 
             for (Notification notification : notifications) {
-                if (isInBounds(event.x(), event.y(), pos.toScreenX(), (int) (pos.toScreenY() + notification.dy), size.toScreenX(), 16)) {
+                if (isIn(event.x(), event.y(), x(), (int) (y() + notification.dy), w(), 16)) {
                     // 设置其期限为现在 (需要播放删除动画)
                     double now = System.nanoTime() / 1e9;
                     notification.created = now - 1;
@@ -581,8 +413,8 @@ public class WandWidgets {
 
             for (Notification notification : List.copyOf(notifications).reversed()) {
                 // 平滑dy
-                notification.speed += (notification.targetDy - notification.dy) * 200 * dt - notification.speed * 30 * dt;
-                notification.dy += notification.speed * dt;
+                notification.speed += (notification.targetDy - notification.dy) * 200 * screen.dt - notification.speed * 30 * screen.dt;
+                notification.dy += notification.speed * screen.dt;
 
                 // 检查是否超时
                 double now = System.nanoTime() / 1e9;
@@ -599,8 +431,8 @@ public class WandWidgets {
                 var alphaMult = 1 - dx / 90;
 
                 // 渲染通知背景和持续时间提示条
-                var x = pos.toScreenX() + (int) dx;
-                var y = pos.toScreenY() + (int) notification.dy;
+                var x = x() + (int) dx;
+                var y = y() + (int) notification.dy;
                 var w = ClientUiContext.getFont().width(notification.content) + 8;
 
                 graphics.fill(x, y, x + w, y + 15, (notification.color & 16777215) | ((int) (((notification.color >>> 24) * alphaMult)) << 24));
@@ -651,57 +483,62 @@ public class WandWidgets {
         }
     }
 
-    public static class PluginWidget extends DySlotWidget {
+    public static class PluginWidget extends SlotWidget {
         public double lastChange = 0;
         public Component name = Component.empty(), function = Component.empty(), lastName = Component.empty(), lastFunction = Component.empty();
-        public int textColor, bgColor;
         public ItemStack lastStack;
+        public BasePlugin lastPlugin;
+        public TextWidget nameWidget, functionWidget;
 
         /**
          * 创建一个槽位控件。
          *
          * @param slot
          * @param pos
-         * @param dy
          */
-        public PluginWidget(Slot slot, Coordinate pos, SyncedValue<Integer> dy, int textColor, int bgColor) {
-            super(slot, pos, dy);
-
-            this.bgColor = bgColor;
-            this.textColor = textColor;
+        public PluginWidget(Slot slot, Coordinate pos) {
+            super(slot, pos);
         }
 
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            this.pos = original.add(Coordinate.fromTopLeft(64, dy.get()));
-            ClientSlotManager.setClientPosition(slot, pos.toScreenX(), pos.toScreenY() + 1);
+
+            ClientSlotManager.setClientPosition(slot, x(), y() + 1);
 
             // 检测Slot是否变化
             var now = System.nanoTime() / 1e9;
             if (!slot.getItem().equals(lastStack)) {
                 lastChange = now;
-                lastStack = slot.getItem();
 
                 lastName = name;
                 lastFunction = function;
 
+                lastStack = slot.getItem();
+
                 if (lastStack.isEmpty()) {
-                    name = Component.literal("test");
-                    function = Component.literal("baka").withColor(0xFFFF0000);
+                    name = Component.translatable("gui.programmable_magic.wand.plugin.no_plugin");
+                    function = Component.translatable("gui.programmable_magic.wand.plugin.no_plugin_desc");
+
                 } else {
                     name = lastStack.getHoverName();
                 }
+
+                if (lastPlugin != null) lastPlugin.onRemove((WandScreen) screen);
+                lastPlugin = WandPluginRegistry.getPlugin(slot.getItem().getItem());
+                if (lastPlugin != null) lastPlugin.onAdd((WandScreen) screen);
+
+                if (nameWidget != null) nameWidget.addAnimation(new Animation.FadeOut.ToRight(.3), 0);
+                if (nameWidget != null) functionWidget.addAnimation(new Animation.FadeOut.ToRight(.3), .05);
+
+                nameWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 0), name)
+                        .textColor(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .1));
+                functionWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 9), function)
+                        .textColor(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .15));
             }
 
-            if (!lastStack.isEmpty()) function = getPlugin(lastStack.getItem()).function();
+            if (!lastStack.isEmpty()) functionWidget.text = getPlugin(lastStack.getItem()).function();
 
-            // 哈哈 气笑了
-            graphics.drawString(ClientUiContext.getFont(), name, (int) (pos.toScreenX() - 64 - Math.pow(Math.clamp(0.3 - now + lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() - 1, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(now - lastChange, 0, 0.3), 1) / 0.3)) << 24));
-            graphics.drawString(ClientUiContext.getFont(), function, (int) (pos.toScreenX() - 64 - Math.pow(Math.clamp(0.35 - now + lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() + 9, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(now - lastChange - 0.05, 0, 0.3), 1) / 0.3)) << 24));
-            graphics.drawString(ClientUiContext.getFont(), lastName, (int) (pos.toScreenX() - 64 + Math.pow(Math.clamp(now - lastChange, 0, 0.3), 2.7) * 1000), pos.toScreenY() - 1, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(0.3 - now + lastChange, 0, 0.3), 1) / 0.3)) << 24));
-            graphics.drawString(ClientUiContext.getFont(), lastFunction, (int) (pos.toScreenX() - 64 + Math.pow(Math.clamp(now - lastChange - 0.05, 0, 0.3), 2.7) * 1000), pos.toScreenY() + 9, (textColor & 16777215) | ((int) (((textColor >>> 24) * Math.pow(Math.clamp(0.35 - now + lastChange, 0, 0.3), 1) / 0.3)) << 24));
-
-            graphics.fill(pos.toScreenX(), pos.toScreenY() + 1, pos.toScreenX() + 16, pos.toScreenY() + 17, bgColor);
+            graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColor());
         }
     }
 }

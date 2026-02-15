@@ -13,9 +13,9 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
-import org.creepebucket.programmable_magic.wand_plugins.BasePlugin;
 
 import java.util.*;
 
@@ -247,6 +247,10 @@ public class ModUtils {
         }
 
         return container;
+    }
+
+    public static double now() {
+        return System.nanoTime() / 1e9;
     }
 
     /**

@@ -2,6 +2,8 @@ package org.creepebucket.programmable_magic.gui.lib.ui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -17,8 +19,13 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
 import org.creepebucket.programmable_magic.network.dataPackets.HookTriggerPacket;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 
+import java.util.List;
+
+import static org.creepebucket.programmable_magic.ModUtils.now;
+
 public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
+    public double lastFrame = now(), dt;
     private float lastPartialTick = 0.0F;
 
     public Screen(M menu, Inventory playerInv, Component title) {
@@ -27,13 +34,14 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     protected void init() {
+        this.menu.root.screen = this;
 
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof Lifecycle lifecycle) {
-                lifecycle.onRemoved();
+                lifecycle.onDestroy();
             }
         }
-        this.menu.widgets.clear();
+        this.menu.root.allChild().clear();
 
         this.imageWidth = this.width;
         this.imageHeight = this.height;
@@ -79,9 +87,9 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     @Override
     public void removed() {
         // 界面关闭时，通知 Menu 里的控件被移除了
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof Lifecycle lifecycle) {
-                lifecycle.onRemoved();
+                lifecycle.onDestroy();
             }
         }
         super.removed();
@@ -91,7 +99,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     protected void containerTick() {
         super.containerTick();
         // 遍历 menu.widgets 进行逻辑更新
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof Tickable tickable) {
                 tickable.tick();
             }
@@ -100,19 +108,26 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        dt = now() - lastFrame;
+        lastFrame = now();
+
         this.lastPartialTick = partialTick;
         super.render(graphics, mouseX, mouseY, partialTick);
 
         graphics.nextStratum();
-        for (Widget widget : this.menu.widgets)
-            if (widget.renderInForeground() && widget instanceof Renderable renderable)
-                renderable.render(graphics, mouseX, mouseY, partialTick);
 
-        for (int i = this.menu.widgets.size() - 1; i >= 0; i--) {
-            Widget widget = this.menu.widgets.get(i);
+        menu.root.renderWidget(graphics, mouseX, mouseY, partialTick, dt, true);
+
+        for (int i = this.menu.root.allChild().size() - 1; i >= 0; i--) {
+            Widget widget = this.menu.root.allChild().get(i);
             if (widget instanceof Tooltipable tooltipable) {
                 if (tooltipable.renderTooltip(graphics, mouseX, mouseY)) return;
             }
+            // widget自己的简易tooltip
+
+            if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY))
+                graphics.renderTooltip(ClientUiContext.getFont(), List.of(ClientTooltipComponent.create(widget.tooltip.getVisualOrderText())),
+                        mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }
         this.renderTooltip(graphics, mouseX, mouseY);
     }
@@ -120,12 +135,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         ClientSlotManager.clearAll();
-        // 遍历 menu.widgets 进行渲染
-        for (Widget widget : this.menu.widgets) {
-            if (widget.renderInForeground()) continue;
-            if (widget instanceof Renderable renderable)
-                renderable.render(graphics, mouseX, mouseY, this.lastPartialTick);
-        }
+        menu.root.renderWidget(graphics, mouseX, mouseY, 0, dt, false);
     }
 
     @Override
@@ -140,9 +150,12 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseClicked(event, fromMouse)) return true;
+
+                if (widget.isInBounds(event.x(), event.y()) && clickable.mouseClickedChecked(event, fromMouse))
+                    return true;
             }
         }
         return super.mouseClicked(event, fromMouse);
@@ -150,9 +163,11 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseReleased(event)) return true;
+
+                if (widget.isInBounds(event.x(), event.y()) && clickable.mouseReleasedChecked(event)) return true;
             }
         }
         return super.mouseReleased(event);
@@ -160,7 +175,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof MouseDraggable draggable) {
                 if (draggable.mouseDragged(event, dragX, dragY)) return true;
             }
@@ -170,7 +185,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof MouseScrollable scrollable) {
                 if (scrollable.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
             }
@@ -180,7 +195,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyPressed(event)) return true;
             }
@@ -190,7 +205,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean keyReleased(KeyEvent event) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyReleased(event)) return true;
             }
@@ -200,7 +215,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean charTyped(CharacterEvent event) {
-        for (Widget widget : this.menu.widgets) {
+        for (Widget widget : this.menu.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.charTyped(event)) return true;
             }
@@ -208,8 +223,10 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         return super.charTyped(event);
     }
 
-    public void addWidget(Widget widget) {
+    public Widget addWidget(Widget widget) {
         widget.screen = this;
-        this.menu.widgets.add(widget);
+        for (Widget w : widget.allChild()) w.screen = this;
+        this.menu.addWidget(widget);
+        return widget;
     }
 }

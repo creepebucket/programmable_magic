@@ -1,97 +1,70 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import com.mojang.blaze3d.platform.cursor.CursorTypes;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.gui.narration.NarratedElementType;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
-import net.minecraft.util.StringUtil;
-import net.minecraft.util.Util;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.KeyInputable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseDraggable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
 import org.jspecify.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class InputBoxWidget extends Widget implements Renderable, Clickable, KeyInputable, MouseDraggable, Lifecycle {
 
-    public CustomizableEditBox box;
     private final String initialValue;
     private final int maxLength;
-    public int mainColor, borderColor, backgroundColor;
+    public CustomizableEditBox box;
+    public double widthExtend = 0, xExtend = 0;
 
-    public InputBoxWidget(Coordinate pos, Coordinate size, String initialValue, int maxLength, int mainColor, int borderColor, int backgroundColor) {
+    public InputBoxWidget(Coordinate pos, Coordinate size, String initialValue, int maxLength) {
         super(pos, size);
         this.initialValue = initialValue;
         this.maxLength = maxLength;
+    }
 
-        this.backgroundColor = backgroundColor;
-        this.mainColor = mainColor;
-        this.borderColor = borderColor;
-
-        onInitialize();
+    public InputBoxWidget extendWhenFocus(double widthExtend, double xExtend) {
+        this.widthExtend = widthExtend;
+        this.xExtend = xExtend;
+        return this;
     }
 
     @Override
     public void onInitialize() {
-        int x = this.pos.toScreenX();
-        int y = this.pos.toScreenY();
-        int w = this.size.toScreenX();
-        int h = this.size.toScreenY();
 
         if (this.box == null) {
-            this.box = new CustomizableEditBox(ClientUiContext.getFont(), x, y, w - 6, h, Component.empty(), mainColor);
+            this.box = new CustomizableEditBox(ClientUiContext.getFont(), x(), y(), w() - 6, h(), Component.empty(), textColor());
             this.box.setMaxLength(this.maxLength);
             this.box.setValue(this.initialValue);
             this.box.setCanLoseFocus(true);
         } else {
-            this.box.setRectangle(w -6, h, x, y);
+            this.box.setRectangle(w() - 6, h(), x(), y());
         }
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.fill(pos.toScreenX(), pos.toScreenY(), pos.toScreenX() + size.toScreenX(), pos.toScreenY() + size.toScreenY(), backgroundColor);
-        graphics.renderOutline(pos.toScreenX(), pos.toScreenY(), size.toScreenX(), size.toScreenY(), borderColor);
+        graphics.fill(x(), y(), x() + w(), y() + h(), bgColor());
+        graphics.renderOutline(x(), y(), w(), h(), mainColor());
 
+        this.box.setRectangle(w() - 6, h(), x(), y());
         this.box.render(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
-        if (contains(event.x(), event.y())) {
+        if (isInBounds(event.x(), event.y())) {
             this.box.setFocused(true);
+            dx.set(xExtend);
+            dw.set(widthExtend);
             return this.box.mouseClicked(event, fromMouse);
         }
         this.box.setFocused(false);
+        dx.set(0);
+        dw.set(0);
         return false;
     }
 
@@ -103,7 +76,7 @@ public class InputBoxWidget extends Widget implements Renderable, Clickable, Key
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
-        if (contains(event.x(), event.y())) return this.box.mouseDragged(event, dragX, dragY);
+        if (isInBounds(event.x(), event.y())) return this.box.mouseDragged(event, dragX, dragY);
         return false;
     }
 
