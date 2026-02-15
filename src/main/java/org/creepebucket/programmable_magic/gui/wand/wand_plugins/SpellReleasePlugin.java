@@ -75,7 +75,7 @@ public class SpellReleasePlugin extends BasePlugin {
                 () -> {
                     for (WandWidgets.SpellStorageWidget widget : screen.storageSlots) {
                         widget.deleteHook = screen.getMenu().clearSpellsHook;
-                        widget.delta2X.speed = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 1.2;
+                        widget.delta2X.set(Minecraft.getInstance().getWindow().getGuiScaledWidth());
                     }
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_delete")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
         editImport = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-80 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
@@ -83,7 +83,7 @@ public class SpellReleasePlugin extends BasePlugin {
                 () -> {
                     for (WandWidgets.SpellStorageWidget widget : screen.storageSlots) {
                         widget.deleteHook = screen.getMenu().importSpellsHook;
-                        widget.delta2X.speed = Minecraft.getInstance().getWindow().getGuiScaledWidth() * 1.2;
+                        widget.delta2X.set(Minecraft.getInstance().getWindow().getGuiScaledWidth());
                     }
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_import")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
         editLeftshift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-96 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),

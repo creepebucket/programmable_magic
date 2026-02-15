@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.util.Mth.hsvToRgb;
-import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
 
 public class WandWidgets {
     public static class SpellStorageWidget extends SlotWidget {
@@ -148,6 +147,7 @@ public class WandWidgets {
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             int i = this.i - (int) dx.get() / 16;
             if (0 > i || i >= 1000) return;
+            delta2X.doStep(screen.dt);
 
             // 更新自身Slot
             slot = slots.get(i);
@@ -164,8 +164,10 @@ public class WandWidgets {
 
             ClientSlotManager.setClientPosition(slot, (int) (x() + dx.get() % 16 + delta2X.get()), y());
 
-            if (this.i == 0 && delta2X.get() + x() > Minecraft.getInstance().getWindow().getGuiScaledWidth())
+            if (this.i == 0 && delta2X.get() + 50 > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
                 deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard());
+                for (SpellStorageWidget widget : storageSlots) widget.delta2X.set(0);
+            }
         }
 
         public static class BlankInsertionWidget extends Widget implements Clickable, Renderable {
@@ -524,7 +526,7 @@ public class WandWidgets {
                 }
 
                 if (lastPlugin != null) lastPlugin.onRemove((WandScreen) screen);
-                lastPlugin = WandPluginRegistry.getPlugin(slot.getItem().getItem());
+                lastPlugin = WandPluginRegistry.Client.getClientLogic(slot.getItem().getItem());
                 if (lastPlugin != null) lastPlugin.onAdd((WandScreen) screen);
 
                 if (nameWidget != null) nameWidget.addAnimation(new Animation.FadeOut.ToRight(.3), 0);
@@ -536,7 +538,7 @@ public class WandWidgets {
                         .textColor(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .15));
             }
 
-            if (!lastStack.isEmpty()) functionWidget.text = getPlugin(lastStack.getItem()).function();
+            if (!lastStack.isEmpty()) functionWidget.text = WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function();
 
             graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColor());
         }

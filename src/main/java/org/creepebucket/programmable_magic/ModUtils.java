@@ -13,9 +13,9 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
+import org.creepebucket.programmable_magic.spells.plugins.WandPluginLogic;
 
 import java.util.*;
 
@@ -100,7 +100,7 @@ public class ModUtils {
         for (ItemStack st : stacks) {
             if (st == null || st.isEmpty()) continue;
             Item item = st.getItem();
-            BasePlugin plugin = WandPluginRegistry.getPlugin(item);
+            WandPluginLogic plugin = WandPluginRegistry.getPlugin(item);
             if (plugin == null) continue;
             plugin.adjustWandValues(values, st);
         }
