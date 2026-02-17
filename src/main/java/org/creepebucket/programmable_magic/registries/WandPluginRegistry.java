@@ -53,6 +53,7 @@ public class WandPluginRegistry {
         registerPlugin("spell_release_t5", () -> new SpellReleaseLogicPlugin(5));
 
         registerPlugin("spell_packer", NO_OP);
+        registerPlugin("color_theme", NO_OP);
 
         ITEMS.register(eventBus);
     }
@@ -113,6 +114,7 @@ public class WandPluginRegistry {
             registerClientPlugin("spell_release_t5", () -> new SpellReleasePlugin(5));
 
             registerClientPlugin("spell_packer", SpellPackerPlugin::new);
+            registerClientPlugin("color_theme", ColorThemePlugin::new);
         }
 
         private static void registerClientPlugin(String pluginName, Supplier<BasePlugin> pluginSupplier) {

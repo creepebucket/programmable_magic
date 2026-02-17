@@ -35,35 +35,35 @@ public abstract class Widget {
     }
 
     public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+        if (isForeground == renderInForeground) {
+
+            // 动画的step
+            for (Animation animation : animations) animation.step(dt);
+
+            // 自己的渲染逻辑
+            if (this instanceof Renderable renderable) {
+                renderable.render(graphics, mx, my, partialTick);
+            }
+
+            // 检查动画过期状态
+            var expiredAnimations = animations.stream().filter(Animation::isExpired).toList();
+
+            for (Animation animation : animations) {
+                if (animation.isExpired()) {
+                    animation.onExpire(this);
+                }
+            }
+
+            for (Animation animation : expiredAnimations) {
+                animations.remove(animation);
+            }
+
+            // 平滑逻辑
+            for (SmoothedValue value : smoothedValues) value.doStep(dt);
+        }
 
         // 孩子的渲染逻辑
         for (Widget child : List.copyOf(children)) child.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
-
-        if (isForeground ^ renderInForeground) return;
-
-        // 动画的step
-        for (Animation animation : animations) animation.step(dt);
-
-        // 自己的渲染逻辑
-        if (this instanceof Renderable renderable) {
-            renderable.render(graphics, mx, my, partialTick);
-        }
-
-        // 检查动画过期状态
-        var expiredAnimations = animations.stream().filter(Animation::isExpired).toList();
-
-        for (Animation animation : animations) {
-            if (animation.isExpired()) {
-                animation.onExpire(this);
-            }
-        }
-
-        for (Animation animation : expiredAnimations) {
-            animations.remove(animation);
-        }
-
-        // 平滑逻辑
-        for (SmoothedValue value : smoothedValues) value.doStep(dt);
     }
 
     public Widget addAnimation(Animation animation, double delay) {

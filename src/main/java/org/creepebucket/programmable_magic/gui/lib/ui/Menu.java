@@ -14,7 +14,6 @@ import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.HookManager;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2CHandler;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvS2cPacket;
@@ -61,13 +60,6 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     public void reportScreenSize(int screenWidth, int screenHeight) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
-
-        // 遍历所有控件，触发它们的初始化逻辑（通常用于重新计算位置）
-        for (Widget widget : this.root.allChild()) {
-            if (widget instanceof Lifecycle lifecycle) {
-                lifecycle.onInitialize();
-            }
-        }
     }
 
     public <T> SyncedValue<T> registerData(String key, SyncMode syncMode, T initialValue) {

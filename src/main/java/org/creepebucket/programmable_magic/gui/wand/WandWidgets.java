@@ -12,10 +12,9 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tooltipable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
+import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.SlideBarWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
@@ -53,7 +52,7 @@ public class WandWidgets {
         public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY) {
             // 根据距离计算透明度并显示数字
             double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
-            int renderColor = 16777215 | ((int) ((255 * (Math.clamp(1000 / distance, 0.1, 1.1) - 0.1))) << 24);
+            int renderColor = new Color(mainColor()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0.1, 1.1));
             if (renderColor >>> 24 == 0) return;
 
             switch (n) {
@@ -160,7 +159,7 @@ public class WandWidgets {
                 i /= 10;
             }
 
-            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, -2147483648);
+            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, bgColor());
 
             ClientSlotManager.setClientPosition(slot, (int) (x() + dx.get() % 16 + delta2X.get()), y());
 
@@ -250,7 +249,7 @@ public class WandWidgets {
             graphics.fill(x(), y() + 7, x() + 79, y() + 25, color);
             graphics.fill(x(), y() + 26, x() + 79, y() + 28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, 0xFFFFFFFF);
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, textColor());
         }
     }
 
@@ -347,10 +346,9 @@ public class WandWidgets {
 
             var count = 0;
             for (SpellExceptions error : errors) {
-                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, 0xFFFF0000);
+                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, textColor());
                 count++;
             }
-
         }
 
         @Override
@@ -533,14 +531,46 @@ public class WandWidgets {
                 if (nameWidget != null) functionWidget.addAnimation(new Animation.FadeOut.ToRight(.3), .05);
 
                 nameWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 0), name)
-                        .textColor(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .1));
+                        .color(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .1));
                 functionWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 9), function)
-                        .textColor(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .15));
+                        .color(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .15));
             }
 
-            if (!lastStack.isEmpty()) functionWidget.text = WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function();
+            if (!lastStack.isEmpty())
+                functionWidget.text = WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function();
 
             graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColor());
+        }
+    }
+
+    public static class ColorSelectionWidget extends Widget implements Renderable, Lifecycle {
+        public SlideBarWidget r, g, b;
+        public RectangleWidget preview;
+
+        public ColorSelectionWidget(Coordinate pos) {
+            super(pos, Coordinate.ZERO);
+        }
+
+        public Color color() {
+            return new Color((int) r.value, (int) g.value, (int) b.value);
+        }
+
+        @Override
+        public void onInitialize() {
+            r = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.ZERO, Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
+            g = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 6), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
+            b = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
+
+            preview = (RectangleWidget) addChild(new RectangleWidget(Coordinate.fromTopLeft(83, 0), Coordinate.fromTopLeft(17, 17)));
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            r.background.color(new Color(0, (int) g.value, (int) b.value), new Color(255, (int) g.value, (int) b.value));
+            g.background.color(new Color((int) r.value, 0, (int) b.value), new Color((int) r.value, 255, (int) b.value));
+            b.background.color(new Color((int) r.value, (int) g.value, 0), new Color((int) r.value, (int) g.value, 255));
+
+            preview.color(color());
         }
     }
 }

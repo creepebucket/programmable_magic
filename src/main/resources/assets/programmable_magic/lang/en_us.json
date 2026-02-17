@@ -126,6 +126,7 @@
   "item.programmable_magic.spell_display_z_unit_vector": "Spell: Unit Vector Z",
   "item.programmable_magic.wand_item_placeholder": "Wand Item Placeholder",
   "item.programmable_magic.wand_plugin_auto_charge": "Plugin: Auto Charge",
+  "item.programmable_magic.wand_plugin_color_theme": "Plugin: Color Theme",
   "item.programmable_magic.wand_plugin_spell_packer": "Plugin: Spell Packer",
   "item.programmable_magic.wand_plugin_spell_release_t1": "Plugin: Spell Release I",
   "item.programmable_magic.wand_plugin_spell_release_t2": "Plugin: Spell Release II",
@@ -379,5 +380,11 @@
   "gui.programmable_magic.wand.plugin.spell_storage": "Spell Storage: ",
   "gui.programmable_magic.wand.plugin.mana_mult_mult": "Mana Mult: ",
   "gui.programmable_magic.wand.plugin.spell_packing": "Spell Packing",
-  "gui.programmable_magic.wand.plugin.provide_ability": "Provides: "
+  "gui.programmable_magic.wand.plugin.provide_ability": "Provides: ",
+  "gui.programmable_magic.wand.plugin.change_theme": "Change Theme",
+  "gui.programmable_magic.wand.theme.title": "Theme",
+  "gui.programmable_magic.wand.theme.main": "Main",
+  "gui.programmable_magic.wand.theme.background": "Background",
+  "gui.programmable_magic.wand.theme.text": "Text",
+  "gui.programmable_magic.wand.theme.reload": "Reload"
 }

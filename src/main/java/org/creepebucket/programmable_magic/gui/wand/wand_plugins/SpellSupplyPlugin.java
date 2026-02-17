@@ -62,7 +62,7 @@ public class SpellSupplyPlugin extends BasePlugin {
                     .tooltip(Component.translatable(key))));
 
             // 子类别标题
-            scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, categoryDy), key).dy(supplyDy));
+            scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, categoryDy), key).dy(supplyDy).textColor(screen.textColor));
 
             // 法术
             for (int i = 0; i < subCategorySpells.size(); i++) {
@@ -88,7 +88,7 @@ public class SpellSupplyPlugin extends BasePlugin {
                 new Coordinate((w, h) -> 0, (w, h) -> (h - 1 - h / (spells.size() + 1))),
                 new Coordinate((w, h) -> 7, (w, h) -> 1 + h / (spells.size() + 1)),
                 () -> supplyDy.set(-customCategoryDy + 20))
-                .mainColor(new Color(0xFF000000)).bgColor(new Color(0xB0000000)).tooltip(Component.translatable("spell." + MODID + ".subcategory.custom"))));
+                .mainColor(new Color(0xFF000000)).bgColor(new Color(0xB0000000)).tooltip(Component.translatable("spell." + MODID + ".subcategory.custom")).textColor(screen.textColor)));
 
         for (WandSlots.CustomSupplySlot slot : screen.getMenu().customSupplySlots) {
             scrollWidgets.add(new SlotWidget(slot, Coordinate.fromTopLeft(dx + 8, customCategoryDy + 32 + Math.floorDiv(dx, 80) * 16)).dy(supplyDy));
@@ -100,7 +100,7 @@ public class SpellSupplyPlugin extends BasePlugin {
         // 自定义供应的锁定按钮
         screen.lockButton = (SelectableImageButtonWidget) new SelectableImageButtonWidget(Coordinate.fromTopLeft(7, finalDy - 28), Coordinate.fromTopLeft(80, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_lock_button.png"))
-                .selectedTexture(Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_unlock_button.png")).tooltip(Component.translatable("gui.programmable_magic.wand.spells.unlock_custom")).dy(supplyDy);
+                .selectedTexture(Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_unlock_button.png")).tooltip(Component.translatable("gui.programmable_magic.wand.spells.unlock_custom")).dy(supplyDy).mainColor(screen.mainColor);
         lockCustomSupply = screen.lockButton;
         scrollWidgets.add(screen.lockButton);
 
@@ -111,7 +111,7 @@ public class SpellSupplyPlugin extends BasePlugin {
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplyDy));
         // 滚动条
         scrollBar = screen.addWidget(new ScrollbarWidget(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
-                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplyDy, "y").reverseDirection());
+                new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplyDy, "y").reverseDirection().mainColor(screen.mainColor));
 
         bottomUpperBound = screen.addWidget(new RectangleWidget(Coordinate.fromTopLeft(93, 0), Coordinate.fromBottomLeft(2, 0)).color(screen.mainColor));
 

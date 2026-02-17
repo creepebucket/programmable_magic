@@ -33,29 +33,29 @@ public class SpellReleasePlugin extends BasePlugin {
 
         debuggerIcon = screen.addWidget(new TextureWidget(Coordinate.fromBottomRight(-16, -76 - 14),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger.png"), Coordinate.fromTopLeft(16, 16))
-                .addAnimation(new Animation.FadeIn.FromRight(0.3), 0));
+                .addAnimation(new Animation.FadeIn.FromRight(0.3), 0).color(screen.mainColor));
 
         // 调试
         debuggerStep = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"),
                 () -> {
                     screen.notificationWidget.addDebug(Component.literal("im a debug message"));
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerTick = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 2), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"),
                 () -> {
                     screen.notificationWidget.addInfo(Component.literal("im an info"));
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_tick")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_tick")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerResume = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 3), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"),
                 () -> {
                     screen.notificationWidget.addWarning(Component.literal("im a warning"));
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_resume")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_resume")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerPause = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 4), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"),
                 () -> {
                     screen.notificationWidget.addError(Component.literal("im an error hehe"));
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
 
         // 编辑
         editRightShift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-32 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
@@ -64,12 +64,12 @@ public class SpellReleasePlugin extends BasePlugin {
                     screen.getMenu().storedSpellsEditHook.trigger(-1, false);
                     for (WandWidgets.SpellStorageWidget widget : screen.storageSlots)
                         widget.addAnimation(new WandWidgets.SpellStorageWidget.MoveRight(), 0);
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_right_shift")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_right_shift")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor));
         editExport = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-48 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export.png"),
                 () -> {
                     Minecraft.getInstance().keyboardHandler.setClipboard(ModUtils.serializeSpells(screen.getMenu().storedSpells));
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_export")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_export")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor));
         editDelete = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-64 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/trashcan.png"),
                 () -> {
@@ -77,7 +77,7 @@ public class SpellReleasePlugin extends BasePlugin {
                         widget.deleteHook = screen.getMenu().clearSpellsHook;
                         widget.delta2X.set(Minecraft.getInstance().getWindow().getGuiScaledWidth());
                     }
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_delete")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_delete")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor));
         editImport = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-80 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import.png"),
                 () -> {
@@ -85,29 +85,29 @@ public class SpellReleasePlugin extends BasePlugin {
                         widget.deleteHook = screen.getMenu().importSpellsHook;
                         widget.delta2X.set(Minecraft.getInstance().getWindow().getGuiScaledWidth());
                     }
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_import")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_import")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor));
         editLeftshift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-96 - 2, -76 - 14), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/left_shift.png"),
                 () -> {
                     screen.getMenu().storedSpellsEditHook.trigger(-1, true);
                     for (WandWidgets.SpellStorageWidget widget : screen.storageSlots)
                         widget.addAnimation(new WandWidgets.SpellStorageWidget.MoveLeft(), 0);
-                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_left_shift")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0));
+                }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_left_shift")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor));
 
         // 编译相关
         screen.bypassCompileWidget = (SelectableImageButtonWidget) new SelectableImageButtonWidget(Coordinate.fromBottomLeft(261, -90), Coordinate.fromTopLeft(16, 16), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/compile.png"))
                 .selectedTexture(Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/bypass_compile.png"))
-                .tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_bypass_compile")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0);
+                .tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_bypass_compile")).addAnimation(new Animation.FadeIn.FromBottom(0.3), 0).color(screen.mainColor).textColor(screen.textColor);
         bypassCompile = screen.addWidget(screen.bypassCompileWidget);
 
         compileErrorIcon = screen.addWidget(new TextureWidget(Coordinate.fromBottomLeft(261, -72), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/errors.png"),
-                Coordinate.fromTopLeft(16, 16)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1));
+                Coordinate.fromTopLeft(16, 16)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1).color(screen.mainColor));
         compileErrorText = screen.addWidget(new TextWidget(Coordinate.fromBottomLeft(261 + 16, -68),
-                Component.translatable("gui.programmable_magic.wand.inventory.debugger_compile_errors")).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1));
-        compileError = screen.addWidget(new WandWidgets.CompileErrorWidget(Coordinate.fromBottomLeft(261 + 16, -68 + 16)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1));
+                Component.translatable("gui.programmable_magic.wand.inventory.debugger_compile_errors")).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1).color(screen.textColor));
+        compileError = screen.addWidget(new WandWidgets.CompileErrorWidget(Coordinate.fromBottomLeft(261 + 16, -68 + 16)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .1).mainColor(screen.mainColor).textColor(screen.textColor));
 
         // 发射按钮
-        releaseButton = screen.addWidget(new WandWidgets.SpellReleaseWidget(Coordinate.fromBottomLeft(261 + 16, -88), Coordinate.fromTopRight(-261 - 16 - 98, 12)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .05));
+        releaseButton = screen.addWidget(new WandWidgets.SpellReleaseWidget(Coordinate.fromBottomLeft(261 + 16, -88), Coordinate.fromTopRight(-261 - 16 - 98, 12)).addAnimation(new Animation.FadeIn.FromBottom(0.3), .05).color(screen.mainColor));
 
         debuggerLeftBorder = screen.addWidget(new RectangleWidget(Coordinate.fromBottomRight(-18, -92),
                 Coordinate.fromTopLeft(2, 92)).color(screen.mainColor).addAnimation(new Animation.FadeIn.FromRight(0.3), .2));

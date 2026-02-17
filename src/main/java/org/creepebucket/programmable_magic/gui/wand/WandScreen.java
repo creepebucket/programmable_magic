@@ -57,7 +57,7 @@ public class WandScreen extends Screen<WandMenu> {
     }
 
     @Override
-    protected void init() {
+    public void init() {
         super.init();
 
         // 玩家物品栏
@@ -71,9 +71,9 @@ public class WandScreen extends Screen<WandMenu> {
         }
 
         addWidget(new TextureWidget(Coordinate.fromBottomLeft(95, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/backpack.png"),
-                Coordinate.fromTopLeft(16, 16)).addAnimation(new Animation.FadeIn.FromBottom(.3), 0));
+                Coordinate.fromTopLeft(16, 16)).addAnimation(new Animation.FadeIn.FromBottom(.3), 0).color(mainColor));
         addWidget(new TextureWidget(Coordinate.fromBottomLeft(98 + 9 * 18 - 49, -76 - 14), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/slant_end_bar_up.png"),
-                Coordinate.fromTopLeft(48, 16)).addAnimation(new Animation.FadeIn.FromBottom(.3), 0));
+                Coordinate.fromTopLeft(48, 16)).addAnimation(new Animation.FadeIn.FromBottom(.3), 0).color(mainColor));
         addWidget(new TextWidget(Coordinate.fromBottomLeft(95 + 16, -76 - 10), Component.translatable("gui.programmable_magic.wand.inventory"))
                 .color(textColor).addAnimation(new Animation.FadeIn.FromBottom(.3), 0));
 
@@ -85,7 +85,7 @@ public class WandScreen extends Screen<WandMenu> {
         addTopbar(bar);
 
         // 标题
-        bar.addChild(new TextureWidget(Coordinate.fromTopLeft(0, 0), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/wand_plugins.png"), Coordinate.fromTopLeft(16, 16)));
+        bar.addChild(new TextureWidget(Coordinate.fromTopLeft(0, 0), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/wand_plugins.png"), Coordinate.fromTopLeft(16, 16)).color(mainColor));
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 3), Component.translatable("gui.programmable_magic.wand.inventory.plugins")).color(textColor));
 
         // 插件
