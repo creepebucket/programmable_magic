@@ -33,6 +33,7 @@ import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.
  */
 public class WandMenu extends Menu {
     public SyncedValue<Boolean> customSupplySlotSupplyMode;
+    public WandHooks.SaveThemeHook saveThemeHook;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
     public WandHooks.ClearSpellsHook clearSpellsHook;
@@ -88,6 +89,7 @@ public class WandMenu extends Menu {
 
         // 法术槽位 固定1024个
         this.storedSpells = new SimpleContainer(1024);
+        this.saveThemeHook = hook(new WandHooks.SaveThemeHook(this));
         this.storedSpellsEditHook = hook(new WandHooks.StoredSpellsEditHook(storedSpells));
         this.importSpellsHook = hook(new WandHooks.ImportSpellsHook(storedSpells));
         this.clearSpellsHook = hook(new WandHooks.ClearSpellsHook(storedSpells));

@@ -61,7 +61,7 @@ public class WandWidgets {
                 }
                 case 1 -> {
                     graphics.fill(x, y + 1, x + 2, y + 2, renderColor);
-                    graphics.fill(x + 2, y, x + 3, y + 5, renderColor);
+                    graphics.fill(x + 2, y, x + 3, y + 4, renderColor);
                     graphics.fill(x, y + 4, x + 4, y + 5, renderColor);
                 }
                 case 2 -> {
@@ -546,9 +546,11 @@ public class WandWidgets {
     public static class ColorSelectionWidget extends Widget implements Renderable, Lifecycle {
         public SlideBarWidget r, g, b;
         public RectangleWidget preview;
+        public Color initialColor;
 
-        public ColorSelectionWidget(Coordinate pos) {
+        public ColorSelectionWidget(Coordinate pos, Color initialColor) {
             super(pos, Coordinate.ZERO);
+            this.initialColor = initialColor;
         }
 
         public Color color() {
@@ -557,9 +559,9 @@ public class WandWidgets {
 
         @Override
         public void onInitialize() {
-            r = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.ZERO, Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
-            g = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 6), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
-            b = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255)));
+            r = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.ZERO, Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.r));
+            g = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 6), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.g));
+            b = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.b));
 
             preview = (RectangleWidget) addChild(new RectangleWidget(Coordinate.fromTopLeft(83, 0), Coordinate.fromTopLeft(17, 17)));
         }
@@ -571,6 +573,11 @@ public class WandWidgets {
             b.background.color(new Color((int) r.value, (int) g.value, 0), new Color((int) r.value, (int) g.value, 255));
 
             preview.color(color());
+
+            var color = new Color(hsvToRgb((Minecraft.getInstance().level.getGameTime() * 0.01f) % 1, 1, 1) | 0xFF000000);
+            r.selection.color(color);
+            g.selection.color(color);
+            b.selection.color(color);
         }
     }
 }

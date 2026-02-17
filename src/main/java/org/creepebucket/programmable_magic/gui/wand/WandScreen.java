@@ -7,6 +7,7 @@ import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class WandScreen extends Screen<WandMenu> {
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
+        mainColor = new Color(menu.wand.getOrDefault(ModDataComponents.THEME_MAIN_COLOR.get(), 0xFFFFFFFF));
+        bgColor = new Color(menu.wand.getOrDefault(ModDataComponents.THEME_BG_COLOR.get(), 0x80000000));
+        textColor = new Color(menu.wand.getOrDefault(ModDataComponents.THEME_TEXT_COLOR.get(), 0xFFFFFFFF));
     }
 
     public void addTopbar(Widget bar) {
@@ -59,7 +63,6 @@ public class WandScreen extends Screen<WandMenu> {
     @Override
     public void init() {
         super.init();
-
         // 玩家物品栏
         List<Slot> inventorySlots = menu.hotbarSlots;
         inventorySlots.addAll(menu.backpackSlots);
@@ -111,5 +114,11 @@ public class WandScreen extends Screen<WandMenu> {
         // 动态地在大小改变时重建控件
         this.menu.root = new Widget.Root();
         super.resize(width, height);
+    }
+
+    @Override
+    public void onClose() {
+        menu.saveThemeHook.trigger(mainColor.toArgb(), bgColor.toArgb(), textColor.toArgb());
+        super.onClose();
     }
 }

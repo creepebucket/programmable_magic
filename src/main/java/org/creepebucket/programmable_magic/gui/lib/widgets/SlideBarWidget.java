@@ -11,18 +11,20 @@ public class SlideBarWidget extends Widget implements MouseDraggable, Clickable,
     public boolean focus = true;
     public Coordinate region;
     public GridentRectangleWidget background;
-    public RectangleWidget selection;
+    public OutlineWidget selection;
     public double value;
 
-    public SlideBarWidget(Coordinate pos, Coordinate size, Coordinate region) {
+    public SlideBarWidget(Coordinate pos, Coordinate size, Coordinate region, double initial) {
         super(pos, size);
         this.region = region;
+        this.value = initial;
     }
 
     @Override
     public void onInitialize() {
         background = (GridentRectangleWidget) addChild(new GridentRectangleWidget(Coordinate.ZERO, originalSize).color(originalBgColor));
-        selection = (RectangleWidget) addChild(new RectangleWidget(Coordinate.ZERO, Coordinate.fromTopLeft(3, h())).color(originalMainColor));
+        selection = (OutlineWidget) addChild(new OutlineWidget(Coordinate.ZERO, Coordinate.fromTopLeft(3, h())).color(originalMainColor));
+        selection.dx.setImmediate((value - region.toScreenX()) / (region.toScreenY() - region.toScreenX()) * (w() - 3));
     }
 
     @Override

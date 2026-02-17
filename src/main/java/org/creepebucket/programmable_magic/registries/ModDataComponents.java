@@ -47,6 +47,21 @@ public class ModDataComponents {
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.INT));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> THEME_MAIN_COLOR =
+            DATA_COMPONENTS.registerComponentType("theme_main_color", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> THEME_BG_COLOR =
+            DATA_COMPONENTS.registerComponentType("theme_bg_color", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> THEME_TEXT_COLOR =
+            DATA_COMPONENTS.registerComponentType("theme_text_color", builder -> builder
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.INT));
+
     // 上次释放结束的世界时间戳（tick）
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> LAST_RELEASE_TIME =
             DATA_COMPONENTS.registerComponentType("last_release_time", builder -> builder

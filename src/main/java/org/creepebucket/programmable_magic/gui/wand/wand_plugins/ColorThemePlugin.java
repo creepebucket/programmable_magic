@@ -40,13 +40,13 @@ public class ColorThemePlugin extends BasePlugin {
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 3), Component.translatable("gui.programmable_magic.wand.theme.title")).color(screen.textColor).dy(dy));
 
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 20), Component.translatable("gui.programmable_magic.wand.theme.main")).color(screen.textColor).dy(dy));
-        main = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 30)).dy(dy).color(screen.mainColor));
+        main = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 30), screen.mainColor).dy(dy).color(screen.mainColor));
 
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 49), Component.translatable("gui.programmable_magic.wand.theme.background")).color(screen.textColor).dy(dy));
-        bg = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 59)).dy(dy).color(screen.mainColor));
+        bg = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 59), screen.bgColor).dy(dy).color(screen.mainColor));
 
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 78), Component.translatable("gui.programmable_magic.wand.theme.text")).color(screen.textColor).dy(dy));
-        text = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 88)).dy(dy).color(screen.mainColor));
+        text = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 88), screen.textColor).dy(dy).color(screen.mainColor));
 
         bar.addChild(new StringButtonWidget(Coordinate.fromTopLeft(0, 110), Coordinate.fromTopLeft(100, 16), Component.translatable("gui.programmable_magic.wand.theme.reload"),
                 () -> {

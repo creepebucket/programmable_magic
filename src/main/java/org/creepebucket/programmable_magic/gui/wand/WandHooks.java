@@ -18,6 +18,24 @@ import java.util.List;
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 
 public class WandHooks {
+    public static class SaveThemeHook extends Hook {
+        public WandMenu menu;
+
+        public SaveThemeHook(WandMenu menu) {
+            super("save_theme");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            var wand = player.getItemInHand(menu.hand);
+            wand.set(ModDataComponents.THEME_MAIN_COLOR.get(), (Integer) args[0]);
+            wand.set(ModDataComponents.THEME_BG_COLOR.get(), (Integer) args[1]);
+            wand.set(ModDataComponents.THEME_TEXT_COLOR.get(), (Integer) args[2]);
+        }
+    }
+
     public static class StoredSpellsEditHook extends Hook {
         private final Container storage;
 
