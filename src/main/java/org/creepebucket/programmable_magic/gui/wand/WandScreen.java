@@ -112,7 +112,7 @@ public class WandScreen extends Screen<WandMenu> {
     @Override
     public void resize(int width, int height) {
         // 动态地在大小改变时重建控件
-        this.menu.root = new Widget.Root();
+        root = new Widget.Root();
         super.resize(width, height);
     }
 

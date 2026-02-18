@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.DataManager;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
-import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.HookManager;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
@@ -23,7 +22,6 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
     public final Inventory playerInv;
     public final DataManager dataManager = new DataManager();
     public final HookManager hooks = new HookManager();
-    public Widget root = new Widget.Root();
 
     // 屏幕信息
     public int screenWidth;
@@ -48,11 +46,6 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
 
         // 2. 构建菜单（在这里面你可以调用 addWidget）
         definition.build(this);
-    }
-
-    // 傻瓜式添加控件方法
-    public void addWidget(Widget widget) {
-        root.addChild(widget);
     }
 
     // 3. 当 Screen 尺寸变化时，Screen 会调用这个方法

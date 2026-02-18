@@ -54,7 +54,7 @@ public class ColorThemePlugin extends BasePlugin {
                     screen.bgColor = new Color(bg.color().toArgbWithAlphaMult(0.5));
                     screen.textColor = text.color();
 
-                    screen.getMenu().root.children = new ArrayList<>();
+                    screen.root.children = new ArrayList<>();
                     screen.init();
                 }).dy(dy).mainColor(screen.mainColor).bgColor(screen.bgColor).textColor(screen.textColor));
 
