@@ -47,6 +47,8 @@ public class SpellEntity extends Entity {
     public SpellItemLogic currentSpell;
     // 延迟刻
     public int delayTicks = 0;
+    // 原始法术列表
+    public SpellSequence originalSpellSequence;
 
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -63,6 +65,7 @@ public class SpellEntity extends Entity {
         this.spellData = spellData;
         this.availableMana = mana;
         this.pluginItems = plugins;
+        this.originalSpellSequence = spellSequence.subSequence(spellSequence.head, spellSequence.tail);
 
         this.setPos(caster.getX(), caster.getY(), caster.getZ());
 

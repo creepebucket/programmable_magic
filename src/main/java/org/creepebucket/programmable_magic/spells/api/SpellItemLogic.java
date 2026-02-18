@@ -99,7 +99,8 @@ public abstract class SpellItemLogic implements Cloneable {
                     partMatched = false;
                     break;
                 }
-                if (p instanceof ValueLiteralSpell valueLiteral && type != SpellValueType.EMPTY) matchedParamsList.add(0, valueLiteral.value);
+                if (p instanceof ValueLiteralSpell valueLiteral && type != SpellValueType.EMPTY)
+                    matchedParamsList.add(0, valueLiteral.value);
                 if (p != null && type != SpellValueType.EMPTY) p = p.prev;
             }
 
@@ -176,11 +177,61 @@ public abstract class SpellItemLogic implements Cloneable {
 
         public PairedRightSpell rightSpell;
         public Class<? extends PairedRightSpell> rightSpellType;
+        public PairedLeftSpell cloned;
+        public boolean expired = true;
+
+        @Override
+        public SpellItemLogic clone() {
+            if (expired) {
+                PairedLeftSpell clone = (PairedLeftSpell) super.clone();
+                PairedRightSpell rightClone = rightSpell.copy();
+                clone.rightSpell = rightClone;
+                rightClone.leftSpell = clone;
+                rightSpell.cloned = rightClone;
+                rightSpell.expired = false;
+                clone.rightSpellType = rightSpellType;
+                return clone;
+            } else {
+                expired = true;
+                return cloned;
+            }
+        }
+        
+        public PairedLeftSpell copy() {
+            var clone = (PairedLeftSpell) super.clone();
+            clone.rightSpellType = rightSpellType;
+            return clone;
+        }
     }
 
     public abstract static class PairedRightSpell extends SpellItemLogic {
 
         public PairedLeftSpell leftSpell;
         public Class<? extends PairedLeftSpell> leftSpellType;
+        public PairedRightSpell cloned;
+        public boolean expired = true;
+
+        @Override
+        public SpellItemLogic clone() {
+            if (expired) {
+                PairedRightSpell clone = (PairedRightSpell) super.clone();
+                PairedLeftSpell leftClone = leftSpell.copy();
+                clone.leftSpell = leftClone;
+                leftClone.rightSpell = clone;
+                leftSpell.cloned = leftClone;
+                leftSpell.expired = false;
+                clone.leftSpellType = leftSpellType;
+                return clone;
+            } else {
+                expired = true;
+                return cloned;
+            }
+        }
+
+        public PairedRightSpell copy() {
+            var clone = (PairedRightSpell) super.clone();
+            clone.leftSpellType = leftSpellType;
+            return clone;
+        }
     }
 }

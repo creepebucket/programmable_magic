@@ -326,13 +326,13 @@ public class WandWidgets {
                 // 释放法术
                 // 先过编译
                 var compiler = new SpellCompiler();
-                compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+                compiler.compile(((WandMenu) screen.getMenu()).storedSpells, ((WandScreen) screen).bypassCompileWidget.isSelected);
                 if (!compiler.errors.isEmpty()) {
                     for (SpellExceptions exception : compiler.errors)
                         ((WandScreen) screen).notificationWidget.addError(exception.message());
                     return false;
                 }
-                ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005);
+                ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005, ((WandScreen) screen).bypassCompileWidget.isSelected);
             }
             return false;
         }
@@ -371,7 +371,7 @@ public class WandWidgets {
         public void tick() {
             var compiler = new SpellCompiler();
 
-            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+            compiler.compile(((WandMenu) screen.getMenu()).storedSpells, false);
             errors = compiler.errors;
         }
     }

@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.spells.spells_base;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -44,15 +45,15 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
 
             // 生成调试背景基础信息
-            Component debugText = Component.translatable("spell." + MODID + ".debug_print_head")
+            MutableComponent debugText = Component.translatable("spell." + MODID + ".debug_print_head")
                     .setStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withHoverEvent(
                             new HoverEvent.ShowText(Component.translatable("spell." + MODID + ".debug_print_head_hover_time")
-                                    .append(Component.literal(caster.level().getGameTime() + "\n")))
+                                    .append(Component.literal(caster.level().getGameTime() + "\n" + spellEntity.getStringUUID())))
                     ));
 
-            if (paramsList.get(0) instanceof Double) {
-                // TODO
-            }
+            var p = paramsList.get(0);
+
+            debugText.append(Component.literal(p + ":").withColor(-1)).append(SpellValueType.fromValue(p).typed());
 
             caster.displayClientMessage(debugText, false);
 

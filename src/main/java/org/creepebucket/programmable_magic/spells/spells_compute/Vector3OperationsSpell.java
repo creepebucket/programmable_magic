@@ -22,12 +22,12 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
 
     @Override
     public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return false;
+        return true;
     }
 
     @Override
     public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return null;
+        return new ModUtils.Mana();
     }
 
     public static class BuildVectorSpell extends Vector3OperationsSpell {

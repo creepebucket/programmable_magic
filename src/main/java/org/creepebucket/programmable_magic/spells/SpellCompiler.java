@@ -19,7 +19,7 @@ import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 public class SpellCompiler {
     public List<SpellExceptions> errors = new ArrayList<>();
 
-    public SpellSequence compile(Container spells) {
+    public SpellSequence compile(Container spells, Boolean skipCompile) {
 
         // Step 1: List<ItemStack>转换为SpellSequence
 
@@ -98,7 +98,7 @@ public class SpellCompiler {
                 continue;
             }
 
-            if (p instanceof CommaSpell) { // 逗号就是空逻辑, 删掉就好
+            if (p instanceof CommaSpell && skipCompile) { // 继续编译的话逗号有分割语句的语义, 不能删
                 SpellItemLogic next = p.prev;
                 rawSequence.replaceSection(p, p, new SpellSequence());
                 p = next;
@@ -138,41 +138,29 @@ public class SpellCompiler {
             }
         }
 
+        if (skipCompile) return rawSequence;
+
         // Step 5: 解析法术序列
 
         /*
          * 法术优先级:
          *
          *  ^ 先执行
-         *  | +05
-         *  | +04
-         *  | +03
-         *  | +02
-         *  | +01
-         *  | 000
-         *  | -01
-         *  | -02
-         *  | -03
+         *  | +05 StorageSpell.GetStoreSpell (get_store)
+         *  | +04 NumberOperationsSpell.ExponentSpell (exponent, 右结合)
+         *  | +03 NumberOperationsSpell 一元运算 (如 sin/cos/tan/asin/acos/atan/...)
+         *  | +02 NumberOperationsSpell 二元乘除模 (multiplication/division/remainder)
+         *  | +01 NumberOperationsSpell 二元加减 (addition/subtraction)
+         *  | 000 BoolOperationsSpell 比较/判定与默认优先级 (如 greater_than/less_than/equal_to/...)
+         *  | -01 BoolOperationsSpell.NotSpell (not)
+         *  | -02 BoolOperationsSpell.OrSpell (or)
+         *  | -03 BoolOperationsSpell.AndSpell (and)
          *  | -04
          *  | -05
          *  | ...
          *  | -99 所有无输出普通法术
          *  v 后执行
          *
-         */
-
-        /*
-         * 表内数字对应的当前实现:
-         *  +05: StorageSpell.GetStoreSpell (get_store)
-         *  +04: NumberOperationsSpell.ExponentSpell (exponent, 右结合)
-         *  +03: NumberOperationsSpell 一元运算 (如 sin/cos/tan/asin/acos/atan/...)
-         *  +02: NumberOperationsSpell 二元乘除模 (multiplication/division/remainder)
-         *  +01: NumberOperationsSpell 二元加减 (addition/subtraction)
-         *  000: BoolOperationsSpell 比较/判定与默认优先级 (如 greater_than/less_than/equal_to/...)
-         *  -01: BoolOperationsSpell.NotSpell (not)
-         *  -02: BoolOperationsSpell.OrSpell (or)
-         *  -03: BoolOperationsSpell.AndSpell (and)
-         *  -99: 无输出/跳过后缀转换 (FlowControlSpell/TriggerSpell/VisualEffectSpell/StorageSpell.SetStoreSpell)
          */
 
         // Shitting(?) Yard
@@ -194,11 +182,19 @@ public class SpellCompiler {
             }
 
             // 如果法术自己想要跳过需要尊重法术意愿
-            else if (i.bypassShunting) spellsRPN.pushRight(i);
+            else if (i.bypassShunting) {
+                for (SpellItemLogic j = operatorStack.head == null ? null : operatorStack.popLeft(); j != null && !(j instanceof ParenSpell.LParenSpell); j = operatorStack.head == null ? null : operatorStack.popLeft())
+                    spellsRPN.pushRight(j);
+                spellsRPN.pushRight(i);
+            } else if (i instanceof ValueLiteralSpell) spellsRPN.pushRight(i);
 
-            else if (i instanceof ValueLiteralSpell) spellsRPN.pushRight(i);
+            else if (i instanceof CommaSpell) { // 逗号可以分割语句
+                for (SpellItemLogic j = operatorStack.head == null ? null : operatorStack.popLeft(); j != null && !(j instanceof ParenSpell.LParenSpell); j = operatorStack.head == null ? null : operatorStack.popLeft())
+                    spellsRPN.pushRight(j);
+                // 但是逗号不能实际出现在分割后的语句
+            }
 
-                // 如果这个法术没有入参, 当作数值处理
+            // 如果这个法术没有入参, 当作数值处理
             else if (i.inputTypes != null && !i.inputTypes.isEmpty() && i.inputTypes.get(0) != null && !i.inputTypes.get(0).isEmpty() && i.inputTypes.get(0).get(0) == SpellValueType.EMPTY) { // 绝对不会NPE(?
                 // 只检查第一个重载的第一个元素, 我们无法区分同时含有无参和有参的法术作为数字还是作为算符
                 spellsRPN.pushRight(i);
