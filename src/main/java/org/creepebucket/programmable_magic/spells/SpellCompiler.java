@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
@@ -13,10 +12,7 @@ import org.creepebucket.programmable_magic.spells.spells_compute.ParenSpell;
 import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
@@ -114,14 +110,14 @@ public class SpellCompiler {
         // Step 4: 配对括号等法术
 
         // 需要配对的法术栈
-        Map<Class<? extends SpellItemLogic.PairedLeftSpell>, SpellSequence> pairs = new HashMap<>();
+        Map<Class<? extends SpellItemLogic.PairedLeftSpell>, ArrayDeque<SpellItemLogic>> pairs = new HashMap<>();
         for (SpellItemLogic i = rawSequence.head; i != null; i = i.next) {
             if (i instanceof SpellItemLogic.PairedLeftSpell left) {
                 try {
                     var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
                     // 左括号入栈
-                    pairs.computeIfAbsent(leftType, k -> new SpellSequence())
-                            .pushLeft(i);
+                    pairs.computeIfAbsent(leftType, k -> new ArrayDeque<>())
+                            .push(i);
                 } catch (InstantiationException e) { // 反射死妈了
                     throw new RuntimeException(e);
                 } catch (IllegalAccessException e) {
@@ -134,9 +130,9 @@ public class SpellCompiler {
             }
             if (i instanceof SpellItemLogic.PairedRightSpell r) {
                 // 右括号出栈并设置配对
-                if (pairs.get(r.leftSpellType) == null || pairs.get(r.leftSpellType).head == null) continue;
+                if (pairs.get(r.leftSpellType) == null || pairs.get(r.leftSpellType).peek() == null) continue;
 
-                SpellItemLogic.PairedLeftSpell l = (SpellItemLogic.PairedLeftSpell) pairs.get(r.leftSpellType).popLeft();
+                SpellItemLogic.PairedLeftSpell l = (SpellItemLogic.PairedLeftSpell) pairs.get(r.leftSpellType).pop();
                 r.leftSpell = l;
                 l.rightSpell = r;
             }

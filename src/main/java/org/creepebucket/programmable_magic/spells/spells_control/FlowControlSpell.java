@@ -38,12 +38,12 @@ public class FlowControlSpell {
 
         @Override
         public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return false;
+            return true;
         }
 
         @Override
         public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return null;
+            return new ModUtils.Mana();
         }
     }
 
@@ -51,7 +51,6 @@ public class FlowControlSpell {
 
         // 次数计数
         public double count;
-        public boolean firstRun;
 
         public ForLoopSpell() {
             super();
@@ -61,20 +60,9 @@ public class FlowControlSpell {
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            if (firstRun) {
-                // 设置循环次数并返回
-                count = (Double) paramsList.get(0);
-                return ExecutionResult.SUCCESS(this);
-            }
+            count = (Double) paramsList.get(0);
 
-            count--;
-
-            if (count > 0) {
-                // 循环未结束则返回
-                return ExecutionResult.SUCCESS(this);
-            }
-
-            return new ExecutionResult(rightSpell.next, 0, false, null, null);
+            return super.run(caster, spellSequence, paramsList, spellEntity);
         }
     }
 
@@ -90,6 +78,13 @@ public class FlowControlSpell {
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            // 对for做特判
+            if (leftSpell instanceof ForLoopSpell forLoopSpell) {
+                forLoopSpell.count--;
+
+                if (forLoopSpell.count == 0) return ExecutionResult.SUCCESS(this);
+            }
+
             // 还原 originalSequence
             spellSequence.replaceSection(leftSpell.next, prev, ((LoopStartSpell) leftSpell).originalSequence);
 
@@ -155,18 +150,22 @@ public class FlowControlSpell {
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            // 向左搜索到最近的 IfStart/LoopStart
+            // 向右搜索到配对的 LoopEnd
+            int count = 0;
 
             SpellItemLogic pointer = this;
             while (pointer != null) {
-                if (pointer instanceof IfStartSpell || pointer instanceof LoopStartSpell) {
-                    return new ExecutionResult(pointer.next, 0, false, null, null);
+                pointer = pointer.next;
+                if (pointer instanceof LoopEndSpell) {
+                    if (count == 0) return ExecutionResult.SUCCESS(pointer.prev);
+                    count--;
+                } else if (pointer instanceof LoopStartSpell) {
+                    count++;
                 }
-                pointer = pointer.prev;
             }
 
             // 找不到则报错
-            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.continue_not_found_start"), this).throwIt(caster);
+            SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.continue_not_found_end"), this).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 

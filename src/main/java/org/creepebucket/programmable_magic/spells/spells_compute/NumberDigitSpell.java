@@ -8,13 +8,14 @@ import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class NumberDigitSpell extends SpellItemLogic implements SpellItemLogic.ComputeMod {
 
-    public int digit;
+    public double digit;
 
     public NumberDigitSpell(int digit) {
         this.digit = digit;
@@ -28,7 +29,7 @@ public class NumberDigitSpell extends SpellItemLogic implements SpellItemLogic.C
     public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
         // 如果左边是数字, 取左边数的返回值x10 + 本数
         if (this.prev instanceof NumberDigitSpell) {
-            List<Object> result = this.prev.run(caster, spellSequence, paramsList, spellEntity).returnValue;
+            List<Object> result = new ArrayList<>(this.prev.run(caster, spellSequence, paramsList, spellEntity).returnValue);
             result.set(0, ((double) result.get(0)) * 10 + this.digit); // 绝对不会null
             return ExecutionResult.RETURNED(this, result, List.of(SpellValueType.NUMBER, SpellValueType.SPELL));
         }
