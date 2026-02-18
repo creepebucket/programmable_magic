@@ -29,6 +29,7 @@ public class SpellCompiler {
 
         SpellSequence rawSequence = new SpellSequence();
         for (ItemStack spell : spells) {
+            if (spell.isEmpty()) continue;
             if (!SpellRegistry.isSpell(spell.getItem())) {
                 rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.getItem(), "name"));
                 continue;
@@ -183,7 +184,8 @@ public class SpellCompiler {
         SpellSequence spellsRPN = new SpellSequence();
 
         // 遍历每个法术
-        for (SpellItemLogic i = rawSequence.head; i != null; i = i.next) {
+        for (SpellItemLogic i = rawSequence.head, next; i != null; i = next) {
+            next = i.next;
 
             // 左括号入栈
             if (i instanceof ParenSpell.LParenSpell) operatorStack.pushLeft(i);

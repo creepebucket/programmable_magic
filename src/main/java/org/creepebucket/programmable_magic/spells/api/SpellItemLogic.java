@@ -9,7 +9,6 @@ import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpe
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.getPlugin;
@@ -87,64 +86,26 @@ public abstract class SpellItemLogic implements Cloneable {
      */
     public ExecutionResult runWithCheck(Player caster, SpellSequence spellSequence, SpellEntity spellEntity) {
 
-        // 根据自身重载长度截取指定长度的参数
-        List<List<Object>> allParamsList = new ArrayList<>();
-        Map<Integer, Boolean> haveStored = new java.util.HashMap<>();
-
-        for (List<SpellValueType> overload : inputTypes) {
-            // 检查这个长度是否已经获取过
-            if (haveStored.getOrDefault(overload.size(), false)) continue;
-
-            SpellItemLogic p = this; // 追踪参数
-            List<Object> paramsList = new ArrayList<>();
-
-            // 获取参数
-            for (int i = 0; i < overload.size(); i++) {
-                // 先判断null
-                if (p == null) break;
-
-                // 加入参数列表
-                paramsList.add(p);
-                p = p.next;
-            }
-
-            haveStored.put(overload.size(), true);
-            allParamsList.add(paramsList);
-        }
-
-        // 检查参数是否在重载里
         boolean matched = false;
-        boolean partMatched = true;
-        List<Object> matchedParamsList = null;
+        List<Object> matchedParamsList = new ArrayList<>();
 
-        for (List<Object> paramsList : allParamsList) {
-            // 对于每个参数列表
+        for (List<SpellValueType> types : inputTypes) {
+            var p = this.prev;
+            var partMatched = true;
+            matchedParamsList = new ArrayList<>();
 
-            for (List<SpellValueType> overload : inputTypes) {
-                // 先标记部分匹配再检查是否有违反
-                partMatched = true;
-
-                // 先检查长度
-                if (overload.size() != paramsList.size()) {
+            for (SpellValueType type : types) {
+                if (type != SpellValueType.EMPTY && (!(p instanceof ValueLiteralSpell) || (type != SpellValueType.ANY && ((ValueLiteralSpell) p).type != type))) {
                     partMatched = false;
-                    continue;
+                    break;
                 }
-
-                // 再进行逐类型检查
-                for (int i = 0; i < overload.size(); i++) {
-                    // 检查类型
-                    SpellValueType type = overload.get(i);
-                    if (type != SpellValueType.ANY && type != SpellValueType.fromValue(paramsList.get(i))) {
-                        partMatched = false;
-                        break;
-                    }
-                }
-
-                // 最后整合匹配信息
-                if (partMatched) matchedParamsList = paramsList;
-
-                matched = matched || partMatched;
+                if (p instanceof ValueLiteralSpell valueLiteral && type != SpellValueType.EMPTY) matchedParamsList.add(0, valueLiteral.value);
+                if (p != null && type != SpellValueType.EMPTY) p = p.prev;
             }
+
+            matched = matched | partMatched;
+
+            if (matched) break;
         }
 
         // 如果未匹配，则返回错误

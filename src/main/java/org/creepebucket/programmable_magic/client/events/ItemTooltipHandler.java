@@ -23,7 +23,7 @@ public class ItemTooltipHandler {
         boolean alt = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT);
 
         if (event.getItemStack().getItem() instanceof ModItemExtensions ext) {
-            ext.append_tooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
+            ext.appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
         }
     }
 }

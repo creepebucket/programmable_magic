@@ -26,16 +26,19 @@ public class BaseSpellItem extends Item implements ModItemExtensions {
     }
 
     @Override
-    public void append_tooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
+    public void appendTooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
         SpellItemLogic logic = getLogic();
 
         MutableComponent tmp;
 
         String typeKey;
         if (logic instanceof SpellItemLogic.BaseSpell) typeKey = "tooltip." + MODID + ".spell_tooltip.type.base_spell";
-        else if (logic instanceof SpellItemLogic.ComputeMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.compute_mod";
-        else if (logic instanceof SpellItemLogic.ControlMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.control_mod";
-        else if (logic instanceof SpellItemLogic.AdjustMod) typeKey = "tooltip." + MODID + ".spell_tooltip.type.adjust_mod";
+        else if (logic instanceof SpellItemLogic.ComputeMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.compute_mod";
+        else if (logic instanceof SpellItemLogic.ControlMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.control_mod";
+        else if (logic instanceof SpellItemLogic.AdjustMod)
+            typeKey = "tooltip." + MODID + ".spell_tooltip.type.adjust_mod";
         else typeKey = "tooltip." + MODID + ".spell_tooltip.type.unknown";
 
         String assocKey = logic.rightConnectivity
@@ -87,6 +90,7 @@ public class BaseSpellItem extends Item implements ModItemExtensions {
         tooltip.add(Component.translatable(descBaseKey + "desc1").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable(descBaseKey + "desc2").withStyle(ChatFormatting.GRAY));
         String desc3Key = descBaseKey + "desc3";
-        if (Language.getInstance().has(desc3Key)) tooltip.add(Component.translatable(desc3Key).withStyle(ChatFormatting.GRAY));
+        if (Language.getInstance().has(desc3Key))
+            tooltip.add(Component.translatable(desc3Key).withStyle(ChatFormatting.GRAY));
     }
 } 

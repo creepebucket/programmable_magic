@@ -5,14 +5,18 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.PackedSpell;
+import org.creepebucket.programmable_magic.spells.SpellCompiler;
+import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
@@ -191,6 +195,38 @@ public class WandHooks {
                     customSupply.setItem(i, stack);
                     return;
                 }
+        }
+    }
+
+    public static class ReleaseSpellHook extends Hook {
+        public WandMenu menu;
+
+        public ReleaseSpellHook(WandMenu menu) {
+            super("release_spell");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (player.level().isClientSide()) return;
+
+            var plugins = menu.wand.get(ModDataComponents.PLUGINS);
+
+            // 编译
+            var compiler = new SpellCompiler();
+            var compiled = compiler.compile(menu.storedSpells);
+
+            if (!compiler.errors.isEmpty()) {
+                for (SpellExceptions exception : compiler.errors) exception.throwIt(player);
+                // 有错就滚
+                return;
+            }
+
+            // 生成
+            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins);
+
+            player.level().addFreshEntity(menu.spell);
         }
     }
 }

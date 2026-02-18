@@ -78,13 +78,14 @@ public class SpellEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        if (this.level().isClientSide()) return;
         // 检查延迟
         if (delayTicks > 0) {
             delayTicks--;
             return;
         }
 
-        while (delayTicks <= 0) {
+        while (delayTicks <= 0 && currentSpell != null) {
             // 执行法术序列逻辑
             ExecutionResult result = currentSpell.runWithCheck(caster, spellSequence, this);
             // 设置延迟
@@ -94,6 +95,8 @@ public class SpellEntity extends Entity {
             // 设置下一个法术
             currentSpell = result.nextSpell;
         }
+
+        if (currentSpell == null) this.discard();
     }
 
     // 暂时不支持持久化

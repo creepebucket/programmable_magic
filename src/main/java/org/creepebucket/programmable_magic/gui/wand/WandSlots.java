@@ -4,7 +4,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
-import org.creepebucket.programmable_magic.spells.PackedSpell;
+import org.creepebucket.programmable_magic.registries.ModItems;
 
 import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.isPlugin;
 
@@ -19,7 +19,7 @@ public class WandSlots {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return !supplyMode.get() && stack.getItem() instanceof PackedSpell;
+            return !supplyMode.get() && stack.is(ModItems.PACKED_SPELL);
         }
 
         @Override

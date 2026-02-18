@@ -18,6 +18,7 @@ import org.creepebucket.programmable_magic.gui.lib.widgets.SlideBarWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
+import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
@@ -305,7 +306,9 @@ public class WandWidgets {
 
             if (!isCharging) tooltip = Component.translatable("gui.programmable_magic.wand.release");
             else
-                tooltip = Component.literal(ModUtils.FormattedManaString(chargedTick)).withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
+                tooltip = Component.literal(ModUtils.FormattedManaString(
+                                chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005))
+                        .withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
 
             graphics.renderTooltip(
                     ClientUiContext.getFont(),
@@ -317,14 +320,27 @@ public class WandWidgets {
 
         @Override
         public boolean mouseReleased(MouseButtonEvent event) {
-            chargedTick = 0;
-            isCharging = false;
+            if (isCharging) {
+                isCharging = false;
+                chargedTick = 0;
+                // 释放法术
+                // 先过编译
+                var compiler = new SpellCompiler();
+                compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+                if (!compiler.errors.isEmpty()) {
+                    for (SpellExceptions exception : compiler.errors)
+                        ((WandScreen) screen).notificationWidget.addError(exception.message());
+                    return false;
+                }
+                ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005);
+            }
             return false;
         }
 
         @Override
         public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
             isCharging = true;
+            tick();
             return true;
         }
 

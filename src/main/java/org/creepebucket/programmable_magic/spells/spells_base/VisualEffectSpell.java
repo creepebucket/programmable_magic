@@ -37,6 +37,7 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
         public DebugPrintSpell() {
             name = "debug_print";
             inputTypes = List.of(List.of(SpellValueType.ANY));
+            bypassShunting = true;
         }
 
         @Override
@@ -52,6 +53,8 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
             if (paramsList.get(0) instanceof Double) {
                 // TODO
             }
+
+            caster.displayClientMessage(debugText, false);
 
             return ExecutionResult.SUCCESS(this);
         }

@@ -1,13 +1,16 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +19,12 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 public class WandScreen extends Screen<WandMenu> {
 
-    public static double dt;
-    private final List<Widget> packedSpellWidgets = new ArrayList<>();
-    private final List<Widget> pluginWidgets = new ArrayList<>();
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public SelectableImageButtonWidget bypassCompileWidget;
     public SelectableImageButtonWidget lockButton;
     public InputBoxWidget nameInputbox, descInputbox, textureInputbox;
     public WandWidgets.WandNotificationWidget notificationWidget;
-    public Color mainColor = new Color(255, 255, 255), bgColor = new Color(0, 0, 0, 128), textColor = new Color(255, 255, 255);
+    public Color mainColor, bgColor, textColor;
     public List<Widget> bars = new ArrayList<>();
 
     public WandScreen(WandMenu menu, Inventory playerInv, Component title) {
@@ -120,5 +120,13 @@ public class WandScreen extends Screen<WandMenu> {
     public void onClose() {
         menu.saveThemeHook.trigger(mainColor.toArgb(), bgColor.toArgb(), textColor.toArgb());
         super.onClose();
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+
+        for (ItemStack plugin : menu.pluginContainer)
+            WandPluginRegistry.Client.getClientLogic(plugin.getItem()).render(this, graphics, mouseX, mouseY, partialTick);
     }
 }

@@ -66,7 +66,7 @@ public class SpellSupplyPlugin extends BasePlugin {
 
             // 法术
             for (int i = 0; i < subCategorySpells.size(); i++) {
-                var pos = Coordinate.fromTopLeft(dx % 80 + 8, categoryDy + Math.floorDiv(dx, 80) * 16 + 32);
+                var pos = Coordinate.fromTopLeft(dx % 80 + 7, categoryDy + Math.floorDiv(dx, 80) * 16 + 32);
 
                 scrollWidgets.add(new SlotWidget(screen.getMenu().slots.get(slotIndex), pos).dy(supplyDy));
                 slotIndex++;
@@ -91,8 +91,8 @@ public class SpellSupplyPlugin extends BasePlugin {
                 .mainColor(new Color(0xFF000000)).bgColor(new Color(0xB0000000)).tooltip(Component.translatable("spell." + MODID + ".subcategory.custom")).textColor(screen.textColor)));
 
         for (WandSlots.CustomSupplySlot slot : screen.getMenu().customSupplySlots) {
-            scrollWidgets.add(new SlotWidget(slot, Coordinate.fromTopLeft(dx + 8, customCategoryDy + 32 + Math.floorDiv(dx, 80) * 16)).dy(supplyDy));
-            dx = (dx + 16) % 80;
+            scrollWidgets.add(new SlotWidget(slot, Coordinate.fromTopLeft(dx % 80 + 7, customCategoryDy + 32 + Math.floorDiv(dx, 80) * 16)).dy(supplyDy));
+            dx = dx + 16;
         }
 
         int finalDy = customCategoryDy + 160 + 64;

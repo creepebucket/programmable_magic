@@ -21,6 +21,7 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
     }
 
     @Override
-    public void append_tooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
+    public void appendTooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
         var values = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get()));
 
         tooltip.add(Component.translatable("tooltip." + MODID + ".wand.mana_mult", String.format("%.2f", values.manaMult)).withStyle(ChatFormatting.BLUE));
@@ -176,5 +177,17 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
             player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
         }
+    }
+
+    public ModUtils.WandValues getWandValues(ItemStack stack) {
+        List<ItemStack> plugins = stack.get(ModDataComponents.PLUGINS.get());
+
+        var value = new ModUtils.WandValues();
+
+        for (ItemStack plugin : plugins) {
+            WandPluginRegistry.getPlugin(plugin.getItem()).adjustWandValues(value, plugin);
+        }
+
+        return value;
     }
 }

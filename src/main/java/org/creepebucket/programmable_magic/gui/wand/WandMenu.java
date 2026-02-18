@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
@@ -17,6 +18,7 @@ import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.PackedSpell;
@@ -40,6 +42,7 @@ public class WandMenu extends Menu {
     public WandHooks.PackSpellHook packSpellHook;
     public WandHooks.PackedToStorageHook packedToStorageHook;
     public WandHooks.PackAndSupplyHook packAndSupplyHook;
+    public WandHooks.ReleaseSpellHook releaseSpellHook;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
     public Container storedSpells, packedSpellContainer, customSupplyContainer, pluginContainer;
@@ -47,6 +50,7 @@ public class WandMenu extends Menu {
     public List<WandSlots.CustomSupplySlot> customSupplySlots;
     public boolean quickMoved = false;
     public ItemStack wand;
+    public SpellEntity spell;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         this(containerId, playerInv, InteractionHand.values()[extra.readVarInt()]);
@@ -116,12 +120,14 @@ public class WandMenu extends Menu {
             pluginSlots.add(new WandSlots.PluginSlot(pluginContainer, i, -99, -99));
         for (Slot slot : pluginSlots) addSlot(slot);
 
+        this.releaseSpellHook = hook(new WandHooks.ReleaseSpellHook(this));
+
         // chatgpt 给的持久化逻辑
 
         if (saved != null) {
             for (int i = 0; i < saved.size() && i < this.storedSpells.getContainerSize(); i++) {
                 ItemStack stack = saved.get(i);
-                if (!stack.isEmpty() && SpellRegistry.isSpell(stack.getItem()))
+                if (!stack.isEmpty())
                     this.storedSpells.setItem(i, stack.copy());
             }
         }
@@ -157,7 +163,7 @@ public class WandMenu extends Menu {
                 saved.add(ItemStack.EMPTY);
                 continue;
             }
-            if (SpellRegistry.isSpell(stack.getItem())) {
+            if (SpellRegistry.isSpell(stack.getItem()) || stack.is(ModItems.PACKED_SPELL)) {
                 saved.add(stack.copy());
                 this.storedSpells.setItem(i, ItemStack.EMPTY);
                 continue;
