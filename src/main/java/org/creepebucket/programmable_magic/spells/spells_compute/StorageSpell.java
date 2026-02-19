@@ -40,13 +40,14 @@ public abstract class StorageSpell extends SpellItemLogic implements SpellItemLo
             name = "set_store";
             inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.ANY));
             precedence = -99;
+            bypassShunting = true;
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            int index = (int) Math.floor((Double) paramsList.get(0));
+            int index = (int) Math.floor((Double) paramsList.get(1));
 
-            spellEntity.spellData.put(getStoreKey(index), paramsList.get(1));
+            spellEntity.spellData.put(getStoreKey(index), paramsList.get(0));
 
             return ExecutionResult.SUCCESS(this);
         }
@@ -64,6 +65,8 @@ public abstract class StorageSpell extends SpellItemLogic implements SpellItemLo
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             int index = (int) Math.floor((Double) paramsList.get(0));
+
+            if (!spellEntity.spellData.containsKey(getStoreKey(index))) return ExecutionResult.ERRORED();
 
             Object value = spellEntity.spellData.get(getStoreKey(index));
             return ExecutionResult.RETURNED(this, List.of(value), List.of(SpellValueType.fromValue(value)));

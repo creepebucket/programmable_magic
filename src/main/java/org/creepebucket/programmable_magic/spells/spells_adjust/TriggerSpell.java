@@ -18,6 +18,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLogic.AdjustMod {
     public TriggerSpell() {
         subCategory = "spell." + MODID + ".subcategory.trigger";
+        bypassShunting = true;
         precedence = -99;
     }
 

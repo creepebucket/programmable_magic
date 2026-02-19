@@ -11,7 +11,9 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.spells_adjust.TriggerSpell;
+import org.creepebucket.programmable_magic.spells.spells_base.EntityInteractionSpell;
 import org.creepebucket.programmable_magic.spells.spells_base.VisualEffectSpell;
+import org.creepebucket.programmable_magic.spells.spells_base.WorldInterationSpell;
 import org.creepebucket.programmable_magic.spells.spells_compute.*;
 import org.creepebucket.programmable_magic.spells.spells_control.BoolOperationsSpell;
 import org.creepebucket.programmable_magic.spells.spells_control.FlowControlSpell;
@@ -134,6 +136,13 @@ public class SpellRegistry {
 
         // 基础法术
         registerSpell(VisualEffectSpell.DebugPrintSpell::new);
+        registerSpell(EntityInteractionSpell.TeleportSpell::new);
+        registerSpell(EntityInteractionSpell.VelocitySpell::new);
+        registerSpell(EntityInteractionSpell.ApplyPotionSpell::new);
+        registerSpell(EntityInteractionSpell.SendToInventorySpell::new);
+        registerSpell(WorldInterationSpell.BreakBlockSpell::new);
+        registerSpell(WorldInterationSpell.PlaceBlockSpell::new);
+        registerSpell(WorldInterationSpell.ExplosionSpell::new);
 
         reorderSpellsBySubcategory();
         ITEMS.register(eventBus);

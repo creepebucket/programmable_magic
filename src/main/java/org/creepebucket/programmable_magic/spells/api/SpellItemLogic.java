@@ -94,7 +94,7 @@ public abstract class SpellItemLogic implements Cloneable {
             var partMatched = true;
             matchedParamsList = new ArrayList<>();
 
-            for (SpellValueType type : types) {
+            for (SpellValueType type : types.reversed()) {
                 if (type != SpellValueType.EMPTY && (!(p instanceof ValueLiteralSpell) || (type != SpellValueType.ANY && ((ValueLiteralSpell) p).type != type))) {
                     partMatched = false;
                     break;
@@ -196,7 +196,7 @@ public abstract class SpellItemLogic implements Cloneable {
                 return cloned;
             }
         }
-        
+
         public PairedLeftSpell copy() {
             var clone = (PairedLeftSpell) super.clone();
             clone.rightSpellType = rightSpellType;

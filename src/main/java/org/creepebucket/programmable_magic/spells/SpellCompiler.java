@@ -27,7 +27,7 @@ public class SpellCompiler {
         for (ItemStack spell : spells) {
             if (spell.isEmpty()) continue;
             if (!SpellRegistry.isSpell(spell.getItem())) {
-                rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.getItem(), "name"));
+                rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.copy(), "name"));
                 continue;
             }
 
