@@ -161,7 +161,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             return true;
         }
 
-        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins));
+        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins, false));
         return true;
     }
 

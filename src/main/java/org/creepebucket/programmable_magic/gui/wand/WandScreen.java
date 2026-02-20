@@ -21,7 +21,7 @@ public class WandScreen extends Screen<WandMenu> {
 
     public List<WandWidgets.SpellStorageWidget> storageSlots = new ArrayList<>();
     public SelectableImageButtonWidget bypassCompileWidget;
-    public SelectableImageButtonWidget lockButton;
+    public SelectableImageButtonWidget lockButton, debugger;
     public InputBoxWidget nameInputbox, descInputbox, textureInputbox;
     public WandWidgets.WandNotificationWidget notificationWidget;
     public Color mainColor, bgColor, textColor;
@@ -119,6 +119,7 @@ public class WandScreen extends Screen<WandMenu> {
     @Override
     public void onClose() {
         menu.saveThemeHook.trigger(mainColor.toArgb(), bgColor.toArgb(), textColor.toArgb());
+        menu.breakConnectionHook.trigger();
         super.onClose();
     }
 

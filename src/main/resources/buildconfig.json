@@ -311,12 +311,12 @@
       },
       {
         "from_top_left": [
-          96,
-          704
+          416,
+          736
         ],
         "from_bottom_right": [
-          111,
-          719
+          431,
+          751
         ],
         "target_img_path": "assets/programmable_magic/textures/item/spell/random.png"
       },
@@ -1388,6 +1388,17 @@
           15
         ],
         "target_img_path": "assets/programmable_magic/textures/gui/icons/description.png"
+      },
+      {
+        "from_top_left": [
+          480,
+          0
+        ],
+        "from_bottom_right": [
+          495,
+          15
+        ],
+        "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_disabled.png"
       },
       {
         "from_top_left": [

@@ -224,9 +224,104 @@ public class WandHooks {
             }
 
             // 生成
-            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins);
+            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins, menu.debugMode);
 
             player.level().addFreshEntity(menu.spell);
+        }
+    }
+
+    public static class DebuggerStepHook extends Hook {
+        public WandMenu menu;
+
+        public DebuggerStepHook(WandMenu menu) {
+            super("debugger_step");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (menu.spell == null) return;
+            menu.spell.doStep = true;
+        }
+    }
+
+    public static class DebuggerTickHook extends Hook {
+        public WandMenu menu;
+
+        public DebuggerTickHook(WandMenu menu) {
+            super("debugger_tick");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (menu.spell == null) return;
+            menu.spell.doTick = true;
+        }
+    }
+
+    public static class DebuggerRunHook extends Hook {
+        public WandMenu menu;
+
+        public DebuggerRunHook(WandMenu menu) {
+            super("debugger_run");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (menu.spell == null) return;
+            menu.spell.doRun = true;
+        }
+    }
+
+    public static class DebuggerPauseHook extends Hook {
+        public WandMenu menu;
+
+        public DebuggerPauseHook(WandMenu menu) {
+            super("debugger_pause");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (menu.spell == null) return;
+            menu.spell.doRun = false;
+        }
+    }
+
+    public static class SetDebugModeHook extends Hook {
+        public WandMenu menu;
+
+        public SetDebugModeHook(WandMenu menu) {
+            super("set_debug_mode");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            menu.debugMode = (Boolean) args[0];
+        }
+    }
+
+    public static class BreakConnectionHook extends Hook {
+        public WandMenu menu;
+
+        public BreakConnectionHook(WandMenu menu) {
+            super("debugger_disconnect");
+
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (menu.spell == null) return;
+            menu.spell.debugMode = false;
         }
     }
 }

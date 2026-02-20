@@ -49,13 +49,15 @@ public class SpellEntity extends Entity {
     public int delayTicks = 0;
     // 原始法术列表
     public SpellSequence originalSpellSequence;
+    // 调试部分
+    public boolean debugMode, doStep = false, doTick = false, doRun = false;
 
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
         this.setNoGravity(true);
     }
 
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins, boolean debugMode) {
         // 创建实体
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
 
@@ -66,6 +68,7 @@ public class SpellEntity extends Entity {
         this.availableMana = mana;
         this.pluginItems = plugins;
         this.originalSpellSequence = spellSequence.subSequence(spellSequence.head, spellSequence.tail);
+        this.debugMode = debugMode;
 
         this.setPos(caster.getX(), caster.getY() + 1.5, caster.getZ());
 
@@ -81,9 +84,10 @@ public class SpellEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        this.setPos(this.position().add(this.getDeltaMovement()));
-
         if (this.level().isClientSide()) return;
+
+        if (!(debugMode && (!doTick && !doStep && !doRun))) this.setPos(this.position().add(this.getDeltaMovement()));
+        this.markHurt();
 
         // 检查延迟
         if (delayTicks > 0) {
@@ -91,7 +95,7 @@ public class SpellEntity extends Entity {
             return;
         }
 
-        while (delayTicks <= 0) {
+        while (delayTicks <= 0 && !(debugMode && (!doTick && !doStep && !doRun))) {
             if (currentSpell == null) {
                 this.discard();
                 return;
@@ -104,7 +108,11 @@ public class SpellEntity extends Entity {
             if (result.doStop) this.discard();
             // 设置下一个法术
             currentSpell = result.nextSpell;
+
+            // 设置调试模式flag
+            doStep = false;
         }
+        doTick = false;
     }
 
     // 暂时不支持持久化

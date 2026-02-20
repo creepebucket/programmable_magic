@@ -43,12 +43,18 @@ public class WandMenu extends Menu {
     public WandHooks.PackedToStorageHook packedToStorageHook;
     public WandHooks.PackAndSupplyHook packAndSupplyHook;
     public WandHooks.ReleaseSpellHook releaseSpellHook;
+    public WandHooks.DebuggerPauseHook debuggerPauseHook;
+    public WandHooks.DebuggerRunHook debuggerRunHook;
+    public WandHooks.DebuggerStepHook debuggerStepHook;
+    public WandHooks.DebuggerTickHook debuggerTickHook;
+    public WandHooks.SetDebugModeHook setDebugModeHook;
+    public WandHooks.BreakConnectionHook breakConnectionHook;
     public int supplySlotsStartIndex;
     public int supplySlotsCount;
     public Container storedSpells, packedSpellContainer, customSupplyContainer, pluginContainer;
     public List<Slot> spellStoreSlots, hotbarSlots, backpackSlots, packedSpellSlots, pluginSlots;
     public List<WandSlots.CustomSupplySlot> customSupplySlots;
-    public boolean quickMoved = false;
+    public boolean quickMoved = false, debugMode = false;
     public ItemStack wand;
     public SpellEntity spell;
 
@@ -78,6 +84,13 @@ public class WandMenu extends Menu {
         this.packedSpellSlots = new ArrayList<>(1);
         this.customSupplySlots = new ArrayList<>(50);
         this.pluginSlots = new ArrayList<>(((Wand) wand.getItem()).pluginSlots);
+
+        this.debuggerPauseHook = hook(new WandHooks.DebuggerPauseHook(this));
+        this.debuggerRunHook = hook(new WandHooks.DebuggerRunHook(this));
+        this.debuggerStepHook = hook(new WandHooks.DebuggerStepHook(this));
+        this.debuggerTickHook = hook(new WandHooks.DebuggerTickHook(this));
+        this.setDebugModeHook = hook(new WandHooks.SetDebugModeHook(this));
+        this.breakConnectionHook = hook(new WandHooks.BreakConnectionHook(this));
 
         var spells = SpellRegistry.SPELLS_BY_SUBCATEGORY;
         this.supplySlotsStartIndex = this.slots.size();

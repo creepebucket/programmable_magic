@@ -654,5 +654,6 @@
   "tooltip.programmable_magic.spell_carrier": "Carrier: Projectile",
   "tooltip.programmable_magic.spell_modifier": "Modifier",
   "tooltip.programmable_magic.trigger_touch_entity": "Wait until an entity is within 0.3 blocks of the spell entity",
-  "tooltip.programmable_magic.trigger_touch_ground": "Wait until a block is within 0.3 blocks of the spell entity"
+  "tooltip.programmable_magic.trigger_touch_ground": "Wait until a block is within 0.3 blocks of the spell entity",
+  "spell.programmable_magic.subcategory.custom": "自定义法术存储"
 }
