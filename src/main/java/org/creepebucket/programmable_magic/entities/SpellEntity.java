@@ -67,7 +67,7 @@ public class SpellEntity extends Entity {
         this.pluginItems = plugins;
         this.originalSpellSequence = spellSequence.subSequence(spellSequence.head, spellSequence.tail);
 
-        this.setPos(caster.getX(), caster.getY(), caster.getZ());
+        this.setPos(caster.getX(), caster.getY() + 1.5, caster.getZ());
 
         // 初始化法术指针
         this.currentSpell = spellSequence.head;
@@ -81,14 +81,21 @@ public class SpellEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
+        this.setPos(this.position().add(this.getDeltaMovement()));
+
         if (this.level().isClientSide()) return;
+
         // 检查延迟
         if (delayTicks > 0) {
             delayTicks--;
             return;
         }
 
-        while (delayTicks <= 0 && currentSpell != null) {
+        while (delayTicks <= 0) {
+            if (currentSpell == null) {
+                this.discard();
+                return;
+            }
             // 执行法术序列逻辑
             ExecutionResult result = currentSpell.runWithCheck(caster, spellSequence, this);
             // 设置延迟
@@ -98,8 +105,6 @@ public class SpellEntity extends Entity {
             // 设置下一个法术
             currentSpell = result.nextSpell;
         }
-
-        if (currentSpell == null) this.discard();
     }
 
     // 暂时不支持持久化

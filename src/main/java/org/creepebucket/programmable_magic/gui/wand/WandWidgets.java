@@ -523,7 +523,7 @@ public class WandWidgets {
 
             // 检测Slot是否变化
             var now = System.nanoTime() / 1e9;
-            if (!slot.getItem().equals(lastStack)) {
+            if (lastStack == null || !slot.getItem().is(lastStack.getItem())) {
                 lastChange = now;
 
                 lastName = name;

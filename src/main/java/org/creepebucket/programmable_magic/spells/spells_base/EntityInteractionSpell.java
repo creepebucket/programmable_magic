@@ -45,9 +45,10 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            Entity target = (Entity) paramsList.get(0);
-            Vec3 delta = (Vec3) paramsList.get(1);
+            Entity target = (Entity) paramsList.get(1);
+            Vec3 delta = (Vec3) paramsList.get(0);
             target.teleportTo(target.getX() + delta.x, target.getY() + delta.y, target.getZ() + delta.z);
+            target.hurtMarked = true;
             return ExecutionResult.SUCCESS(this);
         }
     }
@@ -76,8 +77,8 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            Entity target = (Entity) paramsList.get(0);
-            ItemStack potionStack = (ItemStack) paramsList.get(1);
+            Entity target = (Entity) paramsList.get(1);
+            ItemStack potionStack = (ItemStack) paramsList.get(0);
 
             if (!(target instanceof LivingEntity living)) {
                 SpellExceptions.INVALID_INPUT(this).throwIt(caster);

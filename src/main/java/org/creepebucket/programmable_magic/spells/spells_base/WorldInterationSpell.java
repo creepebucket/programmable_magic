@@ -44,7 +44,7 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            BlockPos pos = BlockPos.containing(spellEntity.getX(), spellEntity.getY(), spellEntity.getZ());
+            BlockPos pos = spellEntity.blockPosition();
             BlockState state = spellEntity.level().getBlockState(pos);
             spellEntity.level().destroyBlock(pos, false, caster);
             return ExecutionResult.RETURNED(this, List.of(new ItemStack(state.getBlock().asItem())), List.of(SpellValueType.ITEM));

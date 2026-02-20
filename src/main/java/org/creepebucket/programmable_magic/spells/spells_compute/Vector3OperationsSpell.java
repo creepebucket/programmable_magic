@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.spells.spells_compute;
 
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -53,7 +54,7 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of(((LivingEntity) paramsList.get(0)).position()), List.of(SpellValueType.VECTOR3));
+            return ExecutionResult.RETURNED(this, List.of(((Entity) paramsList.get(0)).position()), List.of(SpellValueType.VECTOR3));
         }
     }
 

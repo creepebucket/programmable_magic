@@ -34,6 +34,7 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
     public static class ConditionInvertSpell extends TriggerSpell {
         public ConditionInvertSpell() {
+            super();
             name = "condition_invert";
         }
 
@@ -45,13 +46,14 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
     public static class TouchGroundSpell extends TriggerSpell {
         public TouchGroundSpell() {
+            super();
             name = "touch_ground";
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             // 获取当前方块
-            Block block = caster.level().getBlockState(caster.blockPosition()).getBlock();
+            Block block = caster.level().getBlockState(spellEntity.blockPosition()).getBlock();
             if (block.isEmpty(block.defaultBlockState())) {
                 if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this);
                 else return ExecutionResult.FAILED(this);
@@ -64,6 +66,7 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
     public static class TouchEntitySpell extends TriggerSpell {
         public TouchEntitySpell() {
+            super();
             name = "touch_entity";
         }
 
@@ -90,6 +93,7 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
     public static class DelaySpell extends TriggerSpell {
         public DelaySpell() {
+            super();
             name = "delay";
             inputTypes = List.of(List.of(SpellValueType.NUMBER));
         }

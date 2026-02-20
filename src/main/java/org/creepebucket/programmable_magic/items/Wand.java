@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -18,12 +19,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
+import org.creepebucket.programmable_magic.spells.SpellCompiler;
+import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -137,16 +142,35 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
      * 松开使用：仅在服务端计算充能时间并释放法术。
      */
     @Override
-    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity living, int timeLeft) {
+    public boolean releaseUsing(ItemStack wand, Level level, LivingEntity player, int timeLeft) {
+        if (level.isClientSide()) return true;
+        var plugins = wand.get(ModDataComponents.PLUGINS);
+
+        var value = new ModUtils.WandValues();
+        for (ItemStack p : plugins) WandPluginRegistry.getPlugin(p.getItem()).adjustWandValues(value, p);
+
+        var mana = value.chargeRateW * (level.getGameTime() - wand.get(ModDataComponents.LAST_RELEASE_TIME.get())) / 20000;
+
+        // 编译
+        var compiler = new SpellCompiler();
+        var compiled = compiler.compile(new SimpleContainer(wand.get(ModDataComponents.SPELLS).toArray(new ItemStack[0])), false);
+
+        if (!compiler.errors.isEmpty()) {
+            for (SpellExceptions exception : compiler.errors) exception.throwIt((Player) player);
+            // 有错就滚
+            return true;
+        }
+
+        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins));
         return true;
     }
 
     /**
-     * 允许长按使用（默认 1 小时，足够长）。
+     * 允许长按使用
      */
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return 72000;
+        return 2147483647;
     }
 
     /**

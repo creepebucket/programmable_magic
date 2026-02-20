@@ -127,6 +127,7 @@ public class WandScreen extends Screen<WandMenu> {
         super.render(graphics, mouseX, mouseY, partialTick);
 
         for (ItemStack plugin : menu.pluginContainer)
-            WandPluginRegistry.Client.getClientLogic(plugin.getItem()).render(this, graphics, mouseX, mouseY, partialTick);
+            if (WandPluginRegistry.isPlugin(plugin.getItem()))
+                WandPluginRegistry.Client.getClientLogic(plugin.getItem()).render(this, graphics, mouseX, mouseY, partialTick);
     }
 }

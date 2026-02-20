@@ -1,7 +1,10 @@
 package org.creepebucket.programmable_magic.spells;
 
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
+import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.registries.ModItems;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
@@ -26,7 +29,10 @@ public class SpellCompiler {
         SpellSequence rawSequence = new SpellSequence();
         for (ItemStack spell : spells) {
             if (spell.isEmpty()) continue;
-            if (!SpellRegistry.isSpell(spell.getItem())) {
+            else if (spell.is(ModItems.PACKED_SPELL)) {
+                rawSequence.pushRight(compile(new SimpleContainer(spell.get(ModDataComponents.SPELLS).toArray(new ItemStack[1])), true));
+                continue;
+            } else if (!SpellRegistry.isSpell(spell.getItem())) {
                 rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.copy(), "name"));
                 continue;
             }

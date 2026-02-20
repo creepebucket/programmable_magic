@@ -86,7 +86,8 @@ public class FlowControlSpell {
             }
 
             // 还原 originalSequence
-            spellSequence.replaceSection(leftSpell.next, prev, ((LoopStartSpell) leftSpell).originalSequence);
+            var seq = ((LoopStartSpell) leftSpell).originalSequence;
+            spellSequence.replaceSection(leftSpell.next, prev, seq.subSequence(seq.head, seq.tail));
 
             return new ExecutionResult(leftSpell.next, 1, false, null, null);
         }
@@ -275,7 +276,10 @@ public class FlowControlSpell {
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return new ExecutionResult(spellSequence.head, 0, false, null, null);
+
+            spellEntity.spellSequence = spellEntity.originalSpellSequence.subSequence(spellEntity.originalSpellSequence.head, spellEntity.originalSpellSequence.tail);
+
+            return new ExecutionResult(spellEntity.spellSequence.head, 0, false, null, null);
         }
 
         @Override
