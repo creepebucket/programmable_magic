@@ -45,9 +45,9 @@ public abstract class StorageSpell extends SpellItemLogic implements SpellItemLo
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            int index = (int) Math.floor((Double) paramsList.get(1));
+            int index = (int) Math.floor((Double) paramsList.get(0));
 
-            spellEntity.spellData.put(getStoreKey(index), paramsList.get(0));
+            spellEntity.spellData.put(getStoreKey(index), paramsList.get(1));
 
             return ExecutionResult.SUCCESS(this);
         }

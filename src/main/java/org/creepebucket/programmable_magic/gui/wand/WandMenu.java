@@ -113,8 +113,9 @@ public class WandMenu extends Menu {
         for (int i = 0; i < 1024; i++) spellStoreSlots.add(addSlot(new OneItemOnlySlot(storedSpells, i, -99, -99)));
 
         // 背包
-        for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new Slot(playerInv, i, -99, -99)));
-        for (int i = 0; i < 27; i++) backpackSlots.add(addSlot(new Slot(playerInv, 9 + i, -99, -99)));
+        for (int i = 0; i < 9; i++) hotbarSlots.add(addSlot(new WandSlots.InventorySlot(playerInv, i, -99, -99)));
+        for (int i = 0; i < 27; i++)
+            backpackSlots.add(addSlot(new WandSlots.InventorySlot(playerInv, 9 + i, -99, -99)));
 
         packedSpellContainer = new SimpleContainer(1);
         packedSpellSlots.add(addSlot(new Slot(packedSpellContainer, 0, -99, -99)));
