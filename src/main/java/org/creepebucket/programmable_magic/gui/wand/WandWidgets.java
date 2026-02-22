@@ -529,7 +529,7 @@ public class WandWidgets {
                 lastName = name;
                 lastFunction = function;
 
-                lastStack = slot.getItem();
+                lastStack = slot.getItem().copy();
 
                 if (lastStack.isEmpty()) {
                     name = Component.translatable("gui.programmable_magic.wand.plugin.no_plugin");
