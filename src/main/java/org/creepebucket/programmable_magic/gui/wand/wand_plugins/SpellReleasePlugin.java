@@ -121,7 +121,7 @@ public class SpellReleasePlugin extends BasePlugin {
 
     @Override
     public void onRemove(WandScreen screen) {
-        debuggerIcon.addAnimation(new Animation.FadeOut.ToRight(0.3), 0);
+        screen.debugger.addAnimation(new Animation.FadeOut.ToRight(0.3), 0);
         debuggerStep.addAnimation(new Animation.FadeOut.ToRight(0.3), .05);
         debuggerTick.addAnimation(new Animation.FadeOut.ToRight(0.3), .05);
         debuggerResume.addAnimation(new Animation.FadeOut.ToRight(0.3), .05);
