@@ -74,7 +74,7 @@ public class WandPluginRegistry {
     public static WandPluginLogic getPlugin(Item item) {
         Identifier registryName = BuiltInRegistries.ITEM.getKey(item);
         Supplier<WandPluginLogic> supplier = PLUGIN_SUPPLIERS.get(registryName);
-        return supplier != null ? supplier.get() : null;
+        return supplier != null ? supplier.get() : NO_OP.get();
     }
 
     /**
