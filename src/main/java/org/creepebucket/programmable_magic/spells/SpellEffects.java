@@ -1,6 +1,5 @@
 package org.creepebucket.programmable_magic.spells;
 
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.server.level.ServerLevel;
@@ -8,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.lib.api.Color;
+import org.creepebucket.programmable_magic.particles.FastDustParticleOptions;
 
 public class SpellEffects {
     public static void charge(Player player, ServerLevel serverLevel, double mana) {
@@ -60,12 +60,11 @@ public class SpellEffects {
         var smallSmokeParticleMult = 50;
         var bigSmokeParticleMult = 10;
         var smokePositionScatterFact = 0.2;
-        var scatterSpeed = 1;
 
-        for (int i = 0; i < smallSmokeParticleMult * particleMult; i++) {
-            if (Math.random() > (speed + 5) / smallSmokeParticleMult / particleMult) continue;
+        for (int i = 0; i < Math.max(Math.ceil(speed - 1), 0) * smallSmokeParticleMult * particleMult; i++) {
+            if (Math.random() * Math.ceil(speed - 1) > speed - 1) continue;
 
-            var color = new Color(192, 192 - (int) Math.min(speed * 10, 192), 192 - (int) Math.min(speed * 10, 192)).toArgb(); // 速度增大逐渐变红
+            var color = new Color(192 + (int) Math.clamp((speed - 2) * 20, 0, 63), 192 - (int) Math.clamp((speed - 3) * 20, 0, 192), 192 - (int) Math.clamp((speed - 2) * 40, 0, 192)).toArgb(); // 速度增大逐渐变红
 
             // 让粒子从中心分散
             var velocityDirection = velocity.normalize();
@@ -73,10 +72,34 @@ public class SpellEffects {
             var newNormalZ = velocityDirection.cross(newNormalX).normalize();
             var yaw = Math.random() * 2 * Math.PI;
 
+            var scatterSpeed = Math.min(0.05 * (speed - 1), 0.2);
+
             var scatterDirection = newNormalX.multiply(Math.cos(yaw), Math.cos(yaw), Math.cos(yaw)).add(newNormalZ.multiply(Math.sin(yaw), Math.sin(yaw), Math.sin(yaw)));
-            var particleVelocity = velocity.add(scatterDirection.multiply(scatterSpeed, scatterSpeed, scatterSpeed)).multiply(9, 9, 9);
-            
-            level.addParticle(new DustParticleOptions(color, 1), true, true,
+            var particleVelocity = scatterDirection.multiply(scatterSpeed, scatterSpeed, scatterSpeed).add(velocity.multiply(0.5, 0.5, 0.5));
+
+            level.addParticle(new FastDustParticleOptions(color, 1), true, true,
+                    entity.getX() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.x() * i / smallSmokeParticleMult / particleMult,
+                    entity.getY() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.y() * i / smallSmokeParticleMult / particleMult,
+                    entity.getZ() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.z() * i / smallSmokeParticleMult / particleMult,
+                    particleVelocity.x(), particleVelocity.y(), particleVelocity.z());
+        }
+
+        // 高速的大烟雾
+        for (int i = 0; i < Math.max(Math.ceil(speed - 2), 0) * bigSmokeParticleMult * particleMult; i++) {
+            if (Math.random() * Math.ceil(speed - 2) > speed - 2) continue;
+
+            // 让粒子从中心分散
+            var velocityDirection = velocity.normalize();
+            var newNormalX = velocityDirection.cross(velocityDirection.y() > 0.9 ? new Vec3(1, 0, 0) : new Vec3(0, 1, 0)).normalize();
+            var newNormalZ = velocityDirection.cross(newNormalX).normalize();
+            var yaw = Math.random() * 2 * Math.PI;
+
+            var scatterSpeed = Math.min(0.005 * (speed - 1), 0.05);
+
+            var scatterDirection = newNormalX.multiply(Math.cos(yaw), Math.cos(yaw), Math.cos(yaw)).add(newNormalZ.multiply(Math.sin(yaw), Math.sin(yaw), Math.sin(yaw)));
+            var particleVelocity = scatterDirection.multiply(scatterSpeed, scatterSpeed, scatterSpeed);
+
+            level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, true,
                     entity.getX() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.x() * i / smallSmokeParticleMult / particleMult,
                     entity.getY() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.y() * i / smallSmokeParticleMult / particleMult,
                     entity.getZ() + Math.random() * smokePositionScatterFact - smokePositionScatterFact / 2 + velocity.z() * i / smallSmokeParticleMult / particleMult,

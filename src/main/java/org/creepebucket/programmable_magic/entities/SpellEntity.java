@@ -11,11 +11,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.Programmable_magic;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
@@ -52,6 +54,7 @@ public class SpellEntity extends Entity {
     public SpellSequence originalSpellSequence;
     // 调试部分
     public boolean debugMode, doStep = false, doTick = false, doRun = false;
+    public ChunkPos forcedChunkPos;
 
     public SpellEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -89,9 +92,20 @@ public class SpellEntity extends Entity {
             SpellEffects.trail(this);
             return;
         }
-        
+
         if (!(debugMode && (!doTick && !doStep && !doRun))) this.setPos(this.position().add(this.getDeltaMovement()));
         this.markHurt();
+
+        ServerLevel serverLevel = (ServerLevel) this.level();
+        ChunkPos currentChunkPos = new ChunkPos(this.blockPosition());
+        if (forcedChunkPos == null) {
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x, currentChunkPos.z, true, false);
+            forcedChunkPos = currentChunkPos;
+        } else if (forcedChunkPos.x != currentChunkPos.x || forcedChunkPos.z != currentChunkPos.z) {
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x, forcedChunkPos.z, false, false);
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x, currentChunkPos.z, true, false);
+            forcedChunkPos = currentChunkPos;
+        }
 
         // 检查延迟
         if (delayTicks > 0) {
@@ -117,6 +131,14 @@ public class SpellEntity extends Entity {
             doStep = false;
         }
         doTick = false;
+    }
+
+    @Override
+    public void onRemoval(RemovalReason reason) {
+        super.onRemoval(reason);
+        if (!(this.level() instanceof ServerLevel serverLevel) || forcedChunkPos == null) return;
+        Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x, forcedChunkPos.z, false, false);
+        forcedChunkPos = null;
     }
 
     // 暂时不支持持久化
