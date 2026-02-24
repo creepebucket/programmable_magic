@@ -326,7 +326,8 @@ public class WandWidgets {
                 // 释放法术
                 // 先过编译
                 var compiler = new SpellCompiler();
-                compiler.compile(((WandMenu) screen.getMenu()).storedSpells, ((WandScreen) screen).bypassCompileWidget.isSelected);
+                compiler.skipCompile = ((WandScreen) screen).bypassCompileWidget.isSelected;
+                compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
                 if (!compiler.errors.isEmpty()) {
                     for (SpellExceptions exception : compiler.errors)
                         ((WandScreen) screen).notificationWidget.addError(exception.message());
@@ -371,7 +372,7 @@ public class WandWidgets {
         public void tick() {
             var compiler = new SpellCompiler();
 
-            compiler.compile(((WandMenu) screen.getMenu()).storedSpells, false);
+            compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
             errors = compiler.errors;
         }
     }

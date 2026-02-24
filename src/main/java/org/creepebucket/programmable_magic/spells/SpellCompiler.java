@@ -21,8 +21,9 @@ import static org.creepebucket.programmable_magic.spells.SpellValueType.NUMBER;
 
 public class SpellCompiler {
     public List<SpellExceptions> errors = new ArrayList<>();
+    public boolean skipCompile = false, skipCheck = false;
 
-    public SpellSequence compile(Container spells, Boolean skipCompile) {
+    public SpellSequence compile(Container spells) {
 
         // Step 1: List<ItemStack>转换为SpellSequence
 
@@ -30,7 +31,11 @@ public class SpellCompiler {
         for (ItemStack spell : spells) {
             if (spell.isEmpty()) continue;
             else if (spell.is(ModItems.PACKED_SPELL)) {
-                rawSequence.pushRight(compile(new SimpleContainer(spell.get(ModDataComponents.SPELLS).toArray(new ItemStack[1])), true));
+                var compiler = new SpellCompiler();
+                compiler.skipCompile = true;
+                compiler.skipCheck = true;
+
+                rawSequence.pushRight(compiler.compile(new SimpleContainer(spell.get(ModDataComponents.SPELLS).toArray(new ItemStack[1]))));
                 continue;
             } else if (!SpellRegistry.isSpell(spell.getItem())) {
                 rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.copy(), "name"));
@@ -43,49 +48,51 @@ public class SpellCompiler {
         // Step 2: 编译前语法检查
 
         // 2.1: 检查括号等法术配对情况
-        Map<Class<? extends SpellItemLogic.PairedLeftSpell>, Integer> pairsCount = new HashMap<>();
+        if (!skipCheck) {
+            Map<Class<? extends SpellItemLogic.PairedLeftSpell>, Integer> pairsCount = new HashMap<>();
 
-        for (SpellItemLogic spell = rawSequence.head; spell != null; spell = spell.next) {
-            // 左括号为配对计数器+1
-            if (spell instanceof SpellItemLogic.PairedLeftSpell left) {
-                try {
-                    var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
-                    pairsCount.put(leftType, pairsCount.getOrDefault(leftType, 0) + 1);
-                } catch (InstantiationException e) { // 我操, 反射好恶心啊
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
+            for (SpellItemLogic spell = rawSequence.head; spell != null; spell = spell.next) {
+                // 左括号为配对计数器+1
+                if (spell instanceof SpellItemLogic.PairedLeftSpell left) {
+                    try {
+                        var leftType = left.rightSpellType.getDeclaredConstructor().newInstance().leftSpellType;
+                        pairsCount.put(leftType, pairsCount.getOrDefault(leftType, 0) + 1);
+                    } catch (InstantiationException e) { // 我操, 反射好恶心啊
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                // 右括号为配对计数器-1
+                if (spell instanceof SpellItemLogic.PairedRightSpell right) {
+                    // 如果计数器等于0, 直接报错未配对括号
+                    if (pairsCount.getOrDefault(right.leftSpellType, 0) <= 0) {
+                        errors.add(SpellExceptions.PAIRS_UNMATCHED(spell)); // 这个右括号永远不会配对
+                    }
+
+                    pairsCount.put(right.leftSpellType, pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
                 }
             }
 
-            // 右括号为配对计数器-1
-            if (spell instanceof SpellItemLogic.PairedRightSpell right) {
-                // 如果计数器等于0, 直接报错未配对括号
-                if (pairsCount.getOrDefault(right.leftSpellType, 0) <= 0) {
-                    errors.add(SpellExceptions.PAIRS_UNMATCHED(spell)); // 这个右括号永远不会配对
-                }
-
-                pairsCount.put(right.leftSpellType, pairsCount.getOrDefault(right.leftSpellType, 0) - 1);
-            }
-        }
-
-        // 如果配对计数器任意一项不为0, 则报错未配对法术
-        for (Class<? extends SpellItemLogic.PairedLeftSpell> leftSpell : pairsCount.keySet()) {
-            if (pairsCount.get(leftSpell) != 0) {
-                try {
-                    errors.add(SpellExceptions.PAIRS_UNMATCHED(leftSpell.getDeclaredConstructor().newInstance()));
-                } catch (InstantiationException e) { // 何意味
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
+            // 如果配对计数器任意一项不为0, 则报错未配对法术
+            for (Class<? extends SpellItemLogic.PairedLeftSpell> leftSpell : pairsCount.keySet()) {
+                if (pairsCount.get(leftSpell) != 0) {
+                    try {
+                        errors.add(SpellExceptions.PAIRS_UNMATCHED(leftSpell.getDeclaredConstructor().newInstance()));
+                    } catch (InstantiationException e) { // 何意味
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    } catch (NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }

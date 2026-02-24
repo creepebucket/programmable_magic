@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
+import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
@@ -67,7 +68,7 @@ public class SpellEntity extends Entity {
         this.spellData = spellData;
         this.availableMana = mana;
         this.pluginItems = plugins;
-        this.originalSpellSequence = spellSequence.subSequence(spellSequence.head, spellSequence.tail);
+        this.originalSpellSequence = spellSequence.head == null ? new SpellSequence() : spellSequence.subSequence(spellSequence.head, spellSequence.tail);
         this.debugMode = debugMode;
 
         this.setPos(caster.getX(), caster.getY() + 1.5, caster.getZ());
@@ -84,8 +85,11 @@ public class SpellEntity extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (this.level().isClientSide()) return;
-
+        if (this.level().isClientSide()) {
+            SpellEffects.trail(this);
+            return;
+        }
+        
         if (!(debugMode && (!doTick && !doStep && !doRun))) this.setPos(this.position().add(this.getDeltaMovement()));
         this.markHurt();
 

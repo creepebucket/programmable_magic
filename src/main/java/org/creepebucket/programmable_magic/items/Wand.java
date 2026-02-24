@@ -1,7 +1,6 @@
 package org.creepebucket.programmable_magic.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.particles.TrailParticleOption;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +24,7 @@ import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
+import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.jetbrains.annotations.Nullable;
 
@@ -101,7 +101,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
         ItemStack stack = player.getItemInHand(hand);
         if (!hasAutoChargePlugin(stack)) stack.set(ModDataComponents.LAST_RELEASE_TIME.get(), level.getGameTime());
         player.startUsingItem(hand);
-        return InteractionResult.SUCCESS;
+        return InteractionResult.CONSUME;
     }
 
     /**
@@ -111,30 +111,25 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
     public void onUseTick(Level level, LivingEntity living, ItemStack stack, int remainingUseDuration) {
         if (!(living instanceof Player player)) return;
 
-        if (level.isClientSide()) {
-            int total = getUseDuration(stack, living);
-            int holdUsed = Math.max(0, total - remainingUseDuration);
-            Long last = stack.get(ModDataComponents.LAST_RELEASE_TIME.get());
-            long now = level.getGameTime();
-            if (last == null) last = now;
-            long dt = Math.max(0L, now - last);
-            int used = Math.max(holdUsed, (int) Math.max(0L, dt));
+        // 计算充能值
+        int total = getUseDuration(stack, living);
+        int holdUsed = Math.max(0, total - remainingUseDuration);
+        Long last = stack.get(ModDataComponents.LAST_RELEASE_TIME.get());
+        long now = level.getGameTime();
+        if (last == null) last = now;
+        long dt = Math.max(0L, now - last);
+        int used = Math.max(holdUsed, (int) Math.max(0L, dt));
 
-            double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get())).chargeRateW;
-            double mana = (used / 20.0) * (rate / 1000.0);
+        double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get())).chargeRateW;
+        double mana = (used / 20.0) * (rate / 1000.0);
+
+        if (level.isClientSide()) {
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
 
-            for (int i = 1; i < 5; i++) {
-                double n = Math.random() * 2 * Math.PI;
-                double x_offset = Math.sin(n) * 0.5;
-                double z_offset = Math.cos(n) * 0.5;
+            player.displayClientMessage(Component.literal(bar), true);
 
-                player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
-                level.addParticle(new TrailParticleOption(player.getPosition(0).add(x_offset, 0, z_offset), 0xFFFFFFFF, 20),
-                        player.getX() + x_offset,
-                        player.getEyeY() + 2,
-                        player.getZ() + z_offset, 0, 0, 0);
-            }
+        } else {
+            SpellEffects.charge(player, (ServerLevel) level, mana);
         }
     }
 
@@ -153,7 +148,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
 
         // 编译
         var compiler = new SpellCompiler();
-        var compiled = compiler.compile(new SimpleContainer(wand.get(ModDataComponents.SPELLS).toArray(new ItemStack[0])), false);
+        var compiled = compiler.compile(new SimpleContainer(wand.get(ModDataComponents.SPELLS).toArray(new ItemStack[0])));
 
         if (!compiler.errors.isEmpty()) {
             for (SpellExceptions exception : compiler.errors) exception.throwIt((Player) player);

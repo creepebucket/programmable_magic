@@ -215,7 +215,8 @@ public class WandHooks {
 
             // 编译
             var compiler = new SpellCompiler();
-            var compiled = compiler.compile(menu.storedSpells, (Boolean) args[1]);
+            compiler.skipCompile = (Boolean) args[1];
+            var compiled = compiler.compile(menu.storedSpells);
 
             if (!compiler.errors.isEmpty()) {
                 for (SpellExceptions exception : compiler.errors) exception.throwIt(player);
