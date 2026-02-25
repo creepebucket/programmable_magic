@@ -6,12 +6,12 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
-import org.creepebucket.programmable_magic.client.renderer.SpellEntityRenderer;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.ModParticleTypes;
+import org.creepebucket.programmable_magic.renderer.SpellEntityRenderer;
 import org.creepebucket.programmable_magic.spells.PackedSpellSpecialRenderer;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;

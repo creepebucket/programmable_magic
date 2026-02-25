@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.client.renderer;
+package org.creepebucket.programmable_magic.renderer;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

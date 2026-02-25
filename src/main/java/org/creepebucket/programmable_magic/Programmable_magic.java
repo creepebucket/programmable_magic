@@ -1,11 +1,11 @@
 package org.creepebucket.programmable_magic;
 
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
@@ -21,7 +21,6 @@ public class Programmable_magic {
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
-        MultiblockController.register(modEventBus);
         MananetNodeBlocks.register(modEventBus);
         ModAttachments.register(modEventBus);
         ModCreativeTabs.register(modEventBus);

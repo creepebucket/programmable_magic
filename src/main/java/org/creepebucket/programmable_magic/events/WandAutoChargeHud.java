@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.client.events;
+package org.creepebucket.programmable_magic.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;

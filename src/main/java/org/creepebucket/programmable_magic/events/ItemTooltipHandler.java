@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.client.events;
+package org.creepebucket.programmable_magic.events;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
