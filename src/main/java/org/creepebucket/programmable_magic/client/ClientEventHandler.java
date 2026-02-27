@@ -2,16 +2,16 @@ package org.creepebucket.programmable_magic.client;
 
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
-import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
+import net.neoforged.neoforge.client.event.*;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
+import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
+import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.ModParticleTypes;
 import org.creepebucket.programmable_magic.renderer.SpellEntityRenderer;
+import org.creepebucket.programmable_magic.renderer.api.RenderHelper;
 import org.creepebucket.programmable_magic.spells.PackedSpellSpecialRenderer;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -27,11 +27,16 @@ public class ClientEventHandler {
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
-        // 无 BER 批量注册：如需调试渲染请在自定义处注册
+
+        event.registerBlockEntityRenderer(ModBlockEntities.NET_NODE_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ModParticleTypes.FAST_DUST.get(), FastDustParticle.Provider::new);
+    }
+
+    public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
+        event.registerPipeline(RenderHelper.SOLID_FACE_PIPELINE);
     }
 
     public static void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "programmable_magic:item/spell_display_entity_health"
+  }
+}

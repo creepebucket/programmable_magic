@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "programmable_magic:item/small_mana_cell"
+  }
+}

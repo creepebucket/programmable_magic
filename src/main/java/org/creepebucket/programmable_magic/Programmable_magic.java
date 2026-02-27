@@ -40,10 +40,10 @@ public class Programmable_magic {
             modEventBus.addListener(ClientEventHandler::registerScreen);
             modEventBus.addListener(ClientEventHandler::registerEntityRenderers);
             modEventBus.addListener(ClientEventHandler::registerParticleProviders);
+            modEventBus.addListener(ClientEventHandler::registerRenderPipelines);
             modEventBus.addListener(ClientEventHandler::registerSpecialModelRenderers);
         }
         modEventBus.register(ModNetworkPackets.class);
-        // Remove: modEventBus.register(ModItemTagProvider.class);
 
         // Datagen
         modEventBus.addListener(ModDataGenerators::gatherData);

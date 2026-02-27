@@ -1,0 +1,4 @@
+// 1.21.11	2026-01-20T16:08:30.028352268	Tags for minecraft:item mod id programmable_magic
+65d453bb1fd958d24630f0eb8867c2873d3e1b8a data/programmable_magic/tags/item/spell.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/programmable_magic/tags/item/spell/base.json
+35133e95f1c8fdd7a1c21afcc231fc0bffefb9a8 data/programmable_magic/tags/item/spell/modifier.json
