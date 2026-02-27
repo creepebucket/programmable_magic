@@ -37,6 +37,11 @@ public final class ModAttachments {
             () -> AttachmentType.builder(() -> BlockPos.ZERO).serialize(BlockPos.CODEC.fieldOf("pending_connection")).build()
     );
 
+    public static final Supplier<AttachmentType<Direction>> PENDING_FACE = ATTACHMENTS.register(
+            "pending_face",
+            () -> AttachmentType.builder(() -> Direction.NORTH).serialize(Direction.CODEC.fieldOf("pending_face")).build()
+    );
+
     private ModAttachments() {
     }
 

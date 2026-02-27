@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.mananet.connectors;
 import com.mojang.math.OctahedralGroup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -24,6 +25,7 @@ import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BasicManaConnector extends Block implements EntityBlock {
@@ -82,13 +84,41 @@ public class BasicManaConnector extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+
+        var clickedFace = hitResult.getDirection();
+        if (!clickedFace.getAxis().isHorizontal()) {
+            player.displayClientMessage(Component.literal("拒绝连接: 只能点击水平面"), false);
+            return InteractionResult.CONSUME;
+        }
+
         // 检测玩家有没有等待连接的
         if (player.hasData(ModAttachments.PENDING_CONNECTION)) {
             // 连接双方
 
-            var connected = level.getBlockEntity(player.getData(ModAttachments.PENDING_CONNECTION));
+            var connectedPos = player.getData(ModAttachments.PENDING_CONNECTION);
+            var connectedFace = player.getData(ModAttachments.PENDING_FACE);
+            var selfFace = clickedFace;
+            var connected = level.getBlockEntity(connectedPos);
+
+            var connections = new HashMap<>(connected.getData(ModAttachments.CONNECTIONS));
+            connections.put(connectedFace, pos);
+            connected.setData(ModAttachments.CONNECTIONS, connections);
+
+            var self = level.getBlockEntity(pos);
+            var selfConnections = new HashMap<>(self.getData(ModAttachments.CONNECTIONS));
+            selfConnections.put(selfFace, connectedPos);
+            self.setData(ModAttachments.CONNECTIONS, selfConnections);
+
+            player.removeData(ModAttachments.PENDING_CONNECTION);
+            player.removeData(ModAttachments.PENDING_FACE);
+            player.displayClientMessage(Component.literal("已连接 " + connectedPos.toShortString() + " " + connectedFace.getName() + " -> " + pos.toShortString() + " " + selfFace.getName()), false);
+            return InteractionResult.CONSUME;
         }
 
+        player.setData(ModAttachments.PENDING_CONNECTION, pos);
+        player.setData(ModAttachments.PENDING_FACE, clickedFace);
+        player.displayClientMessage(Component.literal("连接起点已设置为 " + pos.toShortString() + " " + clickedFace.getName()), false);
         return InteractionResult.CONSUME;
     }
 }
