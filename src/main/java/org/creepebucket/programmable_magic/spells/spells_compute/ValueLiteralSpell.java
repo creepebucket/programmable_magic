@@ -49,6 +49,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public PiSpell() {
             super(SpellValueType.NUMBER, Math.PI, "pi");
             subCategory = "spell." + MODID + ".subcategory.constants.number";
+            outputTypes = List.of(List.of(SpellValueType.NUMBER));
         }
     }
 
@@ -56,6 +57,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public XUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(1, 0, 0), "x_unit_vector");
             subCategory = "spell." + MODID + ".subcategory.constants.vector";
+            outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
     }
 
@@ -63,6 +65,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public YUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(0, 1, 0), "y_unit_vector");
             subCategory = "spell." + MODID + ".subcategory.constants.vector";
+            outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
     }
 
@@ -70,6 +73,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public ZUnitVectorSpell() {
             super(SpellValueType.VECTOR3, new Vec3(0, 0, 1), "z_unit_vector");
             subCategory = "spell." + MODID + ".subcategory.constants.vector";
+            outputTypes = List.of(List.of(SpellValueType.VECTOR3));
         }
     }
 
@@ -77,6 +81,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public TrueSpell() {
             super(SpellValueType.BOOLEAN, true, "true");
             subCategory = "spell." + MODID + ".subcategory.constants.boolean";
+            outputTypes = List.of(List.of(SpellValueType.BOOLEAN));
         }
     }
 
@@ -84,6 +89,7 @@ public class ValueLiteralSpell extends SpellItemLogic implements SpellItemLogic.
         public FalseSpell() {
             super(SpellValueType.BOOLEAN, false, "false");
             subCategory = "spell." + MODID + ".subcategory.constants.boolean";
+            outputTypes = List.of(List.of(SpellValueType.BOOLEAN));
         }
     }
 }

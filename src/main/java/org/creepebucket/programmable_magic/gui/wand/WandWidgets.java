@@ -149,6 +149,8 @@ public class WandWidgets {
             if (0 > i || i >= 1000) return;
             delta2X.doStep(screen.dt);
 
+            ClientSlotManager.setClientPosition(slot, (int) (x() + delta2X.get()), y());
+
             // 更新自身Slot
             slot = slots.get(i);
 
@@ -161,8 +163,6 @@ public class WandWidgets {
             }
 
             graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, bgColor());
-
-            ClientSlotManager.setClientPosition(slot, (int) (x() + dx.get() % 16 + delta2X.get()), y());
 
             if (this.i == 0 && delta2X.get() + 50 > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
                 deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard());
