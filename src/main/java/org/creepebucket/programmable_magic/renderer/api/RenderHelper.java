@@ -70,10 +70,10 @@ public class RenderHelper {
         }));
     }
 
-    public void addSolidQuad(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4, int color, int light) {
+    public void addSolidQuad(Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3, int color, int light) {
 
-        float x1 = (float) p1.x, x2 = (float) p2.x, y1 = (float) p1.y, y2 = (float) p2.y, z1 = (float) p1.z, z2 = (float) p2.z;
-        float x3 = (float) p3.x, x4 = (float) p4.x, y3 = (float) p3.y, y4 = (float) p4.y, z3 = (float) p3.z, z4 = (float) p4.z;
+        float x1 = (float) p0.x, x2 = (float) p1.x, y1 = (float) p0.y, y2 = (float) p1.y, z1 = (float) p0.z, z2 = (float) p1.z;
+        float x3 = (float) p2.x, x4 = (float) p3.x, y3 = (float) p2.y, y4 = (float) p3.y, z3 = (float) p2.z, z4 = (float) p3.z;
 
         float ux = x2 - x1, uy = y2 - y1, uz = z2 - z1, vx = x3 - x1, vy = y3 - y1, vz = z3 - z1;
         float nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;

@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+
 import static net.neoforged.neoforge.registries.NeoForgeRegistries.ATTACHMENT_TYPES;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -29,6 +33,28 @@ public final class ModAttachments {
             "connections",
             () -> AttachmentType.<Map<Direction, BlockPos>>builder(() -> new HashMap<>())
                     .serialize(Codec.unboundedMap(Direction.CODEC, BlockPos.CODEC).fieldOf("connections"))
+                    .sync(new StreamCodec<>() {
+                        @Override
+                        public Map<Direction, BlockPos> decode(RegistryFriendlyByteBuf buf) {
+                            int size = ByteBufCodecs.VAR_INT.decode(buf);
+                            var map = new HashMap<Direction, BlockPos>(size);
+                            for (int i = 0; i < size; i++) {
+                                var direction = Direction.from3DDataValue(ByteBufCodecs.VAR_INT.decode(buf));
+                                var pos = BlockPos.of(ByteBufCodecs.VAR_LONG.decode(buf));
+                                map.put(direction, pos);
+                            }
+                            return map;
+                        }
+
+                        @Override
+                        public void encode(RegistryFriendlyByteBuf buf, Map<Direction, BlockPos> value) {
+                            ByteBufCodecs.VAR_INT.encode(buf, value.size());
+                            for (var entry : value.entrySet()) {
+                                ByteBufCodecs.VAR_INT.encode(buf, entry.getKey().get3DDataValue());
+                                ByteBufCodecs.VAR_LONG.encode(buf, entry.getValue().asLong());
+                            }
+                        }
+                    })
                     .build()
     );
 

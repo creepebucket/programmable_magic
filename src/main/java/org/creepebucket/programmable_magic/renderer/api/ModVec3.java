@@ -17,7 +17,9 @@ public class ModVec3 extends Vec3 {
         super(vector);
     }
 
-    public Vec3 multiply(double n) {
-        return this.multiply(n, n, n);
+    public ModVec3(Vec3 vector) {super(vector.x, vector.y, vector.z);}
+
+    public ModVec3 multiply(double n) {
+        return new ModVec3(this.multiply(n, n, n));
     }
 }
