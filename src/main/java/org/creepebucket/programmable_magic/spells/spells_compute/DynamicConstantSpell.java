@@ -39,7 +39,7 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of(caster.level().getGameTime()), List.of(SpellValueType.NUMBER));
+            return ExecutionResult.RETURNED(this, List.of((double) caster.level().getGameTime()), List.of(SpellValueType.NUMBER));
         }
     }
 
