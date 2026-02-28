@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
@@ -27,6 +28,19 @@ import static net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
 public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEntity, NetNodeBlockEntityBER.NetNodeBlockEntityBERS> {
 
     @Override
+    public AABB getRenderBoundingBox(NetNodeBlockEntity blockEntity) {
+        var selfPos = blockEntity.getBlockPos();
+        var boundingBox = new AABB(selfPos);
+
+        for (var connectedPos : blockEntity.getData(ModAttachments.CONNECTIONS).values()) {
+            if (selfPos.asLong() > connectedPos.asLong()) continue;
+            boundingBox = boundingBox.minmax(new AABB(connectedPos));
+        }
+
+        return boundingBox;
+    }
+
+    @Override
     public NetNodeBlockEntityBERS createRenderState() {
         return new NetNodeBlockEntityBERS();
     }
@@ -37,20 +51,20 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
         var position = new Vector3f(0.5F, 0.5F, 0.5F);
 
         var n = new Vector3f(0, 0, -0.375F);
-        var s = new Vector3f(0, 0,  0.375F);
+        var s = new Vector3f(0, 0, 0.375F);
         var w = new Vector3f(-0.375F, 0, 0);
-        var e = new Vector3f( 0.375F, 0, 0);
+        var e = new Vector3f(0.375F, 0, 0);
 
         renderer.addText(new Vector3f(position).add(s), Direction.NORTH, 0.01F, -1, FULL_BRIGHT, Component.literal("South").getVisualOrderText());
         renderer.addText(new Vector3f(position).add(n), Direction.SOUTH, 0.01F, -1, FULL_BRIGHT, Component.literal("North").getVisualOrderText());
-        renderer.addText(new Vector3f(position).add(e), Direction.WEST , 0.01F, -1, FULL_BRIGHT, Component.literal("East") .getVisualOrderText());
-        renderer.addText(new Vector3f(position).add(w), Direction.EAST , 0.01F, -1, FULL_BRIGHT, Component.literal("West") .getVisualOrderText());
+        renderer.addText(new Vector3f(position).add(e), Direction.WEST, 0.01F, -1, FULL_BRIGHT, Component.literal("East").getVisualOrderText());
+        renderer.addText(new Vector3f(position).add(w), Direction.EAST, 0.01F, -1, FULL_BRIGHT, Component.literal("West").getVisualOrderText());
 
         var facingToPos = Map.of(Direction.SOUTH, s, Direction.NORTH, n, Direction.EAST, e, Direction.WEST, w);
         var facingToXPixel = Map.of(Direction.SOUTH, new Vector3f(-1.0F / 16, 0, 0), Direction.NORTH, new Vector3f(1.0F / 16, 0, 0),
-                                    Direction.WEST , new Vector3f(0, 0, -1.0F / 16), Direction.EAST , new Vector3f(0, 0, 1.0F / 16));
+                Direction.WEST, new Vector3f(0, 0, -1.0F / 16), Direction.EAST, new Vector3f(0, 0, 1.0F / 16));
         var facingToCpDirection = Map.of(Direction.SOUTH, new Vector3f(0, 0, 0.5F), Direction.NORTH, new Vector3f(0, 0, 0.5F),
-                                         Direction.WEST , new Vector3f(0.5F, 0, 0), Direction.EAST , new Vector3f(0.5F, 0, 0));
+                Direction.WEST, new Vector3f(0.5F, 0, 0), Direction.EAST, new Vector3f(0.5F, 0, 0));
 
         var yPixel = new Vector3f(0, 1.0F / 16, 0);
 
@@ -58,8 +72,10 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
             if (!direction.getAxis().isHorizontal() || !renderState.connections.containsKey(direction)) continue;
             var connectedBlockPos = renderState.connections.get(direction);
 
+            if (renderState.blockPos.asLong() > connectedBlockPos.asLong()) continue;
+
             var connectedFace = renderState.connectedFaces.get(direction);
-            if (connectedBlockPos == null || connectedFace == null) {
+            if (connectedFace == null) {
                 continue;
             }
 
@@ -87,8 +103,8 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
             for (int i = 0; i < 4; i++) {
                 var start = selfCenters.get(i);
                 var end = connectedCenters.get(i);
-                var cp0 = new Vector3f(start).add((end.x - start.x) * facingToCpDirection.get(direction).x,     0, (end.z - start.z) * facingToCpDirection.get(direction).z);
-                var cp1 = new Vector3f(end)  .add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
+                var cp0 = new Vector3f(start).add((end.x - start.x) * facingToCpDirection.get(direction).x, 0, (end.z - start.z) * facingToCpDirection.get(direction).z);
+                var cp1 = new Vector3f(end).add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
 
                 allCenters.add(ModUtils.BezierUtils.generateCubicCurve(start, cp0, cp1, end, 10));
             }
@@ -97,6 +113,7 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
 
             for (int i = 0; i < 4; i++) {
                 var centers = allCenters.get(i);
+                Vector3f lastNormalXPixel = null;
 
                 for (int j = 0; j < centers.size(); j++) {
                     Vector3f avg;
@@ -110,6 +127,11 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
 
                     var normalXPixel = avg.cross(avg.y > 0 ? new Vector3f(0, -1, 0) : new Vector3f(0, 1, 0), new Vector3f()).normalize(1F / 32);
                     var normalYPixel = avg.cross(normalXPixel, new Vector3f()).normalize(1F / 32);
+                    if (lastNormalXPixel != null && lastNormalXPixel.dot(normalXPixel) < 0) {
+                        normalXPixel.mul(-1);
+                        normalYPixel.mul(-1);
+                    }
+                    lastNormalXPixel = normalXPixel;
 
                     var center = centers.get(j);
                     allVertex.get(i).add(List.of(
@@ -121,41 +143,19 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
                 }
             }
 
+            var colors = List.of(0xFFFF0000, 0xFFFFFF00, 0xFF0000FF, 0xFF00FF00);
+
             for (int i = 0; i < 4; i++) {
                 var vertexList = allVertex.get(i);
 
                 for (int j = 0; j < vertexList.size() - 1; j++) {
 
-                    renderer.addSolidQuad(vertexList.get(j).get(0), vertexList.get(j).get(1), vertexList.get(j + 1).get(1), vertexList.get(j + 1).get(0), -1, renderState.lightCoords);
-                    renderer.addSolidQuad(vertexList.get(j).get(1), vertexList.get(j).get(2), vertexList.get(j + 1).get(2), vertexList.get(j + 1).get(1), -1, renderState.lightCoords);
-                    renderer.addSolidQuad(vertexList.get(j).get(2), vertexList.get(j).get(3), vertexList.get(j + 1).get(3), vertexList.get(j + 1).get(2), -1, renderState.lightCoords);
-                    renderer.addSolidQuad(vertexList.get(j).get(3), vertexList.get(j).get(0), vertexList.get(j + 1).get(0), vertexList.get(j + 1).get(3), -1, renderState.lightCoords);
+                    renderer.addSolidQuad(vertexList.get(j).get(0), vertexList.get(j).get(1), vertexList.get(j + 1).get(1), vertexList.get(j + 1).get(0), colors.get(i), renderState.lightCoords);
+                    renderer.addSolidQuad(vertexList.get(j).get(1), vertexList.get(j).get(2), vertexList.get(j + 1).get(2), vertexList.get(j + 1).get(1), colors.get(i), renderState.lightCoords);
+                    renderer.addSolidQuad(vertexList.get(j).get(2), vertexList.get(j).get(3), vertexList.get(j + 1).get(3), vertexList.get(j + 1).get(2), colors.get(i), renderState.lightCoords);
+                    renderer.addSolidQuad(vertexList.get(j).get(3), vertexList.get(j).get(0), vertexList.get(j + 1).get(0), vertexList.get(j + 1).get(3), colors.get(i), renderState.lightCoords);
                 }
             }
-
-            /*
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    var start = selfPoints.get(i).get(j);
-                    var end = connectedPoints.get(i).get(j);
-                    var cp0 = start.add((end.x - start.x) * facingToCpDirection.get(direction).x,     0, (end.z - start.z) * facingToCpDirection.get(direction).z);
-                    var cp1 = end  .add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
-
-                    var p0List = ModUtils.BezierUtils.generateCubicCurve(start, cp0, cp1, end, 10);
-
-                    start = selfPoints.get(i).get((j + 1) % 4);
-                    end = connectedPoints.get(i).get((j + 1) % 4);
-                    cp0 = start.add((end.x - start.x) * facingToCpDirection.get(direction).x,     0, (end.z - start.z) * facingToCpDirection.get(direction).z);
-                    cp1 = end  .add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
-
-                    var p1List = ModUtils.BezierUtils.generateCubicCurve(start, cp0, cp1, end, 10);
-
-                    for (int k = 0; k < p0List.size() - 1; k++) {
-                        renderer.addSolidQuad(p0List.get(k), p0List.get(k+1), p1List.get(k+1), p1List.get(k), new Color(64 * i, 64 * j, 16 * k).toArgb(), renderState.lightCoords);
-                    }
-                }
-            }
-            */
         }
     }
 
