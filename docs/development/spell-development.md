@@ -43,8 +43,8 @@ public class HelloWorldSpell extends SpellItemLogic implements SpellItemLogic.Ba
         subCategory = "spell." + MODID + ".subcategory.visual"; // 所属子类别
         
         // 输入输出类型定义（这个法术不需要输入，没有输出）
-        inputTypes = List.of(List.of());                // 无输入参数
-        outputTypes = List.of(List.of());               // 无返回值
+        inputTypes = List.of(List.of(SpellValueType.EMPTY));                // 无输入参数
+        outputTypes = List.of(List.of(SpellValueType.EMPTY));               // 无返回值
         
         // 运算属性
         precedence = -99;                               // 低优先级（立即执行）
@@ -135,7 +135,7 @@ public class PrintMessageSpell extends SpellItemLogic implements SpellItemLogic.
         
         // 定义输入参数：需要一个字符串
         inputTypes = List.of(List.of(SpellValueType.STRING));
-        outputTypes = List.of(List.of()); // 无返回值
+        outputTypes = List.of(List.of(SpellValueType.EMPTY)); // 无返回值
         
         precedence = -99;
         bypassShunting = true;
@@ -296,8 +296,8 @@ public class LoopStartSpell extends SpellItemLogic.PairedLeftSpell
         subCategory = "spell." + MODID + ".subcategory.flow_control";
         
         // 无输入输出（控制标记）
-        inputTypes = List.of(List.of());
-        outputTypes = List.of(List.of());
+        inputTypes = List.of(List.of(SpellValueType.EMPTY));
+        outputTypes = List.of(List.of(SpellValueType.EMPTY));
         
         precedence = -99;
         bypassShunting = true;
@@ -322,7 +322,7 @@ public class LoopEndSpell extends SpellItemLogic.PairedRightSpell
         subCategory = "spell." + MODID + ".subcategory.flow_control";
         
         inputTypes = List.of(List.of(SpellValueType.BOOLEAN));
-        outputTypes = List.of(List.of());
+        outputTypes = List.of(List.of(SpellValueType.EMPTY));
         
         precedence = -99;
         bypassShunting = true;
@@ -360,7 +360,7 @@ public class TeleportSpell extends SpellItemLogic implements SpellItemLogic.Base
         
         // 需要位置向量和目标实体
         inputTypes = List.of(List.of(SpellValueType.VECTOR3, SpellValueType.ENTITY));
-        outputTypes = List.of(List.of());
+        outputTypes =List.of(List.of(SpellValueType.EMPTY));
         
         precedence = -99;
         bypassShunting = true;
@@ -441,7 +441,7 @@ public class DelayedSpell extends SpellItemLogic implements SpellItemLogic.Adjus
     public DelayedSpell() {
         name = "delayed_action";
         inputTypes = List.of(List.of(SpellValueType.NUMBER));
-        outputTypes = List.of(List.of());
+        outputTypes = List.of(List.of(SpellValueType.EMPTY));
         precedence = -99;
         bypassShunting = true;
     }
