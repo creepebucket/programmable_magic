@@ -13,10 +13,10 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.plugins.WandPluginLogic;
-import org.joml.Vector3f;
 
 import java.util.*;
 
@@ -371,7 +371,7 @@ public class ModUtils {
          * @param p2 控制点2 (影响结束段的走向)
          * @param p3 终点
          */
-        public static Vector3f getCubicBezierPoint(float t, Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3) {
+        public static Vec3 getCubicBezierPoint(float t, Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3) {
             var u = 1 - t;
 
             // 预计算次幂，减少计算量
@@ -383,14 +383,14 @@ public class ModUtils {
             var x = uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x;
             var y = uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y;
             var z = uuu * p0.z + 3 * uu * t * p1.z + 3 * u * tt * p2.z + ttt * p3.z;
-            return new Vector3f(x, y, z);
+            return new Vec3(x, y, z);
         }
         /**
          * 生成三阶贝塞尔曲线的点集
          * @param segments 线段数量（生成的点数为 segments + 1）
          */
-        public static List<Vector3f> generateCubicCurve(Vector3f start, Vector3f cp0, Vector3f cp1, Vector3f end, int segments) {
-            List<Vector3f> points = new ArrayList<>();
+        public static List<Vec3> generateCubicCurve(Vec3 start, Vec3 cp0, Vec3 cp1, Vec3 end, int segments) {
+            List<Vec3> points = new ArrayList<>();
             for (int i = 0; i <= segments; i++) {
                 var t = (float) i / segments;
                 points.add(getCubicBezierPoint(t, start, cp0, cp1, end));

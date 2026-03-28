@@ -17,7 +17,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -51,9 +50,9 @@ public class RenderHelper {
         this.cameraState = cameraRenderState;
     }
 
-    public void addLine(Vector3f p1, Vector3f p2, int color, float width) {
+    public void addLine(Vec3 p1, Vec3 p2, int color, float width) {
 
-        float x1 = p1.x, x2 = p2.x, y1 = p1.y, y2 = p2.y, z1 = p1.z, z2 = p2.z;
+        float x1 = (float) p1.x, x2 = (float) p2.x, y1 = (float) p1.y, y2 = (float) p2.y, z1 = (float) p1.z, z2 = (float) p2.z;
 
         // 计算法线方向
         float dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
@@ -71,10 +70,10 @@ public class RenderHelper {
         }));
     }
 
-    public void addSolidQuad(Vector3f p0, Vector3f p1, Vector3f p2, Vector3f p3, int color, int light) {
+    public void addSolidQuad(Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3, int color, int light) {
 
-        float x1 = p0.x, x2 = p1.x, y1 = p0.y, y2 = p1.y, z1 = p0.z, z2 = p1.z;
-        float x3 = p2.x, x4 = p3.x, y3 = p2.y, y4 = p3.y, z3 = p2.z, z4 = p3.z;
+        float x1 = (float) p0.x, x2 = (float) p1.x, y1 = (float) p0.y, y2 = (float) p1.y, z1 = (float) p0.z, z2 = (float) p1.z;
+        float x3 = (float) p2.x, x4 = (float) p3.x, y3 = (float) p2.y, y4 = (float) p3.y, z3 = (float) p2.z, z4 = (float) p3.z;
 
         float ux = x2 - x1, uy = y2 - y1, uz = z2 - z1, vx = x3 - x1, vy = y3 - y1, vz = z3 - z1;
         float nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
@@ -98,16 +97,16 @@ public class RenderHelper {
         }));
     }
 
-    public void addSolidQuad(Vector3f[] quad, int color, int light) {
+    public void addSolidQuad(Vec3[] quad, int color, int light) {
         addSolidQuad(quad[0], quad[1], quad[2], quad[3], color, light);
     }
 
-    public void addSolidQuad(List<Vector3f> quad, int color, int light) {
-        addSolidQuad(quad.toArray(new Vector3f[4]), color, light);
+    public void addSolidQuad(List<Vec3> quad, int color, int light) {
+        addSolidQuad(quad.toArray(new Vec3[4]), color, light);
     }
 
-    public void addAxisAlienedSolidQuad(Vector3f pos, Vector3f size, int color, int light) {
-        Vector3f p1 = pos, p2 = pos.add(size), p3, p4;
+    public void addAxisAlienedSolidQuad(Vec3 pos, Vec3 size, int color, int light) {
+        Vec3 p1 = pos, p2 = pos.add(size), p3, p4;
 
         // 对p1, p2所处平面状态进行判断, 计算p3, p4
         if (size.x == 0) {
@@ -155,13 +154,5 @@ public class RenderHelper {
         }
         
         addText(pos, dir, size, color, light, text);
-    }
-
-    public void addText(Vector3f pos, Quaternionf direction, float size, int color, int light, FormattedCharSequence text) {
-        addText(new Vec3(pos), direction, size, color, light, text);
-    }
-
-    public void addText(Vector3f pos, Direction direction, float size, int color, int light, FormattedCharSequence text) {
-        addText(new Vec3(pos), direction, size, color, light, text);
     }
 }

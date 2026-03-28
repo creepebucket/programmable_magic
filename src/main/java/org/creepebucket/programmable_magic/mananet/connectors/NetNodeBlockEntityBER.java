@@ -15,7 +15,6 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.renderer.api.RenderHelper;
-import org.joml.Vector3f;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -48,25 +47,25 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
     @Override
     public void submit(NetNodeBlockEntityBERS renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState) {
         var renderer = new RenderHelper(poseStack, submitNodeCollector, cameraRenderState);
-        var position = new Vector3f(0.5F, 0.5F, 0.5F);
+        var position = new Vec3(0.5, 0.5, 0.5);
 
-        var n = new Vector3f(0, 0, -0.375F);
-        var s = new Vector3f(0, 0, 0.375F);
-        var w = new Vector3f(-0.375F, 0, 0);
-        var e = new Vector3f(0.375F, 0, 0);
+        var n = new Vec3(0, 0, -0.375);
+        var s = new Vec3(0, 0, 0.375);
+        var w = new Vec3(-0.375, 0, 0);
+        var e = new Vec3(0.375, 0, 0);
 
-        renderer.addText(new Vector3f(position).add(s), Direction.NORTH, 0.01F, -1, FULL_BRIGHT, Component.literal("South").getVisualOrderText());
-        renderer.addText(new Vector3f(position).add(n), Direction.SOUTH, 0.01F, -1, FULL_BRIGHT, Component.literal("North").getVisualOrderText());
-        renderer.addText(new Vector3f(position).add(e), Direction.WEST, 0.01F, -1, FULL_BRIGHT, Component.literal("East").getVisualOrderText());
-        renderer.addText(new Vector3f(position).add(w), Direction.EAST, 0.01F, -1, FULL_BRIGHT, Component.literal("West").getVisualOrderText());
+        renderer.addText(position.add(s), Direction.NORTH, 0.01F, -1, FULL_BRIGHT, Component.literal("South").getVisualOrderText());
+        renderer.addText(position.add(n), Direction.SOUTH, 0.01F, -1, FULL_BRIGHT, Component.literal("North").getVisualOrderText());
+        renderer.addText(position.add(e), Direction.WEST, 0.01F, -1, FULL_BRIGHT, Component.literal("East").getVisualOrderText());
+        renderer.addText(position.add(w), Direction.EAST, 0.01F, -1, FULL_BRIGHT, Component.literal("West").getVisualOrderText());
 
         var facingToPos = Map.of(Direction.SOUTH, s, Direction.NORTH, n, Direction.EAST, e, Direction.WEST, w);
-        var facingToXPixel = Map.of(Direction.SOUTH, new Vector3f(-1.0F / 16, 0, 0), Direction.NORTH, new Vector3f(1.0F / 16, 0, 0),
-                Direction.WEST, new Vector3f(0, 0, -1.0F / 16), Direction.EAST, new Vector3f(0, 0, 1.0F / 16));
-        var facingToCpDirection = Map.of(Direction.SOUTH, new Vector3f(0, 0, 0.5F), Direction.NORTH, new Vector3f(0, 0, 0.5F),
-                Direction.WEST, new Vector3f(0.5F, 0, 0), Direction.EAST, new Vector3f(0.5F, 0, 0));
+        var facingToXPixel = Map.of(Direction.SOUTH, new Vec3(-1.0 / 16, 0, 0), Direction.NORTH, new Vec3(1.0 / 16, 0, 0),
+                Direction.WEST, new Vec3(0, 0, -1.0 / 16), Direction.EAST, new Vec3(0, 0, 1.0 / 16));
+        var facingToCpDirection = Map.of(Direction.SOUTH, new Vec3(0, 0, 0.5), Direction.NORTH, new Vec3(0, 0, 0.5),
+                Direction.WEST, new Vec3(0.5, 0, 0), Direction.EAST, new Vec3(0.5, 0, 0));
 
-        var yPixel = new Vector3f(0, 1.0F / 16, 0);
+        var yPixel = new Vec3(0, 1.0 / 16, 0);
 
         for (Direction direction : Direction.values()) {
             if (!direction.getAxis().isHorizontal() || !renderState.connections.containsKey(direction)) continue;
@@ -79,66 +78,66 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
                 continue;
             }
 
-            var selfPos = new Vector3f(position).add(facingToPos.get(direction));
-            var xPixel = new Vector3f(facingToXPixel.get(direction));
+            var selfPos = position.add(facingToPos.get(direction));
+            var xPixel = facingToXPixel.get(direction);
 
             var selfCenters = List.of(
-                    new Vector3f(selfPos).add(new Vector3f(yPixel).mul(-3.5F)).add(new Vector3f(xPixel).mul(1.5F)),
-                    new Vector3f(selfPos).add(new Vector3f(yPixel).mul(-3.5F)).add(new Vector3f(xPixel).mul(-1.5F)),
-                    new Vector3f(selfPos).add(new Vector3f(yPixel).mul(-2.1F)).add(new Vector3f(xPixel).mul(3.9F)),
-                    new Vector3f(selfPos).add(new Vector3f(yPixel).mul(-2.1F)).add(new Vector3f(xPixel).mul(-3.9F))
+                    selfPos.add(yPixel.scale(-3.5)).add(xPixel.scale(1.5)),
+                    selfPos.add(yPixel.scale(-3.5)).add(xPixel.scale(-1.5)),
+                    selfPos.add(yPixel.scale(-2.1)).add(xPixel.scale(3.9)),
+                    selfPos.add(yPixel.scale(-2.1)).add(xPixel.scale(-3.9))
             );
 
-            var connectedPos = connectedBlockPos.getCenter().subtract(renderState.blockPos.getCenter()).toVector3f().add(facingToPos.get(connectedFace)).add(position);
-            xPixel = new Vector3f(facingToXPixel.get(connectedFace)).mul(-1);
+            var connectedPos = connectedBlockPos.getCenter().subtract(renderState.blockPos.getCenter()).add(facingToPos.get(connectedFace)).add(position);
+            xPixel = facingToXPixel.get(connectedFace).scale(-1);
 
             var connectedCenters = List.of(
-                    new Vector3f(connectedPos).add(new Vector3f(yPixel).mul(-3.5F)).add(new Vector3f(xPixel).mul(1.5F)),
-                    new Vector3f(connectedPos).add(new Vector3f(yPixel).mul(-3.5F)).add(new Vector3f(xPixel).mul(-1.5F)),
-                    new Vector3f(connectedPos).add(new Vector3f(yPixel).mul(-2.1F)).add(new Vector3f(xPixel).mul(3.9F)),
-                    new Vector3f(connectedPos).add(new Vector3f(yPixel).mul(-2.1F)).add(new Vector3f(xPixel).mul(-3.9F))
+                    connectedPos.add(yPixel.scale(-3.5)).add(xPixel.scale(1.5)),
+                    connectedPos.add(yPixel.scale(-3.5)).add(xPixel.scale(-1.5)),
+                    connectedPos.add(yPixel.scale(-2.1)).add(xPixel.scale(3.9)),
+                    connectedPos.add(yPixel.scale(-2.1)).add(xPixel.scale(-3.9))
             );
 
-            List<List<Vector3f>> allCenters = new ArrayList<>();
+            List<List<Vec3>> allCenters = new ArrayList<>();
             for (int i = 0; i < 4; i++) {
                 var start = selfCenters.get(i);
                 var end = connectedCenters.get(i);
-                var cp0 = new Vector3f(start).add((end.x - start.x) * facingToCpDirection.get(direction).x, 0, (end.z - start.z) * facingToCpDirection.get(direction).z);
-                var cp1 = new Vector3f(end).add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
+                var cp0 = start.add((end.x - start.x) * facingToCpDirection.get(direction).x, 0, (end.z - start.z) * facingToCpDirection.get(direction).z);
+                var cp1 = end.add((start.x - end.x) * facingToCpDirection.get(connectedFace).x, 0, (start.z - end.z) * facingToCpDirection.get(connectedFace).z);
 
                 allCenters.add(ModUtils.BezierUtils.generateCubicCurve(start, cp0, cp1, end, 10));
             }
 
-            List<List<List<Vector3f>>> allVertex = new ArrayList<>(List.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
+            List<List<List<Vec3>>> allVertex = new ArrayList<>(List.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
 
             for (int i = 0; i < 4; i++) {
                 var centers = allCenters.get(i);
-                Vector3f lastNormalXPixel = null;
+                Vec3 lastNormalXPixel = null;
 
                 for (int j = 0; j < centers.size(); j++) {
-                    Vector3f avg;
+                    Vec3 avg;
                     if (j == 0) avg = facingToCpDirection.get(direction);
                     else if (j == centers.size() - 1) avg = facingToCpDirection.get(connectedFace);
                     else {
-                        var leftDir = new Vector3f(centers.get(j)).sub(centers.get(j - 1));
-                        var rightDir = new Vector3f(centers.get(j + 1)).sub(centers.get(j));
-                        avg = leftDir.mul(0.5F).add(rightDir.mul(0.5F));
+                        var leftDir = centers.get(j).subtract(centers.get(j - 1));
+                        var rightDir = centers.get(j + 1).subtract(centers.get(j));
+                        avg = leftDir.scale(0.5).add(rightDir.scale(0.5));
                     }
 
-                    var normalXPixel = avg.cross(avg.y > 0 ? new Vector3f(0, -1, 0) : new Vector3f(0, 1, 0), new Vector3f()).normalize(1F / 32);
-                    var normalYPixel = avg.cross(normalXPixel, new Vector3f()).normalize(1F / 32);
+                    var normalXPixel = avg.cross(avg.y > 0 ? new Vec3(0, -1, 0) : new Vec3(0, 1, 0)).normalize().scale(1.0 / 32);
+                    var normalYPixel = avg.cross(normalXPixel).normalize().scale(1.0 / 32);
                     if (lastNormalXPixel != null && lastNormalXPixel.dot(normalXPixel) < 0) {
-                        normalXPixel.mul(-1);
-                        normalYPixel.mul(-1);
+                        normalXPixel = normalXPixel.scale(-1);
+                        normalYPixel = normalYPixel.scale(-1);
                     }
                     lastNormalXPixel = normalXPixel;
 
                     var center = centers.get(j);
                     allVertex.get(i).add(List.of(
-                            new Vector3f(center).add(-normalXPixel.x - normalYPixel.x, -normalXPixel.y - normalYPixel.y, -normalXPixel.z - normalYPixel.z),
-                            new Vector3f(center).add(-normalXPixel.x + normalYPixel.x, -normalXPixel.y + normalYPixel.y, -normalXPixel.z + normalYPixel.z),
-                            new Vector3f(center).add( normalXPixel.x + normalYPixel.x,  normalXPixel.y + normalYPixel.y,  normalXPixel.z + normalYPixel.z),
-                            new Vector3f(center).add( normalXPixel.x - normalYPixel.x,  normalXPixel.y - normalYPixel.y,  normalXPixel.z - normalYPixel.z)
+                            center.add(-normalXPixel.x - normalYPixel.x, -normalXPixel.y - normalYPixel.y, -normalXPixel.z - normalYPixel.z),
+                            center.add(-normalXPixel.x + normalYPixel.x, -normalXPixel.y + normalYPixel.y, -normalXPixel.z + normalYPixel.z),
+                            center.add( normalXPixel.x + normalYPixel.x,  normalXPixel.y + normalYPixel.y,  normalXPixel.z + normalYPixel.z),
+                            center.add( normalXPixel.x - normalYPixel.x,  normalXPixel.y - normalYPixel.y,  normalXPixel.z - normalYPixel.z)
                     ));
                 }
             }
