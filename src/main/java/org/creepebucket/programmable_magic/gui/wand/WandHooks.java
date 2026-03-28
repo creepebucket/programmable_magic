@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
+import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
@@ -89,15 +90,20 @@ public class WandHooks {
 
     public static class ClearSpellsHook extends Hook {
         private final Container storage;
+        public SyncedValue<List<Integer>> breakpointIds;
 
-        public ClearSpellsHook(Container storage) {
+        public ClearSpellsHook(Container storage, SyncedValue<List<Integer>> breakpointIds) {
             super("clear_spells");
             this.storage = storage;
+            this.breakpointIds = breakpointIds;
         }
 
         @Override
         public void handle(Player player, Object... args) {
             for (int i = 0; i < storage.getContainerSize(); i++) storage.setItem(i, ItemStack.EMPTY);
+
+            // 清空断点
+            breakpointIds.set(new ArrayList<>());
         }
     }
 
@@ -224,8 +230,11 @@ public class WandHooks {
                 return;
             }
 
+            // 断开上一个法术的连接
+            if (menu.spell != null) menu.spell.debugMode = false;
+
             // 生成
-            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins, menu.debugMode);
+            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins, menu.debugMode, menu.breakpointIds.get());
 
             player.level().addFreshEntity(menu.spell);
         }

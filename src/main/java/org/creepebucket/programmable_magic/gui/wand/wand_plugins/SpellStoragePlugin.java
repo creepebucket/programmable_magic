@@ -41,7 +41,8 @@ public class SpellStoragePlugin extends BasePlugin {
             int finalI = i;
             var storage = (WandWidgets.SpellStorageWidget) new WandWidgets.SpellStorageWidget(screen.getMenu().spellStoreSlots,
                     new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + 64 + finalI * 16, (w, h) -> h - 115),
-                    i, screen.getMenu().storedSpellsEditHook, screen.getMenu().clearSpellsHook, screen.storageSlots).dx(storageDx).mainColor(screen.mainColor).textColor(screen.textColor).bgColor(screen.bgColor);
+                    i, screen.getMenu().storedSpellsEditHook, screen.getMenu().clearSpellsHook, screen.storageSlots, screen.getMenu().currentSpellId)
+                    .dx(storageDx).mainColor(screen.mainColor).textColor(screen.textColor).bgColor(screen.bgColor);
             screen.addWidget(storage);
             screen.storageSlots.add(storage);
         }

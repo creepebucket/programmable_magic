@@ -28,6 +28,7 @@ import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -156,7 +157,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             return true;
         }
 
-        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins, false));
+        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins, false, new ArrayList<>()));
         return true;
     }
 

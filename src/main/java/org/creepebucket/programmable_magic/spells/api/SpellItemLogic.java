@@ -33,6 +33,9 @@ public abstract class SpellItemLogic implements Cloneable {
     // 注册名
     public String name;
 
+    // id
+    public int id = -1;
+
     // 法术子类别名
     public String subCategory = "spell." + MODID + ".subcategory.none";
 

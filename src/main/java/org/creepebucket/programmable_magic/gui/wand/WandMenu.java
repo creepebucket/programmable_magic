@@ -57,6 +57,8 @@ public class WandMenu extends Menu {
     public boolean quickMoved = false, debugMode = false;
     public ItemStack wand;
     public SpellEntity spell;
+    public SyncedValue<Integer> currentSpellId;
+    public SyncedValue<List<Integer>> breakpointIds;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         this(containerId, playerInv, InteractionHand.values()[extra.readVarInt()]);
@@ -96,6 +98,9 @@ public class WandMenu extends Menu {
         this.supplySlotsStartIndex = this.slots.size();
         this.supplySlotsCount = 0;
 
+        this.currentSpellId = registerData("surrent_spell_id", SyncMode.S2C, -1);
+        this.breakpointIds = registerData("breakpoints", SyncMode.BOTH, new ArrayList<>());
+
         for (String key : spells.keySet()) {
             var subCategorySpells = spells.get(key);
             for (int i = 0; i < subCategorySpells.size(); i++) {
@@ -109,7 +114,7 @@ public class WandMenu extends Menu {
         this.saveThemeHook = hook(new WandHooks.SaveThemeHook(this));
         this.storedSpellsEditHook = hook(new WandHooks.StoredSpellsEditHook(storedSpells));
         this.importSpellsHook = hook(new WandHooks.ImportSpellsHook(storedSpells));
-        this.clearSpellsHook = hook(new WandHooks.ClearSpellsHook(storedSpells));
+        this.clearSpellsHook = hook(new WandHooks.ClearSpellsHook(storedSpells, breakpointIds));
         for (int i = 0; i < 1024; i++) spellStoreSlots.add(addSlot(new OneItemOnlySlot(storedSpells, i, -99, -99)));
 
         // 背包
@@ -275,5 +280,10 @@ public class WandMenu extends Menu {
     @Override
     public void tick() {
         quickMoved = false;
+
+        // 同步正在执行的法术id
+        if (spell != null) {
+            currentSpellId.set(spell.currentSpell == null ? -1 : spell.currentSpell.id);
+        }
     }
 }

@@ -31,14 +31,15 @@ import java.util.Map;
 import static net.minecraft.util.Mth.hsvToRgb;
 
 public class WandWidgets {
-    public static class SpellStorageWidget extends SlotWidget {
+    public static class SpellStorageWidget extends SlotWidget implements Clickable, Tooltipable {
         public List<Slot> slots;
         public int i;
         public Hook editHook, deleteHook;
         public List<SpellStorageWidget> storageSlots;
         public SmoothedValue delta2X = new SmoothedValue(0);
+        public SyncedValue<Integer> currentSpellId;
 
-        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots) {
+        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots, SyncedValue<Integer> currentSpellId) {
             super(slots.get(i), pos);
             this.slots = slots;
             this.i = i;
@@ -46,14 +47,12 @@ public class WandWidgets {
             this.deleteHook = deleteHook;
             this.storageSlots = storageSlots;
             this.originalSize = Coordinate.fromTopLeft(16, 16);
+            this.currentSpellId = currentSpellId;
 
             addChild(new BlankInsertionWidget(Coordinate.fromTopLeft(-8, 16)).mainColor(originalMainColor));
         }
 
-        public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY) {
-            // 根据距离计算透明度并显示数字
-            double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
-            int renderColor = new Color(mainColor()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0.1, 1.1));
+        public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY, int renderColor) {
             if (renderColor >>> 24 == 0) return;
 
             switch (n) {
@@ -154,20 +153,65 @@ public class WandWidgets {
             // 更新自身Slot
             slot = slots.get(i);
 
+            // 背景
+            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, currentSpellId.get() == i ? 0x8000FF00 : bgColor()); // 如果正在执行此法术, 则背景变为绿色
+
             // 渲染编号
             int count = 0;
-            while (i > 0 || count < 3) {
-                renderNumber(graphics, i % 10, x() - count * 5 + 11, y() - 5, mouseX, mouseY);
-                count++;
-                i /= 10;
-            }
+            int tmp = i;
+            while (tmp > 0 || count < 3) {
+                var x = x() - count * 5 + 11;
+                var y = y() - 5;
 
-            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, bgColor());
+                // 根据距离计算透明度并显示数字
+                double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
+                // 检查断点
+                int renderColor = ((WandMenu) screen.getMenu()).breakpointIds.get().contains(i) ? 0xFFFF0000 :
+                        new Color(mainColor()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0, 1.1));
+
+                renderNumber(graphics, tmp % 10, x, y, mouseX, mouseY, renderColor);
+                count++;
+                tmp /= 10;
+            }
 
             if (this.i == 0 && delta2X.get() + 50 > Minecraft.getInstance().getWindow().getGuiScaledWidth()) {
                 deleteHook.trigger(Minecraft.getInstance().keyboardHandler.getClipboard());
                 for (SpellStorageWidget widget : storageSlots) widget.delta2X.set(0);
             }
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if (isIn(event.x(), event.y(), x(), y() - 5, 11, 5)) {
+                // 在数字上, 进行断点设置操作
+                int i = this.i - (int) dx.get() / 16;
+                if (0 > i || i >= 1000) return false;
+
+                var breakpointIds = ((WandMenu) screen.getMenu()).breakpointIds.get();
+                boolean hasMarked = breakpointIds.contains(i);
+
+                if (hasMarked) breakpointIds.remove((Integer) i);
+                else breakpointIds.add(i);
+
+                ((WandMenu) screen.getMenu()).breakpointIds.set(breakpointIds);
+
+                // 如果已经有法术正在执行, 增删断点提醒玩家只在下一个法术生效
+                if (((WandMenu) screen.getMenu()).currentSpellId.get() != -1)
+                    ((WandScreen) screen).notificationWidget.addWarning(Component.translatable("gui.programmable_magic.wand.inventory.debugger_breakpoint_effection_notifcation"));
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+            if (isIn(mouseX, mouseY, x(), y() - 5, 11, 5)) {
+                graphics.renderTooltip(ClientUiContext.getFont(),
+                        List.of(ClientTooltipComponent.create(Component.translatable("gui.programmable_magic.wand.inventory.debugger_breakpoint").getVisualOrderText())),
+                        mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+            }
+            return false;
         }
 
         public static class BlankInsertionWidget extends Widget implements Clickable, Renderable {

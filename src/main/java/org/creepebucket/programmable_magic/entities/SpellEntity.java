@@ -54,6 +54,8 @@ public class SpellEntity extends Entity {
     public SpellSequence originalSpellSequence;
     // 调试部分
     public boolean debugMode, doStep = false, doTick = false, doRun = false;
+    // 断点列表
+    public List<Integer> breakpointIds;
     public ChunkPos forcedChunkPos;
 
     public SpellEntity(EntityType<?> entityType, Level level) {
@@ -61,7 +63,7 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins, boolean debugMode) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins, boolean debugMode, List<Integer> breakpointIds) {
         // 创建实体
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
 
@@ -73,6 +75,7 @@ public class SpellEntity extends Entity {
         this.pluginItems = plugins;
         this.originalSpellSequence = spellSequence.head == null ? new SpellSequence() : spellSequence.subSequence(spellSequence.head, spellSequence.tail);
         this.debugMode = debugMode;
+        this.breakpointIds = breakpointIds;
 
         this.setPos(caster.getX(), caster.getY() + 1.5, caster.getZ());
 
@@ -129,6 +132,13 @@ public class SpellEntity extends Entity {
 
             // 设置调试模式flag
             doStep = false;
+
+            if (debugMode && currentSpell != null && breakpointIds.contains(currentSpell.id)) {
+
+                // 遇到断点就停止运行
+                doRun = false;
+                break;
+            }
         }
         doTick = false;
     }

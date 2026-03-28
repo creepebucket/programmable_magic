@@ -14,6 +14,8 @@
   "gui.programmable_magic.wand.inventory.debugger_resume": "Resume",
   "gui.programmable_magic.wand.inventory.debugger_step": "Step",
   "gui.programmable_magic.wand.inventory.debugger_tick": "Tick",
+  "gui.programmable_magic.wand.inventory.debugger_breakpoint": "Breakpoint",
+  "gui.programmable_magic.wand.inventory.debugger_breakpoint_effection_notifcation": "Breakpoint changes take effect on the next spell",
   "gui.programmable_magic.wand.inventory.debugger_right_shift": "Shift Right",
   "gui.programmable_magic.wand.inventory.debugger_export": "Export to Clipboard",
   "gui.programmable_magic.wand.inventory.debugger_delete": "Clear",

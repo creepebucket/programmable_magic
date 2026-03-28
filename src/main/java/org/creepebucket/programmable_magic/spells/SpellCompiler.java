@@ -26,6 +26,7 @@ public class SpellCompiler {
     public SpellSequence compile(Container spells) {
 
         // Step 1: List<ItemStack>转换为SpellSequence
+        int id = 0;
 
         SpellSequence rawSequence = new SpellSequence();
         for (ItemStack spell : spells) {
@@ -38,11 +39,17 @@ public class SpellCompiler {
                 rawSequence.pushRight(compiler.compile(new SimpleContainer(spell.get(ModDataComponents.SPELLS).toArray(new ItemStack[1]))));
                 continue;
             } else if (!SpellRegistry.isSpell(spell.getItem())) {
-                rawSequence.pushRight(new ValueLiteralSpell(SpellValueType.ITEM, spell.copy(), "name"));
+                var spellItemLogic = new ValueLiteralSpell(SpellValueType.ITEM, spell.copy(), "name");
+                spellItemLogic.id = id; // 设置id 在调试时候用
+                rawSequence.pushRight(spellItemLogic);
                 continue;
             }
 
-            rawSequence.pushRight(SpellRegistry.createSpellLogic(spell.getItem()));
+            var spellItemLogic = SpellRegistry.createSpellLogic(spell.getItem());
+            spellItemLogic.id = id; // 设置id 在调试时候用
+            rawSequence.pushRight(spellItemLogic);
+
+            id++;
         }
 
         // Step 2: 编译前语法检查
@@ -105,8 +112,10 @@ public class SpellCompiler {
                 // 是数字就把值替换整段数字法术
                 List<Object> result = digit.run(null, null, null, null).returnValue;
                 SpellItemLogic next = ((NumberDigitSpell) result.get(1)).prev;
-                rawSequence.replaceSection((NumberDigitSpell) result.get(1), p, new SpellSequence()
-                        .pushRight(new ValueLiteralSpell(NUMBER, result.get(0)))); // 何意味
+
+                var valueLiteral = new ValueLiteralSpell(NUMBER, result.get(0));
+                valueLiteral.id = p.id;
+                rawSequence.replaceSection((NumberDigitSpell) result.get(1), p, new SpellSequence().pushRight(valueLiteral)); // 何意味
                 p = next;
                 continue;
             }

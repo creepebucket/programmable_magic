@@ -14,6 +14,8 @@
   "gui.programmable_magic.wand.inventory.debugger_resume": "继续",
   "gui.programmable_magic.wand.inventory.debugger_step": "单步",
   "gui.programmable_magic.wand.inventory.debugger_tick": "单刻",
+  "gui.programmable_magic.wand.inventory.debugger_breakpoint": "断点",
+  "gui.programmable_magic.wand.inventory.debugger_breakpoint_effection_notifcation": "断点修改将在下一次施法生效",
   "gui.programmable_magic.wand.inventory.debugger_right_shift": "整体右移",
   "gui.programmable_magic.wand.inventory.debugger_export": "导出到剪贴板",
   "gui.programmable_magic.wand.inventory.debugger_delete": "清空",
