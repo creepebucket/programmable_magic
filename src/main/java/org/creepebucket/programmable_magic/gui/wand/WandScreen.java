@@ -96,7 +96,7 @@ public class WandScreen extends Screen<WandMenu> {
             bar.addChild(new WandWidgets.PluginWidget(menu.pluginSlots.get(i), Coordinate.fromTopLeft(104, 20 + 20 * i)).textColor(textColor).bgColor(bgColor));
 
         // 按钮
-        bar.addChild(new WandWidgets.RectangleButtonWidget(Coordinate.fromTopLeft(0, 20 + 20 * menu.pluginContainer.getContainerSize()), Coordinate.fromTopLeft(120, 5), () -> {
+        bar.addChild(new RectangleButtonWidget(Coordinate.fromTopLeft(0, 20 + 20 * menu.pluginContainer.getContainerSize()), Coordinate.fromTopLeft(120, 5), () -> {
             if (pluginDy.get() != 7) pluginDy.set(7);
             else pluginDy.set(-(19 + 20 * menu.pluginContainer.getContainerSize()));
         }).mainColor(new Color(mainColor.toArgbWithAlphaMult(0.5))).bgColor(bgColor));
@@ -106,7 +106,7 @@ public class WandScreen extends Screen<WandMenu> {
         notificationWidget = new WandWidgets.WandNotificationWidget(Coordinate.fromTopLeft(100, 0), Coordinate.fromTopLeft(128, 0));
         addWidget(notificationWidget);
 
-        // addWidget(new MouseCursorWidget());
+        addWidget(new MouseCursorWidget());
     }
 
     @Override

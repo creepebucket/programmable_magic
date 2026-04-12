@@ -13,6 +13,6 @@ public class RectangleWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.fill(left(), top(), right(), bottom(), mainColor());
+        graphics.fill(left(), top(), right(), bottom(), mainColorInt());
     }
 }

@@ -14,6 +14,10 @@ public class Color {
         this(r, g, b, 255);
     }
 
+    public Color(double r, double g, double b) {
+        this((int) Math.round(r), (int) Math.round(g), (int) Math.round(b));
+    }
+
     public Color(int argb) {
         this.a = (argb & 0xFF000000) >>> 24;
         this.r = (argb & 0x00FF0000) >>> 16;
@@ -28,5 +32,9 @@ public class Color {
     public int toArgbWithAlphaMult(double mult) {
         mult = Math.max(0, Math.min(1, mult));
         return (int) (a * mult) << 24 | r << 16 | g << 8 | b;
+    }
+
+    public Color mix(Color target, double ratio) {
+        return new Color(r * (1 - ratio) + target.r * ratio, g * (1 - ratio) + target.g * ratio, b * (1 - ratio) + target.b * ratio);
     }
 }

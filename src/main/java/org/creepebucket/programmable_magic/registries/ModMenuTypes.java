@@ -5,6 +5,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.creepebucket.programmable_magic.gui.machines.MachineMenu;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 
 import java.util.function.Supplier;
@@ -19,6 +20,7 @@ public class ModMenuTypes {
     }
 
     public static final Supplier<MenuType<WandMenu>> WAND_MENU = MENUS.register("wand_menu", () -> IMenuTypeExtension.create(WandMenu::new));
+    public static final Supplier<MenuType<MachineMenu>> MACHINE_MENU = MENUS.register("machine_menu", () -> IMenuTypeExtension.create(MachineMenu::new));
 
 
 }

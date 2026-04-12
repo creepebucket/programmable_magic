@@ -12,6 +12,6 @@ public class OutlineWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.renderOutline(x(), y(), w(), h(), mainColor());
+        graphics.renderOutline(x(), y(), w(), h(), mainColorInt());
     }
 }

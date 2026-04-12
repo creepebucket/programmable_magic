@@ -23,6 +23,6 @@ public class TextWidget extends Widget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.drawString(ClientUiContext.getFont(), this.text, menuX(), menuY(), mainColor());
+        graphics.drawString(ClientUiContext.getFont(), this.text, menuX(), menuY(), mainColorInt());
     }
 }

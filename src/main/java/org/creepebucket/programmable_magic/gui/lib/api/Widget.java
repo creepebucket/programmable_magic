@@ -269,7 +269,7 @@ public abstract class Widget {
         return (int) Math.round(y);
     }
 
-    public int mainColor() {
+    public int mainColorInt() {
         double mult = 1;
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -285,7 +285,11 @@ public abstract class Widget {
         return originalMainColor.toArgbWithAlphaMult(mult);
     }
 
-    public int bgColor() {
+    public Color mainColor() {
+        return new Color(mainColorInt());
+    }
+
+    public int bgColorInt() {
         double mult = 1;
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -301,7 +305,11 @@ public abstract class Widget {
         return originalBgColor.toArgbWithAlphaMult(mult);
     }
 
-    public int textColor() {
+    public Color bgColor() {
+        return new Color(bgColorInt());
+    }
+
+    public int textColorInt() {
         double mult = 1;
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -315,6 +323,10 @@ public abstract class Widget {
             if (animation.isActive()) mult *= animation.alphaMultText;
         }
         return originalTextColor.toArgbWithAlphaMult(mult);
+    }
+
+    public Color textColor() {
+        return new Color(textColorInt());
     }
 
     public int left() {

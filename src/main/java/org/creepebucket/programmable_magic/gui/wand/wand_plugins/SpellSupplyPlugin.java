@@ -84,7 +84,7 @@ public class SpellSupplyPlugin extends BasePlugin {
 
         scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(8, customCategoryDy), "spell." + MODID + ".subcategory.custom").dy(supplyDy));
 
-        subCategoryJumps.add(screen.addWidget(new WandWidgets.RectangleButtonWidget(
+        subCategoryJumps.add(screen.addWidget(new RectangleButtonWidget(
                 new Coordinate((w, h) -> 0, (w, h) -> (h - 1 - h / (spells.size() + 1))),
                 new Coordinate((w, h) -> 7, (w, h) -> 1 + h / (spells.size() + 1)),
                 () -> supplyDy.set(-customCategoryDy + 20))

@@ -46,7 +46,7 @@ public class ImageButtonWidget extends Widget implements Renderable, Clickable {
         boolean hovered = isInBounds(mouseX, mouseY);
         var tex = hovered ? this.hover : this.normal;
 
-        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColor());
+        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColorInt());
     }
 
     @Override

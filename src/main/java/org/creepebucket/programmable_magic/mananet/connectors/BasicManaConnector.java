@@ -25,7 +25,6 @@ import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BasicManaConnector extends Block implements EntityBlock {
@@ -99,16 +98,7 @@ public class BasicManaConnector extends Block implements EntityBlock {
             var connectedPos = player.getData(ModAttachments.PENDING_CONNECTION);
             var connectedFace = player.getData(ModAttachments.PENDING_FACE);
             var selfFace = clickedFace;
-            var connected = level.getBlockEntity(connectedPos);
-
-            var connections = new HashMap<>(connected.getData(ModAttachments.CONNECTIONS));
-            connections.put(connectedFace, pos);
-            connected.setData(ModAttachments.CONNECTIONS, connections);
-
-            var self = level.getBlockEntity(pos);
-            var selfConnections = new HashMap<>(self.getData(ModAttachments.CONNECTIONS));
-            selfConnections.put(selfFace, connectedPos);
-            self.setData(ModAttachments.CONNECTIONS, selfConnections);
+            ((NetNodeBlockEntity) level.getBlockEntity(pos)).connect(level, connectedPos, connectedFace, selfFace);
 
             player.removeData(ModAttachments.PENDING_CONNECTION);
             player.removeData(ModAttachments.PENDING_FACE);

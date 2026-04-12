@@ -7,7 +7,8 @@ import org.creepebucket.programmable_magic.gui.lib.api.Color;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.StringButtonWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleButtonWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.TextButtonWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextureWidget;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
@@ -48,7 +49,7 @@ public class ColorThemePlugin extends BasePlugin {
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 78), Component.translatable("gui.programmable_magic.wand.theme.text")).color(screen.textColor).dy(dy));
         text = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 88), screen.textColor).dy(dy).color(screen.mainColor));
 
-        bar.addChild(new StringButtonWidget(Coordinate.fromTopLeft(0, 110), Coordinate.fromTopLeft(100, 16), Component.translatable("gui.programmable_magic.wand.theme.reload"),
+        bar.addChild(new TextButtonWidget(Coordinate.fromTopLeft(0, 110), Coordinate.fromTopLeft(100, 16), Component.translatable("gui.programmable_magic.wand.theme.reload"),
                 () -> {
                     screen.mainColor = main.color();
                     screen.bgColor = new Color(bg.color().toArgbWithAlphaMult(0.5));
@@ -58,7 +59,7 @@ public class ColorThemePlugin extends BasePlugin {
                     screen.init();
                 }).dy(dy).mainColor(screen.mainColor).bgColor(screen.bgColor).textColor(screen.textColor));
 
-        bar.addChild(new WandWidgets.RectangleButtonWidget(Coordinate.fromTopLeft(0, 127), Coordinate.fromTopLeft(100, 5), () -> {
+        bar.addChild(new RectangleButtonWidget(Coordinate.fromTopLeft(0, 127), Coordinate.fromTopLeft(100, 5), () -> {
             if (dy.get() != 7) dy.set(7);
             else dy.set(-126);
         }).mainColor(new Color(screen.mainColor.toArgbWithAlphaMult(0.5))).bgColor(screen.bgColor).dy(dy));

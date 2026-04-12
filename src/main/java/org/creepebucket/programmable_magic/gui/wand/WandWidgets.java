@@ -154,7 +154,7 @@ public class WandWidgets {
             slot = slots.get(i);
 
             // 背景
-            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, currentSpellId.get() == i ? 0x8000FF00 : bgColor()); // 如果正在执行此法术, 则背景变为绿色
+            graphics.fill(left() + 1, top() + 1, right() - 1, bottom() - 1, currentSpellId.get() == i ? 0x8000FF00 : bgColorInt()); // 如果正在执行此法术, 则背景变为绿色
 
             // 渲染编号
             int count = 0;
@@ -167,7 +167,7 @@ public class WandWidgets {
                 double distance = (mouseX - x + 1) * (mouseX - x + 1) + (mouseY - y + 2) * (mouseY - y + 2);
                 // 检查断点
                 int renderColor = ((WandMenu) screen.getMenu()).breakpointIds.get().contains(i) ? 0xFFFF0000 :
-                        new Color(mainColor()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0, 1.1));
+                        new Color(mainColorInt()).toArgbWithAlphaMult(Math.clamp(1000 / distance, 0, 1.1));
 
                 renderNumber(graphics, tmp % 10, x, y, mouseX, mouseY, renderColor);
                 count++;
@@ -224,7 +224,7 @@ public class WandWidgets {
             @Override
             public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                 if (!isInBounds(mouseX, mouseY)) return;
-                graphics.fill(left(), top(), right(), bottom(), mainColor());
+                graphics.fill(left(), top(), right(), bottom(), mainColorInt());
             }
 
             @Override
@@ -294,7 +294,7 @@ public class WandWidgets {
             graphics.fill(x(), y() + 7, x() + 79, y() + 25, color);
             graphics.fill(x(), y() + 26, x() + 79, y() + 28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, textColor());
+            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, textColorInt());
         }
     }
 
@@ -311,7 +311,7 @@ public class WandWidgets {
         @Override
         public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             if (isInBounds(mouseX, mouseY)) {
-                graphics.fill(x(), y(), x() + w(), y() + h(), mainColor());
+                graphics.fill(x(), y(), x() + w(), y() + h(), mainColorInt());
             } else {
                 graphics.fill(x(), y(), x() + w(), y() + h(), originalMainColor.toArgbWithAlphaMult(0.6));
             }
@@ -337,9 +337,9 @@ public class WandWidgets {
             if (isCharging)
                 graphics.fill(x(), y(), x() + w(), y() + h(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
             else if (isInBounds(mouseX, mouseY))
-                graphics.fill(x(), y(), x() + w(), y() + h(), bgColor());
+                graphics.fill(x(), y(), x() + w(), y() + h(), bgColorInt());
             else
-                graphics.fill(x(), y(), x() + w(), y() + h(), mainColor());
+                graphics.fill(x(), y(), x() + w(), y() + h(), mainColorInt());
         }
 
         @Override
@@ -407,7 +407,7 @@ public class WandWidgets {
 
             var count = 0;
             for (SpellExceptions error : errors) {
-                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, textColor());
+                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, textColorInt());
                 count++;
             }
         }
@@ -418,27 +418,6 @@ public class WandWidgets {
 
             compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
             errors = compiler.errors;
-        }
-    }
-
-    public static class RectangleButtonWidget extends Widget implements Renderable, Clickable {
-        public Runnable onPress;
-
-        public RectangleButtonWidget(Coordinate pos, Coordinate size, Runnable onPress) {
-            super(pos, size);
-            this.onPress = onPress;
-        }
-
-        @Override
-        public boolean mouseClickedChecked(MouseButtonEvent event, boolean fromMouse) {
-            onPress.run();
-            return true;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            graphics.fill(left(), top(), right(), bottom(), isInBounds(mouseX, mouseY) ? mainColor() : bgColor());
-            graphics.fill(x() + w() / 3, y() + h() / 2, x() + w() * 2 / 3, y() + h() / 2 + 1, isInBounds(mouseX, mouseY) ? bgColor() : mainColor());
         }
     }
 
@@ -600,7 +579,7 @@ public class WandWidgets {
             if (!lastStack.isEmpty())
                 functionWidget.text = WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function();
 
-            graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColor());
+            graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColorInt());
         }
     }
 

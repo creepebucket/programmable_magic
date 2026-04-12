@@ -105,15 +105,15 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         }
 
         // 背景
-        graphics.fill(x(), y(), horizontal ? startX : endX, horizontal ? endY : startY, bgColor());
-        graphics.fill(horizontal ? endX : x(), horizontal ? y() : endY, x() + w(), y() + h(), bgColor());
+        graphics.fill(x(), y(), horizontal ? startX : endX, horizontal ? endY : startY, bgColorInt());
+        graphics.fill(horizontal ? endX : x(), horizontal ? y() : endY, x() + w(), y() + h(), bgColorInt());
 
         // 主滚动条部分
         if (isInBounds(mouseX, mouseY) || isDragging) {
             // 高亮
-            graphics.fill(startX, startY, endX, endY, mainColor());
+            graphics.fill(startX, startY, endX, endY, mainColorInt());
         } else {
-            graphics.fill(startX, startY, endX, endY, new Color(mainColor()).toArgbWithAlphaMult(0.6));
+            graphics.fill(startX, startY, endX, endY, new Color(mainColorInt()).toArgbWithAlphaMult(0.6));
         }
     }
 }

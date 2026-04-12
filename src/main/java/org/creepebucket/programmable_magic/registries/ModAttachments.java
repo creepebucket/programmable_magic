@@ -3,20 +3,17 @@ package org.creepebucket.programmable_magic.registries;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.ModUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
 
 import static net.neoforged.neoforge.registries.NeoForgeRegistries.ATTACHMENT_TYPES;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -66,6 +63,11 @@ public final class ModAttachments {
     public static final Supplier<AttachmentType<Direction>> PENDING_FACE = ATTACHMENTS.register(
             "pending_face",
             () -> AttachmentType.builder(() -> Direction.NORTH).serialize(Direction.CODEC.fieldOf("pending_face")).build()
+    );
+
+    public static final Supplier<AttachmentType<Long>> NETWORK_ID = ATTACHMENTS.register(
+            "pm_mananet_id",
+            () -> AttachmentType.builder(() -> 0L).serialize(Codec.LONG.fieldOf("pm_mananet_id")).build()
     );
 
     private ModAttachments() {

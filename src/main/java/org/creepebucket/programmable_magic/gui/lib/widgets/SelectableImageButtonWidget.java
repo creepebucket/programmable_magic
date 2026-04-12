@@ -43,7 +43,7 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         // 根据选中状态选择纹理并渲染
         var tex = isSelected ? this.selected : this.normal;
-        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColor());
+        graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColorInt());
     }
 
     @Override

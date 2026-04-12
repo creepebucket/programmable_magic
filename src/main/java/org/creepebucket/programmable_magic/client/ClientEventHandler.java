@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.client;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
+import org.creepebucket.programmable_magic.gui.machines.MachineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
@@ -22,6 +23,10 @@ public class ClientEventHandler {
         event.register(
                 ModMenuTypes.WAND_MENU.get(),
                 WandScreen::new
+        );
+        event.register(
+                ModMenuTypes.MACHINE_MENU.get(),
+                MachineScreen::new
         );
     }
 

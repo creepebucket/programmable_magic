@@ -99,7 +99,7 @@ public class SpellPackerPlugin extends BasePlugin {
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 52), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc")).color(screen.textColor).dy(packedSpellDy));
         bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir")).color(screen.textColor).dy(packedSpellDy));
 
-        bar.addChild(new WandWidgets.RectangleButtonWidget(Coordinate.fromTopLeft(0, 114), Coordinate.fromTopLeft(80, 5), () -> {
+        bar.addChild(new RectangleButtonWidget(Coordinate.fromTopLeft(0, 114), Coordinate.fromTopLeft(80, 5), () -> {
             if (packedSpellDy.get() != 7) packedSpellDy.set(7);
             else packedSpellDy.set(-113);
         }).mainColor(new Color(screen.mainColor.toArgbWithAlphaMult(0.5))).bgColor(screen.bgColor).dy(packedSpellDy));
