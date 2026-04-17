@@ -27,7 +27,7 @@ public class NetworkManaManager {
     public static NetworkManaData getManaData(Level level, Long id) {
         if (data.containsKey(level)) {
             var levelData = data.get(level);
-            if (levelData.containsKey(id)) {
+            if (!levelData.containsKey(id)) {
                 // 需要判断新网络的情况
                 return new NetworkManaData(id, level, new HashMap<>(
                         Map.of("current", new ModUtils.Mana(), "cache", new ModUtils.Mana(), "load", new ModUtils.Mana())));
