@@ -86,6 +86,8 @@ public class NetNodeBlockEntity extends BlockEntity {
     }
 
     public static void rebuildNetworkId(Level level, BlockPos startPos) {
+        if (!(level.getBlockEntity(startPos) instanceof NetNodeBlockEntity)) return;
+
         var queue = new ArrayDeque<BlockPos>();
         var visited = new HashSet<BlockPos>();
         var nodes = new ArrayList<NetNodeBlockEntity>();
