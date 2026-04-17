@@ -85,7 +85,7 @@ public class NetNodeBlockEntity extends BlockEntity {
         super.setRemoved();
     }
 
-    private static void rebuildNetworkId(Level level, BlockPos startPos) {
+    public static void rebuildNetworkId(Level level, BlockPos startPos) {
         var queue = new ArrayDeque<BlockPos>();
         var visited = new HashSet<BlockPos>();
         var nodes = new ArrayList<NetNodeBlockEntity>();
@@ -93,14 +93,15 @@ public class NetNodeBlockEntity extends BlockEntity {
         queue.add(startPos);
         visited.add(startPos);
 
-        var networkId = startPos.asLong();
+        var dimensionId = (long) level.dimension().identifier().hashCode() << 32;
+        var networkId = dimensionId ^ startPos.asLong();
 
         while (!queue.isEmpty()) {
             var pos = queue.removeFirst();
             var blockEntity = (NetNodeBlockEntity) level.getBlockEntity(pos);
             nodes.add(blockEntity);
 
-            var id = pos.asLong();
+            var id = dimensionId ^ pos.asLong();
             if (id < networkId) networkId = id;
 
             for (var nextPos : blockEntity.getData(ModAttachments.CONNECTIONS).values()) {
@@ -112,5 +113,9 @@ public class NetNodeBlockEntity extends BlockEntity {
         for (var node : nodes) {
             node.setData(ModAttachments.NETWORK_ID, networkId);
         }
+    }
+
+    public NetworkManaData getNetworkData() {
+        return NetworkManaManager.getManaData(getLevel(), getData(ModAttachments.NETWORK_ID));
     }
 }

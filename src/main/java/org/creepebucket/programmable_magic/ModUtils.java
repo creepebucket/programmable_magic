@@ -301,16 +301,22 @@ public class ModUtils {
             values.put(key, values.get(key) + value);
         }
 
-        public void add(Mana mana) {
-            for (Map.Entry<String, Double> entry : mana.toMap().entrySet()) {
-                values.put(entry.getKey(), values.get(entry.getKey()) + entry.getValue());
-            }
+        public Mana add(Mana mana) {
+            return new Mana(
+                    values.get(RADIATION) + mana.getRadiation(),
+                    values.get(TEMPERATURE) + mana.getTemperature(),
+                    values.get(MOMENTUM) + mana.getMomentum(),
+                    values.get(PRESSURE) + mana.getPressure()
+            );
         }
 
-        public void subtract(Mana mana) {
-            for (Map.Entry<String, Double> entry : mana.toMap().entrySet()) {
-                values.put(entry.getKey(), values.get(entry.getKey()) - entry.getValue());
-            }
+        public Mana subtract(Mana mana) {
+            return new Mana(
+                    values.get(RADIATION) - mana.getRadiation(),
+                    values.get(TEMPERATURE) - mana.getTemperature(),
+                    values.get(MOMENTUM) - mana.getMomentum(),
+                    values.get(PRESSURE) - mana.getPressure()
+            );
         }
 
         public Double getRadiation() {
@@ -351,7 +357,16 @@ public class ModUtils {
                     values.get(PRESSURE) < mana.getPressure();
         }
 
-        // 任一分量大于即返回真：用于“是否有任一系魔力不足”的判定
+        public Mana min(Mana mana){
+            return new Mana(
+                    Math.min(getRadiation(), mana.getRadiation()),
+                    Math.min(getTemperature(), mana.getTemperature()),
+                    Math.min(getMomentum(), mana.getMomentum()),
+                    Math.min(getPressure(), mana.getPressure())
+            );
+        }
+
+        /** 任一分量大于即返回真：用于“是否有任一系魔力不足”的判定 */
         public boolean anyGreaterThan(Mana mana) {
             return values.get(RADIATION) > mana.getRadiation() ||
                     values.get(TEMPERATURE) > mana.getTemperature() ||
@@ -397,5 +412,13 @@ public class ModUtils {
             }
             return points;
         }
+    }
+
+    /**
+     * 包含端点
+     */
+    public static int simpleRandInt(int a, int b) {
+        if (a > b) return simpleRandInt(b, a);
+        return (int) (Math.floor(Math.random() * (b - a + 1)) + a);
     }
 }

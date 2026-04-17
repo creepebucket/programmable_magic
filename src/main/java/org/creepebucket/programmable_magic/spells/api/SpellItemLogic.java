@@ -142,7 +142,7 @@ public abstract class SpellItemLogic implements Cloneable {
             getPlugin(plugin.getItem()).afterSpellExecution(spellEntity, this, spellEntity.spellData, spellSequence, paramsList);
 
         // 扣魔力
-        spellEntity.availableMana.subtract(getManaCost(caster, spellSequence, paramsList, spellEntity));
+        spellEntity.availableMana = spellEntity.availableMana.subtract(getManaCost(caster, spellSequence, paramsList, spellEntity));
 
         if (result.returnValue == null) return result;
 

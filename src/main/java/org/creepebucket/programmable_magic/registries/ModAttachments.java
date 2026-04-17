@@ -70,6 +70,16 @@ public final class ModAttachments {
             () -> AttachmentType.builder(() -> 0L).serialize(Codec.LONG.fieldOf("pm_mananet_id")).build()
     );
 
+    public static final Supplier<AttachmentType<Map<Long, Map<String, ModUtils.Mana>>>> DIMENSIONAL_MANA_DATA = ATTACHMENTS.register(
+            "pm_mananet_dimensional_data",
+            () -> AttachmentType.<Map<Long, Map<String, ModUtils.Mana>>>builder(() -> new HashMap<>())
+                    .serialize(Codec.unboundedMap(
+                            Codec.LONG,
+                            Codec.unboundedMap(Codec.STRING, ModUtils.Mana.CODEC)
+                    ).fieldOf("pm_mananet_dimensional_data"))
+                    .build()
+    );
+
     private ModAttachments() {
     }
 
