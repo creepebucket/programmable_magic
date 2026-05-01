@@ -19,6 +19,12 @@ public class TextWidget extends Widget implements Renderable {
         RIGHT
     }
 
+    public enum VerticalAlign {
+        TOP,
+        CENTER,
+        BOTTOM
+    }
+
     /**
      * 文本内容提供器
      */
@@ -26,6 +32,7 @@ public class TextWidget extends Widget implements Renderable {
     public double scale = 1;
     public boolean shadow = true;
     public Align align = Align.LEFT;
+    public VerticalAlign verticalAlign = VerticalAlign.TOP;
 
     public TextWidget(Coordinate pos, Component text) {
         super(pos, Coordinate.ZERO);
@@ -52,17 +59,33 @@ public class TextWidget extends Widget implements Renderable {
         return this;
     }
 
+    public TextWidget centerAlignY() {
+        verticalAlign = VerticalAlign.CENTER;
+        return this;
+    }
+
+    public TextWidget bottomAlignY() {
+        verticalAlign = VerticalAlign.BOTTOM;
+        return this;
+    }
+
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = ClientUiContext.getFont();
         float scaled = (float) scale;
         float x = menuX();
+        float y = menuY();
         if (align == Align.CENTER) {
             x -= font.width(text) * scaled / 2;
         } else if (align == Align.RIGHT) {
             x -= font.width(text) * scaled;
         }
-        drawScaledString(graphics, font, text, x, menuY(), scaled, mainColorInt(), shadow);
+        if (verticalAlign == VerticalAlign.CENTER) {
+            y -= font.lineHeight * scaled / 2;
+        } else if (verticalAlign == VerticalAlign.BOTTOM) {
+            y -= font.lineHeight * scaled;
+        }
+        drawScaledString(graphics, font, text, x, y, scaled, mainColorInt(), shadow);
     }
 
     public static void drawScaledString(GuiGraphics guiGraphics, Font font, Component text, float x, float y, float scale, int color, boolean dropShadow) {

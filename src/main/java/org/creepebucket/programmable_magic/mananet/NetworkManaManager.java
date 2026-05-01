@@ -15,7 +15,14 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 @EventBusSubscriber(modid = MODID)
 public class NetworkManaManager {
     public static Map<Level, Map<Long, Map<String, ModUtils.Mana>>> data = new HashMap<>();
+    public static Map<Level, Map<Long, Long>> touched_tick = new HashMap<>();
     public static int nextSave = 0, tickCount = 99999999;
+    public static long logic_tick = 0;
+
+    public static void touch(Level level, Long id) {
+        if (!touched_tick.containsKey(level)) touched_tick.put(level, new HashMap<>());
+        touched_tick.get(level).put(id, logic_tick);
+    }
 
     /**
      * 为你的魔力网络获取魔力数据
@@ -26,17 +33,22 @@ public class NetworkManaManager {
      */
     public static NetworkManaData getManaData(Level level, Long id) {
         if (data.containsKey(level)) {
+            if (!touched_tick.containsKey(level)) touched_tick.put(level, new HashMap<>());
             var levelData = data.get(level);
             if (!levelData.containsKey(id)) {
                 // 需要判断新网络的情况
-                return new NetworkManaData(id, level, new HashMap<>(
-                        Map.of("current", new ModUtils.Mana(), "cache", new ModUtils.Mana(), "load", new ModUtils.Mana())));
+                var fresh = new HashMap<>(Map.of("current", new ModUtils.Mana(), "cache", new ModUtils.Mana(), "load", new ModUtils.Mana()));
+                levelData.put(id, fresh);
+                return new NetworkManaData(id, level, fresh);
             } else {
                 return new NetworkManaData(id, level, levelData.get(id));
             }
         } else {
             // 获取世界的魔力信息, 然后再查找
-            data.put(level, level.getData(ModAttachments.DIMENSIONAL_MANA_DATA));
+            var copy = new HashMap<Long, Map<String, ModUtils.Mana>>();
+            level.getData(ModAttachments.DIMENSIONAL_MANA_DATA).forEach((k, v) -> copy.put(k, new HashMap<>(v)));
+            data.put(level, copy);
+            touched_tick.put(level, new HashMap<>());
             return getManaData(level, id);
         }
 
@@ -55,17 +67,22 @@ public class NetworkManaManager {
      * 计算魔力网络中的消耗和产出
      */
     public static void calculate() {
+        logic_tick++;
         tickCount++;
 
-        for(Map<Long, Map<String, ModUtils.Mana>> levelData:data.values()) {
-            for (Map<String, ModUtils.Mana> networkData:levelData.values()) {
+        for (Level level : new HashMap<>(data).keySet()) {
+            var levelData = data.get(level);
+            var levelTouched = touched_tick.get(level);
+            for (Long id : new HashMap<>(levelData).keySet()) {
+                if (levelTouched.getOrDefault(id, -1L) != logic_tick - 1) {
+                    levelData.remove(id);
+                    levelTouched.remove(id);
+                    continue;
+                }
+                var networkData = levelData.get(id);
                 var current = networkData.get("current");
                 var load = networkData.get("load");
                 var cache = networkData.get("cache");
-
-                // 计算并清空值
-                networkData.put("load", new ModUtils.Mana());
-                networkData.put("cache", new ModUtils.Mana());
 
                 networkData.put("current", current.subtract(load).min(cache));
             }

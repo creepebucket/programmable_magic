@@ -23,6 +23,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
+import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
@@ -73,7 +74,7 @@ public class BasicManaConnector extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new NetNodeBlockEntity(blockPos, blockState);
+        return new NetNodeBlockEntity(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), blockPos, blockState);
     }
 
     @Override

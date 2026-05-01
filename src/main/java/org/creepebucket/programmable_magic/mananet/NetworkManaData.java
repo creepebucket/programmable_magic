@@ -30,6 +30,7 @@ public class NetworkManaData {
     }
 
     public NetworkManaData setLoad(ModUtils.Mana load){
+        NetworkManaManager.touch(level, id);
         data.put("load", load);
         return this;
     }
@@ -39,6 +40,7 @@ public class NetworkManaData {
     }
 
     public NetworkManaData setCache(ModUtils.Mana cache){
+        NetworkManaManager.touch(level, id);
         data.put("cache", cache);
         return this;
     }

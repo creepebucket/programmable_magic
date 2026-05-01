@@ -17,6 +17,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.WindTurbineMenu;
+import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
@@ -77,5 +78,10 @@ public class WindTurbine extends BasicMachine {
             return (lvl, pos, st, blockEntity) -> WindTurbineBlockEntity.tick(lvl, pos, st, (WindTurbineBlockEntity) blockEntity);
         }
         return null;
+    }
+
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        NetNodeBlockEntity.rebuildNetworkId(level, pos);
     }
 }

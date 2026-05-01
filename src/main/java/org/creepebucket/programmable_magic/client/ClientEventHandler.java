@@ -5,7 +5,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
 import org.creepebucket.programmable_magic.gui.machines.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
-import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
 import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
@@ -34,7 +33,6 @@ public class ClientEventHandler {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
 
-        event.registerBlockEntityRenderer(ModBlockEntities.NET_NODE_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
         event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), context -> new WindTurbineBlockEntityBER<>(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get()));
     }
 
