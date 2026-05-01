@@ -302,9 +302,9 @@ public class MachineWidgets {
             isHovering = isInBound;
         }
 
-        public void addDetailLine(Component desc, SyncedValue<Double> number) {
+        public void addDetailLine(Component desc, SyncedValue<Double> number, Component tooltip) {
             var line = addChild(new DetailLineWidget(Coordinate.fromTopLeft(0, (detailLines.size() + 1) * -(h() + 1)), originalSize, desc, number, bgColor(), mainColor()));
-            line.disable();
+            line.disable().tooltip(tooltip);
             detailLines.add((DetailLineWidget) line);
         }
 

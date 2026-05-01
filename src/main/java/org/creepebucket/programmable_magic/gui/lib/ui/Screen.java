@@ -126,7 +126,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
             }
             // widget自己的简易tooltip
 
-            if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY))
+            if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY) && widget.enabled)
                 graphics.renderTooltip(ClientUiContext.getFont(), List.of(ClientTooltipComponent.create(widget.tooltip.getVisualOrderText())),
                         mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
         }

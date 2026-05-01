@@ -9,6 +9,8 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -16,6 +18,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.WindTurbineMenu;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
+import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 
 public class WindTurbine extends BasicMachine {
@@ -53,6 +56,7 @@ public class WindTurbine extends BasicMachine {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
             serverPlayer.openMenu(state.getMenuProvider(level, pos), buf -> {
+                buf.writeBlockPos(pos);
             });
         }
         return InteractionResult.SUCCESS;
@@ -61,8 +65,17 @@ public class WindTurbine extends BasicMachine {
     @Override
     protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
         return new SimpleMenuProvider(
-                (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory),
+                (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory, pos),
                 Component.literal("")
         );
+    }
+
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (type == ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get()) {
+            return (lvl, pos, st, blockEntity) -> WindTurbineBlockEntity.tick(lvl, pos, st, (WindTurbineBlockEntity) blockEntity);
+        }
+        return null;
     }
 }

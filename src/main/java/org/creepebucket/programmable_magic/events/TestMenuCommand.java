@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.events;
 
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
@@ -21,10 +22,11 @@ public class TestMenuCommand {
                         .requires(source -> source.getEntity() instanceof ServerPlayer)
                         .executes(ctx -> {
                             var player = (ServerPlayer) ctx.getSource().getEntity();
+                            BlockPos pos = player.blockPosition();
                             player.openMenu(new SimpleMenuProvider(
-                                    (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory),
+                                    (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory, pos),
                                     Component.literal("")
-                            ));
+                            ), buf -> buf.writeBlockPos(pos));
                             return 1;
                         })
         );
