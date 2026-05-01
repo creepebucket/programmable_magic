@@ -1056,6 +1056,17 @@
           47
         ],
         "target_img_path": "assets/programmable_magic/textures/block/mana_cable.png"
+      },
+      {
+        "from_top_left": [
+          320,
+          32
+        ],
+        "from_bottom_right": [
+          383,
+          63
+        ],
+        "target_img_path": "assets/programmable_magic/mod_logo.png"
       }
     ],
     "gui_big.png": [
