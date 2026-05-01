@@ -65,6 +65,34 @@ public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Int
     }
 
     /**
+     * 以屏幕中心左侧为基准创建坐标。
+     */
+    public static Coordinate fromCenterLeft(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh / 2 + deltaY);
+    }
+
+    /**
+     * 以屏幕中心右侧为基准创建坐标。
+     */
+    public static Coordinate fromCenterRight(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh / 2 + deltaY);
+    }
+
+    /**
+     * 以屏幕中心上方为基准创建坐标。
+     */
+    public static Coordinate fromCenterTop(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> deltaY);
+    }
+
+    /**
+     * 以屏幕中心下方为基准创建坐标。
+     */
+    public static Coordinate fromCenterBottom(int deltaX, int deltaY) {
+        return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh + deltaY);
+    }
+
+    /**
      * 将屏幕坐标转换为当前菜单坐标（要求当前 screen 为 {@link AbstractContainerScreen}）。
      */
     public int toMenuX() {

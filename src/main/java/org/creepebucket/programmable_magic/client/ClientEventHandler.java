@@ -3,7 +3,7 @@ package org.creepebucket.programmable_magic.client;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
-import org.creepebucket.programmable_magic.gui.machines.MachineScreen;
+import org.creepebucket.programmable_magic.gui.machines.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
 import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntityBER;
@@ -27,7 +27,7 @@ public class ClientEventHandler {
         );
         event.register(
                 ModMenuTypes.MACHINE_MENU.get(),
-                MachineScreen::new
+                WindTurbineScreen::new
         );
     }
 

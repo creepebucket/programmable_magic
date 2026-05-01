@@ -35,14 +35,14 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     protected void init() {
-        this.root.screen = this;
-
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof Lifecycle lifecycle) {
                 lifecycle.onDestroy();
             }
         }
-        this.root.allChild().clear();
+
+        this.root = new Widget.Root();
+        this.root.screen = this;
 
         this.imageWidth = this.width;
         this.imageHeight = this.height;

@@ -20,7 +20,7 @@ public abstract class Widget {
     public SmoothedValue dx = new SmoothedValue(0), dy = new SmoothedValue(0), dw = new SmoothedValue(0), dh = new SmoothedValue(0);
     public Color originalMainColor = new Color(-1), originalBgColor = new Color(-2147483647), originalTextColor = new Color(-1);
     public Component tooltip;
-    public boolean doShowTooltip = false, renderInForeground = false;
+    public boolean doShowTooltip = false, renderInForeground = false, enabled = true;
     public List<Widget> children = new ArrayList<>();
     public Widget parent;
     public Screen<? extends Menu> screen;
@@ -41,21 +41,21 @@ public abstract class Widget {
             for (Animation animation : animations) animation.step(dt);
 
             // 自己的渲染逻辑
-            if (this instanceof Renderable renderable) {
+            if (this instanceof Renderable renderable && enabled) {
                 renderable.render(graphics, mx, my, partialTick);
             }
 
-            // 检查动画过期状态
+            // 检查动画过期/启动状态
             var expiredAnimations = animations.stream().filter(Animation::isExpired).toList();
-
-            for (Animation animation : animations) {
-                if (animation.isExpired()) {
-                    animation.onExpire(this);
-                }
-            }
+            var startedAnimations = animations.stream().filter(Animation::isStarted).toList();
 
             for (Animation animation : expiredAnimations) {
+                animation.onExpire(this);
                 animations.remove(animation);
+            }
+
+            for (Animation animation : startedAnimations) {
+                animation.onStart(this);
             }
 
             // 平滑逻辑
@@ -63,7 +63,17 @@ public abstract class Widget {
         }
 
         // 孩子的渲染逻辑
-        for (Widget child : List.copyOf(children)) child.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
+        if (enabled) for (Widget child : List.copyOf(children)) child.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
+    }
+
+    public Widget enable() {
+        enabled = true;
+        return this;
+    }
+
+    public Widget disable() {
+        enabled = false;
+        return this;
     }
 
     public Widget addAnimation(Animation animation, double delay) {

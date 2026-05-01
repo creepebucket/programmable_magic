@@ -7,7 +7,7 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import org.creepebucket.programmable_magic.gui.machines.MachineMenu;
+import org.creepebucket.programmable_magic.gui.machines.WindTurbineMenu;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -22,7 +22,7 @@ public class TestMenuCommand {
                         .executes(ctx -> {
                             var player = (ServerPlayer) ctx.getSource().getEntity();
                             player.openMenu(new SimpleMenuProvider(
-                                    (containerId, inventory, p) -> new MachineMenu(containerId, inventory),
+                                    (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory),
                                     Component.literal("")
                             ));
                             return 1;

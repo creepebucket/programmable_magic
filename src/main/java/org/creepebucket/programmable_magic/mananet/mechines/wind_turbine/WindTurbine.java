@@ -1,11 +1,20 @@
 package org.creepebucket.programmable_magic.mananet.mechines.wind_turbine;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.creepebucket.programmable_magic.gui.machines.WindTurbineMenu;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
 import org.jspecify.annotations.Nullable;
 
@@ -38,5 +47,22 @@ public class WindTurbine extends BasicMachine {
         shape = Shapes.join(shape, Shapes.box(0.3125, 4.6875, 0.3125, 0.6875, 5, 0.6875), BooleanOp.OR);
 
         return shape;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.openMenu(state.getMenuProvider(level, pos), buf -> {
+            });
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+        return new SimpleMenuProvider(
+                (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory),
+                Component.literal("")
+        );
     }
 }
