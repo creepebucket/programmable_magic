@@ -10,13 +10,24 @@
 **资产路径**:
 
 - assets/programmable_magic/geckolib/animations/block/mechines/wind_turbine.animation.json
-- assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel
+- assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (模型部分)
 - assets/programmable_magic/geckolib/models/block/mechines/wind_turbine.geo.json
 - assets/programmable_magic/textures/mechines/wind_turbine.png
 
 **原作者**: 伈星海
 
 **版权声明**: Copyright (c) 2026 伈星海. All Rights Reserved.
+
+**许可说明**: 保留所有权利 (ARR)。未经原作者明确书面许可，严禁在其他项目中提取、修改、重新分发或使用。
+
+**资产路径**:
+
+- assets/programmable_magic/textures/mechines/wind_turbine.png
+- assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (贴图部分)
+
+**原作者**: LettyWhiterock_
+
+**版权声明**: Copyright (c) 2026 LettyWhiterock_. All Rights Reserved.
 
 **许可说明**: 保留所有权利 (ARR)。未经原作者明确书面许可，严禁在其他项目中提取、修改、重新分发或使用。
 
