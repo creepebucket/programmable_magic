@@ -27,15 +27,9 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
         smoothedValues.add(rectDx);
     }
 
-    public SwitchWidget reverseInitialSelection() {
-        setPressed(true);
-        return this;
-    }
-
     public SwitchWidget setPressed(boolean pressed) {
         if (this.pressed == pressed) return this;
         this.pressed = pressed;
-        rectDx.set(pressed ? (double) w() / 2 : 0);
         return this;
     }
 
@@ -48,6 +42,7 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
     public void onInitialize() {
         addChild(new TextWidget(Coordinate.fromTopLeft(w() / 4 + 1, h() / 2 + 1), text1).centerAlign().centerAlignY().scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()));
         addChild(new TextWidget(Coordinate.fromTopLeft(3 * w() / 4 + 1, h() / 2 + 1), text2).centerAlign().centerAlignY().scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()));
+        rectDx.set(pressed ? (double) w() / 2 : 0);
     }
 
     @Override
@@ -60,6 +55,7 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
         setPressed(!pressed);
 
         onSwitch.accept(pressed);
+        rectDx.set(pressed ? (double) w() / 2 : 0);
         return true;
     }
 }

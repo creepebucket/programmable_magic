@@ -26,7 +26,7 @@ public class NetworkManaData {
     }
 
     public ModUtils.Mana getLoad(){
-        return data.get("load");
+        return NetworkManaManager.getCached(level, id, "load", data.get("load"));
     }
 
     public NetworkManaData setLoad(ModUtils.Mana load){
@@ -36,7 +36,7 @@ public class NetworkManaData {
     }
 
     public ModUtils.Mana getCache(){
-        return data.get("cache");
+        return NetworkManaManager.getCached(level, id, "cache", data.get("cache"));
     }
 
     public NetworkManaData setCache(ModUtils.Mana cache){

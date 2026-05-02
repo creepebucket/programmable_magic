@@ -75,7 +75,11 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
 
         addWidget(new RectangleWidget(Coordinate.fromCenterLeft(0, -22), Coordinate.fromCenterTop(-122, 27)).mainColor(new Color(0x80000000)).addAnimation(new Animation.FadeIn.FromLeft(0.5), 0));
         addWidget(new TextWidget(Coordinate.fromCenter(-158, -19), Component.literal("P=")).scaled(3).noShadow().addAnimation(new Animation.FadeIn.FromLeft(0.5), 0.1));
-        addWidget(new TextWidget(Coordinate.fromCenter(123, 9), Component.literal("Momentum")).scaled(2).mainColor(new Color(0xFF00FFFF)).addAnimation(new Animation.FadeIn.FromRight(0.5), 0.1));
+
+        // 魔力类型显示
+        addWidget(new TextWidget(Coordinate.fromCenter(122, 11), Component.literal("TYPE")).noShadow().addAnimation(new Animation.FadeIn.FromRight(0.5), 0.05));
+        addWidget(new RectangleWidget(Coordinate.fromCenter(148, 7), Coordinate.fromTopLeft(51, 16)).mainColor(new Color(0, 0, 0, 128)));
+        addWidget(new TextWidget(Coordinate.fromCenter(151, 11), Component.literal("Momentum")).noShadow().mainColor(new Color(0xFF00FFFF)).addAnimation(new Animation.FadeIn.FromRight(0.5), 0.1));
 
         // 开关
         powerSwitch = (SwitchWidget) addWidget(new SwitchWidget(Coordinate.fromCenter(-200, 7), Coordinate.fromTopLeft(78, 16), Component.literal("OFF"), Component.literal("ON"))
@@ -93,29 +97,36 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         //addWidget(new MouseCursorWidget());
 
         // 网络储能
-        addWidget(new ProgressBarWidget(Coordinate.fromCenter(-100, 26), Coordinate.fromTopLeft(200, 9), menu.radiationStorageJ, menu.radiationCacheJ).mainColor(new Color(255, 255, 0, 128)));
-        var radiPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(-114, 26), Coordinate.fromTopLeft(13, 9), 1, "W"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(-162, 26), menu.radiationPowerW, 6, 1, (MachineWidgets.TextSwitchWidget) radiPowerUnit, "W", false));
-        var radiStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(149, 26), Coordinate.fromTopLeft(13, 9), 1, "J"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(101, 26), menu.radiationStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) radiStorageUnit, "J", false));
+        var powerDx = -152;
+        var storageDx = 186;
+        var barDx = -118;
+        var barW = 235;
 
-        addWidget(new ProgressBarWidget(Coordinate.fromCenter(-100, 36), Coordinate.fromTopLeft(200, 9), menu.temperatureStorageJ, menu.temperatureCacheJ).mainColor(new Color(255, 0, 0, 128)));
-        var tempPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(-114, 36), Coordinate.fromTopLeft(13, 9), 1, "W"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(-162, 36), menu.temperaturePowerW, 6, 1, (MachineWidgets.TextSwitchWidget) tempPowerUnit, "W", false));
-        var tempStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(149, 36), Coordinate.fromTopLeft(13, 9), 1, "J"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(101, 36), menu.temperatureStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) tempStorageUnit, "J", false));
+        var dy = 0;
 
-        addWidget(new ProgressBarWidget(Coordinate.fromCenter(-100, 46), Coordinate.fromTopLeft(200, 9), menu.momentumStorageJ, menu.momentumCacheJ).mainColor(new Color(0, 255, 255, 128)));
-        var momePowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(-114, 46), Coordinate.fromTopLeft(13, 9), 1, "W"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(-162, 46), menu.momentumPowerW, 6, 1, (MachineWidgets.TextSwitchWidget) momePowerUnit, "W", false));
-        var momeStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(149, 46), Coordinate.fromTopLeft(13, 9), 1, "J"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(101, 46), menu.momentumStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) momeStorageUnit, "J", false));
+        addWidget(new ProgressBarWidget(Coordinate.fromCenter(barDx, 26 + dy), Coordinate.fromTopLeft(barW, 9), menu.radiationStorageJ, menu.radiationCacheJ).mainColor(new Color(255, 255, 0, 128)));
+        var radiPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(powerDx, 26 + dy), Coordinate.fromTopLeft(13, 9), 1, "W"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(powerDx - 48, 26 + dy), menu.radiationPowerW, 6, 1, (MachineWidgets.TextSwitchWidget) radiPowerUnit, "W", false));
+        var radiStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(storageDx, 26 + dy), Coordinate.fromTopLeft(13, 9), 1, "J"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(storageDx - 48, 26 + dy), menu.radiationStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) radiStorageUnit, "J", false));
 
-        addWidget(new ProgressBarWidget(Coordinate.fromCenter(-100, 56), Coordinate.fromTopLeft(200, 9), menu.pressureStorageJ, menu.pressureCacheJ).mainColor(new Color(0, 255, 0, 128)));
-        var presPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(-114, 56), Coordinate.fromTopLeft(13, 9), 1, "W"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(-162, 56), menu.pressurePowerW, 6, 1, (MachineWidgets.TextSwitchWidget) presPowerUnit, "W", false));
-        var presStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(149, 56), Coordinate.fromTopLeft(13, 9), 1, "J"));
-        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(101, 56), menu.pressureStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) presStorageUnit, "J", false));
+        addWidget(new ProgressBarWidget(Coordinate.fromCenter(barDx, 38 + dy), Coordinate.fromTopLeft(barW, 9), menu.temperatureStorageJ, menu.temperatureCacheJ).mainColor(new Color(255, 0, 0, 128)));
+        var tempPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(powerDx, 38 + dy), Coordinate.fromTopLeft(13, 9), 1, "W"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(powerDx - 48, 38 + dy), menu.temperaturePowerW, 6, 1, (MachineWidgets.TextSwitchWidget) tempPowerUnit, "W", false));
+        var tempStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(storageDx, 38 + dy), Coordinate.fromTopLeft(13, 9), 1, "J"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(storageDx - 48, 38 + dy), menu.temperatureStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) tempStorageUnit, "J", false));
+
+        addWidget(new ProgressBarWidget(Coordinate.fromCenter(barDx, 50 + dy), Coordinate.fromTopLeft(barW, 9), menu.momentumStorageJ, menu.momentumCacheJ).mainColor(new Color(0, 255, 255, 128)));
+        var momePowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(powerDx, 50 + dy), Coordinate.fromTopLeft(13, 9), 1, "W"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(powerDx - 48, 50 + dy), menu.momentumPowerW, 6, 1, (MachineWidgets.TextSwitchWidget) momePowerUnit, "W", false));
+        var momeStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(storageDx, 50 + dy), Coordinate.fromTopLeft(13, 9), 1, "J"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(storageDx - 48, 50 + dy), menu.momentumStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) momeStorageUnit, "J", false));
+
+        addWidget(new ProgressBarWidget(Coordinate.fromCenter(barDx, 62 + dy), Coordinate.fromTopLeft(barW, 9), menu.pressureStorageJ, menu.pressureCacheJ).mainColor(new Color(0, 255, 0, 128)));
+        var presPowerUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(powerDx, 62 + dy), Coordinate.fromTopLeft(13, 9), 1, "W"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(powerDx - 48, 62 + dy), menu.pressurePowerW, 6, 1, (MachineWidgets.TextSwitchWidget) presPowerUnit, "W", false));
+        var presStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(storageDx, 62 + dy), Coordinate.fromTopLeft(13, 9), 1, "J"));
+        addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(storageDx - 48, 62 + dy), menu.pressureStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) presStorageUnit, "J", false));
     }
 
     @Override
