@@ -85,6 +85,8 @@ public class NetworkManaManager {
                 var cache = networkData.get("cache");
 
                 networkData.put("current", current.subtract(load).min(cache));
+                networkData.put("load", new ModUtils.Mana());
+                networkData.put("cache", new ModUtils.Mana());
             }
         }
 

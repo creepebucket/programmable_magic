@@ -74,7 +74,7 @@ public class BasicManaConnector extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new NetNodeBlockEntity(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), blockPos, blockState);
+        return new NetNodeBlockEntity(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), blockPos, blockState);
     }
 
     @Override

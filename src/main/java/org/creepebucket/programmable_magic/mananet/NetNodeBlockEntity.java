@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
+import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -14,6 +15,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class NetNodeBlockEntity extends BlockEntity {
+    public NetNodeBlockEntity(BlockPos pos, BlockState blockState) {
+        this(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), pos, blockState);
+    }
+
     public NetNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }

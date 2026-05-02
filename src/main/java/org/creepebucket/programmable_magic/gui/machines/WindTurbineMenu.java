@@ -32,7 +32,6 @@ public class WindTurbineMenu extends Menu {
         this.pos = pos;
         powerSwitch = hook(new WindTurbineHooks.PowerSwitchHook(this));
         this.count = 15;
-        tick();
     }
 
     public WindTurbineMenu(int containerId, Inventory playerInv) {
