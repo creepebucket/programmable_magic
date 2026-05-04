@@ -2,8 +2,11 @@ package org.creepebucket.programmable_magic.mananet.mechines.wind_turbine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.storage.ValueInput;
@@ -67,9 +70,14 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
         //              空气密度             //
 
         // 温度乘数
-        var biomeTemp = level.getBiome(getBlockPos()).value().getBaseTemperature();
-        var tempKelvin = biomeTemp * 20 + 273.15;
-        var tempCelsius = biomeTemp * 20;
+        var climate = ((ServerLevel) level).getChunkSource().randomState().sampler().sample(
+                QuartPos.fromBlock(getBlockPos().getX()),
+                QuartPos.fromBlock(getBlockPos().getY()),
+                QuartPos.fromBlock(getBlockPos().getZ()));
+        var noiseTemp = Climate.unquantizeCoord(climate.temperature());
+        var noiseHumidity = Climate.unquantizeCoord(climate.humidity());
+        var tempKelvin = noiseTemp * 50 + 273.15;
+        var tempCelsius = noiseTemp * 50;
         var tempFact = (15 + 273.15) / tempKelvin;
 
         // 海拔乘数
@@ -78,7 +86,7 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
         var atmosphericPressure = 101325 * pressureFact;
 
         // 湿度乘数
-        var relativeHumidity = level.getBiome(getBlockPos()).value().getModifiedClimateSettings().downfall(); // 正好是0到1
+        var relativeHumidity = Mth.clamp(noiseHumidity * 2 + 0.5, 0, 1);
         var saturatedVaporPressure = 611.2 * Math.exp(17.67 * tempCelsius / (tempCelsius + 243.5)); // 饱和水汽压 Tetens公式
         var vaporPressure = relativeHumidity * saturatedVaporPressure; // 水汽分压
         var humidityFact = ((1 - vaporPressure / atmosphericPressure) * 0.028965 + (vaporPressure / atmosphericPressure) * 0.018015) / 0.028965;
