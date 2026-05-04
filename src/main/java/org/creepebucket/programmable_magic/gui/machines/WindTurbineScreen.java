@@ -77,7 +77,7 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         addWidget(new TextWidget(Coordinate.fromCenter(-158, -19), Component.literal("P=")).scaled(3).noShadow().addAnimation(new Animation.FadeIn.FromLeft(0.5), 0.1));
 
         // 魔力类型显示
-        addWidget(new TextWidget(Coordinate.fromCenter(122, 11), Component.literal("TYPE")).noShadow().addAnimation(new Animation.FadeIn.FromRight(0.5), 0.05));
+        addWidget(new TextWidget(Coordinate.fromCenter(122, 11), Component.literal("TYPE")).addAnimation(new Animation.FadeIn.FromRight(0.5), 0.05));
         addWidget(new RectangleWidget(Coordinate.fromCenter(148, 7), Coordinate.fromTopLeft(51, 16)).mainColor(new Color(0, 0, 0, 128)).addAnimation(new Animation.FadeIn.FromRight(0.5), 0.15));
         addWidget(new TextWidget(Coordinate.fromCenter(151, 11), Component.literal("Momentum")).noShadow().mainColor(new Color(0xFF00FFFF)).addAnimation(new Animation.FadeIn.FromRight(0.5), 0.1));
 
