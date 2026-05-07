@@ -127,7 +127,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
         if (level.isClientSide()) {
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
 
-            player.displayClientMessage(Component.literal(bar), true);
+            player.sendOverlayMessage(Component.literal(bar));
 
         } else {
             SpellEffects.charge(player, (ServerLevel) level, mana);
@@ -195,7 +195,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             long dt = Math.max(0L, now - last);
             double mana = (dt / 20.0) * (rate / 1000.0);
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
-            player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
+            player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(bar));
         }
     }
 

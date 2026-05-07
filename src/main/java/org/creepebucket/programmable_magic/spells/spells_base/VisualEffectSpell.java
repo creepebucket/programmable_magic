@@ -55,7 +55,7 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
 
             debugText.append(Component.literal(p + ":").withColor(-1)).append(SpellValueType.fromValue(p).typed());
 
-            caster.displayClientMessage(debugText, false);
+            caster.sendSystemMessage(debugText);
 
             return ExecutionResult.SUCCESS(this);
         }

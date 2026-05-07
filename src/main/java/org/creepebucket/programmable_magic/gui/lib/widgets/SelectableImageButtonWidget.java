@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -40,7 +40,7 @@ public class SelectableImageButtonWidget extends Widget implements Renderable, C
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // 根据选中状态选择纹理并渲染
         var tex = isSelected ? this.selected : this.normal;
         graphics.blit(RenderPipelines.GUI_TEXTURED, tex, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColorInt());

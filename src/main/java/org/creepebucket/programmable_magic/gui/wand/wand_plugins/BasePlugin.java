@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.wand.wand_plugins;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
@@ -61,7 +61,7 @@ public abstract class BasePlugin {
     public void afterSpellExecution(SpellEntity spellEntity, SpellItemLogic currentSpell, Map<String, Object> spellData, SpellSequence spellSequence, List<Object> spellParams) {
     }
 
-    public void render(WandScreen screen, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(WandScreen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
     }
 
     /**

@@ -100,13 +100,13 @@ public class SpellEntity extends Entity {
         this.markHurt();
 
         ServerLevel serverLevel = (ServerLevel) this.level();
-        ChunkPos currentChunkPos = new ChunkPos(this.blockPosition());
+        ChunkPos currentChunkPos = ChunkPos.containing(this.blockPosition());
         if (forcedChunkPos == null) {
-            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x, currentChunkPos.z, true, false);
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x(), currentChunkPos.z(), true, false);
             forcedChunkPos = currentChunkPos;
-        } else if (forcedChunkPos.x != currentChunkPos.x || forcedChunkPos.z != currentChunkPos.z) {
-            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x, forcedChunkPos.z, false, false);
-            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x, currentChunkPos.z, true, false);
+        } else if (forcedChunkPos.x() != currentChunkPos.x() || forcedChunkPos.z() != currentChunkPos.z()) {
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x(), forcedChunkPos.z(), false, false);
+            Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, currentChunkPos.x(), currentChunkPos.z(), true, false);
             forcedChunkPos = currentChunkPos;
         }
 
@@ -147,7 +147,7 @@ public class SpellEntity extends Entity {
     public void onRemoval(RemovalReason reason) {
         super.onRemoval(reason);
         if (!(this.level() instanceof ServerLevel serverLevel) || forcedChunkPos == null) return;
-        Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x, forcedChunkPos.z, false, false);
+        Programmable_magic.SPELL_ENTITY_TICKET_CONTROLLER.forceChunk(serverLevel, this, forcedChunkPos.x(), forcedChunkPos.z(), false, false);
         forcedChunkPos = null;
     }
 

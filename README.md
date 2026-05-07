@@ -6,7 +6,7 @@
 <div align="center">
 
 [![Gradle Package](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml)
-[![mc_version](https://img.shields.io/badge/minecraft-1.21.11-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
+[![mc_version](https://img.shields.io/badge/minecraft-26.1.2-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
 [![last_commit](https://img.shields.io/github/last-commit/creepebucket/programmable_magic?logo=github)](https://github.com/creepebucket/programmable_magic/commits)
 [![release](https://img.shields.io/github/v/release/creepebucket/programmable_magic?include_prereleases&logo=github)](https://github.com/creepebucket/programmable_magic/releases)
 [![bilibili](https://img.shields.io/badge/bilibili-演示视频-00A1D6?logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1mHS8BWE9u)
@@ -18,7 +18,7 @@
 
 ## 📖 简介 (Overview)
 
-**Programmable Magic** 是一个基于 NeoForge 1.21.11 的技术向魔法模组。
+**Programmable Magic** 是一个基于 NeoForge 26.1.2 的技术向魔法模组。
 
 在这里，魔法不再是简单的“按键释放”，而是一门**工程学**。你需要将一组「法术卡片」编排进魔杖，构建出可复用的**施法序列**。通过引入变量、逻辑判断与数学计算，你可以将魔法写成一段可执行的“程序”。
 
@@ -54,8 +54,7 @@
 ## 📥 安装指南 (Installation)
 
 1.  **环境要求**：
-  - Minecraft `1.21.11`
-  - NeoForge `21.11.19-beta` 或更高版本
+  - Minecraft `26.1.2`
 2.  **下载**：请前往 [GitHub Releases](https://github.com/creepebucket/programmable_magic/releases) 下载最新构建。
 3.  **安装**：将下载的 `.jar` 文件放入游戏目录下的 `mods` 文件夹即可。
 

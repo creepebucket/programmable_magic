@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'idea'
-    id 'net.neoforged.moddev' version '2.0.107'
+    id 'net.neoforged.moddev' version '2.0.140'
 }
 
 version = mod_version
@@ -10,10 +10,6 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
-    maven {
-        name = "ParchmentMC"
-        url = uri("https://maven.parchmentmc.org")
-    }
     exclusiveContent {
         forRepository {
             maven {
@@ -21,7 +17,7 @@ repositories {
                 url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
             }
         }
-        filter { includeGroupAndSubgroups('software.bernie.geckolib') }
+        filter { includeGroupAndSubgroups('com.geckolib') }
     }
     maven {
         // location of the maven that hosts JEI files since January 2023
@@ -39,16 +35,11 @@ base {
     archivesName = mod_id
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
     // Specify the version of NeoForge to use.
     version = project.neo_version
-
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
-    }
 
     // This line is optional. Access Transformers are automatically detected
     accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
@@ -136,14 +127,16 @@ neoForge {
 
 
 dependencies {
+    var jeiMinecraftVersion = project.jei_minecraft_version
+
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    compileOnly "mezz.jei:jei-${jeiMinecraftVersion}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${jeiMinecraftVersion}-neoforge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${jeiMinecraftVersion}-neoforge:${jei_version}"
 
-    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
-    interfaceInjectionData "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+    interfaceInjectionData "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

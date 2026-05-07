@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
@@ -46,7 +46,7 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(left() + rectDx.getInt(), top(), left() + w() / 2 + rectDx.getInt(), bottom(), bgColorInt());
     }
 

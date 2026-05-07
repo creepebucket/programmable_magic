@@ -1,6 +1,8 @@
 package org.creepebucket.programmable_magic.renderer.api;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
+import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexFormat;
@@ -11,7 +13,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
@@ -31,7 +33,7 @@ public class RenderHelper {
                           .withVertexShader(     "core/rendertype_leash")
                           .withFragmentShader(   "core/rendertype_leash")
                           .withSampler(          "Sampler2")
-                          .withDepthWrite(       true)
+                          .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true, 0f, 0f))
                           .withCull(             false)
                           .withVertexFormat(     DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, VertexFormat.Mode.TRIANGLES)
                           .build();

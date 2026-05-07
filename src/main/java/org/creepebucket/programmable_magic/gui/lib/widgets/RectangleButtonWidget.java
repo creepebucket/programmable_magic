@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
@@ -22,7 +22,7 @@ public class RectangleButtonWidget extends Widget implements Renderable, Clickab
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(left(), top(), right(), bottom(), isInBounds(mouseX, mouseY) ? mainColorInt() : bgColorInt());
         graphics.fill(x() + w() / 3, y() + h() / 2, x() + w() * 2 / 3, y() + h() / 2 + 1, isInBounds(mouseX, mouseY) ? bgColorInt() : mainColorInt());
     }

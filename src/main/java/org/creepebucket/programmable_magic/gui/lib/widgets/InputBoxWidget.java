@@ -1,7 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -46,12 +46,12 @@ public class InputBoxWidget extends Widget implements Renderable, Clickable, Key
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x(), y(), x() + w(), y() + h(), bgColorInt());
-        graphics.renderOutline(x(), y(), w(), h(), mainColorInt());
+        graphics.outline(x(), y(), w(), h(), mainColorInt());
 
         this.box.setRectangle(w() - 6, h(), x(), y());
-        this.box.render(graphics, mouseX, mouseY, partialTick);
+        this.box.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -121,4 +121,3 @@ public class InputBoxWidget extends Widget implements Renderable, Clickable, Key
         }
     }
 }
-

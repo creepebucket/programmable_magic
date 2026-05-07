@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
@@ -28,7 +28,7 @@ public class TextureWidget extends Widget implements Renderable {
      * 按当前坐标渲染纹理。
      */
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x(), y(), 0, 0, w(), h(), w(), h(), w(), h(), mainColorInt());
     }
 }

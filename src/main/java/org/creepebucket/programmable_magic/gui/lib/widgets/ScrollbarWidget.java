@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 import org.creepebucket.programmable_magic.gui.lib.api.Color;
@@ -74,7 +74,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // 根据占比动态填充矩形
 
         var maxValue = region.toScreenY();

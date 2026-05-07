@@ -54,6 +54,6 @@ public class SpellExceptions {
 
     // 实际抛出这个错误
     public void throwIt(Player player) {
-        player.displayClientMessage(message, false);
+        player.sendSystemMessage(message);
     }
 }

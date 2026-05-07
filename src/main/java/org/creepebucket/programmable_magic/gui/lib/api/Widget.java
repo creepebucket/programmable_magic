@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
@@ -12,9 +12,9 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.ModUtils.now;
 
-/**
- * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。
- */
+    /**
+     * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。
+     */
 public abstract class Widget {
     public Coordinate originalPos, originalSize;
     public SmoothedValue dx = new SmoothedValue(0), dy = new SmoothedValue(0), dw = new SmoothedValue(0), dh = new SmoothedValue(0);
@@ -34,7 +34,7 @@ public abstract class Widget {
         smoothedValues.addAll(List.of(dx, dy, dw, dh));
     }
 
-    public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+    public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
         if (isForeground == renderInForeground) {
 
             // 动画的step

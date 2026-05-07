@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.gui.lib.api.ClientSlotManager;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
@@ -42,7 +42,7 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         ClientSlotManager.setClientPosition(this.slot, menuX(), menuY());
     }
 }

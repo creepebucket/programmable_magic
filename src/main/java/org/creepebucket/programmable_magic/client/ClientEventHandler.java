@@ -34,7 +34,7 @@ public class ClientEventHandler {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
 
-        event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), context -> new WindTurbineBlockEntityBER<>(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get()));
+        event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), WindTurbineBlockEntityBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 

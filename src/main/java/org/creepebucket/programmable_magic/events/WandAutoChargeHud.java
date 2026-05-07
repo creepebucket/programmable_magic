@@ -68,6 +68,6 @@ public class WandAutoChargeHud {
         double mana = (dt / 20.0) * (rate / 1000.0);
         if (mana <= 0.0) return;
         String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
-        player.displayClientMessage(net.minecraft.network.chat.Component.literal(bar), true);
+        player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(bar));
     }
 }

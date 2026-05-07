@@ -1,15 +1,14 @@
 package org.creepebucket.programmable_magic.mananet.mechines.wind_turbine;
 
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.AABB;
-import software.bernie.geckolib.renderer.GeoBlockRenderer;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.renderer.GeoBlockRenderer;
 
-public class WindTurbineBlockEntityBER<R extends BlockEntityRenderState & GeoRenderState> extends GeoBlockRenderer<WindTurbineBlockEntity, R> {
+public class WindTurbineBlockEntityBER extends GeoBlockRenderer<WindTurbineBlockEntity, BlockEntityRenderState> {
 
-    public WindTurbineBlockEntityBER(BlockEntityType<WindTurbineBlockEntity> blockEntityType) {
-        super(new WindTurbineGeoModel());
+    public WindTurbineBlockEntityBER(BlockEntityRendererProvider.Context context) {
+        super(context, new WindTurbineGeoModel());
     }
 
     @Override

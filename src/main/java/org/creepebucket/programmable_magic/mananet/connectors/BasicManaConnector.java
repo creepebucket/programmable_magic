@@ -88,7 +88,7 @@ public class BasicManaConnector extends Block implements EntityBlock {
 
         var clickedFace = hitResult.getDirection();
         if (!clickedFace.getAxis().isHorizontal()) {
-            player.displayClientMessage(Component.literal("拒绝连接: 只能点击水平面"), false);
+            player.sendSystemMessage(Component.literal("拒绝连接: 只能点击水平面"));
             return InteractionResult.CONSUME;
         }
 
@@ -103,13 +103,13 @@ public class BasicManaConnector extends Block implements EntityBlock {
 
             player.removeData(ModAttachments.PENDING_CONNECTION);
             player.removeData(ModAttachments.PENDING_FACE);
-            player.displayClientMessage(Component.literal("已连接 " + connectedPos.toShortString() + " " + connectedFace.getName() + " -> " + pos.toShortString() + " " + selfFace.getName()), false);
+            player.sendSystemMessage(Component.literal("已连接 " + connectedPos.toShortString() + " " + connectedFace.getName() + " -> " + pos.toShortString() + " " + selfFace.getName()));
             return InteractionResult.CONSUME;
         }
 
         player.setData(ModAttachments.PENDING_CONNECTION, pos);
         player.setData(ModAttachments.PENDING_FACE, clickedFace);
-        player.displayClientMessage(Component.literal("连接起点已设置为 " + pos.toShortString() + " " + clickedFace.getName()), false);
+        player.sendSystemMessage(Component.literal("连接起点已设置为 " + pos.toShortString() + " " + clickedFace.getName()));
         return InteractionResult.CONSUME;
     }
 }

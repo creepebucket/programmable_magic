@@ -5,10 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
@@ -17,7 +19,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,18 +33,17 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.cache.GeckoLibResources;
-import software.bernie.geckolib.cache.model.BakedGeoModel;
-import software.bernie.geckolib.cache.model.GeoBone;
-import software.bernie.geckolib.cache.model.GeoQuad;
-import software.bernie.geckolib.cache.model.GeoVertex;
-import software.bernie.geckolib.cache.model.cuboid.CuboidGeoBone;
-import software.bernie.geckolib.cache.model.cuboid.GeoCube;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.renderer.GeoBlockRenderer;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
-import software.bernie.geckolib.util.RenderUtil;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.cache.GeckoLibResources;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.cache.model.GeoQuad;
+import com.geckolib.cache.model.GeoVertex;
+import com.geckolib.cache.model.cuboid.CuboidGeoBone;
+import com.geckolib.cache.model.cuboid.GeoCube;
+import com.geckolib.renderer.GeoBlockRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.util.RenderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public class BasicMachinePlacementPreview {
 
     @SubscribeEvent
-    public static void on_render_level(RenderLevelStageEvent.AfterEntities event) {
+    public static void on_render_level(RenderLevelStageEvent.AfterTranslucentFeatures event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         if (mc.level == null) return;
@@ -109,14 +109,15 @@ public class BasicMachinePlacementPreview {
         if (rendered) buffer.endLastBatch();
     }
 
-    private static boolean try_render_vanilla_model(Level level, BlockPos pos, BlockState state, PoseStack pose_stack, VertexConsumer consumer, float line_width, int color) {
-        BlockStateModel model = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+    private static boolean try_render_vanilla_model(BlockAndTintGetter level, BlockPos pos, BlockState state, PoseStack pose_stack, VertexConsumer consumer, float line_width, int color) {
+        BlockStateModelSet block_model_set = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+        BlockStateModel model = block_model_set.get(state);
         RandomSource random = RandomSource.create();
         random.setSeed(state.getSeed(pos));
         LongOpenHashSet edges = new LongOpenHashSet();
-        List<BlockModelPart> parts = new ArrayList<>();
+        List<BlockStateModelPart> parts = new ArrayList<>();
         model.collectParts(level, pos, state, random, parts);
-        for (BlockModelPart part : parts) {
+        for (BlockStateModelPart part : parts) {
             render_vanilla_part(part, pose_stack, consumer, line_width, color, edges);
         }
         return true;
@@ -133,7 +134,7 @@ public class BasicMachinePlacementPreview {
         BakedGeoModel model = GeckoLibResources.getBakedModels().getModel(geo_renderer.getGeoModel().getModelResource(render_state));
         pose_stack.pushPose();
         pose_stack.translate(0.5d, 0, 0.5d);
-        rotate_for_facing(pose_stack, render_state.getOrDefaultGeckolibData(DataTickets.BLOCK_FACING, Direction.NORTH));
+        rotate_for_facing(pose_stack, Direction.NORTH);
         render_gecko_model(model, pose_stack, consumer, line_width, color);
         pose_stack.popPose();
         return true;
@@ -151,7 +152,7 @@ public class BasicMachinePlacementPreview {
         }
     }
 
-    private static void render_vanilla_part(BlockModelPart part, PoseStack pose_stack, VertexConsumer consumer, float line_width, int color, LongOpenHashSet edges) {
+    private static void render_vanilla_part(BlockStateModelPart part, PoseStack pose_stack, VertexConsumer consumer, float line_width, int color, LongOpenHashSet edges) {
         for (Direction direction : Direction.values()) {
             for (BakedQuad quad : part.getQuads(direction)) {
                 render_vanilla_quad(quad, pose_stack, consumer, line_width, color, edges);

@@ -1,8 +1,8 @@
 package org.creepebucket.programmable_magic.mananet.mechines.wind_turbine;
 
 import net.minecraft.resources.Identifier;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -27,4 +27,3 @@ public class WindTurbineGeoModel extends GeoModel<WindTurbineBlockEntity> {
         return texturePath;
     }
 }
-

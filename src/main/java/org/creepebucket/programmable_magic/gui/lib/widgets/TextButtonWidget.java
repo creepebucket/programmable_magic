@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
@@ -32,7 +32,7 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // 悬浮逻辑
         // 悬浮状态改变按钮在"悬浮"和"正常"状态切换的程度
         if (isInBounds(mouseX, mouseY)) pivot.set(1);

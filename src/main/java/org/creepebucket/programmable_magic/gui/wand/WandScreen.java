@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -124,8 +124,8 @@ public class WandScreen extends Screen<WandMenu> {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         for (ItemStack plugin : menu.pluginContainer)
             if (WandPluginRegistry.isPlugin(plugin.getItem()))

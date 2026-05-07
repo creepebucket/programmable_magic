@@ -1,7 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.ui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.CharacterEvent;
@@ -108,12 +108,12 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         dt = now() - lastFrame;
         lastFrame = now();
 
         this.lastPartialTick = partialTick;
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         graphics.nextStratum();
 
@@ -127,24 +127,18 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
             // widget自己的简易tooltip
 
             if (widget.doShowTooltip && widget.isInBounds(mouseX, mouseY) && widget.enabled)
-                graphics.renderTooltip(ClientUiContext.getFont(), List.of(ClientTooltipComponent.create(widget.tooltip.getVisualOrderText())),
-                        mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                graphics.setTooltipForNextFrame(ClientUiContext.getFont(), List.of(widget.tooltip.getVisualOrderText()), mouseX, mouseY);
         }
-        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         ClientSlotManager.clearAll();
         root.renderWidget(graphics, mouseX, mouseY, 0, dt, false);
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
     }
 
     // --- 下面全是把输入事件转发给 menu.widgets ---

@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.machines.api;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -67,7 +67,7 @@ public class MachineWidgets {
         }
 
         @Override
-        public void renderWidget(GuiGraphics graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+        public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
             // 开启 OpenGL 裁剪：由于子组件（数字）在滚动时会超出自身框的范围
             // 这里设置裁剪区，确保只有在当前组件区域内的像素才会被渲染出，达到“遮罩”效果
             graphics.enableScissor(left(), top(), right(), bottom());
@@ -77,7 +77,7 @@ public class MachineWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             // 为每一个数字槽位绘制背景色块
             if (!compactMode) for (int i = 0; i < digits; i++)
                 graphics.fill(left() + 8 * i * scale, top(), left() + 8 * i * scale + 7 * scale, bottom(), bgColorInt());
@@ -120,7 +120,7 @@ public class MachineWidgets {
             }
 
             @Override
-            public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 int lineHeight = scale * 10; // 每个字符占据的高度
                 // dy 是父类 Widget 里的变量，这里被用来表示滚动纸带的总偏移量
                 int baseY = menuY() - dy.getInt();
@@ -219,7 +219,7 @@ public class MachineWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             textDy.doStep(screen.dt);
 
             graphics.enableScissor(left(), top(), right(), bottom());
@@ -289,7 +289,7 @@ public class MachineWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             graphics.fill(left(), top(), right(), bottom(), bgColorInt());
 
             // 悬浮动画检测

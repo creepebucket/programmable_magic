@@ -1,11 +1,9 @@
 package org.creepebucket.programmable_magic.recipes;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -19,10 +17,6 @@ import org.creepebucket.programmable_magic.registries.ModRecipeSerializers;
  * 无序合成：占位符 + 任意其他物品 → 绑定该物品的占位符。
  */
 public class BindWandItemPlaceholderRecipe extends CustomRecipe {
-
-    public BindWandItemPlaceholderRecipe(CraftingBookCategory category) {
-        super(category);
-    }
 
     @Override
     public boolean matches(CraftingInput input, Level level) {
@@ -42,7 +36,7 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack placeholder = ItemStack.EMPTY;
         ItemStack target = ItemStack.EMPTY;
         for (int i = 0; i < input.size(); i++) {
@@ -65,21 +59,8 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
         return ModRecipeSerializers.BIND_WAND_ITEM_PLACEHOLDER.get();
     }
 
-    public static final class Serializer implements RecipeSerializer<BindWandItemPlaceholderRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
-        private static final BindWandItemPlaceholderRecipe DUMMY = new BindWandItemPlaceholderRecipe(CraftingBookCategory.MISC);
-
-        public static final MapCodec<BindWandItemPlaceholderRecipe> CODEC = MapCodec.unit(DUMMY);
-        public static final StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> STREAM_CODEC = StreamCodec.unit(DUMMY);
-
-        @Override
-        public MapCodec<BindWandItemPlaceholderRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
-    }
+    public static final BindWandItemPlaceholderRecipe INSTANCE = new BindWandItemPlaceholderRecipe();
+    public static final MapCodec<BindWandItemPlaceholderRecipe> CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final RecipeSerializer<BindWandItemPlaceholderRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 }

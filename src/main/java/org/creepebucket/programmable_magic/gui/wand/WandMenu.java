@@ -7,7 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -231,13 +231,13 @@ public class WandMenu extends Menu {
     }
 
     @Override
-    public void clicked(int slotId, int button, ClickType clickType, Player player) {
-        if (clickType == ClickType.PICKUP && slotId >= 0 && this.getSlot(slotId) instanceof InfiniteSupplySlot && !this.getCarried().isEmpty()) {
+    public void clicked(int slotId, int button, ContainerInput containerInput, Player player) {
+        if (containerInput == ContainerInput.PICKUP && slotId >= 0 && this.getSlot(slotId) instanceof InfiniteSupplySlot && !this.getCarried().isEmpty()) {
             this.setCarried(ItemStack.EMPTY);
             this.broadcastChanges();
             return;
         }
-        super.clicked(slotId, button, clickType, player);
+        super.clicked(slotId, button, containerInput, player);
     }
 
     @Override

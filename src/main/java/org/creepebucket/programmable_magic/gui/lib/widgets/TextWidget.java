@@ -1,7 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
@@ -70,7 +70,7 @@ public class TextWidget extends Widget implements Renderable {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Font font = ClientUiContext.getFont();
         float scaled = (float) scale;
         float x = menuX();
@@ -88,13 +88,13 @@ public class TextWidget extends Widget implements Renderable {
         drawScaledString(graphics, font, text, x, y, scaled, mainColorInt(), shadow);
     }
 
-    public static void drawScaledString(GuiGraphics guiGraphics, Font font, Component text, float x, float y, float scale, int color, boolean dropShadow) {
+    public static void drawScaledString(GuiGraphicsExtractor guiGraphics, Font font, Component text, float x, float y, float scale, int color, boolean dropShadow) {
         Matrix3x2fStack poseStack = guiGraphics.pose();
 
         poseStack.pushMatrix();
         poseStack.translate(x, y);
         poseStack.scale(scale, scale);
-        guiGraphics.drawString(font, text, 0, 0, color, dropShadow);
+        guiGraphics.text(font, text, 0, 0, color, dropShadow);
         poseStack.popMatrix();
     }
 }

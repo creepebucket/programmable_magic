@@ -1,30 +1,25 @@
 package org.creepebucket.programmable_magic.spells;
 
+import com.mojang.blaze3d.platform.Transparency;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockElement;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.model.UnbakedElementsHelper;
-import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -42,19 +37,15 @@ public class PackedSpellSpecialRenderer implements SpecialModelRenderer<String> 
     private static final Vector3fc EXTENT_0_1_MAX_Z = new Vector3f(0.0F, 1.0F, MAX_Z);
     private static final Vector3fc EXTENT_1_1_MAX_Z = new Vector3f(1.0F, 1.0F, MAX_Z);
 
-    private static final int[] NO_TINT_LAYERS = new int[0];
+    private final SpriteGetter sprites;
 
-    private final MaterialSet materials;
-    private final Map<Identifier, List<BakedQuad>> bakedQuads = new HashMap<>();
-
-    public PackedSpellSpecialRenderer(MaterialSet materials) {
-        this.materials = materials;
+    public PackedSpellSpecialRenderer(SpriteGetter sprites) {
+        this.sprites = sprites;
     }
 
     @Override
     public void submit(
             @Nullable String texturePath,
-            ItemDisplayContext displayContext,
             PoseStack poseStack,
             SubmitNodeCollector collector,
             int lightCoords,
@@ -70,30 +61,42 @@ public class PackedSpellSpecialRenderer implements SpecialModelRenderer<String> 
             normalizedPath = normalizedPath.substring(0, normalizedPath.length() - ".png".length());
         }
 
-        Identifier spriteId = normalizedPath.contains(":")
-                ? Identifier.parse(normalizedPath)
-                : Identifier.fromNamespaceAndPath(MODID, normalizedPath);
+        Identifier textureId = normalizedPath.contains(":") ? Identifier.parse(normalizedPath) : Identifier.fromNamespaceAndPath(MODID, normalizedPath);
+        SpriteId spriteId = new SpriteId(TextureAtlas.LOCATION_ITEMS, textureId);
+        TextureAtlasSprite sprite = this.sprites.get(spriteId);
+        Transparency transparency = sprite.transparency();
+        RenderType renderType = transparency.hasTranslucent() ? Sheets.translucentItemSheet() : Sheets.cutoutItemSheet();
 
-        List<BakedQuad> quads = this.bakedQuads.get(spriteId);
-        if (quads == null) {
-            Material material = new Material(TextureAtlas.LOCATION_ITEMS, spriteId);
-            TextureAtlasSprite sprite = this.materials.get(material);
-            List<BlockElement> elements = UnbakedElementsHelper.createUnbakedItemElements(0, sprite);
-            quads = UnbakedElementsHelper.bakeElements(elements, $ -> sprite, BlockModelRotation.IDENTITY);
-            this.bakedQuads.put(spriteId, quads);
-        }
+        collector.submitCustomGeometry(poseStack, renderType, (pose, buffer) -> {
+            submitSpriteQuad(pose, buffer, sprite, MIN_Z, 0, 0, 1, 1, 0, 0, 1, lightCoords, overlayCoords);
+            submitSpriteQuad(pose, buffer, sprite, MAX_Z, 0, 0, 1, 1, 0, 0, -1, lightCoords, overlayCoords);
+        });
+    }
 
-        collector.submitItem(
-                poseStack,
-                displayContext,
-                lightCoords,
-                overlayCoords,
-                outlineColor,
-                NO_TINT_LAYERS,
-                quads,
-                Sheets.translucentItemSheet(),
-                hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE
-        );
+    private static void submitSpriteQuad(
+            PoseStack.Pose pose,
+            VertexConsumer buffer,
+            TextureAtlasSprite sprite,
+            float z,
+            float x0,
+            float y0,
+            float x1,
+            float y1,
+            float nx,
+            float ny,
+            float nz,
+            int lightCoords,
+            int overlayCoords
+    ) {
+        float u0 = sprite.getU0();
+        float u1 = sprite.getU1();
+        float v0 = sprite.getV0();
+        float v1 = sprite.getV1();
+
+        buffer.addVertex(pose, x0, y0, z).setColor(-1).setUv(u0, v1).setOverlay(overlayCoords).setLight(lightCoords).setNormal(pose, nx, ny, nz);
+        buffer.addVertex(pose, x1, y0, z).setColor(-1).setUv(u1, v1).setOverlay(overlayCoords).setLight(lightCoords).setNormal(pose, nx, ny, nz);
+        buffer.addVertex(pose, x1, y1, z).setColor(-1).setUv(u1, v0).setOverlay(overlayCoords).setLight(lightCoords).setNormal(pose, nx, ny, nz);
+        buffer.addVertex(pose, x0, y1, z).setColor(-1).setUv(u0, v0).setOverlay(overlayCoords).setLight(lightCoords).setNormal(pose, nx, ny, nz);
     }
 
     @Override
@@ -110,20 +113,21 @@ public class PackedSpellSpecialRenderer implements SpecialModelRenderer<String> 
 
     @Override
     public @Nullable String extractArgument(ItemStack itemStack) {
-        return itemStack.get(ModDataComponents.RESOURCE_LOCATION);
+        return itemStack.get(org.creepebucket.programmable_magic.registries.ModDataComponents.RESOURCE_LOCATION);
     }
 
-    public record Unbaked() implements SpecialModelRenderer.Unbaked {
+    public record Unbaked() implements SpecialModelRenderer.Unbaked<String> {
         public static final MapCodec<PackedSpellSpecialRenderer.Unbaked> MAP_CODEC = MapCodec.unit(new PackedSpellSpecialRenderer.Unbaked());
 
         @Override
-        public @Nullable SpecialModelRenderer<?> bake(SpecialModelRenderer.BakingContext context) {
-            return new PackedSpellSpecialRenderer(context.materials());
+        public @Nullable SpecialModelRenderer<String> bake(SpecialModelRenderer.BakingContext context) {
+            return new PackedSpellSpecialRenderer(context.sprites());
         }
 
         @Override
-        public MapCodec<? extends SpecialModelRenderer.Unbaked> type() {
+        public MapCodec<? extends SpecialModelRenderer.Unbaked<String>> type() {
             return MAP_CODEC;
         }
     }
 }
+

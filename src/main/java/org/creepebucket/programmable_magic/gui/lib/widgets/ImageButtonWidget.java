@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -41,7 +41,7 @@ public class ImageButtonWidget extends Widget implements Renderable, Clickable {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // 判断鼠标是否悬停在按钮上，选择对应纹理
         boolean hovered = isInBounds(mouseX, mouseY);
         var tex = hovered ? this.hover : this.normal;

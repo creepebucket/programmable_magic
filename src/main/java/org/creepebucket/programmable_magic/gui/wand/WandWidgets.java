@@ -1,9 +1,7 @@
 package org.creepebucket.programmable_magic.gui.wand;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
@@ -52,12 +50,12 @@ public class WandWidgets {
             addChild(new BlankInsertionWidget(Coordinate.fromTopLeft(-8, 16)).mainColor(originalMainColor));
         }
 
-        public void renderNumber(GuiGraphics graphics, int n, int x, int y, int mouseX, int mouseY, int renderColor) {
+        public void renderNumber(GuiGraphicsExtractor graphics, int n, int x, int y, int mouseX, int mouseY, int renderColor) {
             if (renderColor >>> 24 == 0) return;
 
             switch (n) {
                 case 0 -> {
-                    graphics.renderOutline(x, y, 4, 5, renderColor);
+                    graphics.outline(x, y, 4, 5, renderColor);
                 }
                 case 1 -> {
                     graphics.fill(x, y + 1, x + 2, y + 2, renderColor);
@@ -143,7 +141,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             int i = this.i - (int) dx.get() / 16;
             if (0 > i || i >= 1000) return;
             delta2X.doStep(screen.dt);
@@ -205,11 +203,9 @@ public class WandWidgets {
         }
 
         @Override
-        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        public boolean renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
             if (isIn(mouseX, mouseY, x(), y() - 5, 11, 5)) {
-                graphics.renderTooltip(ClientUiContext.getFont(),
-                        List.of(ClientTooltipComponent.create(Component.translatable("gui.programmable_magic.wand.inventory.debugger_breakpoint").getVisualOrderText())),
-                        mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null);
+                graphics.setTooltipForNextFrame(ClientUiContext.getFont(), Component.translatable("gui.programmable_magic.wand.inventory.debugger_breakpoint"), mouseX, mouseY);
             }
             return false;
         }
@@ -222,7 +218,7 @@ public class WandWidgets {
             }
 
             @Override
-            public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
                 if (!isInBounds(mouseX, mouseY)) return;
                 graphics.fill(left(), top(), right(), bottom(), mainColorInt());
             }
@@ -285,7 +281,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             Map<String, Integer> COLOR_MAP = ModUtils.SPELL_COLORS();
             var color = COLOR_MAP.getOrDefault(key, 0xFFFFFFFF);
             color = (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24);
@@ -294,7 +290,7 @@ public class WandWidgets {
             graphics.fill(x(), y() + 7, x() + 79, y() + 25, color);
             graphics.fill(x(), y() + 26, x() + 79, y() + 28, color);
 
-            graphics.drawString(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, textColorInt());
+            graphics.text(ClientUiContext.getFont(), Component.translatable(key), x() + 3, y() + 12, textColorInt());
         }
     }
 
@@ -309,7 +305,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             if (isInBounds(mouseX, mouseY)) {
                 graphics.fill(x(), y(), x() + w(), y() + h(), mainColorInt());
             } else {
@@ -333,7 +329,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             if (isCharging)
                 graphics.fill(x(), y(), x() + w(), y() + h(), hsvToRgb(chargedTick * 0.01f % 1, 1, .5f) << 8 >>> 8 | 0x80000000);
             else if (isInBounds(mouseX, mouseY))
@@ -343,7 +339,7 @@ public class WandWidgets {
         }
 
         @Override
-        public boolean renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        public boolean renderTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
             if (!isInBounds(mouseX, mouseY) && !isCharging) return false;
 
             Component tooltip;
@@ -354,11 +350,7 @@ public class WandWidgets {
                                 chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005))
                         .withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
 
-            graphics.renderTooltip(
-                    ClientUiContext.getFont(),
-                    List.of(ClientTooltipComponent.create(tooltip.getVisualOrderText())),
-                    mouseX, mouseY, DefaultTooltipPositioner.INSTANCE, null
-            );
+            graphics.setTooltipForNextFrame(ClientUiContext.getFont(), tooltip, mouseX, mouseY);
             return true;
         }
 
@@ -403,11 +395,11 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 
             var count = 0;
             for (SpellExceptions error : errors) {
-                graphics.drawString(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, textColorInt());
+                graphics.text(ClientUiContext.getFont(), error.message(), x(), y() + count * 16, textColorInt());
                 count++;
             }
         }
@@ -447,7 +439,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             // 对于每个通知
             var deletedCount = 0;
 
@@ -479,7 +471,7 @@ public class WandWidgets {
                 graphics.fill(x, y + 14, (int) (x + w * Math.min(1, (now - notification.created) / notification.duration)), y + 15, (16777215) | ((int) (((-1 >>> 24) * alphaMult)) << 24));
 
                 // 渲染文本
-                graphics.drawString(ClientUiContext.getFont(), notification.content, x + 2, y + 3, (notification.textColor & 16777215) | ((int) (((notification.textColor >>> 24) * alphaMult)) << 24));
+                graphics.text(ClientUiContext.getFont(), notification.content, x + 2, y + 3, (notification.textColor & 16777215) | ((int) (((notification.textColor >>> 24) * alphaMult)) << 24));
 
                 // 如果有删除, 修改通知targetDy
                 notification.targetDy -= deletedCount * 16;
@@ -541,7 +533,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
 
             ClientSlotManager.setClientPosition(slot, x(), y() + 1);
 
@@ -607,7 +599,7 @@ public class WandWidgets {
         }
 
         @Override
-        public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             r.background.color(new Color(0, (int) g.value, (int) b.value), new Color(255, (int) g.value, (int) b.value));
             g.background.color(new Color((int) r.value, 0, (int) b.value), new Color((int) r.value, 255, (int) b.value));
             b.background.color(new Color((int) r.value, (int) g.value, 0), new Color((int) r.value, (int) g.value, 255));

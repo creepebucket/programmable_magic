@@ -15,12 +15,12 @@ import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
-import software.bernie.geckolib.animatable.GeoBlockEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animatable.manager.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoBlockEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlockEntity {
     public double airDensityBase = 1.225, airDensityTempFactBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
@@ -115,7 +115,7 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
 
         //              空气密度             //
 
-        var time = level.getDayTime() % 24000;
+        var time = level.getOverworldClockTime() % 24000;
         var tempKelvin = (15 + 273.15) / entity.airDensityTempFactBase + 10 * Math.sin((Math.PI * 2 / 24000) * time);
         var tempFact = (15 + 273.15) / tempKelvin;
         var airDensity = entity.airDensityBase * tempFact * entity.airDensityPressureFact * entity.airDensityHumidFact;

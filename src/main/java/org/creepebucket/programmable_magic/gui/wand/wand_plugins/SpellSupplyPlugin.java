@@ -1,7 +1,7 @@
 package org.creepebucket.programmable_magic.gui.wand.wand_plugins;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -157,7 +157,7 @@ public class SpellSupplyPlugin extends BasePlugin {
     }
 
     @Override
-    public void render(WandScreen screen, GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(WandScreen screen, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         // 同步 customSupplySlotSupplyMode
         screen.getMenu().customSupplySlotSupplyMode.set(!screen.lockButton.isSelected);
     }

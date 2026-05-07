@@ -5,10 +5,11 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.ModUtils;
@@ -21,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
 
 public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEntity, NetNodeBlockEntityBER.NetNodeBlockEntityBERS> {
 
@@ -54,10 +53,10 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
         var w = new Vec3(-0.375, 0, 0);
         var e = new Vec3(0.375, 0, 0);
 
-        renderer.addText(position.add(s), Direction.NORTH, 0.01F, -1, FULL_BRIGHT, Component.literal("South").getVisualOrderText());
-        renderer.addText(position.add(n), Direction.SOUTH, 0.01F, -1, FULL_BRIGHT, Component.literal("North").getVisualOrderText());
-        renderer.addText(position.add(e), Direction.WEST, 0.01F, -1, FULL_BRIGHT, Component.literal("East").getVisualOrderText());
-        renderer.addText(position.add(w), Direction.EAST, 0.01F, -1, FULL_BRIGHT, Component.literal("West").getVisualOrderText());
+        renderer.addText(position.add(s), Direction.NORTH, 0.01F, -1, LightCoordsUtil.FULL_BRIGHT, Component.literal("South").getVisualOrderText());
+        renderer.addText(position.add(n), Direction.SOUTH, 0.01F, -1, LightCoordsUtil.FULL_BRIGHT, Component.literal("North").getVisualOrderText());
+        renderer.addText(position.add(e), Direction.WEST, 0.01F, -1, LightCoordsUtil.FULL_BRIGHT, Component.literal("East").getVisualOrderText());
+        renderer.addText(position.add(w), Direction.EAST, 0.01F, -1, LightCoordsUtil.FULL_BRIGHT, Component.literal("West").getVisualOrderText());
 
         var facingToPos = Map.of(Direction.SOUTH, s, Direction.NORTH, n, Direction.EAST, e, Direction.WEST, w);
         var facingToXPixel = Map.of(Direction.SOUTH, new Vec3(-1.0 / 16, 0, 0), Direction.NORTH, new Vec3(1.0 / 16, 0, 0),

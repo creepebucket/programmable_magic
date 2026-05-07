@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
@@ -21,7 +21,7 @@ public class ProgressBarWidget extends Widget implements Renderable {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         smoothed.set(current.get());
         var filled = (int) (left() + Math.round(w() * smoothed.get() / max.get()));
         graphics.fill(left(), top(), filled, bottom(), mainColorInt());
