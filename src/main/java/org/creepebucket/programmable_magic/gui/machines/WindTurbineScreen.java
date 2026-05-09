@@ -29,8 +29,8 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         super.init();
 
         // 标题
-        addWidget(new TextWidget(Coordinate.fromCenter(0, -100), Component.literal("WINDTURBINE")).scaled(8).centerAlign().noShadow().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromTop(0.5), 0));
-        addWidget(new TextWidget(Coordinate.fromCenter(0, -130), Component.literal("MECHINEINFO")).scaled(3).centerAlign().noShadow().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromTop(0.5), 0.05));
+        addWidget(new TextWidget(Coordinate.fromCenter(0, -100), Component.literal("WINDTURBINE")).scaled(8).noShadow().centerAlign().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromTop(0.5), 0));
+        addWidget(new TextWidget(Coordinate.fromCenter(0, -130), Component.literal("MECHINEINFO")).scaled(3).noShadow().centerAlign().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromTop(0.5), 0.05));
         
         // 计算组件
         addWidget(new TextWidget(Coordinate.fromCenter(-239, -33), Component.literal("0.5x")).addAnimation(new Animation.FadeIn.FromTop(0.5), .15));
@@ -128,7 +128,7 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         var presStorageUnit = addWidget(new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(storageDx, 62 + dy), Coordinate.fromTopLeft(13, 9), 1, "J").addAnimation(new Animation.FadeIn.FromRight(0.5), 0.15));
         presStorageUnit.addChild(new MachineWidgets.NumberDisplayWidget(Coordinate.fromTopLeft(-48, 0), menu.pressureStorageJ, 6, 1, (MachineWidgets.TextSwitchWidget) presStorageUnit, "J", false));
 
-        addWidget(new TextWidget(Coordinate.fromCenter(0, 80), Component.literal("MANANETWORKSTATUS")).scaled(3).centerAlign().noShadow().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromBottom(0.5), 0.15));
+        addWidget(new TextWidget(Coordinate.fromCenter(0, 80), Component.literal("MANANETWORKSTATUS")).scaled(3).noShadow().centerAlign().mainColor(new Color(0, 0, 0, 64)).addAnimation(new Animation.FadeIn.FromBottom(0.5), 0.15));
     }
 
     @Override

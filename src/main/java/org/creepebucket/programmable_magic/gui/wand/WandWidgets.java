@@ -569,7 +569,7 @@ public class WandWidgets {
             }
 
             if (!lastStack.isEmpty())
-                functionWidget.text = WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function();
+                functionWidget.setText(WandPluginRegistry.Client.getClientLogic(lastStack.getItem()).function());
 
             graphics.fill(x(), y() + 1, x() + 16, y() + 17, bgColorInt());
         }

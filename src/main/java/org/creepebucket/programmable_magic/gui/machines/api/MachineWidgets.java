@@ -261,7 +261,7 @@ public class MachineWidgets {
             // 计算结果
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(1, 1), result, 5, 1, true));
             // 计算结果单位
-            addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).rightAlign().noShadow());
+            addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).noShadow().rightAlign());
             // 描述
             descWidget = addChild(new RectangleWidget(Coordinate.fromTopLeft(0, -2), Coordinate.fromTopLeft(w(), 1)));
             descWidget.addChild(new TextWidget(Coordinate.fromTopLeft(w() / 2, -9), description).centerAlign());

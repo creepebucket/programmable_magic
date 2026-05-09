@@ -16,11 +16,26 @@ import static org.creepebucket.programmable_magic.ModUtils.now;
      * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。
      */
 public abstract class Widget {
+    public enum Align {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
+
+    public enum VerticalAlign {
+        TOP,
+        CENTER,
+        BOTTOM
+
+    }
+
     public Coordinate originalPos, originalSize;
     public SmoothedValue dx = new SmoothedValue(0), dy = new SmoothedValue(0), dw = new SmoothedValue(0), dh = new SmoothedValue(0);
     public Color originalMainColor = new Color(-1), originalBgColor = new Color(-2147483647), originalTextColor = new Color(-1);
     public Component tooltip;
     public boolean doShowTooltip = false, renderInForeground = false, enabled = true;
+    public Align align = Align.LEFT;
+    public VerticalAlign verticalAlign = VerticalAlign.TOP;
     public List<Widget> children = new ArrayList<>();
     public Widget parent;
     public Screen<? extends Menu> screen;
@@ -32,6 +47,36 @@ public abstract class Widget {
         this.originalSize = size;
 
         smoothedValues.addAll(List.of(dx, dy, dw, dh));
+    }
+
+    public Widget leftAlign() {
+        align = Align.LEFT;
+        return this;
+    }
+
+    public Widget centerAlign() {
+        align = Align.CENTER;
+        return this;
+    }
+
+    public Widget rightAlign() {
+        align = Align.RIGHT;
+        return this;
+    }
+
+    public Widget topAlignY() {
+        verticalAlign = VerticalAlign.TOP;
+        return this;
+    }
+
+    public Widget centerAlignY() {
+        verticalAlign = VerticalAlign.CENTER;
+        return this;
+    }
+
+    public Widget bottomAlignY() {
+        verticalAlign = VerticalAlign.BOTTOM;
+        return this;
     }
 
     public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
@@ -196,6 +241,8 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) x += animation.dx;
         }
+        if (align == Align.CENTER) x -= w() / 2.0;
+        else if (align == Align.RIGHT) x -= w();
         return (int) Math.round(x);
     }
 
@@ -212,6 +259,8 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) y += animation.dy;
         }
+        if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
+        else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
         return (int) Math.round(y);
     }
 
@@ -260,6 +309,8 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) x += animation.dx;
         }
+        if (align == Align.CENTER) x -= w() / 2.0;
+        else if (align == Align.RIGHT) x -= w();
         return (int) Math.round(x);
     }
 
@@ -276,6 +327,8 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) y += animation.dy;
         }
+        if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
+        else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
         return (int) Math.round(y);
     }
 

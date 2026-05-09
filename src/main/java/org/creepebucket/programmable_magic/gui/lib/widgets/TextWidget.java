@@ -13,59 +13,38 @@ import org.joml.Matrix3x2fStack;
  * 文本控件：在指定坐标渲染动态文本。
  */
 public class TextWidget extends Widget implements Renderable {
-    public enum Align {
-        LEFT,
-        CENTER,
-        RIGHT
-    }
-
-    public enum VerticalAlign {
-        TOP,
-        CENTER,
-        BOTTOM
-    }
-
     /**
      * 文本内容提供器
      */
-    public Component text;
+    private Component text;
     public double scale = 1;
     public boolean shadow = true;
-    public Align align = Align.LEFT;
-    public VerticalAlign verticalAlign = VerticalAlign.TOP;
 
     public TextWidget(Coordinate pos, Component text) {
         super(pos, Coordinate.ZERO);
+        setText(text);
+    }
+
+    public Component getText() {
+        return text;
+    }
+
+    public TextWidget setText(Component text) {
         this.text = text;
+        Font font = ClientUiContext.getFont();
+        int w = (int) Math.round(font.width(text) * scale);
+        int h = (int) Math.round(font.lineHeight * scale);
+        originalSize = Coordinate.fromTopLeft(w, h);
+        return this;
     }
 
     public TextWidget scaled(double fact) {
         this.scale = fact;
-        return this;
+        return setText(text);
     }
 
     public TextWidget noShadow() {
         shadow = false;
-        return this;
-    }
-
-    public TextWidget rightAlign() {
-        align = Align.RIGHT;
-        return this;
-    }
-
-    public TextWidget centerAlign() {
-        align = Align.CENTER;
-        return this;
-    }
-
-    public TextWidget centerAlignY() {
-        verticalAlign = VerticalAlign.CENTER;
-        return this;
-    }
-
-    public TextWidget bottomAlignY() {
-        verticalAlign = VerticalAlign.BOTTOM;
         return this;
     }
 
@@ -75,16 +54,6 @@ public class TextWidget extends Widget implements Renderable {
         float scaled = (float) scale;
         float x = menuX();
         float y = menuY();
-        if (align == Align.CENTER) {
-            x -= font.width(text) * scaled / 2;
-        } else if (align == Align.RIGHT) {
-            x -= font.width(text) * scaled;
-        }
-        if (verticalAlign == VerticalAlign.CENTER) {
-            y -= font.lineHeight * scaled / 2;
-        } else if (verticalAlign == VerticalAlign.BOTTOM) {
-            y -= font.lineHeight * scaled;
-        }
         drawScaledString(graphics, font, text, x, y, scaled, mainColorInt(), shadow);
     }
 
