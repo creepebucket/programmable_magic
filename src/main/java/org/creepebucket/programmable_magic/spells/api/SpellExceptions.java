@@ -2,6 +2,9 @@ package org.creepebucket.programmable_magic.spells.api;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import org.creepebucket.programmable_magic.spells.SpellValueType;
+
+import java.util.List;
 
 public class SpellExceptions {
     public static final String COMPILE = "message.programmable_magic.error.types.compile";
@@ -32,8 +35,20 @@ public class SpellExceptions {
     }
 
     // 无效输入
-    public static SpellExceptions INVALID_INPUT(SpellItemLogic spell) {
-        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.invalid_input"), spell);
+    public static SpellExceptions INVALID_INPUT(SpellItemLogic spell, List<SpellValueType> currentTypes, List<List<SpellValueType>> overloads) {
+        StringBuilder currentTypesString = new StringBuilder("\n[");
+        for (SpellValueType type : currentTypes) currentTypesString.append(type.toString() + ", ");
+        currentTypesString.append("]\n");
+
+        StringBuilder overloadsString = new StringBuilder("\n[\n");
+        for (List<SpellValueType> overload : overloads) {
+            overloadsString.append("[");
+            for (SpellValueType type : overload) overloadsString.append(type.toString() + ", ");
+            overloadsString.append("]\n");
+        }
+        overloadsString.append("]");
+
+        return SpellExceptions.RUNTIME(Component.translatable("message.programmable_magic.error.invalid_input", currentTypesString.toString(), overloadsString.toString()), spell);
     }
 
     // 编译错误
@@ -49,11 +64,11 @@ public class SpellExceptions {
     public Component message() {
         return Component.translatable(this.errorType).append(": ").append(
                 Component.translatable("message.programmable_magic.error.detail.at_spell",
-                        Component.translatable("item.programmable_magic.spell_display_" + spell.name), message));
+                        Component.translatable("item.programmable_magic.spell_display_" + spell.name), spell.id, message));
     }
 
     // 实际抛出这个错误
     public void throwIt(Player player) {
-        player.sendSystemMessage(message);
+        player.sendSystemMessage(message());
     }
 }

@@ -59,7 +59,8 @@ public abstract class StorageSpell extends SpellItemLogic implements SpellItemLo
             name = "get_store";
             inputTypes = List.of(List.of(SpellValueType.NUMBER));
             outputTypes = List.of(List.of(SpellValueType.ANY));
-            precedence = 5;
+            precedence = -99;
+            bypassShunting = true;
         }
 
         @Override

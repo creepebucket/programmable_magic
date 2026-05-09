@@ -61,7 +61,7 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             ItemStack stack = (ItemStack) paramsList.get(0);
             if (!(stack.getItem() instanceof BlockItem blockItem)) {
-                SpellExceptions.INVALID_INPUT(this).throwIt(caster);
+                SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(stack)), inputTypes).throwIt(caster);
                 return ExecutionResult.ERRORED();
             }
 

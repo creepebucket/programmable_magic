@@ -114,7 +114,17 @@ public abstract class SpellItemLogic implements Cloneable {
 
         // 如果未匹配，则返回错误
         if (!matched) {
-            SpellExceptions.INVALID_INPUT(this).throwIt(caster);
+            int maxOverloadLen = 0;
+            for (List<SpellValueType> overload : inputTypes) if (overload.size() > maxOverloadLen) maxOverloadLen = overload.size();
+
+            List<SpellValueType> currentTypes = new ArrayList<>();
+            var p = this.prev;
+            while (p instanceof ValueLiteralSpell valueLiteral && currentTypes.size() < maxOverloadLen) {
+                currentTypes.add(0, valueLiteral.type);
+                p = p.prev;
+            }
+
+            SpellExceptions.INVALID_INPUT(this, currentTypes, inputTypes).throwIt(caster);
             return ExecutionResult.ERRORED();
         }
 

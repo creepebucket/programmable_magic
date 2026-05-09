@@ -81,7 +81,7 @@ public abstract class EntityInteractionSpell extends SpellItemLogic implements S
             ItemStack potionStack = (ItemStack) paramsList.get(0);
 
             if (!(target instanceof LivingEntity living)) {
-                SpellExceptions.INVALID_INPUT(this).throwIt(caster);
+                SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(potionStack), SpellValueType.fromValue(target)), inputTypes).throwIt(caster);
                 return ExecutionResult.ERRORED();
             }
 
