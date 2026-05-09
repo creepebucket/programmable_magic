@@ -17,9 +17,8 @@ public abstract class SlotManipulationScreen<Menu extends AbstractContainerMenu>
     public void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         for (Slot slot : this.menu.slots) {
             var clientPos = ClientSlotManager.getClientPosition(slot);
-            if (clientPos == null) continue;
-            slot.x = clientPos.getFirst();
-            slot.y = clientPos.getSecond();
+            slot.x = clientPos == null ? -99 : clientPos.getFirst();
+            slot.y = clientPos == null ? -99 : clientPos.getSecond();
         }
 
         super.extractContents(graphics, mouseX, mouseY, partialTick);
