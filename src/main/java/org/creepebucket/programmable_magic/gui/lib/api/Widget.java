@@ -31,7 +31,7 @@ public abstract class Widget {
 
     public Coordinate originalPos, originalSize;
     public SmoothedValue dx = new SmoothedValue(0), dy = new SmoothedValue(0), dw = new SmoothedValue(0), dh = new SmoothedValue(0);
-    public Color originalMainColor = new Color(-1), originalBgColor = new Color(-2147483647), originalTextColor = new Color(-1);
+    public Color originalMainColor, originalBgColor, originalTextColor;
     public Component tooltip;
     public boolean doShowTooltip = false, renderInForeground = false, enabled = true;
     public Align align = Align.LEFT;
@@ -334,18 +334,14 @@ public abstract class Widget {
 
     public int mainColorInt() {
         double mult = 1;
-        var allAnimations = new ArrayList<Animation>();
-        var parent = this;
 
-        while (!(parent instanceof Widget.Root)) { // 统计自根以来的alphaMult
-            allAnimations.addAll(parent.animations);
-            parent = parent.parent;
-        }
+        var color = originalMainColor != null ? originalMainColor : parent.mainColor();
 
-        for (Animation animation : allAnimations) {
+        for (Animation animation : animations) {
             if (animation.isActive()) mult *= animation.alphaMultMain;
         }
-        return originalMainColor.toArgbWithAlphaMult(mult);
+
+        return color.toArgbWithAlphaMult(mult);
     }
 
     public Color mainColor() {
@@ -354,18 +350,14 @@ public abstract class Widget {
 
     public int bgColorInt() {
         double mult = 1;
-        var allAnimations = new ArrayList<Animation>();
-        var parent = this;
 
-        while (!(parent instanceof Widget.Root)) { // 统计自根以来的alphaMult
-            allAnimations.addAll(parent.animations);
-            parent = parent.parent;
-        }
+        var color = originalBgColor != null ? originalBgColor : parent.bgColor();
 
-        for (Animation animation : allAnimations) {
+        for (Animation animation : animations) {
             if (animation.isActive()) mult *= animation.alphaMultBg;
         }
-        return originalBgColor.toArgbWithAlphaMult(mult);
+
+        return color.toArgbWithAlphaMult(mult);
     }
 
     public Color bgColor() {
@@ -374,18 +366,14 @@ public abstract class Widget {
 
     public int textColorInt() {
         double mult = 1;
-        var allAnimations = new ArrayList<Animation>();
-        var parent = this;
 
-        while (!(parent instanceof Widget.Root)) { // 统计自根以来的alphaMult
-            allAnimations.addAll(parent.animations);
-            parent = parent.parent;
-        }
+        var color = originalTextColor != null ? originalTextColor : parent.textColor();
 
-        for (Animation animation : allAnimations) {
+        for (Animation animation : animations) {
             if (animation.isActive()) mult *= animation.alphaMultText;
         }
-        return originalTextColor.toArgbWithAlphaMult(mult);
+
+        return color.toArgbWithAlphaMult(mult);
     }
 
     public Color textColor() {
@@ -419,6 +407,10 @@ public abstract class Widget {
     public static class Root extends Widget {
         public Root() {
             super(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(0, 0));
+
+            this.originalMainColor = new Color(-1);
+            this.originalBgColor = new Color(0, 0, 0, 128);
+            this.originalTextColor = new Color(-1);
         }
 
         @Override
