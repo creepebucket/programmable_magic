@@ -11,6 +11,8 @@ public class ModDataGenerators {
         event.createProvider(output -> new ModItemTagProvider(output, event.getLookupProvider()));
         // 生成法术的模型 + client items（1.21+ 必需）
         event.createProvider(SpellItemModelProvider::new);
+        // 生成魔杖插件的模型 + client items（1.21+ 必需）
+        event.createProvider(WandPluginItemModelProvider::new);
         // 通用物品模型
         event.createProvider(GeneralItemModelProvider::new);
     }

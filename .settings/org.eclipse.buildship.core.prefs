@@ -1,4 +1,4 @@
-arguments=--init-script /home/creepebucket/.local/share/opencode/bin/jdtls/config_linux/org.eclipse.osgi/58/0/.cp/gradle/init/init.gradle
+arguments=--init-script /home/creepebucket/.cache/opencode/bin/jdtls/config_linux/org.eclipse.osgi/58/0/.cp/gradle/init/init.gradle
 auto.sync=false
 build.scans.enabled=false
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
