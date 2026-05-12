@@ -7,6 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
+import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.lwjgl.glfw.GLFW;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -24,6 +25,12 @@ public class ItemTooltipHandler {
 
         if (event.getItemStack().getItem() instanceof ModItemExtensions ext) {
             ext.appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
+            return;
+        }
+
+        var item = event.getItemStack().getItem();
+        if (WandPluginRegistry.isPlugin(item)) {
+            WandPluginRegistry.getPlugin(item).appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
         }
     }
 }

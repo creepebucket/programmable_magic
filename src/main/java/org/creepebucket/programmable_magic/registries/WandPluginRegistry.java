@@ -8,7 +8,10 @@ import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.gui.wand.wand_plugins.*;
+import org.creepebucket.programmable_magic.spells.plugins.ColorThemeLogicPlugin;
+import org.creepebucket.programmable_magic.spells.plugins.SpellPackerLogicPlugin;
 import org.creepebucket.programmable_magic.spells.plugins.SpellReleaseLogicPlugin;
+import org.creepebucket.programmable_magic.spells.plugins.SpellStorageLogicPlugin;
 import org.creepebucket.programmable_magic.spells.plugins.SpellSupplyLogicPlugin;
 import org.creepebucket.programmable_magic.spells.plugins.WandPluginLogic;
 
@@ -41,10 +44,10 @@ public class WandPluginRegistry {
         registerPlugin("spell_supply_t4", () -> new SpellSupplyLogicPlugin(4));
         registerPlugin("spell_supply_t5", () -> new SpellSupplyLogicPlugin(5));
 
-        registerPlugin("spell_storage_t1", NO_OP);
-        registerPlugin("spell_storage_t2", NO_OP);
-        registerPlugin("spell_storage_t3", NO_OP);
-        registerPlugin("spell_storage_t4", NO_OP);
+        registerPlugin("spell_storage_t1", () -> new SpellStorageLogicPlugin(1));
+        registerPlugin("spell_storage_t2", () -> new SpellStorageLogicPlugin(2));
+        registerPlugin("spell_storage_t3", () -> new SpellStorageLogicPlugin(3));
+        registerPlugin("spell_storage_t4", () -> new SpellStorageLogicPlugin(4));
 
         registerPlugin("spell_release_t1", () -> new SpellReleaseLogicPlugin(1));
         registerPlugin("spell_release_t2", () -> new SpellReleaseLogicPlugin(2));
@@ -52,8 +55,8 @@ public class WandPluginRegistry {
         registerPlugin("spell_release_t4", () -> new SpellReleaseLogicPlugin(4));
         registerPlugin("spell_release_t5", () -> new SpellReleaseLogicPlugin(5));
 
-        registerPlugin("spell_packer", NO_OP);
-        registerPlugin("color_theme", NO_OP);
+        registerPlugin("spell_packer", SpellPackerLogicPlugin::new);
+        registerPlugin("color_theme", ColorThemeLogicPlugin::new);
 
         ITEMS.register(eventBus);
     }

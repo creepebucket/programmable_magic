@@ -1,6 +1,8 @@
 package org.creepebucket.programmable_magic.spells.plugins;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
@@ -20,5 +22,13 @@ public class WandPluginLogic {
     }
 
     public void adjustWandValues(WandValues values, ItemStack pluginStack) {
+    }
+
+    public void appendTooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
+    }
+
+    public void appendWhenInstalledHeader(List<Component> tooltip) {
+        tooltip.add(Component.empty());
+        tooltip.add(Component.translatable("tooltip.programmable_magic.wand_plugin.when_installed").withStyle(ChatFormatting.GRAY));
     }
 }
