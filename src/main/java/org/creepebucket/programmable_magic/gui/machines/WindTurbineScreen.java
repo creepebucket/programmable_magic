@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.gui.machines;
 
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.gui.lib.api.Animation;
@@ -30,11 +31,11 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
 
         // =================== 计算细节 =================== //
         // 0.5x
-        addWidget(new RectangleWidget(Coordinate.fromCenter(-198, -60), Coordinate.fromTopLeft(23, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
-        addWidget(new TextWidget(Coordinate.fromCenter(-196, -60), Component.literal("0.5x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
+        addWidget(new RectangleWidget(Coordinate.fromCenter(-198, -70), Coordinate.fromTopLeft(23, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
+        addWidget(new TextWidget(Coordinate.fromCenter(-196, -70), Component.literal("0.5x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
 
         // 空气密度
-        var airDensityWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-173, -60), Coordinate.fromTopLeft(79, 11), menu.airDensity,
+        var airDensityWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-173, -70), Coordinate.fromTopLeft(79, 11), menu.airDensity,
                 Component.literal("kg/m^3"), Component.translatable("gui.programmable_magic.machine.wind_turbine.air_density")).mainColor(new Color(0, 255, 255)).bottomAlignY());
 
         airDensityWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.humidity_factor"), menu.airDensityHumidFact, Component.translatable("tooltip.programmable_magic.machine.wind_turbine.air_density.humidity_factor"), "x");
@@ -43,21 +44,21 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         airDensityWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_density"), menu.airDensityBase, Component.translatable("tooltip.programmable_magic.machine.wind_turbine.air_density.base_density"), "+");
 
         // x
-        addWidget(new RectangleWidget(Coordinate.fromCenter(-92, -60), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
-        addWidget(new TextWidget(Coordinate.fromCenter(-89, -60), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
+        addWidget(new RectangleWidget(Coordinate.fromCenter(-92, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
+        addWidget(new TextWidget(Coordinate.fromCenter(-89, -70), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
 
         // 扫风面积
-        var sweptAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-80, -60), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(6.0),
+        var sweptAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-80, -70), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(6.0),
                 Component.literal("m^2"), Component.translatable("gui.programmable_magic.machine.wind_turbine.swept_area")).mainColor(new Color(0, 255, 255)).bottomAlignY());
 
         sweptAreaWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_area"), new SyncedValue.StaticDouble(6.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.swept_area.base_area"), "+");
 
         // x
-        addWidget(new RectangleWidget(Coordinate.fromCenter(1, -60), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
-        addWidget(new TextWidget(Coordinate.fromCenter(4, -60), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
+        addWidget(new RectangleWidget(Coordinate.fromCenter(1, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
+        addWidget(new TextWidget(Coordinate.fromCenter(4, -70), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
 
         // 风速
-        var airSpeedDetailWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(14, -60), Coordinate.fromTopLeft(79, 11), menu.windSpeed, Component.literal("m/s"),
+        var airSpeedDetailWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(14, -70), Coordinate.fromTopLeft(79, 11), menu.windSpeed, Component.literal("m/s"),
                 Component.translatable("gui.programmable_magic.machine.wind_turbine.wind_speed")).mainColor(new Color(0, 255, 255)).bottomAlignY());
 
         airSpeedDetailWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.weather_factor"), menu.windSpeedWeatherFact, Component.translatable("tooltip.programmable_magic.machine.wind_turbine.wind_speed.weather_factor"), "x");
@@ -67,11 +68,11 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         airSpeedDetailWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_speed"), menu.windSpeedBase, Component.translatable("tooltip.programmable_magic.machine.wind_turbine.wind_speed.base_speed"), "+");
 
         // ^3x
-        addWidget(new RectangleWidget(Coordinate.fromCenter(95, -60), Coordinate.fromTopLeft(23, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
-        addWidget(new TextWidget(Coordinate.fromCenter(97, -60), Component.literal("^3x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
+        addWidget(new RectangleWidget(Coordinate.fromCenter(95, -70), Coordinate.fromTopLeft(23, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY());
+        addWidget(new TextWidget(Coordinate.fromCenter(97, -70), Component.literal("^3x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY());
 
         // 功率系数
-        var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(120, -60), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(25.0),
+        var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(120, -70), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(25.0),
                 Component.literal("%"), Component.translatable("gui.programmable_magic.machine.wind_turbine.power_coefficient")).mainColor(new Color(0, 255, 255)).bottomAlignY());
 
         powerCoeffWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_coefficient"), new SyncedValue.StaticDouble(25.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient"), "+");
@@ -83,8 +84,8 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         addWidget(new TextWidget(Coordinate.fromCenter(-195, -55), Component.literal("P=")).scaled(2).noShadow());
 
         addWidget(new RectangleWidget(Coordinate.fromCenter(-10, -58), Coordinate.fromTopLeft(156, 20)).mainColor(new Color(0, 0, 0, 127)).rightAlign());
-        addWidget(new TextWidget(Coordinate.fromCenter(-11, -55), Component.literal("Momentum")).scaled(2).noShadow().rightAlign());
-        addWidget(new TextWidget(Coordinate.fromCenter(-163, -39), Component.literal("TYPE::")).noShadow().bottomAlignY().mainColor(new Color(127, 127, 127)));
+        addWidget(new TextWidget(Coordinate.fromCenter(-11, -55), Component.translatable("gui.programmable_magic.machine.wind_turbine.section.momentum")).scaled(2).noShadow().rightAlign());
+        addWidget(new TextWidget(Coordinate.fromCenter(-163, -39), Component.translatable("gui.programmable_magic.machine.wind_turbine.section.type")).noShadow().bottomAlignY().mainColor(new Color(127, 127, 127)));
 
         // 功率单位
         var mainPowerUnit = new MachineWidgets.TextSwitchWidget(Coordinate.fromCenter(-10, 8), Coordinate.fromTopLeft(28, 18), 2, "W");
@@ -96,7 +97,7 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         for (int i = 0; i < 6; i++) addWidget(new RectangleWidget(Coordinate.fromCenter(-i * 32 - 10, 0), Coordinate.fromTopLeft(28, 2)).mainColor(new Color(0, 255, 255)).rightAlign());
 
         // 开关
-        powerSwitch = (SwitchWidget) addWidget(new SwitchWidget(Coordinate.fromCenter(-198, 8), Coordinate.fromTopLeft(60, 20), Component.literal("OFF"), Component.literal("ON"))
+        powerSwitch = (SwitchWidget) addWidget(new SwitchWidget(Coordinate.fromCenter(-198, 8), Coordinate.fromTopLeft(60, 20), CommonComponents.OPTION_OFF, CommonComponents.OPTION_ON)
                 .setPressed(menu.enabled.get()).onSwitch(enabled -> { interacted = true; WindTurbineHooks.onSwitch(menu, enabled);}).addAnimation(new Animation.FadeIn.FromLeft(0.5), 0.1));
 
         initial_enabled = menu.enabled.get();
@@ -115,10 +116,10 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         addWidget(new RectangleWidget(Coordinate.fromCenter(104, -58), Coordinate.fromTopLeft(46, 9)).mainColor(new Color(0, 0, 0, 127)));
         addWidget(new RectangleWidget(Coordinate.fromCenter(151, -58), Coordinate.fromTopLeft(47, 9)).mainColor(new Color(0, 0, 0, 127)));
 
-        addWidget(new TextWidget(Coordinate.fromCenter(11 , -57), Component.literal("Radi")).noShadow()).mainColor(new Color(255, 255, 0));
-        addWidget(new TextWidget(Coordinate.fromCenter(58 , -57), Component.literal("Temp")).noShadow()).mainColor(new Color(255,   0, 0));
-        addWidget(new TextWidget(Coordinate.fromCenter(105, -57), Component.literal("Mome")).noShadow()).mainColor(new Color(0, 255, 255));
-        addWidget(new TextWidget(Coordinate.fromCenter(152, -57), Component.literal("Pres")).noShadow()).mainColor(new Color(0, 255, 0  ));
+        addWidget(new TextWidget(Coordinate.fromCenter(11 , -57), Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.radiation")).noShadow()).mainColor(new Color(255, 255, 0));
+        addWidget(new TextWidget(Coordinate.fromCenter(58 , -57), Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.temperature")).noShadow()).mainColor(new Color(255,   0, 0));
+        addWidget(new TextWidget(Coordinate.fromCenter(105, -57), Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.momentum")).noShadow()).mainColor(new Color(0, 255, 255));
+        addWidget(new TextWidget(Coordinate.fromCenter(152, -57), Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.pressure")).noShadow()).mainColor(new Color(0, 255, 0  ));
 
         addWidget(new TextWidget(Coordinate.fromCenter(11  + 45, -57), Component.literal("::")).noShadow()).rightAlign().mainColor(new Color(255, 255, 0));
         addWidget(new TextWidget(Coordinate.fromCenter(58  + 45, -57), Component.literal("::")).noShadow()).rightAlign().mainColor(new Color(255,   0, 0));
@@ -127,9 +128,9 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
 
         addWidget(new RectangleWidget(Coordinate.fromCenter(10, -47), Coordinate.fromTopLeft(188, 12)).mainColor(new Color(0, 0, 0, 127)));
 
-        addWidget(new TextWidget(Coordinate.fromCenter(14 , -44), Component.literal("Current Mana")).noShadow());
-        addWidget(new TextWidget(Coordinate.fromCenter(90 , -44), Component.literal("Max Cache")   ).noShadow());
-        addWidget(new TextWidget(Coordinate.fromCenter(147, -44), Component.literal("Net Power")   ).noShadow());
+        addWidget(new TextWidget(Coordinate.fromCenter(14 , -44), Component.translatable("gui.programmable_magic.machine.wind_turbine.section.current_mana")).noShadow());
+        addWidget(new TextWidget(Coordinate.fromCenter(90 , -44), Component.translatable("gui.programmable_magic.machine.wind_turbine.section.max_cache")   ).noShadow());
+        addWidget(new TextWidget(Coordinate.fromCenter(147, -44), Component.translatable("gui.programmable_magic.machine.wind_turbine.section.net_power")   ).noShadow());
 
         // RADIATION
         addWidget(new RectangleWidget(Coordinate.fromCenter(10, -20), Coordinate.fromTopLeft(131, 13)).bottomAlignY().mainColor(new Color(0, 0, 0, 127)));
@@ -186,6 +187,11 @@ public class WindTurbineScreen extends Screen<WindTurbineMenu> {
         addWidget(new RectangleWidget(Coordinate.fromCenter(198, 21), Coordinate.fromTopLeft(54, 6)).rightAlign().bottomAlignY().mainColor(new Color(0, 255, 0)));
         addWidget(new MachineWidgets.NumberDisplayWidget(Coordinate.fromCenter(194, 26), menu.pressurePowerW, 7, 1, true).rightAlign().bottomAlignY());
         addWidget(new TextWidget(Coordinate.fromCenter(195, 27), Component.literal("W")).noShadow().rightAlign().bottomAlignY());
+
+        // =================== 标题装饰 =================== //
+        addWidget(new TextWidget(Coordinate.fromCenter(-198, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.machine_info")).scaled(2));
+        addWidget(new TextWidget(Coordinate.fromCenter(10, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.network_info")).scaled(2));
+
     }
 
     @Override
