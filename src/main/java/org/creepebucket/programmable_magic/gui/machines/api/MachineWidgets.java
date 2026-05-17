@@ -244,7 +244,7 @@ public class MachineWidgets {
         public SyncedValue<Double> result;
         public Component resultUnit, description;
         public Widget descWidget;
-        public boolean isHovering, isExpanded = false;
+        public boolean isExpanded = false;
         public List<DetailLineWidget> detailLines = new ArrayList<>();
 
         public CalcationDetailsWidget(Coordinate pos, Coordinate size, SyncedValue<Double> result, Component resultUnit, Component description) {
@@ -261,11 +261,10 @@ public class MachineWidgets {
             // 计算结果
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(1, 1), result, 5, 1, true));
             // 计算结果单位
-            addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).noShadow().rightAlign());
+            addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).noShadow().rightAlign().mainColor(textColor()));
             // 描述
-            descWidget = addChild(new RectangleWidget(Coordinate.fromTopLeft(0, -2), Coordinate.fromTopLeft(w(), 1)));
-            descWidget.addChild(new TextWidget(Coordinate.fromTopLeft(w() / 2, -9), description).centerAlign());
-            descWidget.disable();
+            descWidget = addChild(new RectangleWidget(Coordinate.fromTopLeft(0, -1), Coordinate.fromTopLeft(w(), 4)).bottomAlignY());
+            descWidget.addChild(new TextWidget(Coordinate.fromTopLeft(2, 4), description).bottomAlignY().mainColor(textColor()));
         }
 
         @Override
@@ -292,29 +291,23 @@ public class MachineWidgets {
         public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             graphics.fill(left(), top(), right(), bottom(), bgColorInt());
 
-            // 悬浮动画检测
-            var isInBound = isInBounds(mouseX, mouseY);
-            if (!isHovering && isInBound && !isExpanded) descWidget.addAnimation(new Animation.FadeIn.FromBottom(0.2), 0);
-            else if (!isInBound && isHovering && !isExpanded) descWidget.addAnimation(new Animation.FadeOut.ToTop(0.2).noDeletion(), 0);
-
-            descWidget.dy.set(isExpanded ? -(h() + 1) * detailLines.size() : 0);
-
-            isHovering = isInBound;
+            descWidget.dy.set(isExpanded ? -10 * detailLines.size() : 0);
         }
 
-        public void addDetailLine(Component desc, SyncedValue<Double> number, Component tooltip) {
-            var line = addChild(new DetailLineWidget(Coordinate.fromTopLeft(0, (detailLines.size() + 1) * -(h() + 1)), originalSize, desc, number, bgColor(), mainColor()));
+        public void addDetailLine(Component desc, SyncedValue<Double> number, Component tooltip, String operation) {
+            var line = addChild(new DetailLineWidget(Coordinate.fromTopLeft(0, (detailLines.size() + 1) * -10), originalSize, desc, number, bgColor(), mainColor(), operation));
             line.disable().tooltip(tooltip);
             detailLines.add((DetailLineWidget) line);
         }
 
         public static class DetailLineWidget extends Widget {
-            public DetailLineWidget(Coordinate pos, Coordinate size, Component desc, SyncedValue<Double> number, Color bgColor, Color mainColor) {
+            public DetailLineWidget(Coordinate pos, Coordinate size, Component desc, SyncedValue<Double> number, Color bgColor, Color mainColor, String operation) {
                 super(pos, size);
-
-                addChild(new RectangleWidget(Coordinate.ZERO, size).mainColor(bgColor));
-                addChild(new TextWidget(Coordinate.fromTopLeft(3, 1), desc).noShadow().mainColor(mainColor));
-                addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(size.toScreenX() - 32, 1), number, 5, 1, true));
+                addChild(new RectangleWidget(Coordinate.ZERO, Coordinate.fromTopLeft(9, 9)).mainColor(bgColor));
+                addChild(new TextWidget(Coordinate.fromTopLeft(2, 1), Component.literal(operation)).noShadow().mainColor(new Color(127, 127, 127)));
+                addChild(new RectangleWidget(Coordinate.fromTopLeft(11, 0), size.add(Coordinate.fromTopLeft(-11, -2))).mainColor(bgColor));
+                addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(11, 0), number, 5, 1, true).mainColor(new Color(-1)));
+                addChild(new TextWidget(Coordinate.fromTopLeft(size.toScreenX() - 1, size.toScreenY() - 1), desc).scaled(0.5).noShadow().rightAlign().bottomAlignY().mainColor(new Color(127, 127, 127)));
             }
         }
     }

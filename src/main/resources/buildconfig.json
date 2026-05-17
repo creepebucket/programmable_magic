@@ -115,7 +115,12 @@
       {"from_top_left": [64, 32], "from_bottom_right": [79, 47], "target_img_path": "assets/programmable_magic/textures/item/wand_plugin_spell_release_t5.png"},
       {"from_top_left": [0 , 48], "from_bottom_right": [15, 63], "target_img_path": "assets/programmable_magic/textures/item/wand_plugin_color_theme.png"},
       {"from_top_left": [16, 48], "from_bottom_right": [31, 63], "target_img_path": "assets/programmable_magic/textures/item/wand_plugin_spell_packer.png"},
-      {"from_top_left": [32, 48], "from_bottom_right": [47, 63], "target_img_path": "assets/programmable_magic/textures/item/wand_plugin_auto_charge.png"}
+      {"from_top_left": [32, 48], "from_bottom_right": [47, 63], "target_img_path": "assets/programmable_magic/textures/item/wand_plugin_auto_charge.png"},
+      {"from_top_left": [0 , 80], "from_bottom_right": [15, 95], "target_img_path": "assets/programmable_magic/textures/item/small_mana_cell.png"},
+      {"from_top_left": [16, 80], "from_bottom_right": [31, 95], "target_img_path": "assets/programmable_magic/textures/item/medium_mana_cell.png"},
+      {"from_top_left": [32, 80], "from_bottom_right": [47, 95], "target_img_path": "assets/programmable_magic/textures/item/large_mana_cell.png"},
+      {"from_top_left": [48, 80], "from_bottom_right": [63, 95], "target_img_path": "assets/programmable_magic/textures/item/huge_mana_cell.png"},
+      {"from_top_left": [64, 80], "from_bottom_right": [79, 95], "target_img_path": "assets/programmable_magic/textures/item/colossal_mana_cell.png"}
     ],
     "gui_big.png": [
       {"from_top_left": [0, 0], "from_bottom_right": [15, 15], "target_img_path": "assets/programmable_magic/textures/gui/icons/debugger_spell.png"},

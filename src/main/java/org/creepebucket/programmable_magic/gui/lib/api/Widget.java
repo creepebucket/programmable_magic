@@ -334,14 +334,17 @@ public abstract class Widget {
 
     public int mainColorInt() {
         double mult = 1;
-
-        var color = originalMainColor != null ? originalMainColor : parent.mainColor();
-
-        for (Animation animation : animations) {
-            if (animation.isActive()) mult *= animation.alphaMultMain;
+        Widget p = this;
+        while (!(p instanceof Widget.Root)) {
+            for (Animation animation : p.animations) {
+                if (animation.isActive()) mult *= animation.alphaMultMain;
+            }
+            p = p.parent;
         }
 
-        return color.toArgbWithAlphaMult(mult);
+        Widget colorWidget = this;
+        while (colorWidget.originalMainColor == null) colorWidget = colorWidget.parent;
+        return colorWidget.originalMainColor.toArgbWithAlphaMult(mult);
     }
 
     public Color mainColor() {
@@ -350,14 +353,17 @@ public abstract class Widget {
 
     public int bgColorInt() {
         double mult = 1;
-
-        var color = originalBgColor != null ? originalBgColor : parent.bgColor();
-
-        for (Animation animation : animations) {
-            if (animation.isActive()) mult *= animation.alphaMultBg;
+        Widget p = this;
+        while (!(p instanceof Widget.Root)) {
+            for (Animation animation : p.animations) {
+                if (animation.isActive()) mult *= animation.alphaMultBg;
+            }
+            p = p.parent;
         }
 
-        return color.toArgbWithAlphaMult(mult);
+        Widget colorWidget = this;
+        while (colorWidget.originalBgColor == null) colorWidget = colorWidget.parent;
+        return colorWidget.originalBgColor.toArgbWithAlphaMult(mult);
     }
 
     public Color bgColor() {
@@ -366,14 +372,17 @@ public abstract class Widget {
 
     public int textColorInt() {
         double mult = 1;
-
-        var color = originalTextColor != null ? originalTextColor : parent.textColor();
-
-        for (Animation animation : animations) {
-            if (animation.isActive()) mult *= animation.alphaMultText;
+        Widget p = this;
+        while (!(p instanceof Widget.Root)) {
+            for (Animation animation : p.animations) {
+                if (animation.isActive()) mult *= animation.alphaMultText;
+            }
+            p = p.parent;
         }
 
-        return color.toArgbWithAlphaMult(mult);
+        Widget colorWidget = this;
+        while (colorWidget.originalTextColor == null) colorWidget = colorWidget.parent;
+        return colorWidget.originalTextColor.toArgbWithAlphaMult(mult);
     }
 
     public Color textColor() {

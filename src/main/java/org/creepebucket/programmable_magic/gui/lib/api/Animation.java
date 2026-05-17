@@ -100,6 +100,16 @@ public abstract class Animation {
                 dy = Math.pow(start + duration - now(), 3) * 1000;
             }
         }
+
+        public static class Static extends FadeIn {
+            public Static(double duration) {
+                super(duration);
+            }
+
+            @Override
+            public void step(double dt) {
+            }
+        }
     }
 
     public static class FadeOut extends Animation {
@@ -173,6 +183,16 @@ public abstract class Animation {
             public void step(double dt) {
                 super.step(dt);
                 dy = Math.pow(now() - start, 3) * 1000;
+            }
+        }
+
+        public static class Static extends FadeOut {
+            public Static(double duration) {
+                super(duration);
+            }
+
+            @Override
+            public void step(double dt) {
             }
         }
     }
