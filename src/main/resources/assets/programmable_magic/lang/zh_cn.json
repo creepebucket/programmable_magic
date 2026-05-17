@@ -429,5 +429,7 @@
   "tooltip.programmable_magic.machine.wind_turbine.wind_speed.altitude_factor": "取决于当前高度. 高度越高, 风速越高",
   "tooltip.programmable_magic.machine.wind_turbine.wind_speed.wind_shear_exponent": "取决于当前地形开阔程度, 影响高度与风速的关系",
   "tooltip.programmable_magic.machine.wind_turbine.wind_speed.base_speed": "海拔10m时的基础风速",
-  "tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient": "当前型号的功率系数"
+  "tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient": "当前型号的功率系数",
+  "gui.programmable_magic.machine.wind_turbine.title.machine_info": "机器信息//",
+  "gui.programmable_magic.machine.wind_turbine.title.network_info": "网络信息//"
 }
