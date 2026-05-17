@@ -9,10 +9,10 @@
 
 **资产路径**:
 
-- assets/programmable_magic/geckolib/animations/block/mechines/wind_turbine.animation.json
+- assets/programmable_magic/geckolib/animations/block/machines/wind_turbine.animation.json
 - assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (模型部分)
-- assets/programmable_magic/geckolib/models/block/mechines/wind_turbine.geo.json
-- assets/programmable_magic/textures/mechines/wind_turbine.png
+- assets/programmable_magic/geckolib/models/block/machines/wind_turbine.geo.json
+- assets/programmable_magic/textures/machines/wind_turbine.png
 
 **原作者**: 伈星海
 
@@ -22,8 +22,11 @@
 
 **资产路径**:
 
-- assets/programmable_magic/textures/mechines/wind_turbine.png
+- assets/programmable_magic/textures/machines/wind_turbine.png
 - assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (贴图部分)
+- assets/programmable_magic/geckolib/bbmodels/solar_panel.bbmodel
+- assets/programmable_magic/textures/machines/solar_panel.png
+- assets/programmable_magic/geckolib/models/block/machines/solar_panel.geo.json
 
 **原作者**: LettyWhiterock_
 
