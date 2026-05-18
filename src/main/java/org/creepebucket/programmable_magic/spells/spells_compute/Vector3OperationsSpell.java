@@ -36,7 +36,6 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
             name = "build_vector";
             inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER, SpellValueType.NUMBER));
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
-            bypassShunting = true;
         }
 
         @Override
@@ -51,7 +50,6 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
             name = "entity_position";
             inputTypes = List.of(List.of(SpellValueType.ENTITY));
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
-            bypassShunting = true;
         }
 
         @Override
@@ -65,7 +63,6 @@ public abstract class Vector3OperationsSpell extends SpellItemLogic implements S
             name = "entity_velocity";
             inputTypes = List.of(List.of(SpellValueType.ENTITY));
             outputTypes = List.of(List.of(SpellValueType.VECTOR3));
-            bypassShunting = true;
         }
 
         @Override
