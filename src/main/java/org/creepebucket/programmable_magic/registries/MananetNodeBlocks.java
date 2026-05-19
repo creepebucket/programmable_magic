@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.mechines.DummyBlock;
+import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanel;
 import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbine;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -22,12 +23,19 @@ public class MananetNodeBlocks {
             BLOCKS.register("wind_turbine", registryName -> new WindTurbine(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
+    public static final DeferredBlock<SolarPanel> SOLAR_PANEL =
+            BLOCKS.register("solar_panel", registryName -> new SolarPanel(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
             BLOCKS.register("dummy_block", registryName -> new DummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredItem<BlockItem> WIND_TURBINE_BLOCK_ITEM =
             ITEMS.registerSimpleBlockItem(WIND_TURBINE);
+
+    public static final DeferredItem<BlockItem> SOLAR_PANEL_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem(SOLAR_PANEL);
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);

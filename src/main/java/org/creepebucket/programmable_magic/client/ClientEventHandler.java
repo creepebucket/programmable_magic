@@ -3,9 +3,11 @@ package org.creepebucket.programmable_magic.client;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
-import org.creepebucket.programmable_magic.gui.machines.WindTurbineScreen;
+import org.creepebucket.programmable_magic.gui.machines.solar_panel.SolarPanelScreen;
+import org.creepebucket.programmable_magic.gui.machines.wind_turbine.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanelBlockEntityBER;
 import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
@@ -29,12 +31,17 @@ public class ClientEventHandler {
                 ModMenuTypes.MACHINE_MENU.get(),
                 WindTurbineScreen::new
         );
+        event.register(
+                ModMenuTypes.SOLAR_PANEL_MENU.get(),
+                SolarPanelScreen::new
+        );
     }
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
 
         event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), WindTurbineBlockEntityBER::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 

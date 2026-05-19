@@ -3,9 +3,12 @@ package org.creepebucket.programmable_magic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
@@ -13,6 +16,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
@@ -448,5 +452,14 @@ public class ModUtils {
     public static int simpleRandInt(int a, int b) {
         if (a > b) return simpleRandInt(b, a);
         return (int) (Math.floor(Math.random() * (b - a + 1)) + a);
+    }
+
+    public static double getTempKelvin(BlockPos pos, ServerLevel level) {
+        var climate = level.getChunkSource().randomState().sampler().sample(
+                QuartPos.fromBlock(pos.getX()),
+                QuartPos.fromBlock(pos.getY()),
+                QuartPos.fromBlock(pos.getZ()));
+        var noiseTemp = Climate.unquantizeCoord(climate.temperature());
+        return noiseTemp * 50 + 273.15;
     }
 }

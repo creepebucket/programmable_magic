@@ -16,7 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.creepebucket.programmable_magic.gui.machines.WindTurbineMenu;
+import org.creepebucket.programmable_magic.gui.machines.wind_turbine.WindTurbineMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;

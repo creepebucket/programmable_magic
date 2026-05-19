@@ -1,19 +1,19 @@
-package org.creepebucket.programmable_magic.gui.machines;
+package org.creepebucket.programmable_magic.gui.machines.solar_panel;
 
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
-import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntity;
+import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanelBlockEntity;
 
-public class WindTurbineHooks {
-    public static void onSwitch(WindTurbineMenu menu, boolean enabled) {
+public class SolarPanelHooks {
+    public static void onSwitch(SolarPanelMenu menu, boolean enabled) {
         menu.powerSwitch.trigger(enabled);
     }
 
     public static class PowerSwitchHook extends Hook {
-        public WindTurbineMenu menu;
+        public SolarPanelMenu menu;
 
-        public PowerSwitchHook(WindTurbineMenu menu) {
-            super("wind_turbine_switch");
+        public PowerSwitchHook(SolarPanelMenu menu) {
+            super("solar_panel_switch");
             this.menu = menu;
         }
 
@@ -22,7 +22,7 @@ public class WindTurbineHooks {
             if (player.level().isClientSide()) return;
 
             var enabled = (Boolean) args[0];
-            var blockEntity = (WindTurbineBlockEntity) player.level().getBlockEntity(menu.pos);
+            var blockEntity = (SolarPanelBlockEntity) player.level().getBlockEntity(menu.pos);
             blockEntity.enabled = enabled;
             blockEntity.setChanged();
         }

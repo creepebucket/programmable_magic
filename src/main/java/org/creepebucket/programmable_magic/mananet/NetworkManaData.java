@@ -55,7 +55,7 @@ public class NetworkManaData {
     /**
      * 获取下一刻能不能继续运行
      */
-    public boolean canProduce(){
-        return !new ModUtils.Mana().anyGreaterThan(getNext());
+    public boolean canProduce(ModUtils.Mana load){
+        return !new ModUtils.Mana().anyGreaterThan(getNext().subtract(load));
     }
 }
