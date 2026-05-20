@@ -6,6 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 
@@ -78,16 +79,13 @@ public class NetNodeBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void setRemoved() {
-        if (!getLevel().isClientSide()) {
-            // 移除对向连接
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
 
-            for (var connectedPos : new HashMap<>(getData(ModAttachments.CONNECTIONS)).values()) {
-                disconnect(connectedPos);
-            }
+        // 移除对向连接
+        for (var connectedPos : new HashMap<>(getData(ModAttachments.CONNECTIONS)).values()) {
+            disconnect(connectedPos);
         }
-
-        super.setRemoved();
     }
 
     public static void rebuildNetworkId(Level level, BlockPos startPos) {
@@ -105,7 +103,9 @@ public class NetNodeBlockEntity extends BlockEntity {
 
         while (!queue.isEmpty()) {
             var pos = queue.removeFirst();
-            var blockEntity = (NetNodeBlockEntity) level.getBlockEntity(pos);
+            if (visited.contains(pos)) continue;
+
+            var blockEntity = (NetNodeBlockEntity) level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.IMMEDIATE);
             nodes.add(blockEntity);
 
             var id = dimensionId ^ pos.asLong();
