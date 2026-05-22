@@ -32,7 +32,7 @@ public class FlowControlSpell {
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             // 循环: 获取配对后子序列并存储
 
-            originalSequence = spellSequence.subSequence(next, rightSpell.prev);
+            originalSequence = next == rightSpell ? new SpellSequence() : spellSequence.subSequence(next, rightSpell.prev);
             return ExecutionResult.SUCCESS(this);
         }
 
@@ -85,6 +85,7 @@ public class FlowControlSpell {
                 if (forLoopSpell.count == 0) return ExecutionResult.SUCCESS(this);
             }
 
+            if (leftSpell.next == this) return new ExecutionResult(this, 1, false, null, null);
             // 还原 originalSequence
             var seq = ((LoopStartSpell) leftSpell).originalSequence;
             spellSequence.replaceSection(leftSpell.next, prev, seq.subSequence(seq.head, seq.tail));

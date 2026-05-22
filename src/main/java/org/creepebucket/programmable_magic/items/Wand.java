@@ -52,7 +52,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
      * @param pluginSlots 插件槽位最大数量
      */
     public Wand(Properties properties, int slots, int pluginSlots) {
-        super(properties);
+        super(properties.component(ModDataComponents.SPELLS, new ArrayList<>()).component(ModDataComponents.CUSTOM_SUPPLY, new ArrayList<>()).component(ModDataComponents.PLUGINS, new ArrayList<>()));
         this.slots = slots;
         this.pluginSlots = pluginSlots;
     }
