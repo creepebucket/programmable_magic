@@ -52,9 +52,9 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            // 获取当前方块
-            Block block = caster.level().getBlockState(spellEntity.blockPosition()).getBlock();
-            if (block.isEmpty(block.defaultBlockState())) {
+            AABB aabb = new AABB(spellEntity.getX() - 0.1, spellEntity.getY() - 0.1, spellEntity.getZ() - 0.1, spellEntity.getX() + 0.1, spellEntity.getY() + 0.1, spellEntity.getZ() + 0.1)
+                    .expandTowards(-spellEntity.getDeltaMovement().x, -spellEntity.getDeltaMovement().y, -spellEntity.getDeltaMovement().z);
+            if (caster.level().getBlockStates(aabb).allMatch(state -> state.isAir())) {
                 if (prev instanceof ConditionInvertSpell) return ExecutionResult.SUCCESS(this);
                 else return ExecutionResult.FAILED(this);
             } else {
@@ -72,14 +72,8 @@ public abstract class TriggerSpell extends SpellItemLogic implements SpellItemLo
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            AABB aabb = new AABB(
-                    spellEntity.getX() - 0.1,
-                    spellEntity.getY() - 0.1,
-                    spellEntity.getZ() - 0.1,
-                    spellEntity.getX() + 0.1,
-                    spellEntity.getY() + 0.1,
-                    spellEntity.getZ() + 0.1
-            );
+            AABB aabb = new AABB(spellEntity.getX() - 0.1, spellEntity.getY() - 0.1, spellEntity.getZ() - 0.1, spellEntity.getX() + 0.1, spellEntity.getY() + 0.1, spellEntity.getZ() + 0.1)
+                    .expandTowards(-spellEntity.getDeltaMovement().x, -spellEntity.getDeltaMovement().y, -spellEntity.getDeltaMovement().z);
 
             for (Entity entity : spellEntity.level().getEntities(spellEntity, aabb, e -> e != spellEntity)) {
                 if (prev instanceof ConditionInvertSpell) return ExecutionResult.FAILED(this);

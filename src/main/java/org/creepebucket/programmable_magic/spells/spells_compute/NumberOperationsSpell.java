@@ -38,14 +38,22 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         public AdditionSpell() {
             super();
             name = "addition";
-            inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER));
-            outputTypes = List.of(List.of(SpellValueType.NUMBER));
+            inputTypes = List.of(
+                    List.of(SpellValueType.NUMBER, SpellValueType.NUMBER),
+                    List.of(SpellValueType.VECTOR3, SpellValueType.VECTOR3));
+            outputTypes = List.of(List.of(SpellValueType.NUMBER), List.of(SpellValueType.VECTOR3));
             precedence = 1;
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) + (Double) paramsList.get(1)), List.of(SpellValueType.NUMBER));
+            if (paramsList.get(0) instanceof Double && paramsList.get(1) instanceof Double) {
+                return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) + (Double) paramsList.get(1)), List.of(SpellValueType.NUMBER));
+            } else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Vec3) {
+                return ExecutionResult.RETURNED(this, List.of(((Vec3) paramsList.get(0)).add((Vec3) paramsList.get(1))), List.of(SpellValueType.VECTOR3));
+            }
+            SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(paramsList.get(0)), SpellValueType.fromValue(paramsList.get(1))), inputTypes).throwIt(caster);
+            return ExecutionResult.ERRORED();
         }
     }
 
@@ -53,14 +61,22 @@ public abstract class NumberOperationsSpell extends SpellItemLogic implements Sp
         public SubtractionSpell() {
             super();
             name = "subtraction";
-            inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER));
-            outputTypes = List.of(List.of(SpellValueType.NUMBER));
+            inputTypes = List.of(
+                    List.of(SpellValueType.NUMBER, SpellValueType.NUMBER),
+                    List.of(SpellValueType.VECTOR3, SpellValueType.VECTOR3));
+            outputTypes = List.of(List.of(SpellValueType.NUMBER), List.of(SpellValueType.VECTOR3));
             precedence = 1;
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) - (Double) paramsList.get(1)), List.of(SpellValueType.NUMBER));
+            if (paramsList.get(0) instanceof Double && paramsList.get(1) instanceof Double) {
+                return ExecutionResult.RETURNED(this, List.of((Double) paramsList.get(0) - (Double) paramsList.get(1)), List.of(SpellValueType.NUMBER));
+            } else if (paramsList.get(0) instanceof Vec3 && paramsList.get(1) instanceof Vec3) {
+                return ExecutionResult.RETURNED(this, List.of(((Vec3) paramsList.get(0)).subtract((Vec3) paramsList.get(1))), List.of(SpellValueType.VECTOR3));
+            }
+            SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(paramsList.get(0)), SpellValueType.fromValue(paramsList.get(1))), inputTypes).throwIt(caster);
+            return ExecutionResult.ERRORED();
         }
     }
 

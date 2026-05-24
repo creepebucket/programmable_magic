@@ -103,7 +103,6 @@ public class NetNodeBlockEntity extends BlockEntity {
 
         while (!queue.isEmpty()) {
             var pos = queue.removeFirst();
-            if (visited.contains(pos)) continue;
 
             var blockEntity = (NetNodeBlockEntity) level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.IMMEDIATE);
             nodes.add(blockEntity);
