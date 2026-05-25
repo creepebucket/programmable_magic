@@ -35,13 +35,11 @@ public class SolarPanel extends BasicMachine {
 
     public VoxelShape hitbox(){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(-0.16375000000000006, -0.1175, 0, 0.08624999999999994, 0.5075000000000001, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.9025, -0.033125, 0, 1.1524999999999999, 0.591875, 1), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.4375, 0.5625, 0.4375, 0.5625, 1.875, 0.5625), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.30625, 0.5625, 0.3125, 0.6875, 0.8125, 0.6875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0.3125, 1.6875, 0.375, 0.6875, 2.0625, 0.625), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.5625, 1), BooleanOp.OR);
-
+        shape = Shapes.join(shape, Shapes.box(-0.0625, 0, 0, 1.0625, 0.3125, 1), BooleanOp.OR);
         return shape;
     }
 
