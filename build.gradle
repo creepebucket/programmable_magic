@@ -288,6 +288,20 @@ tasks.register('copyGeneratedAssets', Copy) {
     into "$buildDir/resources/main/assets"
 }
 
+tasks.register('syncGeneratedDataToMain', Sync) {
+    group = 'datagen'
+    description = '同步 src/generated/resources/data 到 src/main/resources/data（清理过期数据）'
+    from 'src/generated/resources/data'
+    into "src/main/resources/data"
+}
+
+tasks.register('copyGeneratedAssetsToMain', Copy) {
+    group = 'datagen'
+    description = '拷贝 src/generated/resources/assets 到 src/main/resources/assets'
+    from 'src/generated/resources/assets'
+    into "src/main/resources/assets"
+}
+
 tasks.named('jar') {
     dependsOn 'syncGeneratedData'
     dependsOn 'copyGeneratedAssets'
@@ -322,11 +336,18 @@ tasks.named('runServerAutoJoin') {
     dependsOn 'copyGeneratedAssets'
 }
 
+tasks.named('runData') {
+    finalizedBy 'syncGeneratedDataToMain'
+    finalizedBy 'copyGeneratedAssetsToMain'
+}
+
 // 顺序约束：数据同步在处理资源后执行，避免不确定顺序
 tasks.named('syncGeneratedData') { mustRunAfter tasks.named('processResources') }
 tasks.named('copyGeneratedAssets') { mustRunAfter tasks.named('processResources') }
 tasks.named('syncGeneratedData') { mustRunAfter tasks.named('runData') }
 tasks.named('copyGeneratedAssets') { mustRunAfter tasks.named('runData') }
+tasks.named('syncGeneratedDataToMain') { mustRunAfter tasks.named('runData') }
+tasks.named('copyGeneratedAssetsToMain') { mustRunAfter tasks.named('runData') }
 
 tasks.register('runClientServer') {
     group = 'run'

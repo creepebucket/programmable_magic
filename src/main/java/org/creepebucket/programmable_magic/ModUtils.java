@@ -82,26 +82,31 @@ public class ModUtils {
         String[] prefixes = new String[]{"", "K", "M", "G", "T", "P", "E", "Z", "Y"};
         int exp = (int) Math.floor(Math.log10(value));
 
-        if (value < 10) {
-            // 不可以log的情况
-            return String.format("%." + (stringLength - 3) + "f", value) + " ";
-        } else if (value >= 1e27) {
-            // 使用科学计数法
-            var man = value / Math.pow(10, exp);
+        try {
+            if (value < 10) {
+                // 不可以log的情况
+                return String.format("%." + (stringLength - 3) + "f", value) + " ";
+            } else if (value >= 1e27) {
+                // 使用科学计数法
+                var man = value / Math.pow(10, exp);
 
-            int expDecimals = exp <= 1 ? 1 : (int) Math.ceil(Math.log10(exp));
-            return String.format("%." + (stringLength - 4 - expDecimals) + "f", man) + "e" + exp + " ";
-        } else if (value >= 1000){
-            // 使用前缀
-            int index = (int) Math.floor((double) exp / 3);
-            var man = value / Math.pow(10, index * 3);
-            int manDecimals = man <= 1 ? 1 : (int) Math.ceil(Math.log10(man));
+                int expDecimals = exp <= 1 ? 1 : (int) Math.ceil(Math.log10(exp));
+                return String.format("%." + (stringLength - 4 - expDecimals) + "f", man) + "e" + exp + " ";
+            } else if (value >= 1000) {
+                // 使用前缀
+                int index = (int) Math.floor((double) exp / 3);
+                var man = value / Math.pow(10, index * 3);
+                int manDecimals = man <= 1 ? 1 : (int) Math.ceil(Math.log10(man));
 
-            return String.format("%." + (stringLength - 3 - manDecimals) + "f", man) + " " + prefixes[index];
-        } else {
-            // 直接输出
-            int manDecimals = value <= 1 ? 1 : (int) Math.ceil(Math.log10(value));
-            return String.format("%." + (stringLength - 2 - manDecimals) + "f", value) + " ";
+                return String.format("%." + (stringLength - 3 - manDecimals) + "f", man) + " " + prefixes[index];
+            } else {
+                // 直接输出
+                int manDecimals = value <= 1 ? 1 : (int) Math.ceil(Math.log10(value));
+                return String.format("%." + (stringLength - 2 - manDecimals) + "f", value) + " ";
+            }
+        } catch (UnknownFormatConversionException _) {
+            System.out.println("prm数字转换出错: " + value + " " + stringLength);
+            return "bug了请报告"; // 实在没招了, 有bug
         }
     }
 
