@@ -105,8 +105,6 @@ public class WandScreen extends Screen<WandMenu> {
 
         notificationWidget = new WandWidgets.WandNotificationWidget(Coordinate.fromTopLeft(100, 0), Coordinate.fromTopLeft(128, 0));
         addWidget(notificationWidget);
-
-        addWidget(new MouseCursorWidget());
     }
 
     @Override
