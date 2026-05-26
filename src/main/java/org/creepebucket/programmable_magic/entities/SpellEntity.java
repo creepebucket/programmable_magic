@@ -113,7 +113,6 @@ public class SpellEntity extends Entity {
         // 检查延迟
         if (delayTicks > 0) {
             delayTicks--;
-            return;
         }
 
         while (delayTicks <= 0 && !(debugMode && (!doTick && !doStep && !doRun))) {
