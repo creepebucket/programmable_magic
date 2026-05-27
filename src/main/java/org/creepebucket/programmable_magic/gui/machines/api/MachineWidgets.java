@@ -99,8 +99,10 @@ public class MachineWidgets {
             // 如果单位发生了变化，通知单位组件执行切换动画
             if (!compactUnit && !unitWidget.current.equals(prefix + baseUnit)) unitWidget.switchText(prefix + baseUnit);
             // 将数字字符串从后往前（从低位到高位）塞入对应的单字符显示器中
+            var text = (!compactUnit ? mantissa : formatted);
+            text = (text + " ".repeat(digits)).substring(0, digits);
             for (int i = 0; i < digits; i++) {
-                digit.get(i).setChar((!compactUnit ? mantissa : formatted).charAt(i));
+                digit.get(i).setChar(text.charAt(i));
             }
         }
 
@@ -259,7 +261,7 @@ public class MachineWidgets {
         public void onInitialize() {
 
             // 计算结果
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(1, 1), result, 5, 1, true));
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(1, 1), result, 6, 1, true));
             // 计算结果单位
             addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).noShadow().rightAlign().mainColor(textColor()));
             // 描述
@@ -306,7 +308,7 @@ public class MachineWidgets {
                 addChild(new RectangleWidget(Coordinate.ZERO, Coordinate.fromTopLeft(9, 9)).mainColor(bgColor));
                 addChild(new TextWidget(Coordinate.fromTopLeft(2, 1), Component.literal(operation)).noShadow().mainColor(new Color(127, 127, 127)));
                 addChild(new RectangleWidget(Coordinate.fromTopLeft(11, 0), size.add(Coordinate.fromTopLeft(-11, -2))).mainColor(bgColor));
-                addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(11, 0), number, 5, 1, true).mainColor(new Color(-1)));
+                addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(11, 0), number, 6, 1, true).mainColor(new Color(-1)));
                 addChild(new TextWidget(Coordinate.fromTopLeft(size.toScreenX() - 1, size.toScreenY() - 1), desc).scaled(0.5).noShadow().rightAlign().bottomAlignY().mainColor(new Color(127, 127, 127)));
             }
         }
