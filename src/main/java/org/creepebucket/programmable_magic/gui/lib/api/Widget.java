@@ -41,6 +41,7 @@ public abstract class Widget {
     public Screen<? extends Menu> screen;
     public List<Animation> animations = new ArrayList<>();
     public List<SmoothedValue> smoothedValues = new ArrayList<>();
+    public List<Widget> childrenCache;
 
     public Widget(Coordinate pos, Coordinate size) {
         this.originalPos = pos;
@@ -80,6 +81,8 @@ public abstract class Widget {
     }
 
     public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
+        childrenCache = null;
+
         if (isForeground == renderInForeground) {
 
             // 动画的step
@@ -140,10 +143,15 @@ public abstract class Widget {
     }
 
     public List<Widget> allChild() {
+        // 先尝试读取缓存
+        if (childrenCache != null) return childrenCache;
+
+        // 未命中则动态更新缓存
         List<Widget> list = new ArrayList<>(children);
         for (Widget widget : children) {
             list.addAll(widget.allChild());
         }
+        childrenCache = list;
         return list;
     }
 
