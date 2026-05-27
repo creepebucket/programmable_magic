@@ -33,13 +33,13 @@ public class SolarPanel extends BasicMachine {
         return new SolarPanelBlockEntity(pos, state);
     }
 
-    public VoxelShape hitbox(){
+    public VoxelShape hitbox() {
         VoxelShape shape = Shapes.empty();
         shape = Shapes.join(shape, Shapes.box(0.4375, 0.5625, 0.4375, 0.5625, 1.875, 0.5625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.30625, 0.5625, 0.3125, 0.6875, 0.8125, 0.6875), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.3125, 1.6875, 0.375, 0.6875, 2.0625, 0.625), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.3125, 0.5625, 0.30625, 0.6875, 0.8125, 0.6875), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.375, 1.6875, 0.3125, 0.625, 2.0625, 0.6875), BooleanOp.OR);
         shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.5625, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(-0.0625, 0, 0, 1.0625, 0.3125, 1), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0, 0, -0.0625, 1, 0.3125, 1.0625), BooleanOp.OR);
         return shape;
     }
 
