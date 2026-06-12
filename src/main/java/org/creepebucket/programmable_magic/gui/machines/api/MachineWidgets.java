@@ -10,7 +10,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
+import org.creepebucket.programmable_magic.gui.lib.widgets.ProgressBarWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.SwitchWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 
 import java.util.ArrayList;
@@ -311,6 +313,188 @@ public class MachineWidgets {
                 addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(11, 0), number, 6, 1, true).mainColor(new Color(-1)));
                 addChild(new TextWidget(Coordinate.fromTopLeft(size.toScreenX() - 1, size.toScreenY() - 1), desc).scaled(0.5).noShadow().rightAlign().bottomAlignY().mainColor(new Color(127, 127, 127)));
             }
+        }
+    }
+
+    public static class NetworkInfoWidget extends Widget implements Lifecycle {
+        public MachineMenu menu;
+
+        public NetworkInfoWidget(Coordinate pos, MachineMenu menu) {
+            super(pos, Coordinate.fromTopLeft(0, 0));
+            this.menu = menu;
+        }
+
+        @Override
+        public void onInitialize() {
+            // 顶部标头
+            addHeader();
+
+            // 四个魔力行
+            addManaRow(0, menu.radiationStorageJ, menu.radiationCacheJ, menu.radiationPowerW,
+                    new Color(255, 255, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.radiation"));
+            addManaRow(16, menu.temperatureStorageJ, menu.temperatureCacheJ, menu.temperaturePowerW,
+                    new Color(255, 0, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.temperature"));
+            addManaRow(32, menu.momentumStorageJ, menu.momentumCacheJ, menu.momentumPowerW,
+                    new Color(0, 255, 255),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.momentum"));
+            addManaRow(48, menu.pressureStorageJ, menu.pressureCacheJ, menu.pressurePowerW,
+                    new Color(0, 255, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.pressure"));
+        }
+
+        private void addHeader() {
+            double[] headerDelays = {.00, .05, .10, .15};
+            String[] manaKeys = {"radiation", "temperature", "momentum", "pressure"};
+            Color[] manaColors = {
+                new Color(255, 255, 0),
+                new Color(255, 0, 0),
+                new Color(0, 255, 255),
+                new Color(0, 255, 0)
+            };
+            for (int i = 0; i < 4; i++) {
+                addChild(new RectangleWidget(Coordinate.fromTopLeft(i * 47, 0), Coordinate.fromTopLeft(46, 9))
+                        .mainColor(new Color(0, 0, 0, 127)))
+                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i]);
+                addChild(new TextWidget(Coordinate.fromTopLeft(i * 47 + 1, 1),
+                        Component.translatable("gui.programmable_magic.machine.wind_turbine.mana." + manaKeys[i]))
+                        .noShadow()).mainColor(manaColors[i])
+                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i] + .02);
+                addChild(new TextWidget(Coordinate.fromTopLeft((i + 1) * 47 - 2, 1), Component.literal("::"))
+                        .noShadow()).rightAlign().mainColor(manaColors[i])
+                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i] + .04);
+            }
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromTopLeft(188, 12))
+                    .mainColor(new Color(0, 0, 0, 127)))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), .05);
+
+            addChild(new TextWidget(Coordinate.fromTopLeft(4, 14),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.section.current_mana"))
+                    .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .1);
+            addChild(new TextWidget(Coordinate.fromTopLeft(80, 14),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.section.max_cache"))
+                    .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .15);
+            addChild(new TextWidget(Coordinate.fromTopLeft(137, 14),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.section.net_power"))
+                    .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .2);
+        }
+
+        private void addManaRow(int y, SyncedValue<Double> storageJ, SyncedValue<Double> cacheJ,
+                                SyncedValue<Double> powerW, Color mainColor, Component label) {
+            int baseY = y + 38;
+            double[] delays = {.00, .03, .06, .09, .12, .15, .18, .21, .24, .27, .30};
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, baseY), Coordinate.fromTopLeft(131, 13))
+                    .bottomAlignY().mainColor(new Color(0, 0, 0, 127)))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[0]);
+            addChild(new ProgressBarWidget(Coordinate.fromTopLeft(0, baseY), Coordinate.fromTopLeft(131, 6), storageJ, cacheJ)
+                    .bottomAlignY().mainColor(mainColor))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[1]);
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(3, baseY - 2), storageJ, 7, 1, true)
+                    .bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[2]);
+            addChild(new TextWidget(Coordinate.fromTopLeft(46, baseY - 1), Component.literal("J"))
+                    .noShadow().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[3]);
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(127, baseY - 2), cacheJ, 7, 1, true)
+                    .bottomAlignY().rightAlign()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[4]);
+            addChild(new TextWidget(Coordinate.fromTopLeft(128, baseY - 1), Component.literal("J"))
+                    .noShadow().bottomAlignY().rightAlign()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[5]);
+            addChild(new TextWidget(Coordinate.fromTopLeft(63, baseY - 1), Component.literal("/"))
+                    .noShadow().bottomAlignY().mainColor(new Color(127, 127, 127)))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[6]);
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, baseY), Coordinate.fromTopLeft(54, 13))
+                    .rightAlign().bottomAlignY().mainColor(new Color(0, 0, 0, 127)))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[7]);
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, baseY - 7), Coordinate.fromTopLeft(54, 6))
+                    .rightAlign().bottomAlignY().mainColor(mainColor))
+                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[8]);
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(184, baseY - 2), powerW, 7, 1, true)
+                    .rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[9]);
+            addChild(new TextWidget(Coordinate.fromTopLeft(185, baseY - 1), Component.literal("W"))
+                    .noShadow().rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[10]);
+        }
+    }
+
+    public static class PowerDisplayWidget extends Widget implements Lifecycle, Tickable {
+        public SyncedValue<Double> power;
+        public MachineMenu menu;
+        public Color mainColor;
+        public Component sectionLabel;
+        public TextSwitchWidget unit;
+        public SwitchWidget powerSwitch;
+        public java.util.function.Consumer<Boolean> onSwitchCallback;
+        public boolean synced_enabled, initial_enabled, interacted;
+
+        public PowerDisplayWidget(Coordinate pos, MachineMenu menu, SyncedValue<Double> power,
+                                  Color mainColor, Component sectionLabel,
+                                  java.util.function.Consumer<Boolean> onSwitchCallback) {
+            super(pos, Coordinate.fromTopLeft(0, 0));
+            this.menu = menu;
+            this.power = power;
+            this.mainColor = mainColor;
+            this.sectionLabel = sectionLabel;
+            this.onSwitchCallback = onSwitchCallback;
+        }
+
+        @Override
+        public void onInitialize() {
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(28, 20))
+                    .mainColor(new Color(mainColor.r, mainColor.g, mainColor.b, 127)))
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), .22);
+            addChild(new TextWidget(Coordinate.fromTopLeft(3, 3), Component.literal("P="))
+                    .scaled(2).noShadow()).addAnimation(new Animation.FadeIn.FromLeft(0.5), .2);
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, 0), Coordinate.fromTopLeft(156, 20))
+                    .mainColor(new Color(0, 0, 0, 127)).rightAlign())
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), .15);
+            addChild(new TextWidget(Coordinate.fromTopLeft(187, 3), sectionLabel)
+                    .scaled(2).noShadow().rightAlign()).addAnimation(new Animation.FadeIn.FromLeft(0.5), .1);
+            addChild(new TextWidget(Coordinate.fromTopLeft(35, 19),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.section.type"))
+                    .noShadow().bottomAlignY().mainColor(new Color(127, 127, 127)))
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), .05);
+
+            unit = new TextSwitchWidget(Coordinate.fromTopLeft(188, 66), Coordinate.fromTopLeft(28, 18), 2, "W");
+            addChild(unit.rightAlign().mainColor(new Color(-1)).bgColor(new Color(255, 255, 255, 127)))
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), .1);
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, 84), Coordinate.fromTopLeft(28, 2))
+                    .mainColor(new Color(-1)).rightAlign())
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), .12);
+
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(188, 58), power, 6, 4, unit, "W", false)
+                    .mainColor(mainColor).rightAlign().bottomAlignY())
+                    .addAnimation(new Animation.FadeIn.FromLeft(0.5), 0);
+            for (int i = 0; i < 6; i++)
+                addChild(new RectangleWidget(Coordinate.fromTopLeft(188 - i * 32, 58),
+                        Coordinate.fromTopLeft(28, 2)).mainColor(mainColor).rightAlign())
+                        .addAnimation(new Animation.FadeIn.FromLeft(0.5), .02 * i);
+
+            powerSwitch = (SwitchWidget) addChild(new SwitchWidget(
+                    Coordinate.fromTopLeft(0, 66), Coordinate.fromTopLeft(60, 20),
+                    net.minecraft.network.chat.CommonComponents.OPTION_OFF,
+                    net.minecraft.network.chat.CommonComponents.OPTION_ON)
+                    .setPressed(menu.enabled.get())
+                    .onSwitch(enabled -> {
+                        interacted = true;
+                        onSwitchCallback.accept(enabled);
+                    }).addAnimation(new Animation.FadeIn.FromLeft(0.5), .2));
+
+            initial_enabled = menu.enabled.get();
+            synced_enabled = false;
+            interacted = false;
+        }
+
+        @Override
+        public void tick() {
+            if (synced_enabled) return;
+            if (interacted) return;
+            boolean enabled = menu.enabled.get();
+            if (enabled == initial_enabled) return;
+            synced_enabled = true;
+            powerSwitch.setPressed(enabled);
+            powerSwitch.rectDx.set(enabled ? (double) powerSwitch.w() / 2 : 0);
         }
     }
 }
