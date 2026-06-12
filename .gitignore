@@ -123,3 +123,5 @@ runs/
 /.todo/
 /neoforge_docs_1.21.11/
 /bin/
+/.project
+/.classpath
