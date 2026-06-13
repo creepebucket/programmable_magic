@@ -452,5 +452,12 @@
   "tooltip.programmable_magic.machine.wind_turbine.wind_speed.base_speed": "海拔10m时的基础风速",
   "tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient": "当前型号的功率系数",
   "gui.programmable_magic.machine.wind_turbine.title.machine_info": "机器信息//",
-  "gui.programmable_magic.machine.wind_turbine.title.network_info": "网络信息//"
+  "gui.programmable_magic.machine.wind_turbine.title.network_info": "网络信息//",
+  "gui.programmable_magic.network_info.update_interval_tip": "数据更新间隔(tick)",
+  "gui.programmable_magic.network_info.search_hint": "输入id进行搜索",
+  "gui.programmable_magic.network_info.search": "搜索",
+  "gui.programmable_magic.network_info.id": "ID",
+  "gui.programmable_magic.network_info.storage": "存储",
+  "gui.programmable_magic.network_info.cache": "缓存",
+  "gui.programmable_magic.network_info.power": "功率"
 }

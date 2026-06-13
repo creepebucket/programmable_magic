@@ -232,7 +232,7 @@ public abstract class Widget {
 
     public Widget tooltip(Component tooltip) {
         this.tooltip = tooltip;
-        doShowTooltip = true;
+        doShowTooltip = tooltip != null;
         return this;
     }
 

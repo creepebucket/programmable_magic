@@ -15,7 +15,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 @EventBusSubscriber(modid = MODID)
 public class NetworkManaManager {
-    public static Map<Level, Map<Long, Map<String, ModUtils.Mana>>> data = new WeakHashMap<>();
+    public static Map<Level, Map<Long, Map<String, ModUtils.Mana>>> data = new WeakHashMap<>(), last_tick = new WeakHashMap<>();
     public static Map<Level, Map<Long, Long>> touched_tick = new WeakHashMap<>();
     public static Map<Level, Map<Long, ModUtils.Mana>> cached_load = new WeakHashMap<>();
     public static Map<Level, Map<Long, ModUtils.Mana>> cached_cache = new WeakHashMap<>();
@@ -33,6 +33,25 @@ public class NetworkManaManager {
             if (key.equals("cache")) return cached_cache.get(level).getOrDefault(id, value);
         }
         return value;
+    }
+
+    /**
+     * 获取一个维度的所有网络魔力数据
+     *
+     * @param level 目标维度
+     * @return 该维度下所有网络ID到魔力数据的映射
+     */
+    public static Map<Long, Map<String, ModUtils.Mana>> getAllData(Level level) {
+        if (!last_tick.containsKey(level)) {
+            var copy = new HashMap<Long, Map<String, ModUtils.Mana>>();
+            level.getData(ModAttachments.DIMENSIONAL_MANA_DATA).forEach((k, v) -> copy.put(k, new HashMap<>(v)));
+            data.put(level, copy);
+            last_tick.put(level, copy);
+            touched_tick.put(level, new HashMap<>());
+            cached_load.put(level, new HashMap<>());
+            cached_cache.put(level, new HashMap<>());
+        }
+        return last_tick.get(level);
     }
 
     /**
@@ -108,6 +127,17 @@ public class NetworkManaManager {
                 networkData.put("current", current.subtract(load).min(cache));
                 cached_load.get(level).put(id, load);
                 cached_cache.get(level).put(id, cache);
+            }
+        }
+
+        last_tick = new WeakHashMap<>(data);
+        last_tick.replaceAll((level, levelData) -> new HashMap<>(levelData.entrySet().stream()
+                .collect(java.util.stream.Collectors.toMap(Map.Entry::getKey, entry -> new HashMap<>(entry.getValue())))));
+
+        for (Level level : new HashMap<>(data).keySet()) {
+            var levelData = data.get(level);
+            for (Long id : new HashMap<>(levelData).keySet()) {
+                var networkData = levelData.get(id);
                 networkData.put("load", new ModUtils.Mana());
                 networkData.put("cache", new ModUtils.Mana());
             }

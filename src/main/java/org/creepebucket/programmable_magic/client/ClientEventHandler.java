@@ -3,6 +3,7 @@ package org.creepebucket.programmable_magic.client;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
+import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
 import org.creepebucket.programmable_magic.gui.machines.solar_panel.SolarPanelScreen;
 import org.creepebucket.programmable_magic.gui.machines.wind_turbine.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
@@ -31,10 +32,14 @@ public class ClientEventHandler {
                 ModMenuTypes.MACHINE_MENU.get(),
                 WindTurbineScreen::new
         );
-        event.register(
-                ModMenuTypes.SOLAR_PANEL_MENU.get(),
-                SolarPanelScreen::new
-        );
+		event.register(
+				ModMenuTypes.SOLAR_PANEL_MENU.get(),
+				SolarPanelScreen::new
+		);
+		event.register(
+				ModMenuTypes.NETWORK_INFO.get(),
+				NetworkInfoScreen::new
+		);
     }
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {

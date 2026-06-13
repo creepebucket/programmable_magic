@@ -452,5 +452,12 @@
   "tooltip.programmable_magic.machine.wind_turbine.wind_speed.base_speed": "Base wind speed at 10m altitude.",
   "tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient": "Power coefficient of this model.",
   "gui.programmable_magic.machine.wind_turbine.title.machine_info": "Machine Info//",
-  "gui.programmable_magic.machine.wind_turbine.title.network_info": "Network info//"
+  "gui.programmable_magic.machine.wind_turbine.title.network_info": "Network info//",
+  "gui.programmable_magic.network_info.update_interval_tip": "Update interval (tick)",
+  "gui.programmable_magic.network_info.search_hint": "Enter id to search",
+  "gui.programmable_magic.network_info.search": "Search",
+  "gui.programmable_magic.network_info.id": "ID",
+  "gui.programmable_magic.network_info.storage": "Storage",
+  "gui.programmable_magic.network_info.cache": "Cache",
+  "gui.programmable_magic.network_info.power": "Power"
 }
