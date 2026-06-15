@@ -11,8 +11,8 @@ import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.InfiniteSupplySlot;
 import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
@@ -34,7 +34,7 @@ import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.
  * - 负责在服务端保存魔杖中的法术物品堆栈，以及卷轴生成逻辑。
  */
 public class WandMenu extends Menu {
-    public SyncedValue<Boolean> customSupplySlotSupplyMode;
+    public DynamicValue<Boolean> customSupplySlotSupplyMode;
     public WandHooks.SaveThemeHook saveThemeHook;
     public WandHooks.StoredSpellsEditHook storedSpellsEditHook;
     public WandHooks.ImportSpellsHook importSpellsHook;
@@ -57,8 +57,8 @@ public class WandMenu extends Menu {
     public boolean quickMoved = false, debugMode = false;
     public ItemStack wand;
     public SpellEntity spell;
-    public SyncedValue<Integer> currentSpellId;
-    public SyncedValue<List<Integer>> breakpointIds;
+    public DynamicValue<Integer> currentSpellId;
+    public DynamicValue<List<Integer>> breakpointIds;
 
     public WandMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
         this(containerId, playerInv, InteractionHand.values()[extra.readVarInt()]);

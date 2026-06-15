@@ -24,7 +24,7 @@ public class MachineWidgets {
      * 整体数字显示屏组件，包含多个单数字体（Digit）和一个单位显示器
      */
     public static class NumberDisplayWidget extends Widget implements Renderable, Tickable {
-        public SyncedValue<Double> number; // 与服务端同步的数值
+        public DynamicValue<Double> number; // 与服务端同步的数值
         public int digits;                 // 支持显示的最大位数（如8位显示屏）
         public List<NumberDigitWidget> digit = new ArrayList<>(); // 存放每一个单数字符的列表
         public int scale;                  // 缩放比例
@@ -33,7 +33,7 @@ public class MachineWidgets {
         public boolean compactMode;        // 紧凑模式
         public boolean compactUnit = false;        // 单位不在TextSwitchUnit中显示
 
-        public NumberDisplayWidget(Coordinate pos, SyncedValue<Double> number, int digits, int scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
+        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, int scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
             // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
             super(pos, Coordinate.fromTopLeft((compactMode ? 7 : 8) * scale * digits - scale, 9 * scale));
             this.number = number;
@@ -51,7 +51,7 @@ public class MachineWidgets {
                         Coordinate.fromTopLeft(40, 50), scale)));
         }
 
-        public NumberDisplayWidget(Coordinate pos, SyncedValue<Double> number, int digits, int scale, Boolean compactMode) {
+        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, int scale, Boolean compactMode) {
             // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
             super(pos, Coordinate.fromTopLeft((compactMode ? 7 : 8) * scale * digits - scale, 9 * scale));
             this.number = number;
@@ -245,13 +245,13 @@ public class MachineWidgets {
     }
 
     public static class CalcationDetailsWidget extends Widget implements Renderable, Clickable, Lifecycle {
-        public SyncedValue<Double> result;
+        public DynamicValue<Double> result;
         public Component resultUnit, description;
         public Widget descWidget;
         public boolean isExpanded = false;
         public List<DetailLineWidget> detailLines = new ArrayList<>();
 
-        public CalcationDetailsWidget(Coordinate pos, Coordinate size, SyncedValue<Double> result, Component resultUnit, Component description) {
+        public CalcationDetailsWidget(Coordinate pos, Coordinate size, DynamicValue<Double> result, Component resultUnit, Component description) {
             super(pos, size);
 
             this.result = result;
@@ -298,14 +298,14 @@ public class MachineWidgets {
             descWidget.dy.set(isExpanded ? -10 * detailLines.size() : 0);
         }
 
-        public void addDetailLine(Component desc, SyncedValue<Double> number, Component tooltip, String operation) {
+        public void addDetailLine(Component desc, DynamicValue<Double> number, Component tooltip, String operation) {
             var line = addChild(new DetailLineWidget(Coordinate.fromTopLeft(0, (detailLines.size() + 1) * -10), originalSize, desc, number, bgColor(), mainColor(), operation));
             line.disable().tooltip(tooltip);
             detailLines.add((DetailLineWidget) line);
         }
 
         public static class DetailLineWidget extends Widget {
-            public DetailLineWidget(Coordinate pos, Coordinate size, Component desc, SyncedValue<Double> number, Color bgColor, Color mainColor, String operation) {
+            public DetailLineWidget(Coordinate pos, Coordinate size, Component desc, DynamicValue<Double> number, Color bgColor, Color mainColor, String operation) {
                 super(pos, size);
                 addChild(new RectangleWidget(Coordinate.ZERO, Coordinate.fromTopLeft(9, 9)).mainColor(bgColor));
                 addChild(new TextWidget(Coordinate.fromTopLeft(2, 1), Component.literal(operation)).noShadow().mainColor(new Color(127, 127, 127)));
@@ -381,8 +381,8 @@ public class MachineWidgets {
                     .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .2);
         }
 
-        private void addManaRow(int y, SyncedValue<Double> storageJ, SyncedValue<Double> cacheJ,
-                                SyncedValue<Double> powerW, Color mainColor, Component label) {
+        private void addManaRow(int y, DynamicValue<Double> storageJ, DynamicValue<Double> cacheJ,
+                                DynamicValue<Double> powerW, Color mainColor, Component label) {
             int baseY = y + 38;
             double[] delays = {.00, .03, .06, .09, .12, .15, .18, .21, .24, .27, .30};
 
@@ -418,7 +418,7 @@ public class MachineWidgets {
     }
 
     public static class PowerDisplayWidget extends Widget implements Lifecycle, Tickable {
-        public SyncedValue<Double> power;
+        public DynamicValue<Double> power;
         public MachineMenu menu;
         public Color mainColor;
         public Component sectionLabel;
@@ -427,7 +427,7 @@ public class MachineWidgets {
         public java.util.function.Consumer<Boolean> onSwitchCallback;
         public boolean synced_enabled, initial_enabled, interacted;
 
-        public PowerDisplayWidget(Coordinate pos, MachineMenu menu, SyncedValue<Double> power,
+        public PowerDisplayWidget(Coordinate pos, MachineMenu menu, DynamicValue<Double> power,
                                   Color mainColor, Component sectionLabel,
                                   java.util.function.Consumer<Boolean> onSwitchCallback) {
             super(pos, Coordinate.fromTopLeft(0, 0));

@@ -9,8 +9,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.gui.lib.api.DataManager;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.HookManager;
 import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvC2SHandler;
@@ -55,7 +55,7 @@ public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SH
         this.screenHeight = screenHeight;
     }
 
-    public <T> SyncedValue<T> registerData(String key, SyncMode syncMode, T initialValue) {
+    public <T> DynamicValue<T> registerData(String key, SyncMode syncMode, T initialValue) {
         return this.dataManager.register(key, syncMode, initialValue);
     }
 

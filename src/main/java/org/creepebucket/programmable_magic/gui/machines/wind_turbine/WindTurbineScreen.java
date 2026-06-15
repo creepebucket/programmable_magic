@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.gui.lib.api.Animation;
 import org.creepebucket.programmable_magic.gui.lib.api.Color;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
@@ -40,10 +40,10 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 		addWidget(new TextWidget(Coordinate.fromCenter(-89, -70), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .07);
 
 		// 扫风面积
-		var sweptAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-80, -70), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(6.0),
+		var sweptAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-80, -70), Coordinate.fromTopLeft(78, 11), new DynamicValue.StaticDouble(6.0),
 				Component.literal("m^2"), Component.translatable("gui.programmable_magic.machine.wind_turbine.swept_area")).mainColor(new Color(0, 255, 255)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .0);
 
-		sweptAreaWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_area"), new SyncedValue.StaticDouble(6.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.swept_area.base_area"), "+");
+		sweptAreaWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_area"), new DynamicValue.StaticDouble(6.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.swept_area.base_area"), "+");
 
 		// x
 		addWidget(new RectangleWidget(Coordinate.fromCenter(1, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), 0);
@@ -64,10 +64,10 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 		addWidget(new TextWidget(Coordinate.fromCenter(97, -70), Component.literal("^3x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .12);
 
 		// 功率系数
-		var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(120, -70), Coordinate.fromTopLeft(78, 11), new SyncedValue.StaticDouble(25.0),
+		var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(120, -70), Coordinate.fromTopLeft(78, 11), new DynamicValue.StaticDouble(25.0),
 				Component.literal("%"), Component.translatable("gui.programmable_magic.machine.wind_turbine.power_coefficient")).mainColor(new Color(0, 255, 255)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .15);
 
-		powerCoeffWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_coefficient"), new SyncedValue.StaticDouble(25.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient"), "+");
+		powerCoeffWidget.addDetailLine(Component.translatable("gui.programmable_magic.machine.wind_turbine.detail.base_coefficient"), new DynamicValue.StaticDouble(25.0), Component.translatable("tooltip.programmable_magic.machine.wind_turbine.power_coefficient.base_coefficient"), "+");
 
 		// =================== 功率显示 =================== //
 		addWidget(new MachineWidgets.PowerDisplayWidget(Coordinate.fromCenter(-198, -58), menu, menu.power,

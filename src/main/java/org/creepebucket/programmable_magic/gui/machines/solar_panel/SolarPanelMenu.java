@@ -5,18 +5,18 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
 import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanelBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class SolarPanelMenu extends MachineMenu {
-	public SyncedValue<Double> solarConstant, panelArea, directIrradiance, diffuseIrradiance, atmosphericTransmittanceDiffuse;
-	public SyncedValue<Double> atmosphericTransmittanceDirect, airMass, weatherFactDirect, weatherFactDiffuse, altitudeFact;
-	public SyncedValue<Double> baseTemperature, cellTemperature, thermalFact, materialFact;
-	public SyncedValue<Double> power, efficiencyFact;
+	public DynamicValue<Double> solarConstant, panelArea, directIrradiance, diffuseIrradiance, atmosphericTransmittanceDiffuse;
+	public DynamicValue<Double> atmosphericTransmittanceDirect, airMass, weatherFactDirect, weatherFactDiffuse, altitudeFact;
+	public DynamicValue<Double> baseTemperature, cellTemperature, thermalFact, materialFact;
+	public DynamicValue<Double> power, efficiencyFact;
 	public SolarPanelHooks.PowerSwitchHook powerSwitch;
 	public boolean enabled_synced;
 

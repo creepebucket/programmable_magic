@@ -4,8 +4,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.mananet.NetworkManaManager;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
@@ -13,8 +13,8 @@ import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import java.util.Map;
 
 public class NetworkInfoMenu extends Menu {
-	public SyncedValue<Double> updateInterval;
-	public SyncedValue<Map<Long, Map<String, ModUtils.Mana>>> datas;
+	public DynamicValue<Double> updateInterval;
+	public DynamicValue<Map<Long, Map<String, ModUtils.Mana>>> datas;
 	public int count = 0;
 
 	public NetworkInfoMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {

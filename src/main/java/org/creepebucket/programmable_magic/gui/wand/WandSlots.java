@@ -5,7 +5,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.slots.OneItemOnlySlot;
 import org.creepebucket.programmable_magic.registries.ModItems;
 
@@ -16,9 +16,9 @@ import static org.creepebucket.programmable_magic.registries.WandPluginRegistry.
 
 public class WandSlots {
     public static class CustomSupplySlot extends OneItemOnlySlot {
-        public SyncedValue<Boolean> supplyMode; // true = 供应 false = 设置
+        public DynamicValue<Boolean> supplyMode; // true = 供应 false = 设置
 
-        public CustomSupplySlot(Container container, int slot, int x, int y, SyncedValue<Boolean> supplyMode) {
+        public CustomSupplySlot(Container container, int slot, int x, int y, DynamicValue<Boolean> supplyMode) {
             super(container, slot, x, y);
             this.supplyMode = supplyMode;
         }

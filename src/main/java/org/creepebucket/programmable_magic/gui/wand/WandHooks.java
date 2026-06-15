@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.items.WandItemPlaceholder;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
@@ -90,9 +90,9 @@ public class WandHooks {
 
     public static class ClearSpellsHook extends Hook {
         private final Container storage;
-        public SyncedValue<List<Integer>> breakpointIds;
+        public DynamicValue<List<Integer>> breakpointIds;
 
-        public ClearSpellsHook(Container storage, SyncedValue<List<Integer>> breakpointIds) {
+        public ClearSpellsHook(Container storage, DynamicValue<List<Integer>> breakpointIds) {
             super("clear_spells");
             this.storage = storage;
             this.breakpointIds = breakpointIds;

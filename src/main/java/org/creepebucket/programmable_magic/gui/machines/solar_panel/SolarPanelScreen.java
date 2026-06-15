@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.gui.lib.api.Animation;
 import org.creepebucket.programmable_magic.gui.lib.api.Color;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
@@ -70,7 +70,7 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		powerCoeffWidget.addDetailLine(Component.literal("材料系数"), menu.materialFact, Component.literal("该型号的材料系数"), "x");
 		powerCoeffWidget.addDetailLine(Component.literal("温度系数"), menu.thermalFact, Component.literal("当太阳直射太阳能板时, 效率会因产生热量而小幅下降"), "x");
-		powerCoeffWidget.addDetailLine(Component.literal("常数"), new SyncedValue.StaticDouble(100d), Component.literal("常数"), "+");
+		powerCoeffWidget.addDetailLine(Component.literal("常数"), new DynamicValue.StaticDouble(100d), Component.literal("常数"), "+");
 
 		// =================== 功率显示 =================== //
 		addWidget(new MachineWidgets.PowerDisplayWidget(Coordinate.fromCenter(-198, -58), menu, menu.power,

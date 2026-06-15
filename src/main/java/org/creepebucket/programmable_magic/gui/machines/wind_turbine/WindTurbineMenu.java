@@ -5,17 +5,17 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
 import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class WindTurbineMenu extends MachineMenu {
-	public SyncedValue<Double> airDensityBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
-	public SyncedValue<Double> windSpeedBase, windSpeedAltitudeFact, windSpeedTimeFact, windSpeedWeatherFact, windSpeed;
-	public SyncedValue<Double> windShearExponent, power;
+	public DynamicValue<Double> airDensityBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
+	public DynamicValue<Double> windSpeedBase, windSpeedAltitudeFact, windSpeedTimeFact, windSpeedWeatherFact, windSpeed;
+	public DynamicValue<Double> windShearExponent, power;
 	public WindTurbineHooks.PowerSwitchHook powerSwitch;
 	public boolean enabled_synced;
 

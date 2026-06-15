@@ -2,11 +2,11 @@ package org.creepebucket.programmable_magic.gui.lib.api;
 
 import java.util.function.Supplier;
 
-public class SyncedValue<T> {
+public class DynamicValue<T> {
     private final DataManager manager;
     private final String key;
 
-    SyncedValue(DataManager manager, String key) {
+    DynamicValue(DataManager manager, String key) {
         this.manager = manager;
         this.key = key;
     }
@@ -20,7 +20,7 @@ public class SyncedValue<T> {
         manager.update(key, value);
     }
 
-    public SyncedValue<T> whenFirstDataArrives(Runnable hook) {
+    public DynamicValue<T> whenFirstDataArrives(Runnable hook) {
         if (manager != null) manager.onFirstArrival.put(key, hook);
         return this;
     }
@@ -28,8 +28,8 @@ public class SyncedValue<T> {
     /**
      * 从函数里拆, 适用于SyncedValue<Map<?, ?>> 拆键的情况
      */
-    public static <T> SyncedValue<T> fromSupplier(Supplier<T> supplier) {
-        return new SyncedValue<T>(null, null) {
+    public static <T> DynamicValue<T> fromSupplier(Supplier<T> supplier) {
+        return new DynamicValue<T>(null, null) {
             @Override
             public T get() {
                 return supplier.get();
@@ -44,7 +44,7 @@ public class SyncedValue<T> {
     /**
      * 固定值, 适用于一些特殊情况
      */
-    public static class StaticDouble extends SyncedValue<Double> {
+    public static class StaticDouble extends DynamicValue<Double> {
         Double n;
 
         public StaticDouble(Double n) {

@@ -3,7 +3,7 @@ package org.creepebucket.programmable_magic.gui.lib.widgets;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.gui.lib.api.Color;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
@@ -13,13 +13,13 @@ import java.util.Objects;
 import static java.lang.Double.parseDouble;
 
 public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
-    public SyncedValue<Double> num;
+    public DynamicValue<Double> num;
     public double min, max, step = 1, fact = 10;
     public int depth = 2;
     public boolean showMinMax = true, buttonPressed = false;
     public InputBoxWidget inputBox;
 
-    public NumberInputWidget(Coordinate pos, Coordinate size, SyncedValue<Double> num, double min, double max) {
+    public NumberInputWidget(Coordinate pos, Coordinate size, DynamicValue<Double> num, double min, double max) {
         super(pos, size);
 
         this.num = num;

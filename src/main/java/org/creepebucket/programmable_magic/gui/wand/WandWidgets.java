@@ -35,9 +35,9 @@ public class WandWidgets {
         public Hook editHook, deleteHook;
         public List<SpellStorageWidget> storageSlots;
         public SmoothedValue delta2X = new SmoothedValue(0);
-        public SyncedValue<Integer> currentSpellId;
+        public DynamicValue<Integer> currentSpellId;
 
-        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots, SyncedValue<Integer> currentSpellId) {
+        public SpellStorageWidget(List<Slot> slots, Coordinate pos, int i, Hook editHook, Hook deleteHook, List<SpellStorageWidget> storageSlots, DynamicValue<Integer> currentSpellId) {
             super(slots.get(i), pos);
             this.slots = slots;
             this.i = i;

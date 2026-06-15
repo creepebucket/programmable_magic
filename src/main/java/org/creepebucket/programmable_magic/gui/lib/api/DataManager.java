@@ -36,7 +36,7 @@ public class DataManager {
      * 1. 注册数据
      * 如果是 S2C 且当前没有发往客户端的能力(说明是客户端)，自动加入拉取列表。
      */
-    public <T> SyncedValue<T> register(String key, SyncMode mode, T initialValue) {
+    public <T> DynamicValue<T> register(String key, SyncMode mode, T initialValue) {
         if (!values.containsKey(key)) {
 
             values.put(key, initialValue);
@@ -47,7 +47,7 @@ public class DataManager {
         if ((mode == SyncMode.S2C || mode == SyncMode.BOTH) && sendToClient == null) {
             pendingPulls.add(key);
         }
-        return new SyncedValue<>(this, key);
+        return new DynamicValue<>(this, key);
     }
 
     /**
@@ -62,7 +62,7 @@ public class DataManager {
     }
 
     /**
-     * 3. 核心写逻辑 (由 SyncedValue 调用)
+     * 3. 核心写逻辑 (由 DynamicValue 调用)
      * 更新本地 -> 判断模式 -> 发送网络包
      */
     void update(String key, Object newVal) {

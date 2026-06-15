@@ -4,16 +4,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.api.SyncedValue;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 
 public abstract class MachineMenu extends Menu {
-	public SyncedValue<Double> radiationPowerW, temperaturePowerW, momentumPowerW, pressurePowerW;
-	public SyncedValue<Double> radiationStorageJ, temperatureStorageJ, momentumStorageJ, pressureStorageJ;
-	public SyncedValue<Double> radiationCacheJ, temperatureCacheJ, momentumCacheJ, pressureCacheJ;
-	public SyncedValue<Boolean> enabled;
+	public DynamicValue<Double> radiationPowerW, temperaturePowerW, momentumPowerW, pressurePowerW;
+	public DynamicValue<Double> radiationStorageJ, temperatureStorageJ, momentumStorageJ, pressureStorageJ;
+	public DynamicValue<Double> radiationCacheJ, temperatureCacheJ, momentumCacheJ, pressureCacheJ;
+	public DynamicValue<Boolean> enabled;
 	public BlockPos pos;
 	public int count;
 	protected MachineMenu(MenuType<?> type, int containerId, Inventory playerInv, InteractionHand hand, Definition definition) {
