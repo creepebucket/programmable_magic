@@ -231,7 +231,7 @@ public class ModUtils {
         return map;
     }
 
-    public static String serializeSpells(Container spell) {
+    public static String serializeSpells(Container spell, boolean compactMode) {
         // 取出每个法术(只序列化法术, 不要序列化其他物品和空格) 提取name属性 然后映射
         Map<String, String> map = getSpellSerializeMap();
         StringBuilder stringBuilder = new StringBuilder();
@@ -241,7 +241,7 @@ public class ModUtils {
             String logicName = spellItem.getLogic().name;
             String mapped = map.get(logicName);
             if (mapped == null || mapped.isEmpty()) mapped = logicName;
-            stringBuilder.append(mapped);
+            stringBuilder.append(mapped.replace(compactMode ? "\n" : "", "")).append(!compactMode ? " " : "");
         }
         return stringBuilder.toString();
     }
@@ -250,12 +250,12 @@ public class ModUtils {
         // 丢弃所有空格, 再反查映射
         Map<String, String> map = getSpellSerializeMap();
         Map<String, String> reverseMap = new LinkedHashMap<>();
-        for (Map.Entry<String, String> entry : map.entrySet()) reverseMap.put(entry.getValue(), entry.getKey());
+        for (Map.Entry<String, String> entry : map.entrySet()) reverseMap.put(entry.getValue().replace("\n", ""), entry.getKey());
         BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof BaseSpellItem)
                 .forEach(item -> reverseMap.putIfAbsent(((BaseSpellItem) item).getLogic().name, ((BaseSpellItem) item).getLogic().name));
 
-        String input = string.replace(" ", "");
+        String input = string.replace(" ", "").replace("\n", "");
         Container container = new SimpleContainer(1024);
 
         int index = 0;

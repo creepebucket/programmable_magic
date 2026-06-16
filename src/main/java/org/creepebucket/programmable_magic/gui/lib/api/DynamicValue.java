@@ -26,7 +26,7 @@ public class DynamicValue<T> {
     }
 
     /**
-     * 从函数里拆, 适用于SyncedValue<Map<?, ?>> 拆键的情况
+     * 从函数里拆, 适用于DynamicValue<Map<?, ?>> 拆键的情况
      */
     public static <T> DynamicValue<T> fromSupplier(Supplier<T> supplier) {
         return new DynamicValue<T>(null, null) {

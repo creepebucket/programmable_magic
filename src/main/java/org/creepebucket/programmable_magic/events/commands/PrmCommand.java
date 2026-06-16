@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.commands.Commands.literal;
+import net.minecraft.commands.Commands;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 @EventBusSubscriber(modid = MODID)
@@ -17,6 +18,7 @@ public class PrmCommand {
 	static {
 		registerHandler(new CommandHandler.ManaNetworkInfoHandler());
 		registerHandler(new CommandHandler.ManaNetworkSetHandler());
+		registerHandler(new CommandHandler.SpellHandler());
 	}
 
 	public static void registerHandler(CommandHandler handler) {
@@ -25,7 +27,7 @@ public class PrmCommand {
 
 	@SubscribeEvent
 	public static void onRegisterCommands(RegisterCommandsEvent event) {
-		var root = literal("prm");
+		var root = literal("prm").requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS));
 		for (var handler : HANDLERS) {
 			root.then(handler.build());
 		}
