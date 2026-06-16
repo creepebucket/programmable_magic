@@ -141,6 +141,7 @@ public class SpellRegistry {
         registerSpell(EntityInteractionSpell.ApplyPotionSpell::new);
         registerSpell(EntityInteractionSpell.SendToInventorySpell::new);
         registerSpell(WorldInterationSpell.BreakBlockSpell::new);
+        registerSpell(WorldInterationSpell.MineBlockSpell::new);
         registerSpell(WorldInterationSpell.PlaceBlockSpell::new);
         registerSpell(WorldInterationSpell.ExplosionSpell::new);
 

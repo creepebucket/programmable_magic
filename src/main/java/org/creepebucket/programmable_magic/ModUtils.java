@@ -227,6 +227,7 @@ public class ModUtils {
         map.put("touch_ground", "wait_until_touch_ground");
         map.put("touch_entity", "wait_until_touch_entity");
         map.put("debug_print", "print");
+        map.put("mine_block", "mine_block");
 
         return map;
     }

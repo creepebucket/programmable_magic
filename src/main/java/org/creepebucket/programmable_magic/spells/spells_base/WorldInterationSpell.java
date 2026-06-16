@@ -1,10 +1,12 @@
 package org.creepebucket.programmable_magic.spells.spells_base;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
@@ -14,6 +16,7 @@ import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -46,8 +49,31 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             BlockPos pos = spellEntity.blockPosition();
             BlockState state = spellEntity.level().getBlockState(pos);
+            if (state.isAir() || state.getDestroySpeed(spellEntity.level(), pos) < 0) return ExecutionResult.FAILED(this);
             spellEntity.level().destroyBlock(pos, false, caster);
             return ExecutionResult.RETURNED(this, List.of(new ItemStack(state.getBlock().asItem())), List.of(SpellValueType.ITEM));
+        }
+    }
+
+    public static class MineBlockSpell extends WorldInterationSpell {
+        public MineBlockSpell() {
+            name = "mine_block";
+            outputTypes = List.of(List.of(SpellValueType.ITEM));
+        }
+
+        @Override
+        public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            BlockPos pos = spellEntity.blockPosition();
+            Level level = spellEntity.level();
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir() || state.getDestroySpeed(level, pos) < 0) return ExecutionResult.FAILED(this);
+            List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, pos, null, caster, ItemStack.EMPTY);
+            level.destroyBlock(pos, false, caster);
+            if (drops.isEmpty()) return ExecutionResult.SUCCESS(this);
+            List<Object> values = new ArrayList<>(drops);
+            List<SpellValueType> types = new ArrayList<>();
+            for (int i = 0; i < drops.size(); i++) types.add(SpellValueType.ITEM);
+            return ExecutionResult.RETURNED(this, values, types);
         }
     }
 

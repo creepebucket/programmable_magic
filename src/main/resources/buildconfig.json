@@ -12,6 +12,7 @@
       {"from_top_left": [96, 640], "from_bottom_right": [111, 655], "target_img_path": "assets/programmable_magic/textures/item/spell/ignite.png"},
       {"from_top_left": [112, 640], "from_bottom_right": [127, 655], "target_img_path": "assets/programmable_magic/textures/item/spell/place_block.png"},
       {"from_top_left": [128, 640], "from_bottom_right": [143, 655], "target_img_path": "assets/programmable_magic/textures/item/spell/break_block.png"},
+      {"from_top_left": [144, 640], "from_bottom_right": [159, 655], "target_img_path": "assets/programmable_magic/textures/item/spell/mine_block.png"},
       {"from_top_left": [80, 656], "from_bottom_right": [95, 671], "target_img_path": "assets/programmable_magic/textures/item/spell/delay.png"},
       {"from_top_left": [96, 656], "from_bottom_right": [111, 671], "target_img_path": "assets/programmable_magic/textures/item/spell/condition_invert.png"},
       {"from_top_left": [112, 656], "from_bottom_right": [127, 671], "target_img_path": "assets/programmable_magic/textures/item/spell/touch_entity.png"},
