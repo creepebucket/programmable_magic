@@ -27,15 +27,15 @@ public class MachineWidgets {
         public DynamicValue<Double> number; // 与服务端同步的数值
         public int digits;                 // 支持显示的最大位数（如8位显示屏）
         public List<NumberDigitWidget> digit = new ArrayList<>(); // 存放每一个单数字符的列表
-        public int scale;                  // 缩放比例
+        public double scale;                  // 缩放比例
         public TextSwitchWidget unitWidget;// 负责显示和切换单位的组件（如 FE, kFE）
         public String baseUnit;            // 基础单位名称（如 "FE"）
         public boolean compactMode;        // 紧凑模式
         public boolean compactUnit = false;        // 单位不在TextSwitchUnit中显示
 
-        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, int scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
+        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
             // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-            super(pos, Coordinate.fromTopLeft((compactMode ? 7 : 8) * scale * digits - scale, 9 * scale));
+            super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
             this.number = number;
             this.digits = digits;
             this.scale = scale;
@@ -47,13 +47,13 @@ public class MachineWidgets {
 
             for (int i = 0; i < digits; i++)
                 digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                        Coordinate.fromTopLeft(scale + (compactMode ? 6 : 8) * scale * i, scale), // 错开 X 坐标排列
+                        Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
                         Coordinate.fromTopLeft(40, 50), scale)));
         }
 
-        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, int scale, Boolean compactMode) {
+        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, Boolean compactMode) {
             // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-            super(pos, Coordinate.fromTopLeft((compactMode ? 7 : 8) * scale * digits - scale, 9 * scale));
+            super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
             this.number = number;
             this.digits = digits;
             this.scale = scale;
@@ -64,7 +64,7 @@ public class MachineWidgets {
 
             for (int i = 0; i < digits; i++)
                 digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                        Coordinate.fromTopLeft(scale + (compactMode ? 6 : 8) * scale * i, scale), // 错开 X 坐标排列
+                        Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
                         Coordinate.fromTopLeft(40, 50), scale)));
         }
 
@@ -82,7 +82,7 @@ public class MachineWidgets {
         public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
             // 为每一个数字槽位绘制背景色块
             if (!compactMode) for (int i = 0; i < digits; i++)
-                graphics.fill(left() + 8 * i * scale, top(), left() + 8 * i * scale + 7 * scale, bottom(), bgColorInt());
+                graphics.fill((int) (left() + 8 * i * scale), top(), (int) (left() + 8 * i * scale + 7 * scale), bottom(), bgColorInt());
         }
 
         @Override
@@ -112,20 +112,21 @@ public class MachineWidgets {
          * 负责处理单个字符（0-9, 小数点, 空格）渲染和滚动动画的内部类
          */
         public static class NumberDigitWidget extends Widget implements Renderable {
-            public int digit = 0, scale;
+            public int digit = 0;
+            public double scale;
             public char old = ' ';        // 切换动画时的旧字符
             public char current = ' ';    // 当前字符
             public SmoothedValue textDy = new SmoothedValue(0); // 用于非数字字符切换时的垂直平滑位移
             public boolean isSwitching = false; // 是否正在进行非数字的切换动画
 
-            public NumberDigitWidget(Coordinate pos, Coordinate size, int scale) {
+            public NumberDigitWidget(Coordinate pos, Coordinate size, double scale) {
                 super(pos, size);
                 this.scale = scale;
             }
 
             @Override
             public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-                int lineHeight = scale * 10; // 每个字符占据的高度
+                int lineHeight = (int) (scale * 10); // 每个字符占据的高度
                 // dy 是父类 Widget 里的变量，这里被用来表示滚动纸带的总偏移量
                 int baseY = menuY() - dy.getInt();
                 // 状态1：正在进行非数字切换动画（例如 空格 -> 1, 或者 5 -> .）
@@ -134,11 +135,11 @@ public class MachineWidgets {
 
                     // 绘制旧字符（逐渐滑出）
                     if (old != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(old)), menuX(), baseY - lineHeight + textDy.getInt(), scale, mainColorInt(), false);
+                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(old)), menuX(), baseY - lineHeight + textDy.getInt(), (float) scale, mainColorInt(), false);
 
                     // 绘制新字符（逐渐滑入）
                     if (current != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY + textDy.getInt(), scale, mainColorInt(), false);
+                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY + textDy.getInt(), (float) scale, mainColorInt(), false);
 
                     // 动画结束后的状态重置
                     if (textDy.getInt() == 0) {
@@ -151,13 +152,13 @@ public class MachineWidgets {
                 // 状态2：当前字符是非数字（如小数点或空格），静止绘制即可
                 if (current < '0' || current > '9') {
                     if (current != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY, scale, mainColorInt(), false);
+                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY, (float) scale, mainColorInt(), false);
                     return;
                 }
                 // 状态3：当前字符是数字 0-9，执行数字卷轴渲染逻辑
                 // 绘制一列 0 到 9，再加上一个 0 （总共11个），方便 9 向下无缝滚动到 0
                 for (int i = 0; i < 11; i++)
-                    TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(i % 10)), menuX(), menuY() + lineHeight * i, scale, mainColorInt(), false);
+                    TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(i % 10)), menuX(), menuY() + lineHeight * i, (float) scale, mainColorInt(), false);
                 // ===== 无限循环滚动逻辑 =====
                 // 当纸带向上滚动超出范围（10个数字的高度即 scale * 100）时，将真实位置和目标位置同时拉回一圈
                 if (dy.getInt() < -scale * 100) {
@@ -173,7 +174,7 @@ public class MachineWidgets {
 
             // 当目标是纯数字之间的切换时调用
             public void setDigit(int n) {
-                int lineHeight = scale * 10; // 每个字符占据的高度
+                int lineHeight = (int) (scale * 10); // 每个字符占据的高度
 
                 // 计算数字环（0-9）上，向上滚和向下滚的距离
                 var nCoord = -n * lineHeight;
@@ -327,58 +328,33 @@ public class MachineWidgets {
         @Override
         public void onInitialize() {
             // 顶部标头
-            addHeader();
-
-            // 四个魔力行
-            addManaRow(0, menu.radiationStorageJ, menu.radiationCacheJ, menu.radiationPowerW,
-                    new Color(255, 255, 0),
-                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.radiation"));
-            addManaRow(16, menu.temperatureStorageJ, menu.temperatureCacheJ, menu.temperaturePowerW,
-                    new Color(255, 0, 0),
-                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.temperature"));
-            addManaRow(32, menu.momentumStorageJ, menu.momentumCacheJ, menu.momentumPowerW,
-                    new Color(0, 255, 255),
-                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.momentum"));
-            addManaRow(48, menu.pressureStorageJ, menu.pressureCacheJ, menu.pressurePowerW,
-                    new Color(0, 255, 0),
-                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.pressure"));
-        }
-
-        private void addHeader() {
-            double[] headerDelays = {.00, .05, .10, .15};
-            String[] manaKeys = {"radiation", "temperature", "momentum", "pressure"};
-            Color[] manaColors = {
-                new Color(255, 255, 0),
-                new Color(255, 0, 0),
-                new Color(0, 255, 255),
-                new Color(0, 255, 0)
-            };
-            for (int i = 0; i < 4; i++) {
-                addChild(new RectangleWidget(Coordinate.fromTopLeft(i * 47, 0), Coordinate.fromTopLeft(46, 9))
-                        .mainColor(new Color(0, 0, 0, 127)))
-                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i]);
-                addChild(new TextWidget(Coordinate.fromTopLeft(i * 47 + 1, 1),
-                        Component.translatable("gui.programmable_magic.machine.wind_turbine.mana." + manaKeys[i]))
-                        .noShadow()).mainColor(manaColors[i])
-                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i] + .02);
-                addChild(new TextWidget(Coordinate.fromTopLeft((i + 1) * 47 - 2, 1), Component.literal("::"))
-                        .noShadow()).rightAlign().mainColor(manaColors[i])
-                        .addAnimation(new Animation.FadeIn.FromRight(0.5), headerDelays[i] + .04);
-            }
-
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromTopLeft(188, 12))
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(188, 14))
                     .mainColor(new Color(0, 0, 0, 127)))
                     .addAnimation(new Animation.FadeIn.FromRight(0.5), .05);
 
-            addChild(new TextWidget(Coordinate.fromTopLeft(4, 14),
+            addChild(new TextWidget(Coordinate.fromTopLeft(4, 3),
                     Component.translatable("gui.programmable_magic.machine.wind_turbine.section.current_mana"))
                     .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .1);
-            addChild(new TextWidget(Coordinate.fromTopLeft(80, 14),
+            addChild(new TextWidget(Coordinate.fromTopLeft(80, 3),
                     Component.translatable("gui.programmable_magic.machine.wind_turbine.section.max_cache"))
                     .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .15);
-            addChild(new TextWidget(Coordinate.fromTopLeft(137, 14),
+            addChild(new TextWidget(Coordinate.fromTopLeft(137, 3),
                     Component.translatable("gui.programmable_magic.machine.wind_turbine.section.net_power"))
                     .noShadow()).addAnimation(new Animation.FadeIn.FromRight(0.5), .2);
+
+            // 四个魔力行
+            addManaRow(-7, menu.radiationStorageJ, menu.radiationCacheJ, menu.radiationPowerW,
+                    new Color(255, 255, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.radiation"));
+            addManaRow(11, menu.temperatureStorageJ, menu.temperatureCacheJ, menu.temperaturePowerW,
+                    new Color(255, 0, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.temperature"));
+            addManaRow(29, menu.momentumStorageJ, menu.momentumCacheJ, menu.momentumPowerW,
+                    new Color(0, 255, 255),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.momentum"));
+            addManaRow(47, menu.pressureStorageJ, menu.pressureCacheJ, menu.pressurePowerW,
+                    new Color(0, 255, 0),
+                    Component.translatable("gui.programmable_magic.machine.wind_turbine.mana.pressure"));
         }
 
         private void addManaRow(int y, DynamicValue<Double> storageJ, DynamicValue<Double> cacheJ,
@@ -386,34 +362,31 @@ public class MachineWidgets {
             int baseY = y + 38;
             double[] delays = {.00, .03, .06, .09, .12, .15, .18, .21, .24, .27, .30};
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, baseY), Coordinate.fromTopLeft(131, 13))
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, baseY+1), Coordinate.fromTopLeft(131, 15))
                     .bottomAlignY().mainColor(new Color(0, 0, 0, 127)))
                     .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[0]);
-            addChild(new ProgressBarWidget(Coordinate.fromTopLeft(0, baseY), Coordinate.fromTopLeft(131, 6), storageJ, cacheJ)
+            addChild(new ProgressBarWidget(Coordinate.fromTopLeft(0, baseY + 1), Coordinate.fromTopLeft(131, 6), storageJ, cacheJ)
                     .bottomAlignY().mainColor(mainColor))
                     .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[1]);
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(3, baseY - 2), storageJ, 7, 1, true)
                     .bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[2]);
-            addChild(new TextWidget(Coordinate.fromTopLeft(46, baseY - 1), Component.literal("J"))
+            addChild(new TextWidget(Coordinate.fromTopLeft(46, baseY-1), Component.literal("J"))
                     .noShadow().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[3]);
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(127, baseY - 2), cacheJ, 7, 1, true)
                     .bottomAlignY().rightAlign()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[4]);
-            addChild(new TextWidget(Coordinate.fromTopLeft(128, baseY - 1), Component.literal("J"))
+            addChild(new TextWidget(Coordinate.fromTopLeft(128, baseY-1), Component.literal("J"))
                     .noShadow().bottomAlignY().rightAlign()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[5]);
-            addChild(new TextWidget(Coordinate.fromTopLeft(63, baseY - 1), Component.literal("/"))
+            addChild(new TextWidget(Coordinate.fromTopLeft(63, baseY-1), Component.literal("/"))
                     .noShadow().bottomAlignY().mainColor(new Color(127, 127, 127)))
                     .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[6]);
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, baseY), Coordinate.fromTopLeft(54, 13))
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, baseY+1), Coordinate.fromTopLeft(54, 15))
                     .rightAlign().bottomAlignY().mainColor(new Color(0, 0, 0, 127)))
                     .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[7]);
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(188, baseY - 7), Coordinate.fromTopLeft(54, 6))
-                    .rightAlign().bottomAlignY().mainColor(mainColor))
-                    .addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[8]);
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(184, baseY - 2), powerW, 7, 1, true)
-                    .rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[9]);
-            addChild(new TextWidget(Coordinate.fromTopLeft(185, baseY - 1), Component.literal("W"))
-                    .noShadow().rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[10]);
+                    .rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[9]).mainColor(mainColor);
+            addChild(new TextWidget(Coordinate.fromTopLeft(185, baseY-1), Component.literal("W"))
+                    .noShadow().rightAlign().bottomAlignY()).addAnimation(new Animation.FadeIn.FromRight(0.5), y * 0.001 + delays[10]).mainColor(mainColor);
         }
     }
 

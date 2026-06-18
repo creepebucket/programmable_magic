@@ -212,14 +212,26 @@ public abstract class Widget {
         return this;
     }
 
+    public Widget mainColor(int color) {
+        return mainColor(new Color(color));
+    }
+
     public Widget bgColor(Color color) {
         originalBgColor = color;
         return this;
     }
 
+    public Widget bgColor(int color) {
+            return bgColor(new Color(color));
+    }
+
     public Widget textColor(Color color) {
         originalTextColor = color;
         return this;
+    }
+
+    public Widget testColor(int color) {
+            return textColor(new Color(color));
     }
 
     public Widget color(Color color) {
