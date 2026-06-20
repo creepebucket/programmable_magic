@@ -17,7 +17,6 @@ public class SolarPanelMenu extends MachineMenu {
 	public DynamicValue<Double> atmosphericTransmittanceDirect, airMass, weatherFactDirect, weatherFactDiffuse, altitudeFact;
 	public DynamicValue<Double> baseTemperature, cellTemperature, thermalFact, materialFact;
 	public DynamicValue<Double> power, efficiencyFact;
-	public SolarPanelHooks.PowerSwitchHook powerSwitch;
 	public boolean enabled_synced;
 
 	public SolarPanelMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
@@ -27,7 +26,6 @@ public class SolarPanelMenu extends MachineMenu {
 	public SolarPanelMenu(int containerId, Inventory playerInv, BlockPos pos) {
 		this(containerId, playerInv);
 		setBlockPos(pos);
-		powerSwitch = hook(new SolarPanelHooks.PowerSwitchHook(this));
 	}
 
 	public SolarPanelMenu(int containerId, Inventory playerInv) {

@@ -8,18 +8,29 @@ import java.util.function.BiFunction;
  * @param x 以 (sw, sh) 为输入的 X 计算函数。
  * @param y 以 (sw, sh) 为输入的 Y 计算函数。
  */
-public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
+public class Coordinate {
 
     public static Coordinate ZERO = Coordinate.fromTopLeft(0, 0);
     private static int screenWidth;
     private static int screenHeight;
     private static int guiLeft;
     private static int guiTop;
+    public BiFunction<Integer, Integer, Integer> x, y;
 
     /**
      * 创建一个坐标计算器。
      */
-    public Coordinate {
+    public Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Integer, Integer, Integer> y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public static int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public static int getScreenHeight() {
+        return screenHeight;
     }
 
     public static void updateContext(int screenWidth, int screenHeight, int guiLeft, int guiTop) {
@@ -90,6 +101,10 @@ public record Coordinate(BiFunction<Integer, Integer, Integer> x, BiFunction<Int
      */
     public static Coordinate fromCenterBottom(int deltaX, int deltaY) {
         return new Coordinate((sw, sh) -> sw / 2 + deltaX, (sw, sh) -> sh + deltaY);
+    }
+
+    public static Coordinate custom(double ratioX, int deltaX, double ratioY, int deltaY) {
+        return new Coordinate((sw, sh) -> (int) (sw * ratioX + deltaX), (sw, sh) -> (int) (sh * ratioY + deltaY));
     }
 
     /**

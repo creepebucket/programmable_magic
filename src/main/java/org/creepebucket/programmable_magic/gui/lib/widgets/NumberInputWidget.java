@@ -32,7 +32,7 @@ public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
         // 最值按钮
         if (showMinMax) {
             addChild(new TextButtonWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(h(), h()), Component.literal("|<"), () -> {num.set(min); buttonPressed = true;}));
-            addChild(new TextButtonWidget(Coordinate.fromTopLeft(w(), 0), Coordinate.fromTopLeft(h(), h()), Component.literal(">|"), () -> {num.set(max); buttonPressed = true;}).rightAlign());
+            addChild(new TextButtonWidget(Coordinate.fromTopRight(0, 0), Coordinate.fromTopLeft(h(), h()), Component.literal(">|"), () -> {num.set(max); buttonPressed = true;}).rightAlign());
         }
 
         // 普通按钮

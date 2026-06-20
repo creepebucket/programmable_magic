@@ -35,7 +35,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (!isDragging) return false;
 
         // 决定缩放因子和值修改
-        // h/w -> max 映射
+        // h/w -> denominator 映射
 
         var maxValue = region.toScreenY();
         var minValue = region.toScreenX();

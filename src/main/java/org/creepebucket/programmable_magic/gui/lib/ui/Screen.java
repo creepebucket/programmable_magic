@@ -152,6 +152,10 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
                 if (widget.isInBounds(event.x(), event.y()) && clickable.mouseClickedChecked(event, fromMouse))
                     return true;
             }
+            if (!widget.clickBehaviors.isEmpty() && widget.enabled && widget.isInBounds(event.x(), event.y())) {
+                for (Runnable behavior : widget.clickBehaviors) behavior.run();
+                return true;
+            }
         }
         return super.mouseClicked(event, fromMouse);
     }

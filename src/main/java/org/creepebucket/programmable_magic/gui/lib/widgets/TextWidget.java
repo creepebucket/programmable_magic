@@ -49,6 +49,16 @@ public class TextWidget extends Widget implements Renderable {
     }
 
     @Override
+    public int w() {
+        return originalSize.x.apply(0, 0);
+    }
+
+    @Override
+    public int h() {
+        return originalSize.y.apply(0, 0);
+    }
+
+    @Override
     public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         Font font = ClientUiContext.getFont();
         float scaled = (float) scale;

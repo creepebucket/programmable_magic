@@ -20,7 +20,7 @@ public class DynamicValue<T> {
         manager.update(key, value);
     }
 
-    public DynamicValue<T> whenFirstDataArrives(Runnable hook) {
+    public DynamicValue<T> whenFirstDataArrivesDo(Runnable hook) {
         if (manager != null) manager.onFirstArrival.put(key, hook);
         return this;
     }
@@ -41,24 +41,28 @@ public class DynamicValue<T> {
         };
     }
 
+    public static <T> DynamicValue<T> staticValue(T value) {
+        return new StaticValue<>(value);
+    }
+
     /**
      * 固定值, 适用于一些特殊情况
      */
-    public static class StaticDouble extends DynamicValue<Double> {
-        Double n;
+    public static class StaticValue<T> extends DynamicValue<T> {
+        T value;
 
-        public StaticDouble(Double n) {
+        public StaticValue(T value) {
             super(null, null);
-            this.n = n;
+            this.value = value;
         }
 
         @Override
-        public Double get() {
-            return n;
+        public T get() {
+            return value;
         }
 
         @Override
-        public void set(Double value) {
+        public void set(T value) {
             // 不允许写入
         }
     }

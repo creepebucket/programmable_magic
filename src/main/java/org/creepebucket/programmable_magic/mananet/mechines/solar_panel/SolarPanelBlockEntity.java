@@ -9,8 +9,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
@@ -22,24 +20,10 @@ public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBloc
     public double atmosphericTransmittanceDirect = 0.8, airMass, weatherFactDirect, weatherFactDiffuse, panelArea = 6;
     public double baseTemperature, cellTemperature, thermalFact, materialFact = 0.15, altitudeFact, power, efficiencyFact;
 
-    public boolean enabled;
-
     public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     public SolarPanelBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), pos, state);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        enabled = input.getBooleanOr("enabled", false);
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putBoolean("enabled", enabled);
     }
 
     @Override

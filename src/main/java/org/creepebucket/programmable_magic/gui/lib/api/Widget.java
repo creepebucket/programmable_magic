@@ -42,6 +42,7 @@ public abstract class Widget {
     public List<Animation> animations = new ArrayList<>();
     public List<SmoothedValue> smoothedValues = new ArrayList<>();
     public List<Widget> childrenCache;
+    public List<Runnable> clickBehaviors = new ArrayList<>();
 
     public Widget(Coordinate pos, Coordinate size) {
         this.originalPos = pos;
@@ -242,6 +243,11 @@ public abstract class Widget {
         return mainColor(color).textColor(color).bgColor(color);
     }
 
+    public Widget addClickBehavior(Runnable r) {
+        clickBehaviors.add(r);
+        return this;
+    }
+
     public Widget tooltip(Component tooltip) {
         this.tooltip = tooltip;
         doShowTooltip = tooltip != null;
@@ -249,7 +255,7 @@ public abstract class Widget {
     }
 
     public int x() {
-        double x = originalPos.toScreenX() + dx.getInt() + parent.x();
+        double x = originalPos.x.apply(parent.w(), parent.h()) + dx.getInt() + parent.x();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -267,7 +273,7 @@ public abstract class Widget {
     }
 
     public int y() {
-        double y = originalPos.toScreenY() + dy.getInt() + parent.y();
+        double y = originalPos.y.apply(parent.w(), parent.h()) + dy.getInt() + parent.y();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -285,7 +291,7 @@ public abstract class Widget {
     }
 
     public int w() {
-        double w = originalSize.toScreenX() + dw.getInt();
+        double w = originalSize.x.apply(parent.w(), parent.h()) + dw.getInt();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -301,7 +307,7 @@ public abstract class Widget {
     }
 
     public int h() {
-        double h = originalSize.toScreenY() + dh.getInt();
+        double h = originalSize.y.apply(parent.w(), parent.h()) + dh.getInt();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -317,7 +323,7 @@ public abstract class Widget {
     }
 
     public int menuX() {
-        double x = originalPos.toScreenX() + dx.getInt() + parent.menuX();
+        double x = originalPos.x.apply(parent.w(), parent.h()) + dx.getInt() + parent.menuX();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -335,7 +341,7 @@ public abstract class Widget {
     }
 
     public int menuY() {
-        double y = originalPos.toScreenY() + dy.getInt() + parent.menuY();
+        double y = originalPos.y.apply(parent.w(), parent.h()) + dy.getInt() + parent.menuY();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
 
@@ -454,12 +460,12 @@ public abstract class Widget {
 
         @Override
         public int w() {
-            return 0;
+            return Coordinate.getScreenWidth();
         }
 
         @Override
         public int h() {
-            return 0;
+            return Coordinate.getScreenHeight();
         }
 
         @Override

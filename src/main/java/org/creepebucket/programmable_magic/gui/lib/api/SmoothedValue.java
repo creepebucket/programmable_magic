@@ -5,6 +5,7 @@ import java.util.function.Function;
 public class SmoothedValue {
     public double current, speed = 0, target, last;
     public boolean bound = false;
+    public double a = 200, b = 30; // MAGIC NUMBERS!!!!!
 
     public SmoothedValue(double initial) {
         current = initial;
@@ -31,7 +32,7 @@ public class SmoothedValue {
 
     public void doStep(double dt) {
         last = current;
-        speed += (target - current) * 200 * dt - speed * (Math.abs(target - current) < 2 ? 10 : 30) * dt; // 末端缓冲
+        speed += (target - current) * a * dt - speed * (Math.abs(target - current) < 2 ? b / 3 : b) * dt; // 末端缓冲
         current += speed * dt;
 
         if ((target - current) * (target - last) < 0) {

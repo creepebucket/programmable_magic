@@ -28,7 +28,7 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
 
     @Override
     public void onInitialize() {
-        textWidget = addChild(new TextWidget(Coordinate.fromTopLeft(w() / 2 - ClientUiContext.getFont().width(text) / 2, h() / 2 - 4), text));
+        textWidget = addChild(new TextWidget(Coordinate.fromCenter(-ClientUiContext.getFont().width(text) / 2, -4), text));
     }
 
     @Override

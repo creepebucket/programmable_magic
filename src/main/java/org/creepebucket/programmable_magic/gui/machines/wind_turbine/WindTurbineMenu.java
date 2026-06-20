@@ -16,7 +16,6 @@ public class WindTurbineMenu extends MachineMenu {
 	public DynamicValue<Double> airDensityBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
 	public DynamicValue<Double> windSpeedBase, windSpeedAltitudeFact, windSpeedTimeFact, windSpeedWeatherFact, windSpeed;
 	public DynamicValue<Double> windShearExponent, power;
-	public WindTurbineHooks.PowerSwitchHook powerSwitch;
 	public boolean enabled_synced;
 
 	public WindTurbineMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
@@ -26,7 +25,6 @@ public class WindTurbineMenu extends MachineMenu {
 	public WindTurbineMenu(int containerId, Inventory playerInv, BlockPos pos) {
 		this(containerId, playerInv);
 		setBlockPos(pos);
-		powerSwitch = hook(new WindTurbineHooks.PowerSwitchHook(this));
 	}
 
 	public WindTurbineMenu(int containerId, Inventory playerInv) {

@@ -70,12 +70,12 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		powerCoeffWidget.addDetailLine(Component.literal("材料系数"), menu.materialFact, Component.literal("该型号的材料系数"), "x");
 		powerCoeffWidget.addDetailLine(Component.literal("温度系数"), menu.thermalFact, Component.literal("当太阳直射太阳能板时, 效率会因产生热量而小幅下降"), "x");
-		powerCoeffWidget.addDetailLine(Component.literal("常数"), new DynamicValue.StaticDouble(100d), Component.literal("常数"), "+");
+		powerCoeffWidget.addDetailLine(Component.literal("常数"), DynamicValue.staticValue(100d), Component.literal("常数"), "+");
 
 		// =================== 功率显示 =================== //
 		addWidget(new MachineWidgets.PowerDisplayWidget(Coordinate.fromCenter(-198, -58), menu, menu.power,
 				new Color(255, 255, 0), Component.literal("辐射"),
-				enabled -> SolarPanelHooks.onSwitch(menu, enabled)));
+				enabled -> menu.powerSwitch.trigger(enabled)));
 
 		// 维护成本
 		addWidget(new RectangleWidget(Coordinate.fromCenter(-131, 8), Coordinate.fromTopLeft(44, 20)).mainColor(new Color(0, 0, 0, 127)));

@@ -74,9 +74,10 @@ public class NetworkManaManager {
                 cached_load.get(level).put(id, new ModUtils.Mana());
                 cached_cache.get(level).put(id, new ModUtils.Mana());
                 return new NetworkManaData(id, level, fresh);
-            } else {
-                return new NetworkManaData(id, level, levelData.get(id));
-            }
+			} else {
+				levelData.get(id).putIfAbsent("current", new ModUtils.Mana());
+				return new NetworkManaData(id, level, levelData.get(id));
+			}
         } else {
             // 获取世界的魔力信息, 然后再查找
             var copy = new HashMap<Long, Map<String, ModUtils.Mana>>();

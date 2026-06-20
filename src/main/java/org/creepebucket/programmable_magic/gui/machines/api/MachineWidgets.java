@@ -3,247 +3,14 @@ package org.creepebucket.programmable_magic.gui.machines.api;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
-import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
-import org.creepebucket.programmable_magic.gui.lib.widgets.ProgressBarWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SwitchWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
+import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MachineWidgets {
-    /**
-     * 纯ai （注：可能是作者留下的注释，暗示这部分逻辑非常巧妙/自动化）
-     * 整体数字显示屏组件，包含多个单数字体（Digit）和一个单位显示器
-     */
-    public static class NumberDisplayWidget extends Widget implements Renderable, Tickable {
-        public DynamicValue<Double> number; // 与服务端同步的数值
-        public int digits;                 // 支持显示的最大位数（如8位显示屏）
-        public List<NumberDigitWidget> digit = new ArrayList<>(); // 存放每一个单数字符的列表
-        public double scale;                  // 缩放比例
-        public TextSwitchWidget unitWidget;// 负责显示和切换单位的组件（如 FE, kFE）
-        public String baseUnit;            // 基础单位名称（如 "FE"）
-        public boolean compactMode;        // 紧凑模式
-        public boolean compactUnit = false;        // 单位不在TextSwitchUnit中显示
-
-        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
-            // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-            super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
-            this.number = number;
-            this.digits = digits;
-            this.scale = scale;
-            this.unitWidget = unitWidget;
-            this.baseUnit = baseUnit;
-            this.compactMode = compactMode;
-
-            // 根据指定的位数，生成对应的单数字组件，并作为子组件添加
-
-            for (int i = 0; i < digits; i++)
-                digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                        Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
-                        Coordinate.fromTopLeft(40, 50), scale)));
-        }
-
-        public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, Boolean compactMode) {
-            // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-            super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
-            this.number = number;
-            this.digits = digits;
-            this.scale = scale;
-            this.compactMode = compactMode;
-            this.compactUnit = true;
-
-            // 根据指定的位数，生成对应的单数字组件，并作为子组件添加
-
-            for (int i = 0; i < digits; i++)
-                digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                        Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
-                        Coordinate.fromTopLeft(40, 50), scale)));
-        }
-
-        @Override
-        public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
-            // 开启 OpenGL 裁剪：由于子组件（数字）在滚动时会超出自身框的范围
-            // 这里设置裁剪区，确保只有在当前组件区域内的像素才会被渲染出，达到“遮罩”效果
-            graphics.enableScissor(left(), top(), right(), bottom());
-            super.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
-            // 渲染完毕后关闭裁剪，以免影响其他 GUI 元素的渲染
-            graphics.disableScissor();
-        }
-
-        @Override
-        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            // 为每一个数字槽位绘制背景色块
-            if (!compactMode) for (int i = 0; i < digits; i++)
-                graphics.fill((int) (left() + 8 * i * scale), top(), (int) (left() + 8 * i * scale + 7 * scale), bottom(), bgColorInt());
-        }
-
-        @Override
-        public void tick() {
-            // 每一Tick更新数值逻辑
-            // 将双精度浮点数格式化为带单位的字符串，如 "1.23 k" 或 "450 "
-            var number = this.number.get();
-            String formatted = ModUtils.formattedNumber(number, number >= 1000 && number < 1e27 && !compactUnit ? digits + 2 : digits + 1);
-            int sep = formatted.lastIndexOf(' '); // 找到数字和单位之间的空格
-
-            // 提取数字部分（尾数）和单位前缀（k, M, G 等）
-            String mantissa = sep == -1 ? formatted : formatted.substring(0, sep);
-            String prefix = sep == -1 ? "" : formatted.substring(sep + 1);
-
-            formatted = mantissa + prefix;
-            // 如果单位发生了变化，通知单位组件执行切换动画
-            if (!compactUnit && !unitWidget.current.equals(prefix + baseUnit)) unitWidget.switchText(prefix + baseUnit);
-            // 将数字字符串从后往前（从低位到高位）塞入对应的单字符显示器中
-            var text = (!compactUnit ? mantissa : formatted);
-            text = (text + " ".repeat(digits)).substring(0, digits);
-            for (int i = 0; i < digits; i++) {
-                digit.get(i).setChar(text.charAt(i));
-            }
-        }
-
-        /**
-         * 负责处理单个字符（0-9, 小数点, 空格）渲染和滚动动画的内部类
-         */
-        public static class NumberDigitWidget extends Widget implements Renderable {
-            public int digit = 0;
-            public double scale;
-            public char old = ' ';        // 切换动画时的旧字符
-            public char current = ' ';    // 当前字符
-            public SmoothedValue textDy = new SmoothedValue(0); // 用于非数字字符切换时的垂直平滑位移
-            public boolean isSwitching = false; // 是否正在进行非数字的切换动画
-
-            public NumberDigitWidget(Coordinate pos, Coordinate size, double scale) {
-                super(pos, size);
-                this.scale = scale;
-            }
-
-            @Override
-            public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-                int lineHeight = (int) (scale * 10); // 每个字符占据的高度
-                // dy 是父类 Widget 里的变量，这里被用来表示滚动纸带的总偏移量
-                int baseY = menuY() - dy.getInt();
-                // 状态1：正在进行非数字切换动画（例如 空格 -> 1, 或者 5 -> .）
-                if (isSwitching) {
-                    textDy.doStep(screen.dt); // 更新平滑动画步长
-
-                    // 绘制旧字符（逐渐滑出）
-                    if (old != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(old)), menuX(), baseY - lineHeight + textDy.getInt(), (float) scale, mainColorInt(), false);
-
-                    // 绘制新字符（逐渐滑入）
-                    if (current != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY + textDy.getInt(), (float) scale, mainColorInt(), false);
-
-                    // 动画结束后的状态重置
-                    if (textDy.getInt() == 0) {
-                        isSwitching = false;
-                        // 如果切换后的新字符是数字，则将全局偏移量 dy 瞬间对齐到该数字对应的正确高度
-                        if (current >= '0' && current <= '9') dy.setImmediate(-lineHeight * digit);
-                    }
-                    return;
-                }
-                // 状态2：当前字符是非数字（如小数点或空格），静止绘制即可
-                if (current < '0' || current > '9') {
-                    if (current != ' ')
-                        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY, (float) scale, mainColorInt(), false);
-                    return;
-                }
-                // 状态3：当前字符是数字 0-9，执行数字卷轴渲染逻辑
-                // 绘制一列 0 到 9，再加上一个 0 （总共11个），方便 9 向下无缝滚动到 0
-                for (int i = 0; i < 11; i++)
-                    TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(i % 10)), menuX(), menuY() + lineHeight * i, (float) scale, mainColorInt(), false);
-                // ===== 无限循环滚动逻辑 =====
-                // 当纸带向上滚动超出范围（10个数字的高度即 scale * 100）时，将真实位置和目标位置同时拉回一圈
-                if (dy.getInt() < -scale * 100) {
-                    dy.target += scale * 100;
-                    dy.current += scale * 100;
-                }
-                // 当纸带向下滚动超出范围时，类似处理
-                if (dy.getInt() > 0) {
-                    dy.target -= scale * 100;
-                    dy.current -= scale * 100;
-                }
-            }
-
-            // 当目标是纯数字之间的切换时调用
-            public void setDigit(int n) {
-                int lineHeight = (int) (scale * 10); // 每个字符占据的高度
-
-                // 计算数字环（0-9）上，向上滚和向下滚的距离
-                var nCoord = -n * lineHeight;
-                var targetCoord = dy.target % (lineHeight * 10);
-
-                var upDiff = Math.min((nCoord - targetCoord), (nCoord - targetCoord - lineHeight * 10) % (lineHeight * 10));
-
-                dy.set(upDiff < -lineHeight * 5 ? dy.target + upDiff + 10 * lineHeight : dy.target + upDiff);
-                digit = n; // 更新当前数字
-            }
-
-            // 核心的字符状态改变逻辑
-            public void setChar(char ch) {
-                boolean newIsDigit = ch >= '0' && ch <= '9';
-                boolean oldIsDigit = (isSwitching ? old : current) >= '0' && (isSwitching ? old : current) <= '9';
-                // 情况A：从一个数字切换到另一个数字 -> 使用卷轴滚动动画
-                if (newIsDigit && oldIsDigit) {
-                    isSwitching = false;
-                    old = ch;
-                    current = ch;
-                    setDigit(ch - '0'); // 触发卷轴滚动目标变更
-                    return;
-                }
-                if (ch == current) return; // 没有变化，直接返回
-                // 情况B：涉及非数字字符的切换（如 5 -> . 或 空格 -> 1）-> 使用推拉切换动画
-                if (newIsDigit) digit = ch - '0';
-                textDy.setImmediate(scale * 10); // 设置动画起点位置
-                textDy.set(0);                   // 设置动画终点位置为0（触发平滑过渡）
-                old = current;
-                current = ch;
-                isSwitching = true; // 标记正在进行切换动画
-            }
-        }
-    }
-
-    public static class TextSwitchWidget extends Widget implements Renderable {
-        public String old = "";
-        public String current = "";
-        public int scale;
-        public SmoothedValue textDy = new SmoothedValue(0);
-
-        public TextSwitchWidget(Coordinate pos, Coordinate size, int scale, String initial) {
-            super(pos, size);
-
-            this.current = initial;
-            this.scale = scale;
-        }
-
-        @Override
-        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            textDy.doStep(screen.dt);
-
-            graphics.enableScissor(left(), top(), right(), bottom());
-
-            graphics.fill(left(), top(), right(), bottom(), bgColorInt());
-            TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(old), left() + scale, top() + scale - h() + textDy.getInt(), scale, mainColorInt(), false);
-            TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(current), left() + scale, top() + scale + textDy.getInt(), scale, mainColorInt(), false);
-
-            graphics.disableScissor();
-        }
-
-        public void switchText(String newText) {
-            textDy.setImmediate(h());
-            textDy.set(0);
-
-            old = current;
-            current = newText;
-        }
-    }
 
     public static class CalcationDetailsWidget extends Widget implements Renderable, Clickable, Lifecycle {
         public DynamicValue<Double> result;
@@ -266,9 +33,9 @@ public class MachineWidgets {
             // 计算结果
             addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(1, 1), result, 6, 1, true));
             // 计算结果单位
-            addChild(new TextWidget(Coordinate.fromTopLeft(w() - 1, 2), resultUnit).noShadow().rightAlign().mainColor(textColor()));
+            addChild(new TextWidget(Coordinate.fromTopRight(-1, 2), resultUnit).noShadow().rightAlign().mainColor(textColor()));
             // 描述
-            descWidget = addChild(new RectangleWidget(Coordinate.fromTopLeft(0, -1), Coordinate.fromTopLeft(w(), 4)).bottomAlignY());
+            descWidget = addChild(new RectangleWidget(Coordinate.fromTopLeft(0, -1), Coordinate.fromTopRight(0, 4)).bottomAlignY());
             descWidget.addChild(new TextWidget(Coordinate.fromTopLeft(2, 4), description).bottomAlignY().mainColor(textColor()));
         }
 
@@ -470,4 +237,264 @@ public class MachineWidgets {
             powerSwitch.rectDx.set(enabled ? (double) powerSwitch.w() / 2 : 0);
         }
     }
+
+    public static class InformationWindowWidget extends Widget implements Lifecycle, MouseDraggable, Clickable, Renderable {
+        public Component name;
+        public boolean changingPosition, changingSize;
+        public Widget closeButton;
+
+        public InformationWindowWidget(Coordinate pos, Coordinate size, Component name) {
+            super(pos, size);
+            this.name = name;
+        }
+
+        @Override
+        public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+            if (changingPosition) {
+                dx.set(dx.target + dragX);
+                dy.set(dy.target + dragY);
+                return true;
+            }
+            else if (changingSize) {
+                dw.set(dw.target + dragX);
+                dh.set(dh.target + dragY);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onInitialize() {
+            dx.a = 250;
+            dy.a = 250;
+            dw.a = 250;
+            dh.a = 250;
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopRight(0, 11)).mainColor(0xbf000000));
+            var a = addChild(new TextWidget(Coordinate.fromTopLeft(3, 2), name).noShadow().mainColor(0xff7f7f7f));
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(a.w() + 6, 5), Coordinate.fromTopRight(-a.w() - 10, 1)).mainColor(0x7f7f7f7f));
+            closeButton = addChild(new RectangleWidget(Coordinate.fromTopRight(-7, 4), Coordinate.fromTopLeft(3, 3)));
+
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromBottomRight(0, -11)).mainColor(0x7f000000));
+        }
+
+        private int powerInfoItemCount;
+
+        public PowerInfoItemWidget addPowerInfoItem(Component name, DynamicValue<Double> value, Component unit) {
+            int index = powerInfoItemCount++;
+            int row = index / 2;
+            Coordinate pos;
+            if (index % 2 == 0)
+                pos = Coordinate.fromTopLeft(7, 18 + row * 25);
+            else
+                pos = Coordinate.fromCenterTop(7, 18 + row * 25);
+            var item = new PowerInfoItemWidget(pos, name, value, unit);
+            addChild(item);
+            return item;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if (isInBounds(event.x(), event.y())) {
+                removeMyself();
+                parent.children.add(this); // 提高绘制优先级
+            }
+
+            if (isIn(event.x(), event.y(), right() - 9, top() + 2, 7, 7)) {
+                disable();
+                return true;
+            }
+            else if (isIn(event.x(), event.y(), x(), y(), w(), 11)) {
+                changingPosition = true;
+                return true;
+            }
+            else if (isIn(event.x(), event.y(), right() - 5, bottom() - 5, 5, 5)) {
+                changingSize = true;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean mouseReleased(MouseButtonEvent event) {
+            changingPosition = false;
+            changingSize = false;
+            return false;
+        }
+
+        @Override
+        public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+            closeButton.originalMainColor = null;
+            if (isIn(mouseX, mouseY, right() - 5, bottom() - 5, 5, 5) || changingSize) {
+                // 大小改变提示线
+                graphics.fill(right() - 4, bottom() + 1, right(), bottom(), -1);
+                graphics.fill(right() + 1, bottom() - 4, right(), bottom(), -1);
+            }
+            else if (isIn(mouseX, mouseY, right() - 9, top() + 2, 7, 7)) {
+                closeButton.mainColor(0xffff0000);
+            }
+        }
+    }
+
+    public static class PowerInfoItemWidget extends Widget implements Lifecycle, Clickable {
+        public Component name, unit;
+        public DynamicValue<Double> value;
+
+        public PowerInfoItemWidget(Coordinate pos, Component name, DynamicValue<Double> value, Component unit) {
+            super(pos, Coordinate.ZERO);
+            
+            this.value = value;
+            this.name = name;
+            this.unit = unit;
+        }
+
+        @Override
+        public void onInitialize() {
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(1, 19)).mainColor(0xff7f7f7f));
+            var a = addChild(new TextWidget(Coordinate.fromTopLeft(3, 9), name).noShadow().mainColor(0xffbfbfbf).bottomAlignY());
+            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(3, 10), value, 6, 1, true));
+            var b = addChild(new TextWidget(Coordinate.fromTopLeft(41, 11), unit).noShadow().mainColor(-1));
+            
+            originalSize.x = (w, h) -> Math.max(a.w(), 41 + b.w());
+            originalSize.y = (w, h) -> 18;
+        }
+    }
+
+    public static class PowerInfoWindow extends InformationWindowWidget {
+        public Component powerExpr;
+
+        public PowerInfoWindow(Coordinate pos, Coordinate size, Component powerExpr) {
+            super(pos, size, Component.literal("// 功率计算"));
+            this.powerExpr = powerExpr;
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            addChild(new RectangleWidget(Coordinate.fromBottomLeft(7, -7), Coordinate.fromTopRight(-14, 18)).mainColor(0x7f000000).bottomAlignY());
+            addChild(new TextWidget(Coordinate.fromCenterBottom(0, -11), powerExpr).noShadow().centerAlign().bottomAlignY().mainColor(0xffbfbfbf));
+        }
+    }
+
+    public static class MachineInfoWindow extends InformationWindowWidget {
+        public DynamicValue<Double> power;
+        public Component manaType;
+
+        public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType) {
+            super(pos, size, Component.literal("// 机器总览"));
+
+            this.manaType = manaType;
+            this.power = power;
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            addChild(new TextWidget(Coordinate.fromTopLeft(7, 39), Component.literal("机器类型")).noShadow().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), Component.literal("风力涡轮机")).scaled(1.5));
+            addChild(new TextWidget(Coordinate.fromTopRight(-7, 39), Component.literal("魔力类型")).noShadow().rightAlign().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
+            addChild(new TextWidget(Coordinate.fromCenterBottom(0, -33), Component.literal("[输出功率]")).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(Coordinate.fromCenterBottom(-72, -5), Component.literal("P=")).noShadow().scaled(2).rightAlign().bottomAlignY().mainColor(0xffffffff));
+            var unit = new TextSwitchWidget(Coordinate.fromCenterBottom(73, -5), Coordinate.fromTopLeft(26, 18), 2, "W");
+            addChild(unit.bottomAlignY().mainColor(0xffffffff));
+            addChild(new NumberDisplayWidget(Coordinate.fromCenterBottom(0, -5), power, 6, 3, unit, "W", false).centerAlign().bottomAlignY());
+        }
+    }
+
+    public static class NetworkInfoWindow extends InformationWindowWidget {
+        public MachineMenu menu;
+
+        public NetworkInfoWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
+            super(pos, size, Component.literal("// 网络信息"));
+            this.menu = menu;
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            // 提示文本
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 14), Coordinate.fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
+            addChild(new TextWidget(Coordinate.fromTopLeft(11, 15), Component.literal("当前魔力")).noShadow().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(Coordinate.fromTopRight(-66, 15), Component.literal("魔力缓存")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), Component.literal("净功率")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+
+            // 提示线
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0   , 29), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbfffff00));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.25, 21), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbfff0000));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.5 , 13), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbf00ffff));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.75, 5 ), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbf00ff00));
+
+            // 当前存储
+            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0   , 29), menu.radiationStorageJ  , 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.25, 21), menu.temperatureStorageJ, 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.5 , 13), menu.momentumStorageJ   , 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.75, 5 ), menu.pressureStorageJ   , 7, 1, true).mainColor(-1));
+
+            addChild(new TextWidget(Coordinate.custom(0, 54, 0   , 30), Component.literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(0, 54, 0.25, 22), Component.literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(0, 54, 0.5 , 14), Component.literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(0, 54, 0.75, 6 ), Component.literal("J")).noShadow().mainColor(-1));
+
+            // 总存储
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
+
+            addChild(new TextWidget(Coordinate.custom(1, -67, 0   , 30), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(1, -67, 0.25, 22), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(1, -67, 0.5 , 14), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(Coordinate.custom(1, -67, 0.75, 6 ), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
+
+            // 净功率
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0   , 29), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbfffff00));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.25, 21), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbfff0000));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.5 , 13), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbf00ffff));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.75, 5 ), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbf00ff00));
+
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0   , 29), menu.radiationPowerW  , 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.25, 21), menu.temperaturePowerW, 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.5 , 13), menu.momentumPowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.75, 5 ), menu.pressurePowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
+
+            addChild(new TextWidget(Coordinate.custom(1, -9, 0   , 30), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(Coordinate.custom(1, -9, 0.25, 22), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(Coordinate.custom(1, -9, 0.5 , 14), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(Coordinate.custom(1, -9, 0.75, 6 ), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+
+            // 进度条
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.25, 18), Coordinate.custom(1, -18, 0.25, -21), menu.radiationStorageJ  , menu.radiationCacheJ  ).bottomAlignY().mainColor(0xffffff00).bgColor(0x0fffff00));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.5 , 10), Coordinate.custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(0xffff0000).bgColor(0x0fff0000));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.75, 2 ), Coordinate.custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(0xff00ffff).bgColor(0x0f00ffff));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 1   , -6), Coordinate.custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(0xff00ff00).bgColor(0x0f00ff00));
+        }
+    }
+
+    public static class MachineControlWindow extends InformationWindowWidget {
+        public MachineMenu menu;
+
+        public MachineControlWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
+            super(pos, size, Component.literal("// 机器控制"));
+            this.menu = menu;
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            var switchWidget = new SwitchWidget(Coordinate.fromTopLeft(7, 15), Coordinate.fromTopLeft(50, 19), Component.literal("关闭"), Component.literal("开启"));
+            addChild(switchWidget.mainColor(-1));
+
+            menu.enabled.whenFirstDataArrivesDo(() -> {
+                switchWidget.pressed = menu.enabled.get();
+                switchWidget.rectDx.set(switchWidget.pressed ? (double) switchWidget.w() / 2 : 0);
+            });
+            switchWidget.onSwitch(pressed -> menu.powerSwitch.trigger(pressed));
+        }
+    }
+
 }

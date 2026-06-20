@@ -14,10 +14,12 @@ public abstract class MachineMenu extends Menu {
 	public DynamicValue<Double> radiationStorageJ, temperatureStorageJ, momentumStorageJ, pressureStorageJ;
 	public DynamicValue<Double> radiationCacheJ, temperatureCacheJ, momentumCacheJ, pressureCacheJ;
 	public DynamicValue<Boolean> enabled;
+	public MachineHooks.PowerSwitchHook powerSwitch;
 	public BlockPos pos;
 	public int count;
 	protected MachineMenu(MenuType<?> type, int containerId, Inventory playerInv, InteractionHand hand, Definition definition) {
 		super(type, containerId, playerInv, hand, definition);
+		powerSwitch = hook(new MachineHooks.PowerSwitchHook(this));
 	}
 
 	protected void setBlockPos(BlockPos pos) {

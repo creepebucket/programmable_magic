@@ -9,8 +9,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
@@ -26,25 +24,12 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
     public double airDensityBase = 1.225, airDensityTempFactBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
     public double windSpeedBase = 4.5, windSpeedAltitudeFact, windSpeedTimeFact, windSpeedWeatherFact, windSpeed;
     public double windShearExponent, power;
-    public boolean enabled;
 
     public static final RawAnimation SPIN_ANIMATION = RawAnimation.begin().thenLoop("animation");
     public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
     public WindTurbineBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), pos, state);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        enabled = input.getBooleanOr("enabled", false);
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putBoolean("enabled", enabled);
     }
 
     @Override

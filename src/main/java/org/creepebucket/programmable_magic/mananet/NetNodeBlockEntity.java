@@ -7,6 +7,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 
@@ -16,12 +18,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class NetNodeBlockEntity extends BlockEntity {
+    public boolean enabled;
+
     public NetNodeBlockEntity(BlockPos pos, BlockState blockState) {
         this(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), pos, blockState);
     }
 
     public NetNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+    }
+
+    @Override
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        enabled = input.getBooleanOr("enabled", false);
+    }
+
+    @Override
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.putBoolean("enabled", enabled);
     }
 
     public void connect(Level level, BlockPos connectedPos, Direction connectedFace, Direction selfFace) {

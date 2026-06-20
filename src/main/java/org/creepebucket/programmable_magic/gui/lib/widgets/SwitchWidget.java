@@ -40,8 +40,8 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
 
     @Override
     public void onInitialize() {
-        addChild(new TextWidget(Coordinate.fromTopLeft(w() / 4 + 1, h() / 2 + 1), text1).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
-        addChild(new TextWidget(Coordinate.fromTopLeft(3 * w() / 4 + 1, h() / 2 + 1), text2).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
+        addChild(new TextWidget(Coordinate.custom(0.25, 1, 0.5, 1), text1).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
+        addChild(new TextWidget(Coordinate.custom(0.75, 1, 0.5, 1), text2).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
         rectDx.set(pressed ? (double) w() / 2 : 0);
     }
 
