@@ -520,12 +520,14 @@ public class MachineWidgets {
     public static class MachineInfoWindow extends InformationWindowWidget {
         public DynamicValue<Double> power;
         public Component manaType;
+        public Component machineType;
 
-        public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType) {
+        public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType, Component machineType) {
             super(pos, size, Component.literal("机器总览"), 210, 40);
 
             this.manaType = manaType;
             this.power = power;
+            this.machineType = machineType;
         }
 
         @Override
@@ -533,7 +535,7 @@ public class MachineWidgets {
             super.onInitialize();
 
             addChild(new TextWidget(Coordinate.fromTopLeft(7, 39), Component.literal("机器类型")).noShadow().bottomAlignY().mainColor(0xff7f7f7f));
-            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), Component.literal("风力涡轮机")).scaled(1.5));
+            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), machineType).scaled(1.5));
             addChild(new TextWidget(Coordinate.fromTopRight(-7, 39), Component.literal("魔力类型")).noShadow().rightAlign().bottomAlignY().mainColor(0xff7f7f7f));
             addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
             addChild(new TextWidget(Coordinate.fromCenterBottom(0, -33), Component.literal("[输出功率]")).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
