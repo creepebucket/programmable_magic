@@ -37,7 +37,6 @@ public abstract class Animation {
         @Override
         public void onStart(Widget widget) {
             super.onStart(widget);
-            widget.enable();
         }
 
         @Override

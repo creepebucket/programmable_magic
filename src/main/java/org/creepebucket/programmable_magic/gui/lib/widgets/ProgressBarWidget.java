@@ -43,8 +43,9 @@ public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
         graphics.fill(left(), top(), filled, bottom(), mainColorInt());
         graphics.fill(filled, top(), right(), bottom(), bgColorInt());
 
-        textWidget.dx.set(fillX < 38 ? fillX + 39 : fillX);
-        ratioWidget.dx.set(fillX < 38 ? fillX + 39 : fillX);
+        var targetX = w() * smoothed.target / denominator.get();
+        textWidget.dx.set(targetX < 38 ? targetX + 39 : targetX);
+        ratioWidget.dx.set(targetX < 38 ? targetX + 39 : targetX);
 
         if (fillX < 38) {
             textWidget.mainColor(mainColor().toArgbWithAlphaMult(0.2));

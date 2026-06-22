@@ -61,9 +61,7 @@ public class WandScreen extends Screen<WandMenu> {
     }
 
     @Override
-    public void init() {
-        super.init();
-        // 玩家物品栏
+    public void buildWidget() {
         List<Slot> inventorySlots = menu.hotbarSlots;
         inventorySlots.addAll(menu.backpackSlots);
 

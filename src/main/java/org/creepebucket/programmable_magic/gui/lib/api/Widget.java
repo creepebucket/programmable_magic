@@ -148,8 +148,10 @@ public abstract class Widget {
         if (childrenCache != null) return childrenCache;
 
         // 未命中则动态更新缓存
-        List<Widget> list = new ArrayList<>(children);
-        for (Widget widget : children) {
+        List<Widget> list = new ArrayList<>();
+        for (int i = children.size() - 1; i >= 0; i--) {
+            Widget widget = children.get(i);
+            list.add(widget);
             list.addAll(widget.allChild());
         }
         childrenCache = list;
@@ -252,6 +254,47 @@ public abstract class Widget {
         this.tooltip = tooltip;
         doShowTooltip = tooltip != null;
         return this;
+    }
+
+    public int originalX() {
+        double x = originalPos.x.apply(parent.w(), parent.h());
+        if (align == Align.CENTER) x -= w() / 2.0;
+        else if (align == Align.RIGHT) x -= w();
+        return (int) Math.round(x);
+    }
+
+    public int originalY() {
+        double y = originalPos.y.apply(parent.w(), parent.h());
+        if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
+        else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
+        return (int) Math.round(y);
+    }
+
+    public int originalW() {
+        return originalSize.x.apply(parent.w(), parent.h());
+    }
+
+    public int originalH() {
+        return originalSize.y.apply(parent.w(), parent.h());
+    }
+
+    public int getScreenW() {
+        var parent = this;
+
+        while (!(parent instanceof Widget.Root)) {
+            parent = parent.parent;
+        }
+
+        return parent.w();
+    }
+    public int getScreenH() {
+        var parent = this;
+
+        while (!(parent instanceof Widget.Root)) {
+            parent = parent.parent;
+        }
+
+        return parent.h();
     }
 
     public int x() {

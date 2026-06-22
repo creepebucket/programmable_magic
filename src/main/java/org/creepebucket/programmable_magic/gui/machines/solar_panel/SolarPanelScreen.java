@@ -2,14 +2,7 @@ package org.creepebucket.programmable_magic.gui.machines.solar_panel;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.creepebucket.programmable_magic.gui.lib.api.Animation;
-import org.creepebucket.programmable_magic.gui.lib.api.Color;
-import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
-import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
-import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
-import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
 
 public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
@@ -18,8 +11,8 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 	}
 
 	@Override
-	protected void init() {
-		super.init();
+	public void buildWidget() {
+		/*
 
 		// =================== 计算细节 =================== //
 		// .addDetailLine(Component.literal(""), , Component.literal(""), "");
@@ -90,6 +83,6 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		// =================== 标题装饰 =================== //
 		addWidget(new TextWidget(Coordinate.fromCenter(-198, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.machine_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
-		addWidget(new TextWidget(Coordinate.fromCenter(10, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.network_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
+		addWidget(new TextWidget(Coordinate.fromCenter(10, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.network_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00); */
 	}
 }

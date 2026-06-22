@@ -28,8 +28,9 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
     }
 
     public SwitchWidget setPressed(boolean pressed) {
-        if (this.pressed == pressed) return this;
         this.pressed = pressed;
+        if (this.parent == null) return this;
+        rectDx.set(pressed ? (double) w() / 2 : 0);
         return this;
     }
 
@@ -55,7 +56,6 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
         setPressed(!pressed);
 
         onSwitch.accept(pressed);
-        rectDx.set(pressed ? (double) w() / 2 : 0);
         return true;
     }
 }

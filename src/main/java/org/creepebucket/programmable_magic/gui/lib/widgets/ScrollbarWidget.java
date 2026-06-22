@@ -49,9 +49,9 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         int delta;
 
         if (axis == "x" || axis == "X") {
-            delta = Math.toIntExact(Math.round(dragX / w() * (maxValue - minValue) / (1 - blockLengthRatio)));
+            delta = (int) Mth.clamp(Math.round(dragX / w() * (maxValue - minValue) / (1 - blockLengthRatio)), Integer.MIN_VALUE, Integer.MAX_VALUE);
         } else {
-            delta = Math.toIntExact(Math.round(dragY / h() * (maxValue - minValue) / (1 - blockLengthRatio)));
+            delta = (int) Mth.clamp(Math.round(dragY / h() * (maxValue - minValue) / (1 - blockLengthRatio)), Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
 
         value.set(Mth.clamp(value.target + delta * (reverseDirection ? -1 : 1), minValue, maxValue));

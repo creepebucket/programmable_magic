@@ -15,13 +15,13 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 	}
 
 	@Override
-	protected void init() {
-		super.init();
+	public void buildWidget() {
+		super.buildWidget();
 
 		root.mainColor(0xff00ffff);
 
 		// 主要信息显示
-		 addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("动量/Mom")));
+		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("动量/Mom")));
 
 		// 功率计算
 		var calculationsWindow = new MachineWidgets.PowerInfoWindow(Coordinate.fromCenter(-200, 0), Coordinate.fromTopLeft(210, 90), Component.literal("总功率 = 0.5×ρ×s×v³×η"));

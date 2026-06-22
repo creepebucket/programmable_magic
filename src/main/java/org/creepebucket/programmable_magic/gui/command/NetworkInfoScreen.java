@@ -21,10 +21,7 @@ public class NetworkInfoScreen extends Screen<NetworkInfoMenu> {
     }
 
     @Override
-    protected void init() {
-        super.init();
-
-        // 顶部功能条
+    public void buildWidget() {
         addWidget(new NumberInputWidget(Coordinate.fromTopRight(-50, 40), Coordinate.fromTopLeft(80, 16), menu.updateInterval, 1, 100).setDepth(1).disableMinMaxButton().rightAlign().tooltip(Component.translatable("gui.programmable_magic.network_info.update_interval_tip")));
 
         // 搜索框

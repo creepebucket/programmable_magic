@@ -2,8 +2,6 @@ package org.creepebucket.programmable_magic.gui.lib.ui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -23,7 +21,7 @@ import java.util.List;
 
 import static org.creepebucket.programmable_magic.ModUtils.now;
 
-public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
+public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     public Widget root = new Widget.Root();
     public double lastFrame = now(), dt;
@@ -33,8 +31,10 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         super(menu, playerInv, title);
     }
 
+    public abstract void buildWidget();
+
     @Override
-    protected void init() {
+    public void init() {
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof Lifecycle lifecycle) {
                 lifecycle.onDestroy();
@@ -69,6 +69,8 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         // 3. 关键点：调用 Menu 的 reportScreenSize
         // 这会触发 Menu 里所有控件的 onInitialize()，让它们根据新的 guiLeft/Top 计算位置
         this.menu.reportScreenSize(this.width, this.height);
+
+        buildWidget();
     }
 
     @Override
@@ -119,8 +121,7 @@ public class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
         root.renderWidget(graphics, mouseX, mouseY, partialTick, dt, true);
 
-        for (int i = this.root.allChild().size() - 1; i >= 0; i--) {
-            Widget widget = this.root.allChild().get(i);
+        for (Widget widget : this.root.allChild()) {
             if (widget instanceof Tooltipable tooltipable) {
                 if (tooltipable.renderTooltip(graphics, mouseX, mouseY)) return;
             }

@@ -1,8 +1,10 @@
 package org.creepebucket.programmable_magic.gui.machines.api;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
@@ -238,26 +240,87 @@ public class MachineWidgets {
         }
     }
 
+    public static class WindowHintWidget extends Widget implements Lifecycle, Tickable, KeyInputable {
+        public Widget hintText;
+
+        public WindowHintWidget(Coordinate pos) {
+            super(pos, Coordinate.ZERO);
+        }
+
+        @Override
+        public void onInitialize() {
+            hintText = screen.addWidget(new TextWidget(Coordinate.fromCenter(0, 0), Component.literal("按下 Alt+W 开关窗口管理界面")).centerAlign().centerAlignY().mainColor(-1).disable());
+        }
+
+        @Override
+        public void tick() {
+            if (((MachineScreen<?>) screen).windows.stream().noneMatch((w) -> w.enabled)) {
+                if (!hintText.enabled) {
+                    hintText.enable();
+                    hintText.addAnimation(new Animation.FadeIn.FromTop(0.3), 0);
+                }
+            } else {
+                if (hintText.enabled || hintText.animations.isEmpty()) {
+                    hintText.addAnimation(new Animation.FadeOut.ToBottom(0.3).noDeletion(), 0);
+                }
+            }
+        }
+
+        @Override
+        public boolean keyPressed(KeyEvent event) {
+            if (event.hasAltDown() && event.key() == 'W') {
+                var w = ((MachineScreen) screen).managementWindow;
+                if (w.enabled) {
+                    w.addAnimation(new Animation.FadeOut.ToBottom(0.3).noDeletion(), 0);
+                } else {
+                    w.addAnimation(new Animation.FadeIn.FromTop(0.3), 0);
+                    w.enable();
+                }
+            }
+
+            return false;
+        }
+    }
+
     public static class InformationWindowWidget extends Widget implements Lifecycle, MouseDraggable, Clickable, Renderable {
         public Component name;
         public boolean changingPosition, changingSize;
         public Widget closeButton;
+        public int minW, minH;
 
-        public InformationWindowWidget(Coordinate pos, Coordinate size, Component name) {
+        public InformationWindowWidget(Coordinate pos, Coordinate size, Component name, int minW, int minH) {
             super(pos, size);
+
             this.name = name;
+            this.minW = minW;
+            this.minH = minH;
         }
 
         @Override
         public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
             if (changingPosition) {
-                dx.set(dx.target + dragX);
-                dy.set(dy.target + dragY);
+                var targetX = dx.target + dragX;
+                var targetY = dy.target + dragY;
+
+                // 判断会不会超出屏幕
+                targetX = Math.clamp(targetX, -originalX(), getScreenW() - originalX() - w());
+                targetY = Math.clamp(targetY, -originalY(), getScreenH() - originalY() - h());
+
+                dx.set(targetX);
+                dy.set(targetY);
                 return true;
             }
             else if (changingSize) {
-                dw.set(dw.target + dragX);
-                dh.set(dh.target + dragY);
+                var targetX = dw.target + dragX;
+                var targetY = dh.target + dragY;
+
+                // 判断会不会超出屏幕
+                targetX = Math.max(targetX, minW - originalW());
+                targetY = Math.max(targetY, minH - originalH());
+
+                dw.set(targetX);
+                dh.set(targetY);
+
                 return true;
             }
             return false;
@@ -271,48 +334,69 @@ public class MachineWidgets {
             dh.a = 250;
 
             addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopRight(0, 11)).mainColor(0xbf000000));
-            var a = addChild(new TextWidget(Coordinate.fromTopLeft(3, 2), name).noShadow().mainColor(0xff7f7f7f));
+            var a = addChild(new TextWidget(Coordinate.fromTopLeft(3, 2), Component.literal("// ").append(name)).noShadow().mainColor(0xff7f7f7f));
             addChild(new RectangleWidget(Coordinate.fromTopLeft(a.w() + 6, 5), Coordinate.fromTopRight(-a.w() - 10, 1)).mainColor(0x7f7f7f7f));
             closeButton = addChild(new RectangleWidget(Coordinate.fromTopRight(-7, 4), Coordinate.fromTopLeft(3, 3)));
 
             addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromBottomRight(0, -11)).mainColor(0x7f000000));
+
+            addAnimation(new Animation.FadeIn.FromTop(0.3), (double) ModUtils.simpleRandInt(0, 2) / 20);
         }
 
-        private int powerInfoItemCount;
+        @Override
+        public Widget enable() {
+            if (animations.isEmpty()) addAnimation(new Animation.FadeIn.FromTop(0.3), 0);
+            return super.enable();
+        }
 
-        public PowerInfoItemWidget addPowerInfoItem(Component name, DynamicValue<Double> value, Component unit) {
-            int index = powerInfoItemCount++;
-            int row = index / 2;
-            Coordinate pos;
-            if (index % 2 == 0)
-                pos = Coordinate.fromTopLeft(7, 18 + row * 25);
-            else
-                pos = Coordinate.fromCenterTop(7, 18 + row * 25);
-            var item = new PowerInfoItemWidget(pos, name, value, unit);
-            addChild(item);
-            return item;
+        @Override
+        public Widget disable() {
+            if (animations.isEmpty()) addAnimation(new Animation.FadeOut.ToBottom(0.3).noDeletion(), 0);
+            else return super.disable();
+            return this;
         }
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
             if (isInBounds(event.x(), event.y())) {
-                removeMyself();
+                parent.children.remove(this);
                 parent.children.add(this); // 提高绘制优先级
             }
 
-            if (isIn(event.x(), event.y(), right() - 9, top() + 2, 7, 7)) {
-                disable();
+            if (isIn(event.x(), event.y(), right() - 9, top() + 2, 7, 7)) { // 关闭按钮
+                addAnimation(new Animation.FadeOut.ToBottom(0.3).noDeletion(), 0);
                 return true;
             }
-            else if (isIn(event.x(), event.y(), x(), y(), w(), 11)) {
+            else if (isIn(event.x(), event.y(), x(), y(), w(), 11)) { // 标题栏
                 changingPosition = true;
                 return true;
             }
-            else if (isIn(event.x(), event.y(), right() - 5, bottom() - 5, 5, 5)) {
+            else if (isIn(event.x(), event.y(), right() - 5, bottom() - 5, 5, 5)) { // 改变尺寸
                 changingSize = true;
                 return true;
             }
+		else if (enabled && isInBounds(event.x(), event.y())) {
+				// 手动分发事件
+				for (Widget widget : allChild()) {
+                    if (widget instanceof Clickable clickable) {
+                        if (clickable.mouseClicked(event, fromMouse)) return true;
+
+                        if (widget.isInBounds(event.x(), event.y()) && clickable.mouseClickedChecked(event, fromMouse))
+                            return true;
+                    }
+                    if (!widget.clickBehaviors.isEmpty() && widget.enabled && widget.isInBounds(event.x(), event.y())) {
+                        for (Runnable behavior : widget.clickBehaviors) behavior.run();
+                        return true;
+                    }
+                }
+                return true;
+            }
             return false;
+        }
+
+        @Override
+        public void onDestroy() {
+            ((MachineScreen<?>) screen).windows.remove(this);
         }
 
         @Override
@@ -332,6 +416,48 @@ public class MachineWidgets {
             }
             else if (isIn(mouseX, mouseY, right() - 9, top() + 2, 7, 7)) {
                 closeButton.mainColor(0xffff0000);
+            }
+        }
+    }
+
+    public static class WindowManagementWindow extends InformationWindowWidget implements Tickable{
+        public List<SwitchWidget> switches = new ArrayList<>();
+
+        public WindowManagementWindow(Coordinate pos, Coordinate size) {
+            super(pos, size, Component.literal("窗口管理"), 120, 60);
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            // 表头
+            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), Component.literal("窗口名称")).noShadow().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(Coordinate.fromTopRight(-16, 15), Component.literal("开关")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+
+            // 提示线
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 26), Coordinate.fromTopRight(-14, 1)).mainColor(0x7f00bfbf));
+
+            var cull = addChild(new CullAreaWidget(Coordinate.fromTopLeft(7, 28), Coordinate.fromBottomRight(-14, -35)));
+            var itemDy = new SmoothedValue(0);
+            smoothedValues.add(itemDy);
+            var y = 0;
+
+            for (InformationWindowWidget window: ((MachineScreen<?>) screen).windows) {
+                cull.addChild(new TextWidget(Coordinate.fromTopLeft(0, 3 + y), window.name).noShadow().mainColor(-1).dy(itemDy));
+                switches.add((SwitchWidget) cull.addChild(new SwitchWidget(Coordinate.fromTopRight(-4, 1 + y), Coordinate.fromTopLeft(60, 11), Component.literal("关闭"),
+                        Component.literal("开启")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
+                y += 15;
+            }
+
+            cull.addChild(new ScrollbarWidget(Coordinate.fromTopRight(-3, 1), Coordinate.fromBottomLeft(3, -2), Coordinate.fromTopLeft(-y, 0), itemDy, "y").reverseDirection());
+        }
+
+        @Override
+        public void tick() {
+            var windows = ((MachineScreen<?>) screen).windows;
+            for (int i = 0; i < windows.size(); i++) {
+                switches.get(i).setPressed(windows.get(i).enabled && windows.get(i).animations.stream().noneMatch(animation -> animation instanceof Animation.FadeOut));
             }
         }
     }
@@ -362,9 +488,23 @@ public class MachineWidgets {
 
     public static class PowerInfoWindow extends InformationWindowWidget {
         public Component powerExpr;
+        private int powerInfoItemCount;
+
+        public PowerInfoItemWidget addPowerInfoItem(Component name, DynamicValue<Double> value, Component unit) {
+            int index = powerInfoItemCount++;
+            int row = index / 2;
+            Coordinate pos;
+            if (index % 2 == 0)
+                pos = Coordinate.fromTopLeft(7, 18 + row * 25);
+            else
+                pos = Coordinate.fromCenterTop(7, 18 + row * 25);
+            var item = new PowerInfoItemWidget(pos, name, value, unit);
+            addChild(item);
+            return item;
+        }
 
         public PowerInfoWindow(Coordinate pos, Coordinate size, Component powerExpr) {
-            super(pos, size, Component.literal("// 功率计算"));
+            super(pos, size, Component.literal("功率计算"), 150, 90);
             this.powerExpr = powerExpr;
         }
 
@@ -382,7 +522,7 @@ public class MachineWidgets {
         public Component manaType;
 
         public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType) {
-            super(pos, size, Component.literal("// 机器总览"));
+            super(pos, size, Component.literal("机器总览"), 210, 40);
 
             this.manaType = manaType;
             this.power = power;
@@ -408,7 +548,7 @@ public class MachineWidgets {
         public MachineMenu menu;
 
         public NetworkInfoWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, Component.literal("// 网络信息"));
+            super(pos, size, Component.literal("网络信息"), 180, 90);
             this.menu = menu;
         }
 
@@ -478,7 +618,7 @@ public class MachineWidgets {
         public MachineMenu menu;
 
         public MachineControlWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, Component.literal("// 机器控制"));
+            super(pos, size, Component.literal("机器控制"), 120, 40);
             this.menu = menu;
         }
 
