@@ -19,8 +19,8 @@ public class SolarPanelBlockEntityBER extends GeoBlockRenderer<SolarPanelBlockEn
         var time = Minecraft.getInstance().level.getOverworldClockTime() % 24000;
         var rot_x = (time <= 12000 ? 6000 - time : time - 18000) * (float) Math.PI / 12000f;
 
-        var group13 = snapshots.get("group13");
-        if (group13.isPresent()) group13.get().setRotX(rot_x);
+        var group8 = snapshots.get("group8");
+        if (group8.isPresent()) group8.get().setRotX(rot_x);
     }
 
     @Override
