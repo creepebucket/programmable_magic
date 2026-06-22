@@ -86,7 +86,8 @@ public class BasicManaConnector extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
 
-        var clickedFace = hitResult.getDirection();
+        var hitLoc = hitResult.getLocation();
+        var clickedFace = Direction.getApproximateNearest(hitLoc.x - pos.getX() - 0.5, hitLoc.y - pos.getY() - 0.5, hitLoc.z - pos.getZ() - 0.5);
         if (!clickedFace.getAxis().isHorizontal()) {
             player.sendSystemMessage(Component.literal("拒绝连接: 只能点击水平面"));
             return InteractionResult.CONSUME;
