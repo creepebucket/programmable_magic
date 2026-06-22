@@ -389,6 +389,7 @@
   "tooltip.programmable_magic.spell_tooltip.type.compute_mod": "计算修饰",
   "tooltip.programmable_magic.spell_tooltip.type.control_mod": "控制修饰",
   "tooltip.programmable_magic.spell_tooltip.type.unknown": "未知法术",
+  "tooltip.programmable_magic.spell.disabled": "TeaCon 限定版不开放此法术",
   "tooltip.programmable_magic.wand.charge_rate": "充能速率 %sW",
   "tooltip.programmable_magic.wand.mana_mult": "魔力修正 x%s",
   "tooltip.programmable_magic.wand.plugin_slots": "插件槽位 %s",
@@ -462,5 +463,6 @@
   "gui.programmable_magic.network_info.id": "ID",
   "gui.programmable_magic.network_info.storage": "存储",
   "gui.programmable_magic.network_info.cache": "缓存",
-  "gui.programmable_magic.network_info.power": "功率"
+  "gui.programmable_magic.network_info.power": "功率",
+  "gui.programmable_magic.wand.disabled_spell_teacon": "这是TeaCon版，为场地安全部分法术不开放。完整功能请下载普通版：https://github.com/creepebucket/programmable_magic"
 }

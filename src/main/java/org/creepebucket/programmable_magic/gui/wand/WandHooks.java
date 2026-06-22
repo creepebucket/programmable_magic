@@ -226,8 +226,16 @@ public class WandHooks {
 
             if (!compiler.errors.isEmpty()) {
                 for (SpellExceptions exception : compiler.errors) exception.throwIt(player);
-                // 有错就滚
                 return;
+            }
+
+            var checkCurrent = compiled.head;
+            while (checkCurrent != null) {
+                if (ModUtils.isSpellDisabled(checkCurrent)) {
+                    player.sendSystemMessage(Component.translatable("gui.programmable_magic.wand.disabled_spell_teacon"));
+                    return;
+                }
+                checkCurrent = checkCurrent.next;
             }
 
             // 断开上一个法术的连接

@@ -68,6 +68,12 @@ public class SpellSupplyPlugin extends BasePlugin {
             for (int i = 0; i < subCategorySpells.size(); i++) {
                 var pos = Coordinate.fromTopLeft(dx % 80 + 7, categoryDy + Math.floorDiv(dx, 80) * 16 + 32);
 
+                if (ModUtils.isSpellDisabled(new ItemStack(subCategorySpells.get(i).get()))) {
+                    var redBg = new RectangleWidget(pos, Coordinate.fromTopLeft(16, 16)).color(new Color(0x60FF0000));
+                    redBg.dy(supplyDy);
+                    scrollWidgets.add(redBg);
+                }
+
                 scrollWidgets.add(new SlotWidget(screen.getMenu().slots.get(slotIndex), pos).dy(supplyDy));
                 slotIndex++;
 

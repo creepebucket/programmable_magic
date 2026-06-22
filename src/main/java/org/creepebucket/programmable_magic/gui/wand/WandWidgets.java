@@ -363,11 +363,20 @@ public class WandWidgets {
                 // 先过编译
                 var compiler = new SpellCompiler();
                 compiler.skipCompile = ((WandScreen) screen).bypassCompileWidget.isSelected;
-                compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
+                var compiled = compiler.compile(((WandMenu) screen.getMenu()).storedSpells);
                 if (!compiler.errors.isEmpty()) {
                     for (SpellExceptions exception : compiler.errors)
                         ((WandScreen) screen).notificationWidget.addError(exception.message());
                     return false;
+                }
+                var checkCurrent = compiled.head;
+                while (checkCurrent != null) {
+                    if (ModUtils.isSpellDisabled(checkCurrent)) {
+                        ((WandScreen) screen).notificationWidget.addError(
+                                Component.translatable("gui.programmable_magic.wand.disabled_spell_teacon"));
+                        return false;
+                    }
+                    checkCurrent = checkCurrent.next;
                 }
                 ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005, ((WandScreen) screen).bypassCompileWidget.isSelected);
             }

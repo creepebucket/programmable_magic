@@ -90,13 +90,14 @@ public class SpellEntity extends Entity {
 
     @Override
     public void tick() {
+        try {
         super.tick();
         if (this.level().isClientSide()) {
             SpellEffects.trail(this);
             return;
         }
 
-        if (!(debugMode && (!doTick && !doStep && !doRun))) this.setPos(this.position().add(this.getDeltaMovement()));
+        this.setPos(this.position().add(this.getDeltaMovement()));
         this.markHurt();
 
         ServerLevel serverLevel = (ServerLevel) this.level();
@@ -115,7 +116,7 @@ public class SpellEntity extends Entity {
             delayTicks--;
         }
 
-        while (delayTicks <= 0 && !(debugMode && (!doTick && !doStep && !doRun))) {
+        while (delayTicks <= 0) {
             if (currentSpell == null) {
                 this.discard();
                 return;
@@ -128,18 +129,11 @@ public class SpellEntity extends Entity {
             if (result.doStop) this.discard();
             // 设置下一个法术
             currentSpell = result.nextSpell;
-
-            // 设置调试模式flag
-            doStep = false;
-
-            if (debugMode && currentSpell != null && breakpointIds.contains(currentSpell.id)) {
-
-                // 遇到断点就停止运行
-                doRun = false;
-                break;
-            }
         }
-        doTick = false;
+        } catch (Exception e) {
+            LOGGER.error("SpellEntity tick error", e);
+            this.discard();
+        }
     }
 
     @Override

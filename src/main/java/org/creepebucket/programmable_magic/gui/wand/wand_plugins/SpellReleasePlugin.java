@@ -35,6 +35,7 @@ public class SpellReleasePlugin extends BasePlugin {
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_disabled.png")).selectedTexture(Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger.png"))
                 .onClick(() -> {
                     screen.getMenu().setDebugModeHook.trigger(screen.debugger.isSelected);
+                    screen.notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
                 }).addAnimation(new Animation.FadeIn.FromRight(0.3), 0).color(screen.mainColor));
 
         // 调试
@@ -42,21 +43,25 @@ public class SpellReleasePlugin extends BasePlugin {
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_step.png"),
                 () -> {
                     screen.getMenu().debuggerStepHook.trigger();
+                    screen.notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_step")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerTick = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 2), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_tick.png"),
                 () -> {
                     screen.getMenu().debuggerTickHook.trigger();
+                    screen.notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_tick")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerResume = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 3), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_resume.png"),
                 () -> {
                     screen.getMenu().debuggerRunHook.trigger();
+                    screen.notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_resume")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
         debuggerPause = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-16, -68 - 14 + 16 * 4), Coordinate.fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/debugger_pause.png"),
                 () -> {
                     screen.getMenu().debuggerPauseHook.trigger();
+                    screen.notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.debugger_pause")).addAnimation(new Animation.FadeIn.FromRight(0.3), .05).color(screen.mainColor));
 
         // 编辑

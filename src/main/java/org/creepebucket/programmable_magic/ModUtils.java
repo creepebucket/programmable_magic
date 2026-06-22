@@ -19,7 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
+import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
+import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.plugins.WandPluginLogic;
 
 import java.util.*;
@@ -167,6 +169,24 @@ public class ModUtils {
 
         COLOR_MAP.put("spell." + MODID + ".subcategory.custom", 0xFF000000);
         return COLOR_MAP;
+    }
+
+    // TeaCon版禁用的法术子类别
+    public static final Set<String> DISABLED_SUBCATEGORIES = Set.of(
+            "spell." + MODID + ".subcategory.entity",
+            "spell." + MODID + ".subcategory.block",
+            "spell." + MODID + ".subcategory.trigger",
+            "spell." + MODID + ".subcategory.flow_control",
+            "spell." + MODID + ".subcategory.data_storage"
+    );
+
+    public static boolean isSpellDisabled(ItemStack stack) {
+        if (!SpellRegistry.isSpell(stack.getItem())) return false;
+        return DISABLED_SUBCATEGORIES.contains(SpellRegistry.createSpellLogic(stack.getItem()).subCategory);
+    }
+
+    public static boolean isSpellDisabled(SpellItemLogic logic) {
+        return DISABLED_SUBCATEGORIES.contains(logic.subCategory);
     }
 
     /**

@@ -392,6 +392,7 @@
   "tooltip.programmable_magic.spell_tooltip.type.compute_mod": "Compute Mod",
   "tooltip.programmable_magic.spell_tooltip.type.control_mod": "Control Mod",
   "tooltip.programmable_magic.spell_tooltip.type.unknown": "Unknown",
+  "tooltip.programmable_magic.spell.disabled": "Unavailable in TeaCon Edition",
   "tooltip.programmable_magic.wand.charge_rate": "Charge Rate %sW",
   "tooltip.programmable_magic.wand.mana_mult": "Mana Mult x%s",
   "tooltip.programmable_magic.wand.plugin_slots": "Plugin Slots %s",
@@ -462,5 +463,6 @@
   "gui.programmable_magic.network_info.id": "ID",
   "gui.programmable_magic.network_info.storage": "Storage",
   "gui.programmable_magic.network_info.cache": "Cache",
-  "gui.programmable_magic.network_info.power": "Power"
+  "gui.programmable_magic.network_info.power": "Power",
+  "gui.programmable_magic.wand.disabled_spell_teacon": "This is the TeaCon edition. Some spells are unavailable for venue safety. Download the full version at: https://github.com/creepebucket/programmable_magic"
 }
