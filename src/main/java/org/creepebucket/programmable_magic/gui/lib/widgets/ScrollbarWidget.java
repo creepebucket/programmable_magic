@@ -44,14 +44,16 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (axis == "x" || axis == "X") screenValue = w();
         else screenValue = h();
 
-        double blockLengthRatio = (double) screenValue / (maxValue - minValue);
+        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, maxValue - minValue));
 
         int delta;
 
+        double rangeRatio = 1 - blockLengthRatio;
+        if (rangeRatio <= 0) return true;
         if (axis == "x" || axis == "X") {
-            delta = (int) Mth.clamp(Math.round(dragX / w() * (maxValue - minValue) / (1 - blockLengthRatio)), Integer.MIN_VALUE, Integer.MAX_VALUE);
+            delta = (int) Mth.clamp(Math.round(dragX / w() * (maxValue - minValue) / rangeRatio), Integer.MIN_VALUE, Integer.MAX_VALUE);
         } else {
-            delta = (int) Mth.clamp(Math.round(dragY / h() * (maxValue - minValue) / (1 - blockLengthRatio)), Integer.MIN_VALUE, Integer.MAX_VALUE);
+            delta = (int) Mth.clamp(Math.round(dragY / h() * (maxValue - minValue) / rangeRatio), Integer.MIN_VALUE, Integer.MAX_VALUE);
         }
 
         value.set(Mth.clamp(value.target + delta * (reverseDirection ? -1 : 1), minValue, maxValue));
@@ -84,7 +86,7 @@ public class ScrollbarWidget extends Widget implements MouseDraggable, Clickable
         if (axis == "x" || axis == "X") screenValue = w();
         else screenValue = h();
 
-        double blockLengthRatio = (double) screenValue / (maxValue - minValue);
+        double blockLengthRatio = Math.min(1.0, (double) screenValue / Math.max(1, maxValue - minValue));
         double blockStartRatio = (value.get() - minValue) / (maxValue - minValue);
         if (reverseDirection) blockStartRatio = 1 - blockStartRatio;
         blockStartRatio = blockStartRatio * (1 - blockLengthRatio);

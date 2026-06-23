@@ -49,7 +49,7 @@ public class SpellStoragePlugin extends BasePlugin {
 
         storageSlots = screen.storageSlots;
 
-        var targetMin = (-tier * 250 - 2) * 16 + spellCountCanFit * 16;
+        var targetMin = Math.min(0, (-tier * 10 - 2) * 16 + spellCountCanFit * 16);
 
         // 两边遮挡
         leftShift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -115), Coordinate.fromTopLeft(32, 16),
@@ -110,7 +110,7 @@ public class SpellStoragePlugin extends BasePlugin {
     @Override
     public Component function() {
         return Component.translatable("gui.programmable_magic.wand.plugin.spell_storage")
-                .append(Component.literal("" + tier * 250)
+                .append(Component.literal("" + tier * 10)
                         .withColor(hsvToArgb((Minecraft.getInstance().level.getGameTime() * 0.01f) % 1, 1, 1, 255)));
     }
 }
