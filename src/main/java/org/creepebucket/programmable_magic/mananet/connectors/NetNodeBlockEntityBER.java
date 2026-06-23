@@ -61,7 +61,6 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
         for (Direction direction : Direction.values()) {
             if (!direction.getAxis().isHorizontal() || !renderState.connections.containsKey(direction)) continue;
             var connectedBlockPos = renderState.connections.get(direction);
-            if (renderState.blockPos.asLong() > connectedBlockPos.asLong()) continue;
 
             var connectedFace = renderState.connectedFaces.get(direction);
             if (connectedFace == null) continue;
@@ -69,10 +68,30 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
             if (connectedBlockFacing == null) continue;
 
             var selfBlockFacing = renderState.direction;
+            if (!selfBlockFacing.getAxis().isHorizontal()) continue;
+
+            if (!connectedBlockFacing.getAxis().isHorizontal()) {
+                int steps = 0;
+                Direction temp = selfBlockFacing;
+                while (temp != direction) {
+                    temp = temp.getClockWise();
+                    steps++;
+                }
+                int inverseSteps = (4 - steps) % 4;
+                connectedBlockFacing = connectedFace;
+                for (int i = 0; i < inverseSteps; i++) {
+                    connectedBlockFacing = connectedBlockFacing.getClockWise();
+                }
+                connectedBlockFacing = connectedBlockFacing.getOpposite();
+            } else if (renderState.blockPos.asLong() > connectedBlockPos.asLong()) {
+                continue;
+            }
+
             var selfBase = position.add(facingToPos.get(direction));
             var connectedBase = connectedBlockPos.getCenter().subtract(renderState.blockPos.getCenter()).add(position).add(facingToPos.get(connectedFace));
 
             List<List<Vec3>> allCenters = new ArrayList<>();
+            double segmentUnit = 4.0 / 16;
             for (int i = 0; i < 4; i++) {
                 var selfCenter = selfBase.add(facingToUnit.get(selfBlockFacing).scale(offsets.get(i))).add(yPixel.scale(yOffsets.get(i)));
                 var connectedCenter = connectedBase.add(facingToUnit.get(connectedBlockFacing).scale(offsets.get(i))).add(yPixel.scale(yOffsets.get(i)));
@@ -80,7 +99,15 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
                         0, (connectedCenter.z - selfCenter.z) * facingToCpDirection.get(direction).z);
                 var cp1 = connectedCenter.add((selfCenter.x - connectedCenter.x) * facingToCpDirection.get(connectedFace).x,
                         0, (selfCenter.z - connectedCenter.z) * facingToCpDirection.get(connectedFace).z);
-                allCenters.add(ModUtils.BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, 10));
+                var measurePoints = ModUtils.BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, 10);
+                double totalLength = 0;
+                for (int j = 0; j < measurePoints.size() - 1; j++) {
+                    totalLength += measurePoints.get(j).distanceTo(measurePoints.get(j + 1));
+                }
+                int segments = (int) Math.round(totalLength / segmentUnit);
+                if (segments < 3) segments = 3;
+                if (segments % 2 == 0) segments++;
+                allCenters.add(ModUtils.BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, segments));
             }
 
             List<List<List<Vec3>>> allVertex = new ArrayList<>(List.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));
@@ -117,7 +144,7 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
             for (int i = 0; i < 4; i++) {
                 var vertexList = allVertex.get(i);
                 for (int j = 0; j < vertexList.size() - 1; j++) {
-                    var color = colors.get(i + 4 * (j % 2));
+                    var color = colors.get(i + 4 * ((j + 1) % 2));
                     renderer.addSolidQuad(vertexList.get(j).get(0), vertexList.get(j).get(1), vertexList.get(j + 1).get(1), vertexList.get(j + 1).get(0), color, renderState.lightCoords);
                     renderer.addSolidQuad(vertexList.get(j).get(1), vertexList.get(j).get(2), vertexList.get(j + 1).get(2), vertexList.get(j + 1).get(1), color, renderState.lightCoords);
                     renderer.addSolidQuad(vertexList.get(j).get(2), vertexList.get(j).get(3), vertexList.get(j + 1).get(3), vertexList.get(j + 1).get(2), color, renderState.lightCoords);

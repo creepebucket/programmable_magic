@@ -90,10 +90,16 @@ public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBloc
         // ========== 网络连接逻辑 ========== //
 
         if (!level.isClientSide() && level.getBlockEntity(pos.east(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.east(1), Direction.SOUTH, Direction.NORTH);
+            entity.connect(level, pos.east(1), Direction.WEST, Direction.EAST);
         }
         if (!level.isClientSide() && level.getBlockEntity(pos.west(1)) instanceof NetNodeBlockEntity) {
-            entity.connect(level, pos.west(1), Direction.SOUTH, Direction.SOUTH);
+            entity.connect(level, pos.west(1), Direction.EAST, Direction.WEST);
+        }
+        if (!level.isClientSide() && level.getBlockEntity(pos.south(1)) instanceof NetNodeBlockEntity) {
+            entity.connect(level, pos.south(1), Direction.NORTH, Direction.SOUTH);
+        }
+        if (!level.isClientSide() && level.getBlockEntity(pos.north(1)) instanceof NetNodeBlockEntity) {
+            entity.connect(level, pos.north(1), Direction.SOUTH, Direction.NORTH);
         }
 
         entity.power = entity.enabled ? (entity.directIrradiance + entity.diffuseIrradiance) * entity.panelArea * entity.efficiencyFact * 0.01 : 0;
