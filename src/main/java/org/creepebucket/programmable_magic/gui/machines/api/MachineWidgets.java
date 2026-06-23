@@ -436,7 +436,7 @@ public class MachineWidgets {
             addChild(new TextWidget(Coordinate.fromTopRight(-16, 15), Component.literal("开关")).noShadow().rightAlign().mainColor(0xffbfbfbf));
 
             // 提示线
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 26), Coordinate.fromTopRight(-14, 1)).mainColor(0x7f00bfbf));
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 26), Coordinate.fromTopRight(-14, 1)).mainColor(mainColor().toArgbWithAlphaMult(0.5)));
 
             var cull = addChild(new CullAreaWidget(Coordinate.fromTopLeft(7, 28), Coordinate.fromBottomRight(-14, -35)));
             var itemDy = new SmoothedValue(0);

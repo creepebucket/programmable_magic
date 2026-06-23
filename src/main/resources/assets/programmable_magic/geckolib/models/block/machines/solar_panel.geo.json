@@ -13,7 +13,8 @@
 			"bones": [
 				{
 					"name": "group",
-					"pivot": [0, 0, 0]
+					"pivot": [0, 0, 0],
+					"rotation": [0, -90, 0]
 				},
 				{
 					"name": "s",
