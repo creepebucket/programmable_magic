@@ -64,7 +64,7 @@ public class NumberDisplayWidget extends Widget implements Renderable, Tickable 
     public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
         // 开启 OpenGL 裁剪：由于子组件（数字）在滚动时会超出自身框的范围
         // 这里设置裁剪区，确保只有在当前组件区域内的像素才会被渲染出，达到“遮罩”效果
-        graphics.enableScissor(left(), top(), right(), bottom());
+        graphics.enableScissor(left(), top(), right() + 1, bottom());
         super.renderWidget(graphics, mx, my, partialTick, dt, isForeground);
         // 渲染完毕后关闭裁剪，以免影响其他 GUI 元素的渲染
         graphics.disableScissor();

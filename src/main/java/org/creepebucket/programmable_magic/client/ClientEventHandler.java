@@ -4,12 +4,14 @@ import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
-import org.creepebucket.programmable_magic.gui.machines.solar_panel.SolarPanelScreen;
-import org.creepebucket.programmable_magic.gui.machines.wind_turbine.WindTurbineScreen;
+import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
+import org.creepebucket.programmable_magic.gui.machines.generator.solar_panel.SolarPanelScreen;
+import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
-import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanelBlockEntityBER;
-import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbineBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
@@ -37,6 +39,10 @@ public class ClientEventHandler {
 				SolarPanelScreen::new
 		);
 		event.register(
+				ModMenuTypes.WATER_PUMP_MENU.get(),
+				WaterPumpScreen::new
+		);
+		event.register(
 				ModMenuTypes.NETWORK_INFO.get(),
 				NetworkInfoScreen::new
 		);
@@ -47,6 +53,7 @@ public class ClientEventHandler {
 
         event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), WindTurbineBlockEntityBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), WaterPumpBlockEntityBER::new);
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 

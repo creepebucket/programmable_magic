@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import org.creepebucket.programmable_magic.mananet.connectors.BasicManaConnector;
-import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.jspecify.annotations.Nullable;
 
 public class BasicMachineItemHelper {

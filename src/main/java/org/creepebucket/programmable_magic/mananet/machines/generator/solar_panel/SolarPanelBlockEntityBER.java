@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.generator.solar_panel;
+package org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel;
 
 import com.geckolib.renderer.GeoBlockRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;

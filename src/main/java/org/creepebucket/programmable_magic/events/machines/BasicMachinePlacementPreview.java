@@ -1,12 +1,23 @@
 package org.creepebucket.programmable_magic.events.machines;
 
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.cache.GeckoLibResources;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.cache.model.GeoQuad;
+import com.geckolib.cache.model.GeoVertex;
+import com.geckolib.cache.model.cuboid.CuboidGeoBone;
+import com.geckolib.cache.model.cuboid.GeoCube;
+import com.geckolib.renderer.GeoBlockRenderer;
+import com.geckolib.renderer.base.GeoRenderState;
+import com.geckolib.util.RenderUtil;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -23,6 +34,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -31,19 +43,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.joml.Vector3f;
-import com.geckolib.animatable.GeoAnimatable;
-import com.geckolib.cache.GeckoLibResources;
-import com.geckolib.cache.model.BakedGeoModel;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.cache.model.GeoQuad;
-import com.geckolib.cache.model.GeoVertex;
-import com.geckolib.cache.model.cuboid.CuboidGeoBone;
-import com.geckolib.cache.model.cuboid.GeoCube;
-import com.geckolib.renderer.GeoBlockRenderer;
-import com.geckolib.renderer.base.GeoRenderState;
-import com.geckolib.util.RenderUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +78,11 @@ public class BasicMachinePlacementPreview {
         boolean can_place = context.canPlace();
         BlockState placement_state = block_item.getBlock().getStateForPlacement(context);
         BlockState render_state = placement_state != null ? placement_state : block_item.getBlock().defaultBlockState();
+        if (placement_state == null && render_state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
+            render_state = render_state.setValue(BlockStateProperties.HORIZONTAL_FACING, mc.player.getDirection().getOpposite());
+        }
         if (placement_state == null) can_place = false;
-        if (block_item.getBlock() instanceof BasicMachine machine) {
+        if (block_item.getBlock() instanceof BasicMachine machine && !(machine instanceof RotatableBasicMachine)) {
             for (var offset : machine.DUMMY_OFFSETS) {
                 if (!mc.level.getBlockState(pos.offset(offset)).canBeReplaced()) {
                     can_place = false;
@@ -128,13 +133,13 @@ public class BasicMachinePlacementPreview {
         GeoBlockRenderer geo_renderer = RenderUtil.getGeckoLibBlockRenderer(block_entity.getType());
         if (geo_renderer == null) return false;
 
-        GeoRenderState render_state = (GeoRenderState) geo_renderer.createRenderState();
+        GeoRenderState render_state = geo_renderer.createRenderState();
         geo_renderer.fillRenderState(geo_animatable, null, render_state, mc.getDeltaTracker().getGameTimeDeltaPartialTick(false));
 
         BakedGeoModel model = GeckoLibResources.getBakedModels().getModel(geo_renderer.getGeoModel().getModelResource(render_state));
         pose_stack.pushPose();
         pose_stack.translate(0.5d, 0, 0.5d);
-        rotate_for_facing(pose_stack, Direction.NORTH);
+        rotate_for_facing(pose_stack, state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH);
         render_gecko_model(model, pose_stack, consumer, line_width, color);
         pose_stack.popPose();
         return true;

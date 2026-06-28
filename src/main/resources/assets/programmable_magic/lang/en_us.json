@@ -8,6 +8,7 @@
   "block.programmable_magic.mana_buffer": "Mana Buffer",
   "block.programmable_magic.mana_cable": "Mana Cable",
   "block.programmable_magic.mana_generator": "Mana Generator",
+  "block.programmable_magic.water_pump": "Water Pump",
   "entity.programmable_magic.spell_entity": "Spell Entity",
   "gui.programmable_magic.wand.inventory": "Inventory",
   "gui.programmable_magic.wand.inventory.debugger_pause": "Pause",

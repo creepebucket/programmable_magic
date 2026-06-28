@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.consumer.water_pump;
+package org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump;
 
 import com.geckolib.renderer.GeoBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

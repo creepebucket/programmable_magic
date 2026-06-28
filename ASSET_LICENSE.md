@@ -20,13 +20,7 @@
 
 **许可说明**: 保留所有权利 (ARR)。未经原作者明确书面许可，严禁在其他项目中提取、修改、重新分发或使用。
 
-**资产路径**:
-
-- assets/programmable_magic/textures/machines/wind_turbine.png
-- assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (贴图部分)
-- assets/programmable_magic/geckolib/bbmodels/solar_panel.bbmodel
-- assets/programmable_magic/textures/machines/solar_panel.png
-- assets/programmable_magic/geckolib/models/block/machines/solar_panel.geo.json
+**资产路径**: 除其他特别指明的部分外的其他**所有**模型, 贴图和动画。
 
 **原作者**: LettyWhiterock_
 
@@ -36,7 +30,7 @@
 
 ## 原创的资源:
 
-**适用范围**: 本模组中除了上文明确列出的第三方资源以外的**所有**纹理, 模型, 和动画。
+**适用范围**: 本模组中的所有法术贴图。
 
 **版权声明**: Copyright (c) 2025-2026 creepebucket. All Rights Reserved.
 

@@ -9,9 +9,10 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.mananet.mechines.DummyBlock;
-import org.creepebucket.programmable_magic.mananet.mechines.solar_panel.SolarPanel;
-import org.creepebucket.programmable_magic.mananet.mechines.wind_turbine.WindTurbine;
+import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPump;
+import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanel;
+import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbine;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -28,6 +29,10 @@ public class MananetNodeBlocks {
             BLOCKS.register("solar_panel", registryName -> new SolarPanel(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
+    public static final DeferredBlock<WaterPump> WATER_PUMP =
+            BLOCKS.register("water_pump", registryName -> new WaterPump(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
             BLOCKS.register("dummy_block", registryName -> new DummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
@@ -37,6 +42,9 @@ public class MananetNodeBlocks {
 
     public static final DeferredItem<BlockItem> SOLAR_PANEL_BLOCK_ITEM =
             ITEMS.registerSimpleBlockItem(SOLAR_PANEL);
+
+    public static final DeferredItem<BlockItem> WATER_PUMP_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem(WATER_PUMP);
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);

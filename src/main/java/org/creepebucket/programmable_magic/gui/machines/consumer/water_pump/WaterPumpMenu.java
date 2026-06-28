@@ -9,7 +9,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
-import org.creepebucket.programmable_magic.mananet.mechines.consumer.water_pump.WaterPumpBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class WaterPumpMenu extends MachineMenu {

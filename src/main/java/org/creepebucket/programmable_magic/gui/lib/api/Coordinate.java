@@ -86,7 +86,7 @@ public class Coordinate {
      * 以屏幕中心右侧为基准创建坐标。
      */
     public static Coordinate fromCenterRight(int deltaX, int deltaY) {
-        return new Coordinate((sw, sh) -> deltaX, (sw, sh) -> sh / 2 + deltaY);
+        return new Coordinate((sw, sh) -> sw + deltaX, (sw, sh) -> sh / 2 + deltaY);
     }
 
     /**

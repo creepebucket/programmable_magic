@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.consumer.water_pump;
+package org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.mechines.RotatableBasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 

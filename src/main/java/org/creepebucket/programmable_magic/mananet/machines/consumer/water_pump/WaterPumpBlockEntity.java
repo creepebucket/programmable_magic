@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.consumer.water_pump;
+package org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump;
 
 import com.geckolib.animatable.GeoBlockEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;

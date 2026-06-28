@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.generator.solar_panel;
+package org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,7 +18,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.generator.solar_panel.SolarPanelMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 

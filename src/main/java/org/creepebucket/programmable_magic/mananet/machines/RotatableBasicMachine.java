@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines;
+package org.creepebucket.programmable_magic.mananet.machines;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.generator.wind_turbine;
+package org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine;
 
 import com.geckolib.renderer.GeoBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

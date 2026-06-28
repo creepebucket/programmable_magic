@@ -420,6 +420,7 @@
   "item.programmable_magic.wand_plugin_spell_supply_t3": "插件：法术供给 III",
   "item.programmable_magic.wand_plugin_spell_supply_t4": "插件：法术供给 IV",
   "item.programmable_magic.wand_plugin_spell_supply_t5": "插件：法术供给 V",
+  "block.programmable_magic.water_pump": "水泵",
   "gui.programmable_magic.machine.wind_turbine.air_density": "空气密度",
   "gui.programmable_magic.machine.wind_turbine.swept_area": "扫风面积",
   "gui.programmable_magic.machine.wind_turbine.wind_speed": "风速",

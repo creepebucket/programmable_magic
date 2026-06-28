@@ -9,7 +9,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
-import org.creepebucket.programmable_magic.mananet.mechines.generator.wind_turbine.WindTurbineBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class WindTurbineMenu extends MachineMenu {

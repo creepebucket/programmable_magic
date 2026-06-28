@@ -173,7 +173,7 @@ public abstract class Widget {
     public Widget dx(SmoothedValue value) {
         smoothedValues.remove(dx);
         dx = value;
-        if (!dx.bound) {
+        if (!dx.bound && !(dx instanceof SmoothedValue.TransformedValue)) {
             smoothedValues.add(dx);
             dx.bound = true;
         }
@@ -183,7 +183,7 @@ public abstract class Widget {
     public Widget dy(SmoothedValue value) {
         smoothedValues.remove(dy);
         dy = value;
-        if (!dy.bound) {
+        if (!dy.bound && !(dy instanceof SmoothedValue.TransformedValue)) {
             smoothedValues.add(dy);
             dy.bound = true;
         }
@@ -193,7 +193,7 @@ public abstract class Widget {
     public Widget dw(SmoothedValue value) {
         smoothedValues.remove(dw);
         dw = value;
-        if (!dw.bound) {
+        if (!dw.bound && !(dw instanceof SmoothedValue.TransformedValue)) {
             smoothedValues.add(dw);
             dw.bound = true;
         }
@@ -203,7 +203,7 @@ public abstract class Widget {
     public Widget dh(SmoothedValue value) {
         smoothedValues.remove(dh);
         dh = value;
-        if (!dh.bound) {
+        if (!dh.bound && !(dh instanceof SmoothedValue.TransformedValue)) {
             smoothedValues.add(dh);
             dh.bound = true;
         }
