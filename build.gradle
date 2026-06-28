@@ -136,6 +136,8 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${jeiMinecraftVersion}-neoforge:${jei_version}"
 
     implementation "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+
+
     interfaceInjectionData "com.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository

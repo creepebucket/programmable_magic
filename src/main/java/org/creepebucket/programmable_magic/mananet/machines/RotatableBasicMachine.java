@@ -20,6 +20,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.registries.MananetNodeBlocks;
 import org.jspecify.annotations.Nullable;
 
+import java.util.HashSet;
+
 public abstract class RotatableBasicMachine extends BasicMachine {
 
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
@@ -53,18 +55,41 @@ public abstract class RotatableBasicMachine extends BasicMachine {
 		if (level.isClientSide()) return;
 
 		Direction dir = state.getValue(FACING);
+		var io_offsets = new HashSet<BlockPos>();
+		for (var entry : IO_ENTRIES) {
+			io_offsets.add(rotateOffset(entry.offset(), dir));
+		}
+
 		var dummy_block = MananetNodeBlocks.DUMMY_BLOCK.get();
+		var io_dummy_block = MananetNodeBlocks.IO_DUMMY_BLOCK.get();
 		for (var offset : DUMMY_OFFSETS) {
 			var rotated = rotateOffset(offset, dir);
 			var dummy_pos = pos.offset(rotated);
-			level.setBlock(
-					dummy_pos,
-					dummy_block.defaultBlockState()
-							.setValue(DummyBlock.X_OFFSET, -rotated.getX())
-							.setValue(DummyBlock.Y_OFFSET, -rotated.getY())
-							.setValue(DummyBlock.Z_OFFSET, -rotated.getZ()),
-					Block.UPDATE_ALL
-			);
+			if (io_offsets.contains(rotated)) {
+				var io_type = IO_ENTRIES.stream().filter(e -> rotateOffset(e.offset(), dir).equals(rotated)).findFirst().get().ioType();
+				level.setBlock(
+						dummy_pos,
+						io_dummy_block.defaultBlockState()
+								.setValue(DummyBlock.X_OFFSET, -rotated.getX())
+								.setValue(DummyBlock.Y_OFFSET, -rotated.getY())
+								.setValue(DummyBlock.Z_OFFSET, -rotated.getZ()),
+						Block.UPDATE_ALL
+				);
+				var be = level.getBlockEntity(dummy_pos);
+				if (be instanceof DummyBlockEntity dummy_be) {
+					dummy_be.ioType = io_type;
+					dummy_be.setChanged();
+				}
+			} else {
+				level.setBlock(
+						dummy_pos,
+						dummy_block.defaultBlockState()
+								.setValue(DummyBlock.X_OFFSET, -rotated.getX())
+								.setValue(DummyBlock.Y_OFFSET, -rotated.getY())
+								.setValue(DummyBlock.Z_OFFSET, -rotated.getZ()),
+						Block.UPDATE_ALL
+				);
+			}
 		}
 	}
 
@@ -76,7 +101,7 @@ public abstract class RotatableBasicMachine extends BasicMachine {
 				var rotated = rotateOffset(offset, dir);
 				var dummy_pos = pos.offset(rotated);
 				var dummy_state = actual_level.getBlockState(dummy_pos);
-				if (!dummy_state.is(MananetNodeBlocks.DUMMY_BLOCK)) continue;
+				if (!dummy_state.is(MananetNodeBlocks.DUMMY_BLOCK) && !dummy_state.is(MananetNodeBlocks.IO_DUMMY_BLOCK)) continue;
 				if (!DummyBlock.get_main_pos(dummy_pos, dummy_state).equals(pos)) continue;
 				actual_level.setBlock(
 						dummy_pos,

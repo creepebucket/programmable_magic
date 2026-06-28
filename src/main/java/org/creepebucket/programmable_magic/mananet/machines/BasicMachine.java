@@ -1,6 +1,7 @@
 package org.creepebucket.programmable_magic.mananet.machines;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -18,6 +19,7 @@ import org.creepebucket.programmable_magic.registries.MananetNodeBlocks;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public abstract class BasicMachine extends Block implements EntityBlock {
@@ -36,11 +38,29 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         DUMMY_OFFSETS = List.copyOf(offsets);
     }
 
+    public final List<IoEntry> IO_ENTRIES = new ArrayList<>();
+
     public BasicMachine(Properties p_49795_) {
         super(p_49795_);
     }
 
     public abstract VoxelShape hitbox();
+
+    public void addItemInput(int facing_off, int y_off, int cw90_off) {
+        IO_ENTRIES.add(new IoEntry(DummyBlock.ioOffset(Direction.NORTH, facing_off, y_off, cw90_off), DummyBlockEntity.IoType.ITEM_INPUT));
+    }
+
+    public void addItemOutput(int facing_off, int y_off, int cw90_off) {
+        IO_ENTRIES.add(new IoEntry(DummyBlock.ioOffset(Direction.NORTH, facing_off, y_off, cw90_off), DummyBlockEntity.IoType.ITEM_OUTPUT));
+    }
+
+    public void addFluidInput(int facing_off, int y_off, int cw90_off) {
+        IO_ENTRIES.add(new IoEntry(DummyBlock.ioOffset(Direction.NORTH, facing_off, y_off, cw90_off), DummyBlockEntity.IoType.FLUID_INPUT));
+    }
+
+    public void addFluidOutput(int facing_off, int y_off, int cw90_off) {
+        IO_ENTRIES.add(new IoEntry(DummyBlock.ioOffset(Direction.NORTH, facing_off, y_off, cw90_off), DummyBlockEntity.IoType.FLUID_OUTPUT));
+    }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -56,17 +76,40 @@ public abstract class BasicMachine extends Block implements EntityBlock {
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         if (level.isClientSide()) return;
 
+        var io_offsets = new HashSet<BlockPos>();
+        for (var entry : IO_ENTRIES) {
+            io_offsets.add(entry.offset());
+        }
+
         var dummy_block = MananetNodeBlocks.DUMMY_BLOCK.get();
+        var io_dummy_block = MananetNodeBlocks.IO_DUMMY_BLOCK.get();
         for (var offset : DUMMY_OFFSETS) {
             var dummy_pos = pos.offset(offset);
-            level.setBlock(
-                    dummy_pos,
-                    dummy_block.defaultBlockState()
-                            .setValue(DummyBlock.X_OFFSET, -offset.getX())
-                            .setValue(DummyBlock.Y_OFFSET, -offset.getY())
-                            .setValue(DummyBlock.Z_OFFSET, -offset.getZ()),
-                    Block.UPDATE_ALL
-            );
+            if (io_offsets.contains(offset)) {
+                var io_type = IO_ENTRIES.stream().filter(e -> e.offset().equals(offset)).findFirst().get().ioType();
+                level.setBlock(
+                        dummy_pos,
+                        io_dummy_block.defaultBlockState()
+                                .setValue(DummyBlock.X_OFFSET, -offset.getX())
+                                .setValue(DummyBlock.Y_OFFSET, -offset.getY())
+                                .setValue(DummyBlock.Z_OFFSET, -offset.getZ()),
+                        Block.UPDATE_ALL
+                );
+                var be = level.getBlockEntity(dummy_pos);
+                if (be instanceof DummyBlockEntity dummy_be) {
+                    dummy_be.ioType = io_type;
+                    dummy_be.setChanged();
+                }
+            } else {
+                level.setBlock(
+                        dummy_pos,
+                        dummy_block.defaultBlockState()
+                                .setValue(DummyBlock.X_OFFSET, -offset.getX())
+                                .setValue(DummyBlock.Y_OFFSET, -offset.getY())
+                                .setValue(DummyBlock.Z_OFFSET, -offset.getZ()),
+                        Block.UPDATE_ALL
+                );
+            }
         }
     }
 
@@ -76,7 +119,7 @@ public abstract class BasicMachine extends Block implements EntityBlock {
             for (var offset : DUMMY_OFFSETS) {
                 var dummy_pos = pos.offset(offset);
                 var dummy_state = actual_level.getBlockState(dummy_pos);
-                if (!dummy_state.is(MananetNodeBlocks.DUMMY_BLOCK)) continue;
+                if (!dummy_state.is(MananetNodeBlocks.DUMMY_BLOCK) && !dummy_state.is(MananetNodeBlocks.IO_DUMMY_BLOCK)) continue;
                 if (!DummyBlock.get_main_pos(dummy_pos, dummy_state).equals(pos)) continue;
                 actual_level.setBlock(
                         dummy_pos,
@@ -91,4 +134,6 @@ public abstract class BasicMachine extends Block implements EntityBlock {
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return HITBOX;
     }
+
+    public record IoEntry(BlockPos offset, DummyBlockEntity.IoType ioType) {}
 }

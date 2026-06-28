@@ -134,8 +134,8 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
         entity.power = entity.enabled ? power : 0;
         entity.setData(ModAttachments.WIND_TURBINE_POWER, entity.power);
 
-        entity.getNetworkData().setLoad(new ModUtils.Mana(0d, 0d, -entity.power / 20000, 0d));
-        entity.getNetworkData().setCache(new ModUtils.Mana(2d, 2d, 2d, 2d));
+        entity.getNetworkData().setLoadW(new ModUtils.Mana(0d, 0d, -entity.power, 0d));
+        entity.getNetworkData().setCache(new ModUtils.Mana(2000d, 2000d, 2000d, 2000d));
 
         // ========== 网络连接逻辑 ========== //
 

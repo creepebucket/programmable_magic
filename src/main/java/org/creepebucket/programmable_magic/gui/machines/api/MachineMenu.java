@@ -48,8 +48,8 @@ public abstract class MachineMenu extends Menu {
 		var load = manaData.getLoad();
 		var current = manaData.getCurrent();
 		var cache = manaData.getCache();
-		double load_to_power_w = -20000d;
-		double current_to_storage_j = 1000d;
+		double load_to_power_w = -20d;
+		double current_to_storage_j = 1d;
 
 		radiationPowerW.set(load.getRadiation() * load_to_power_w);
 		temperaturePowerW.set(load.getTemperature() * load_to_power_w);

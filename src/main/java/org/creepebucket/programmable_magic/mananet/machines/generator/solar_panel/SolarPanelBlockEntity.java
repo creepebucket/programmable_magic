@@ -103,10 +103,10 @@ public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBloc
         }
 
         entity.power = entity.enabled ? (entity.directIrradiance + entity.diffuseIrradiance) * entity.panelArea * entity.efficiencyFact * 0.01 : 0;
-        var load = new ModUtils.Mana(-entity.power * 0.05 * 0.001, 0d, 0.0005, 0d);
+        var load = new ModUtils.Mana(-entity.power, 0d, 10d, 0d);
 
-        if (entity.getNetworkData().canProduce(load)) entity.getNetworkData().setLoad(load);
-        entity.getNetworkData().setCache(new ModUtils.Mana(2d, 2d, 2d, 2d));
+        if (entity.getNetworkData().canProduce(load)) entity.getNetworkData().setLoadW(load);
+        entity.getNetworkData().setCache(new ModUtils.Mana(2000d, 2000d, 2000d, 2000d));
     }
 
     private static double smoothstep(double edge0, double edge1, double x) {

@@ -5,6 +5,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntity;
@@ -32,6 +33,10 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("water_pump", () -> new BlockEntityType<WaterPumpBlockEntity>(
                     WaterPumpBlockEntity::new, false, MananetNodeBlocks.WATER_PUMP.get()));
+
+    public static final Supplier<BlockEntityType<DummyBlockEntity>> DUMMY_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("dummy_block_entity", () -> new BlockEntityType<DummyBlockEntity>(
+                    DummyBlockEntity::new, false, MananetNodeBlocks.IO_DUMMY_BLOCK.get()));
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

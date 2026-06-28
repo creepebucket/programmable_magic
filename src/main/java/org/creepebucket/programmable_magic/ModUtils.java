@@ -98,12 +98,12 @@ public class ModUtils {
                 // 使用前缀
                 int index = (int) Math.floor((double) exp / 3);
                 var man = value / Math.pow(10, index * 3);
-                int manDecimals = man <= 1 ? 1 : (int) Math.ceil(Math.log10(man));
+                int manDecimals = man <= 1 ? 1 : (int) Math.floor(Math.log10(man)) + 1;
 
                 return String.format("%." + (stringLength - 3 - manDecimals) + "f", man) + " " + prefixes[index];
             } else {
                 // 直接输出
-                int manDecimals = value <= 1 ? 1 : (int) Math.ceil(Math.log10(value));
+                int manDecimals = value <= 1 ? 1 : (int) Math.floor(Math.log10(value)) + 1;
                 return String.format("%." + (stringLength - 2 - manDecimals) + "f", value) + " ";
             }
         } catch (UnknownFormatConversionException _) {
@@ -391,6 +391,15 @@ public class ModUtils {
 
         public Double getPressure() {
             return values.get(PRESSURE);
+        }
+
+        public Mana scale(double factor) {
+            return new Mana(
+                    values.get(RADIATION) * factor,
+                    values.get(TEMPERATURE) * factor,
+                    values.get(MOMENTUM) * factor,
+                    values.get(PRESSURE) * factor
+            );
         }
 
         public Mana negative() {

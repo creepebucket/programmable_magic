@@ -159,10 +159,10 @@ public abstract class CommandHandler {
 			ServerPlayer player = ctx.getSource().getPlayerOrException();
 			var level = player.level();
 
-			double r = ctx.getArgument("radiation", Double.class) / 1000.0;
-			double t = ctx.getArgument("temperature", Double.class) / 1000.0;
-			double m = ctx.getArgument("momentum", Double.class) / 1000.0;
-			double p = ctx.getArgument("pressure", Double.class) / 1000.0;
+			double r = ctx.getArgument("radiation", Double.class) * 1000.0;
+			double t = ctx.getArgument("temperature", Double.class) * 1000.0;
+			double m = ctx.getArgument("momentum", Double.class) * 1000.0;
+			double p = ctx.getArgument("pressure", Double.class) * 1000.0;
 			ModUtils.Mana mana = new ModUtils.Mana(r, t, m, p);
 
 			Long networkId;

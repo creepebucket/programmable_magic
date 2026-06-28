@@ -29,9 +29,9 @@ public class NetworkManaData {
         return NetworkManaManager.getCached(level, id, "load", data.get("load"));
     }
 
-    public NetworkManaData setLoad(ModUtils.Mana load){
+    public NetworkManaData setLoadW(ModUtils.Mana load){
         NetworkManaManager.touch(level, id);
-        data.put("load", data.get("load").add(load));
+        data.put("load", data.get("load").add(load.scale(1.0 / 20.0)));
         return this;
     }
 
@@ -56,6 +56,6 @@ public class NetworkManaData {
      * 获取下一刻能不能继续运行
      */
     public boolean canProduce(ModUtils.Mana load){
-        return !new ModUtils.Mana().anyGreaterThan(getNext().subtract(load));
+        return !new ModUtils.Mana().anyGreaterThan(getNext().subtract(load.scale(1.0 / 20.0)));
     }
 }
