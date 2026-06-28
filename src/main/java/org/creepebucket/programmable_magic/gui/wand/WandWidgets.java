@@ -11,10 +11,7 @@ import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
-import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SlideBarWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.SlotWidget;
-import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
+import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.gui.wand.wand_plugins.BasePlugin;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
@@ -619,6 +616,51 @@ public class WandWidgets {
             r.selection.color(color);
             g.selection.color(color);
             b.selection.color(color);
+        }
+    }
+
+    public static class SlideBarWidget extends Widget implements MouseDraggable, Clickable, Lifecycle {
+        public boolean focus = true;
+        public Coordinate region;
+        public GridentRectangleWidget background;
+        public OutlineWidget selection;
+        public double value;
+
+        public SlideBarWidget(Coordinate pos, Coordinate size, Coordinate region, double initial) {
+            super(pos, size);
+            this.region = region;
+            this.value = initial;
+        }
+
+        @Override
+        public void onInitialize() {
+            background = (GridentRectangleWidget) addChild(new GridentRectangleWidget(Coordinate.ZERO, originalSize).color(originalBgColor));
+            selection = (OutlineWidget) addChild(new OutlineWidget(Coordinate.ZERO, Coordinate.fromTopLeft(3, h())).color(originalMainColor));
+            selection.dx.setImmediate((value - region.toScreenX()) / (region.toScreenY() - region.toScreenX()) * (w() - 3));
+        }
+
+        @Override
+        public boolean mouseReleased(MouseButtonEvent event) {
+            focus = false;
+            return false;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+            if (!selection.isInBounds(event.x(), event.y())) return false;
+            focus = true;
+            return true;
+        }
+
+        @Override
+        public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+            if (!focus) return false;
+
+            value = Math.clamp(value + dragX / w() * (region.toScreenY() - region.toScreenX()), region.toScreenX(), region.toScreenY());
+            // 设置selection
+            selection.dx.setImmediate((value - region.toScreenX()) / (region.toScreenY() - region.toScreenX()) * (w() - 3));
+
+            return true;
         }
     }
 }

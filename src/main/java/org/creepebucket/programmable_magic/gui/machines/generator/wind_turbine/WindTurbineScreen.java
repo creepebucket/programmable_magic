@@ -1,5 +1,5 @@
 
-package org.creepebucket.programmable_magic.gui.machines.wind_turbine;
+package org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -21,7 +21,8 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 		root.mainColor(0xff00ffff);
 
 		// 主要信息显示
-		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("动量/Mom"), Component.literal("风力涡轮机")));
+		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("动量/Mom"),
+				Component.literal("风力涡轮机"), Component.literal("[输出功率]"), Component.literal("P="), "W"));
 
 		// 功率计算
 		var calculationsWindow = new MachineWidgets.PowerInfoWindow(Coordinate.fromCenter(-200, 0), Coordinate.fromTopLeft(210, 90), Component.literal("总功率 = 0.5×ρ×s×v³×η"));

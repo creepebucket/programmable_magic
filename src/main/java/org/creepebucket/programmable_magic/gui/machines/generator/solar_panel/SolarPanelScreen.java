@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.gui.machines.solar_panel;
+package org.creepebucket.programmable_magic.gui.machines.generator.solar_panel;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,7 +18,8 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		root.mainColor(0xffffff00);
 
-		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("辐射/Rad"), Component.literal("太阳能板")));
+		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("辐射/Rad"),
+				Component.literal("太阳能板"), Component.literal("[输出功率]"), Component.literal("P="), "W"));
 
 		var calculationsWindow = new MachineWidgets.PowerInfoWindow(Coordinate.fromCenter(-200, 0), Coordinate.fromTopLeft(210, 90), Component.literal("总功率 = (G_b+G_d)×A×η"));
 		addWidget(calculationsWindow);

@@ -1,9 +1,9 @@
-package org.creepebucket.programmable_magic.mananet.mechines.wind_turbine;
+package org.creepebucket.programmable_magic.mananet.mechines.generator.wind_turbine;
 
+import com.geckolib.renderer.GeoBlockRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.phys.AABB;
-import com.geckolib.renderer.GeoBlockRenderer;
 
 public class WindTurbineBlockEntityBER extends GeoBlockRenderer<WindTurbineBlockEntity, BlockEntityRenderState> {
 

@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.solar_panel;
+package org.creepebucket.programmable_magic.mananet.mechines.generator.solar_panel;
 
 import com.geckolib.animatable.GeoBlockEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;

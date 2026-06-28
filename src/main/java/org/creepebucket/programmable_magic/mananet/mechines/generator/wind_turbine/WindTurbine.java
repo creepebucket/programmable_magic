@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.mechines.solar_panel;
+package org.creepebucket.programmable_magic.mananet.mechines.generator.wind_turbine;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -16,32 +16,32 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.creepebucket.programmable_magic.gui.machines.solar_panel.SolarPanelMenu;
+import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.WindTurbineMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.mechines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 
-public class SolarPanel extends BasicMachine {
+public class WindTurbine extends BasicMachine {
 
-    public SolarPanel(Properties properties) {
+    public WindTurbine(Properties properties) {
         super(properties);
     }
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SolarPanelBlockEntity(pos, state);
+        return new WindTurbineBlockEntity(pos, state);
     }
 
-    public VoxelShape hitbox() {
+    public VoxelShape hitbox(){
         VoxelShape shape = Shapes.empty();
 
-        shape = Shapes.join(shape, Shapes.box(0.1875, 0.5625, 0.1875, 0.8125, 0.8125, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 0.8125, 0.375, 0.625, 1.4375, 0.625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 1.425, 0.375, 0.625, 2.05, 0.625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 2.0125, 0.375, 0.625, 2.6375, 0.625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.3125, 2.6125, 0.3125, 0.6875, 2.9875, 0.6875), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.5625, 1), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 1.5625, 0.25, 0.75, 2.25, 0.75), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-1, 0, -1, 2, 0.1875, 2), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.125, 1.375, -0.125, 1.125, 1.5625, 1.125), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.25, 4.8125, 0.25, 0.75, 5, 0.75), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(-0.25, 0.125, -0.25, 1.25, 1.375, 1.25), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0.3125, 2.1875, 0.3125, 0.6875, 4.875, 0.6875), BooleanOp.OR);
 
         return shape;
     }
@@ -59,7 +59,7 @@ public class SolarPanel extends BasicMachine {
     @Override
     protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
         return new SimpleMenuProvider(
-                (containerId, inventory, p) -> new SolarPanelMenu(containerId, inventory, pos),
+                (containerId, inventory, p) -> new WindTurbineMenu(containerId, inventory, pos),
                 Component.literal("")
         );
     }
@@ -67,8 +67,8 @@ public class SolarPanel extends BasicMachine {
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (type == ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get()) {
-            return (lvl, pos, st, blockEntity) -> SolarPanelBlockEntity.tick(lvl, pos, st, (SolarPanelBlockEntity) blockEntity);
+        if (type == ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get()) {
+            return (lvl, pos, st, blockEntity) -> WindTurbineBlockEntity.tick(lvl, pos, st, (WindTurbineBlockEntity) blockEntity);
         }
         return null;
     }
