@@ -1,17 +1,22 @@
 package org.creepebucket.programmable_magic.client;
 
+import com.geckolib.animatable.GeoAnimatable;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
+import org.creepebucket.programmable_magic.gui.machines.consumer.steam_boiler.SteamBoilerScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.solar_panel.SolarPanelScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.WindTurbineScreen;
+import org.creepebucket.programmable_magic.gui.machines.io_dummy.IoDummyScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.mananet.connectors.NetNodeBlockEntityBER;
-import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.MachineGeoModel;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntityBER;
-import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntityBER;
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
@@ -43,17 +48,26 @@ public class ClientEventHandler {
 				WaterPumpScreen::new
 		);
 		event.register(
+				ModMenuTypes.STEAM_BOILER_MENU.get(),
+				SteamBoilerScreen::new
+		);
+		event.register(
 				ModMenuTypes.NETWORK_INFO.get(),
 				NetworkInfoScreen::new
 		);
-    }
+		event.register(
+				ModMenuTypes.IO_DUMMY.get(),
+				IoDummyScreen::new
+		);
+	}
 
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
 
-        event.registerBlockEntityRenderer(ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), WindTurbineBlockEntityBER::new);
+        registerMachineBER(event, ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), "wind_turbine", new AABB(-2, -1, -2, 3, 7, 3));
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), WaterPumpBlockEntityBER::new);
+        registerMachineBER(event, ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), "water_pump", new AABB(-1, 0, -1, 2, 2, 2));
+        registerMachineBER(event, ModBlockEntities.STEAM_BOILER_BLOCK_ENTITY.get(), "steam_boiler", new AABB(-1, 0, -1, 2, 2, 2));
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 
@@ -63,6 +77,22 @@ public class ClientEventHandler {
 
     public static void registerRenderPipelines(RegisterRenderPipelinesEvent event) {
         event.registerPipeline(RenderHelper.SOLID_FACE_PIPELINE);
+    }
+
+    public static <T extends BlockEntity & GeoAnimatable> void registerMachineBER(
+            EntityRenderersEvent.RegisterRenderers event,
+            net.minecraft.world.level.block.entity.BlockEntityType<T> type, String name, AABB bbox) {
+        event.registerBlockEntityRenderer(type, ctx -> new MachineBlockEntityBER<>(ctx,
+                new MachineGeoModel<>(
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/" + name),
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/" + name),
+                        Identifier.fromNamespaceAndPath(MODID, "textures/machines/" + name + ".png")),
+                be -> {
+                    var pos = be.getBlockPos();
+                    return new AABB(pos.getX() + bbox.minX, pos.getY() + bbox.minY, pos.getZ() + bbox.minZ,
+                            pos.getX() + bbox.maxX, pos.getY() + bbox.maxY, pos.getZ() + bbox.maxZ);
+                }
+        ));
     }
 
     public static void registerSpecialModelRenderers(RegisterSpecialModelRendererEvent event) {

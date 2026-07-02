@@ -1,3 +1,6 @@
 {
-  "parent": "programmable_magic:block/water_pump"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "programmable_magic:machines/water_pump"
+  }
 }

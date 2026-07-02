@@ -1,21 +1,18 @@
 package org.creepebucket.programmable_magic.registries;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
-import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.IMachineIo;
+import org.creepebucket.programmable_magic.mananet.machines.IoDummies;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler.SteamBoiler;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPump;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanel;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbine;
@@ -39,90 +36,52 @@ public class MananetNodeBlocks {
             BLOCKS.register("water_pump", registryName -> new WaterPump(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
+    public static final DeferredBlock<SteamBoiler> STEAM_BOILER =
+            BLOCKS.register("steam_boiler", registryName -> new SteamBoiler(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
             BLOCKS.register("dummy_block", registryName -> new DummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
-    public static final DeferredBlock<DummyBlock.IODummyBlock> IO_DUMMY_BLOCK =
-            BLOCKS.register("io_dummy_block", registryName -> new DummyBlock.IODummyBlock(
+    public static final DeferredBlock<DummyBlock> IO_DUMMY_BLOCK =
+            BLOCKS.register("io_dummy_block", registryName -> new DummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
+	public static final DeferredBlock<IoDummies.ItemInputBlock> ITEM_INPUT =
+			BLOCKS.register("item_input", registryName -> new IoDummies.ItemInputBlock(
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 9));
+
+	public static final DeferredBlock<IoDummies.ItemOutputBlock> ITEM_OUTPUT =
+			BLOCKS.register("item_output", registryName -> new IoDummies.ItemOutputBlock(
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 9));
+
+	public static final DeferredBlock<IoDummies.FluidInputBlock> FLUID_INPUT =
+			BLOCKS.register("fluid_input", registryName -> new IoDummies.FluidInputBlock(
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 1, 64000));
+
+	public static final DeferredBlock<IoDummies.FluidOutputBlock> FLUID_OUTPUT =
+			BLOCKS.register("fluid_output", registryName -> new IoDummies.FluidOutputBlock(
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 1, 64000));
+
     public static final DeferredItem<BlockItem> WIND_TURBINE_BLOCK_ITEM =
-            ITEMS.registerSimpleBlockItem(WIND_TURBINE);
+            registerMachineItem(WIND_TURBINE);
 
     public static final DeferredItem<BlockItem> SOLAR_PANEL_BLOCK_ITEM =
-            ITEMS.registerSimpleBlockItem(SOLAR_PANEL);
+            registerMachineItem(SOLAR_PANEL);
 
     public static final DeferredItem<BlockItem> WATER_PUMP_BLOCK_ITEM =
-            ITEMS.registerSimpleBlockItem(WATER_PUMP);
+            registerMachineItem(WATER_PUMP);
+
+    public static final DeferredItem<BlockItem> STEAM_BOILER_BLOCK_ITEM =
+            registerMachineItem(STEAM_BOILER);
+
+    public static <B extends Block> DeferredItem<BlockItem> registerMachineItem(DeferredBlock<B> block) {
+        return ITEMS.registerSimpleBlockItem(block);
+    }
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);
         ITEMS.register(bus);
-        bus.addListener(RegisterCapabilitiesEvent.class, event -> {
-            event.registerBlock(
-                    Capabilities.Item.BLOCK,
-                    (level, pos, state, blockEntity, direction) -> {
-                        if (!(blockEntity instanceof DummyBlockEntity dummy_be)) return null;
-                        var main_pos = DummyBlock.get_main_pos(pos, state);
-                        if (level.getBlockState(main_pos).isAir()) return null;
-                        var main_be = level.getBlockEntity(main_pos);
-                        if (dummy_be.ioType == DummyBlockEntity.IoType.ITEM_INPUT && main_be instanceof IMachineIo.ItemInput io)
-                            return io.getItemInput();
-                        if (dummy_be.ioType == DummyBlockEntity.IoType.ITEM_OUTPUT && main_be instanceof IMachineIo.ItemOutput io)
-                            return io.getItemOutput();
-                        return null;
-                    },
-                    IO_DUMMY_BLOCK.get()
-            );
-
-            event.registerBlock(
-                    Capabilities.Fluid.BLOCK,
-                    (level, pos, state, blockEntity, direction) -> {
-                        if (!(blockEntity instanceof DummyBlockEntity dummy_be)) return null;
-                        var main_pos = DummyBlock.get_main_pos(pos, state);
-                        if (level.getBlockState(main_pos).isAir()) return null;
-                        var main_be = level.getBlockEntity(main_pos);
-                        if (dummy_be.ioType == DummyBlockEntity.IoType.FLUID_INPUT && main_be instanceof IMachineIo.FluidInput io)
-                            return io.getFluidInput();
-                        if (dummy_be.ioType == DummyBlockEntity.IoType.FLUID_OUTPUT && main_be instanceof IMachineIo.FluidOutput io)
-                            return io.getFluidOutput();
-                        return null;
-                    },
-                    IO_DUMMY_BLOCK.get()
-            );
-
-            event.registerBlock(
-                    Capabilities.Item.BLOCK,
-                    (level, pos, state, be, direction) -> {
-                        if (!(state.getBlock() instanceof BasicMachine machine)) return null;
-                        for (var entry : machine.IO_ENTRIES) {
-                            if (!entry.offset().equals(BlockPos.ZERO)) continue;
-                            if (entry.ioType() == DummyBlockEntity.IoType.ITEM_INPUT && be instanceof IMachineIo.ItemInput io)
-                                return io.getItemInput();
-                            if (entry.ioType() == DummyBlockEntity.IoType.ITEM_OUTPUT && be instanceof IMachineIo.ItemOutput io)
-                                return io.getItemOutput();
-                        }
-                        return null;
-                    },
-                    WIND_TURBINE.get(), SOLAR_PANEL.get(), WATER_PUMP.get()
-            );
-
-            event.registerBlock(
-                    Capabilities.Fluid.BLOCK,
-                    (level, pos, state, be, direction) -> {
-                        if (!(state.getBlock() instanceof BasicMachine machine)) return null;
-                        for (var entry : machine.IO_ENTRIES) {
-                            if (!entry.offset().equals(BlockPos.ZERO)) continue;
-                            if (entry.ioType() == DummyBlockEntity.IoType.FLUID_INPUT && be instanceof IMachineIo.FluidInput io)
-                                return io.getFluidInput();
-                            if (entry.ioType() == DummyBlockEntity.IoType.FLUID_OUTPUT && be instanceof IMachineIo.FluidOutput io)
-                                return io.getFluidOutput();
-                        }
-                        return null;
-                    },
-                    WIND_TURBINE.get(), SOLAR_PANEL.get(), WATER_PUMP.get()
-            );
-        });
     }
 }

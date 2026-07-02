@@ -1,17 +1,29 @@
 package org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel;
 
-import com.geckolib.renderer.GeoBlockRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
 import com.geckolib.renderer.base.RenderPassInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
+import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntityBER;
+import org.creepebucket.programmable_magic.mananet.machines.MachineGeoModel;
 
-public class SolarPanelBlockEntityBER extends GeoBlockRenderer<SolarPanelBlockEntity, BlockEntityRenderState> {
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+
+public class SolarPanelBlockEntityBER extends MachineBlockEntityBER<SolarPanelBlockEntity> {
 
     public SolarPanelBlockEntityBER(BlockEntityRendererProvider.Context context) {
-        super(context, new SolarPanelGeoModel());
+        super(context,
+                new MachineGeoModel<>(
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/solar_panel"),
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/solar_panel"),
+                        Identifier.fromNamespaceAndPath(MODID, "textures/machines/solar_panel.png")),
+                be -> {
+                    var pos = be.getBlockPos();
+                    return new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2);
+                });
     }
 
     @Override
@@ -21,11 +33,5 @@ public class SolarPanelBlockEntityBER extends GeoBlockRenderer<SolarPanelBlockEn
 
         var group8 = snapshots.get("group8");
         if (group8.isPresent()) group8.get().setRotX(rot_x);
-    }
-
-    @Override
-    public AABB getRenderBoundingBox(SolarPanelBlockEntity blockEntity) {
-        var pos = blockEntity.getBlockPos();
-        return new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2);
     }
 }

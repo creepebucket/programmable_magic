@@ -27,3 +27,7 @@
 25. 不允许写只使用一次的函数和变量, 合并到调用点
 26. 只使用public 禁止使用private/protected/final 父类规定的除外, abstract等可以使用
 27. 禁止使用git指令做任何会修改文件的操作
+
+## For OpenCode:
+1. 如果你是OpenCode, 你需要执行以下指令, 如果你是Codex或其他CLI则无需执行
+2. 只在创建新文件时重写整个文件, 否则请使用编辑工具

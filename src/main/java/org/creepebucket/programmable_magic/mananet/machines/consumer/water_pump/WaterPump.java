@@ -26,7 +26,6 @@ public class WaterPump extends RotatableBasicMachine {
 
 	public WaterPump(Properties properties) {
 		super(properties);
-		addFluidOutput(0, 0, 0);
 	}
 
 	@Override

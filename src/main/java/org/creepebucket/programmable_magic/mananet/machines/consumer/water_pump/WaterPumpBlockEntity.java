@@ -8,11 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
@@ -30,7 +27,6 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 
 	public WaterPumpBlockEntity(BlockPos pos, BlockState state) {
 		super(ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), pos, state);
-		fluidOutputHandler = createFluidHandler(64000);
 	}
 
 	@Override
@@ -73,10 +69,5 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 		}
 		networkData.setLoadW(load);
 		entity.power = entity.powerFact * 1000;
-
-		try (var tx = Transaction.openRoot()) {
-			entity.fluidOutputHandler.insert(FluidResource.of(Fluids.WATER), (int) (50 * entity.powerFact), tx);
-			tx.commit();
-		}
 	}
 }

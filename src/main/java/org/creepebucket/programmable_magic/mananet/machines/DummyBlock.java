@@ -11,7 +11,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -177,21 +176,8 @@ public class DummyBlock extends Block {
         }
     }
 
-    public static class IODummyBlock extends DummyBlock implements EntityBlock {
-
-        public IODummyBlock(Properties properties) {
-            super(properties);
-        }
-
-        @Override
-        public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-            return new DummyBlockEntity(pos, state);
-        }
-    }
-
-    public static BlockPos ioOffset(Direction facing, int facing_off, int y_off, int cw90_off) {
+    public static BlockPos transformOffset(Direction facing, int facing_off, int y_off, int cw90_off) {
         return switch (facing) {
-            case NORTH -> new BlockPos(cw90_off, y_off, -facing_off);
             case SOUTH -> new BlockPos(-cw90_off, y_off, facing_off);
             case WEST -> new BlockPos(-facing_off, y_off, -cw90_off);
             case EAST -> new BlockPos(facing_off, y_off, cw90_off);

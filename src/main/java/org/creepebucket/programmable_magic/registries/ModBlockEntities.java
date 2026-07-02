@@ -5,9 +5,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler.SteamBoilerBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntities;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntity;
 
 import java.util.function.Supplier;
@@ -34,9 +35,33 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("water_pump", () -> new BlockEntityType<WaterPumpBlockEntity>(
                     WaterPumpBlockEntity::new, false, MananetNodeBlocks.WATER_PUMP.get()));
 
-    public static final Supplier<BlockEntityType<DummyBlockEntity>> DUMMY_BLOCK_ENTITY =
-            BLOCK_ENTITIES.register("dummy_block_entity", () -> new BlockEntityType<DummyBlockEntity>(
-                    DummyBlockEntity::new, false, MananetNodeBlocks.IO_DUMMY_BLOCK.get()));
+    public static final Supplier<BlockEntityType<SteamBoilerBlockEntity>> STEAM_BOILER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("steam_boiler", () -> new BlockEntityType<SteamBoilerBlockEntity>(
+                    SteamBoilerBlockEntity::new, false, MananetNodeBlocks.STEAM_BOILER.get()));
+
+    public static final Supplier<BlockEntityType<DummyBlockEntities.ItemInput>> ITEM_INPUT =
+            BLOCK_ENTITIES.register("item_input", () -> {
+                DummyBlockEntities.ItemInput.TYPE = new BlockEntityType<>(DummyBlockEntities.ItemInput::new, false, MananetNodeBlocks.ITEM_INPUT.get());
+                return DummyBlockEntities.ItemInput.TYPE;
+            });
+
+    public static final Supplier<BlockEntityType<DummyBlockEntities.ItemOutput>> ITEM_OUTPUT =
+            BLOCK_ENTITIES.register("item_output", () -> {
+                DummyBlockEntities.ItemOutput.TYPE = new BlockEntityType<>(DummyBlockEntities.ItemOutput::new, false, MananetNodeBlocks.ITEM_OUTPUT.get());
+                return DummyBlockEntities.ItemOutput.TYPE;
+            });
+
+    public static final Supplier<BlockEntityType<DummyBlockEntities.FluidInput>> FLUID_INPUT =
+            BLOCK_ENTITIES.register("fluid_input", () -> {
+                DummyBlockEntities.FluidInput.TYPE = new BlockEntityType<>(DummyBlockEntities.FluidInput::new, false, MananetNodeBlocks.FLUID_INPUT.get());
+                return DummyBlockEntities.FluidInput.TYPE;
+            });
+
+    public static final Supplier<BlockEntityType<DummyBlockEntities.FluidOutput>> FLUID_OUTPUT =
+            BLOCK_ENTITIES.register("fluid_output", () -> {
+                DummyBlockEntities.FluidOutput.TYPE = new BlockEntityType<>(DummyBlockEntities.FluidOutput::new, false, MananetNodeBlocks.FLUID_OUTPUT.get());
+                return DummyBlockEntities.FluidOutput.TYPE;
+            });
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

@@ -1,74 +1,74 @@
 package org.creepebucket.programmable_magic.mananet.machines;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 
-public class MachineBlockEntity extends NetNodeBlockEntity implements IMachineIo.FluidOutput, IMachineIo.FluidInput, IMachineIo.ItemOutput, IMachineIo.ItemInput {
-
-	public FluidHandler fluidOutputHandler;
-	public FluidHandler fluidInputHandler;
+public class MachineBlockEntity extends NetNodeBlockEntity {
 
 	public MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
 		super(type, pos, blockState);
 	}
 
-	public FluidHandler createFluidHandler(long capacity) {
-		var handler = new FluidHandler(capacity);
-		handler.onChanged = this::setChanged;
-		return handler;
-	}
-
-	@Override
-	public ResourceHandler<FluidResource> getFluidOutput() {
-		return fluidOutputHandler;
-	}
-
-	@Override
-	public ResourceHandler<FluidResource> getFluidInput() {
-		return fluidInputHandler;
-	}
-
-	@Override
-	public ResourceHandler<ItemResource> getItemOutput() {
+	public ResourceHandler<ItemResource> getItemInput(int index) {
+		var block = (BasicMachine) getBlockState().getBlock();
+		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		int count = 0;
+		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
+			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.ItemInputBlock)) continue;
+			if (count++ != index) continue;
+			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			var be = (DummyBlockEntities.ItemInput) getLevel().getBlockEntity(ioPos);
+			return ((FlowControlHandler<ItemResource>) be.wrapper).handler;
+		}
 		return null;
 	}
 
-	@Override
-	public ResourceHandler<ItemResource> getItemInput() {
+	public ResourceHandler<ItemResource> getItemOutput(int index) {
+		var block = (BasicMachine) getBlockState().getBlock();
+		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		int count = 0;
+		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
+			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.ItemOutputBlock)) continue;
+			if (count++ != index) continue;
+			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			var be = (DummyBlockEntities.ItemOutput) getLevel().getBlockEntity(ioPos);
+			return ((FlowControlHandler<ItemResource>) be.wrapper).handler;
+		}
 		return null;
 	}
 
-	@Override
-	protected void loadAdditional(ValueInput input) {
-		super.loadAdditional(input);
-		if (fluidOutputHandler != null) {
-			fluidOutputHandler.capacity = input.getLongOr("fluid_out_cap", fluidOutputHandler.capacity);
-			fluidOutputHandler.tank = input.read("fluid_out", FluidStack.CODEC).orElse(FluidStack.EMPTY);
+	public ResourceHandler<FluidResource> getFluidInput(int index) {
+		var block = (BasicMachine) getBlockState().getBlock();
+		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		int count = 0;
+		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
+			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidInputBlock)) continue;
+			if (count++ != index) continue;
+			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			var be = (DummyBlockEntities.FluidInput) getLevel().getBlockEntity(ioPos);
+			return ((FlowControlHandler<FluidResource>) be.wrapper).handler;
 		}
-		if (fluidInputHandler != null) {
-			fluidInputHandler.capacity = input.getLongOr("fluid_in_cap", fluidInputHandler.capacity);
-			fluidInputHandler.tank = input.read("fluid_in", FluidStack.CODEC).orElse(FluidStack.EMPTY);
-		}
+		return null;
 	}
 
-	@Override
-	protected void saveAdditional(ValueOutput output) {
-		super.saveAdditional(output);
-		if (fluidOutputHandler != null) {
-			output.putLong("fluid_out_cap", fluidOutputHandler.capacity);
-			output.store("fluid_out", FluidStack.CODEC, fluidOutputHandler.tank);
+	public ResourceHandler<FluidResource> getFluidOutput(int index) {
+		var block = (BasicMachine) getBlockState().getBlock();
+		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		int count = 0;
+		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
+			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidOutputBlock)) continue;
+			if (count++ != index) continue;
+			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			var be = (DummyBlockEntities.FluidOutput) getLevel().getBlockEntity(ioPos);
+			return ((FlowControlHandler<FluidResource>) be.wrapper).handler;
 		}
-		if (fluidInputHandler != null) {
-			output.putLong("fluid_in_cap", fluidInputHandler.capacity);
-			output.store("fluid_in", FluidStack.CODEC, fluidInputHandler.tank);
-		}
+		return null;
 	}
 }

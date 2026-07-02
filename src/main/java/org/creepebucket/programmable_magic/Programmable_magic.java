@@ -10,6 +10,7 @@ import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
 import org.creepebucket.programmable_magic.data.ModDataGenerators;
+import org.creepebucket.programmable_magic.events.CapabilityHandler;
 import org.creepebucket.programmable_magic.registries.*;
 
 @Mod(Programmable_magic.MODID)
@@ -33,6 +34,7 @@ public class Programmable_magic {
         ModEntityTypes.register(modEventBus);
         ModParticleTypes.register(modEventBus);
         modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(SPELL_ENTITY_TICKET_CONTROLLER));
+        modEventBus.addListener(CapabilityHandler::registerCapabilities);
 
         if (FMLEnvironment.getDist() == Dist.CLIENT) {
 
