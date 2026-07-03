@@ -115,7 +115,6 @@ public class WandScreen extends Screen<WandMenu> {
     @Override
     public void onClose() {
         menu.saveThemeHook.trigger(mainColor.toArgb(), bgColor.toArgb(), textColor.toArgb());
-        notificationWidget.addDebug(Component.literal("TeaCon版暂不支持调试器"));
         menu.breakConnectionHook.trigger();
         super.onClose();
     }

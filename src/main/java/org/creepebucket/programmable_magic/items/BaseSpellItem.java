@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 
@@ -29,9 +28,6 @@ public class BaseSpellItem extends Item implements ModItemExtensions {
     @Override
     public void appendTooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
         SpellItemLogic logic = getLogic();
-
-        if (ModUtils.isSpellDisabled(logic))
-            tooltip.add(Component.translatable("tooltip." + MODID + ".spell.disabled").withStyle(ChatFormatting.RED));
 
         MutableComponent tmp;
 
