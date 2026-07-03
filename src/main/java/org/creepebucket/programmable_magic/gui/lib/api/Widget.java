@@ -42,6 +42,11 @@ public abstract class Widget {
     public List<Animation> animations = new ArrayList<>();
     public List<SmoothedValue> smoothedValues = new ArrayList<>();
     public List<Widget> childrenCache;
+    public Integer xCache, yCache, wCache, hCache;
+    public Integer menuXCache, menuYCache;
+    public Integer originalXCache, originalYCache, originalWCache, originalHCache;
+    public Integer mainColorIntCache, bgColorIntCache, textColorIntCache;
+    public Integer screenWCache, screenHCache;
     public List<Runnable> clickBehaviors = new ArrayList<>();
 
     public Widget(Coordinate pos, Coordinate size) {
@@ -83,6 +88,11 @@ public abstract class Widget {
 
     public void renderWidget(GuiGraphicsExtractor graphics, int mx, int my, float partialTick, double dt, boolean isForeground) {
         childrenCache = null;
+        xCache = null; yCache = null; wCache = null; hCache = null;
+        menuXCache = null; menuYCache = null;
+        originalXCache = null; originalYCache = null; originalWCache = null; originalHCache = null;
+        mainColorIntCache = null; bgColorIntCache = null; textColorIntCache = null;
+        screenWCache = null; screenHCache = null;
 
         if (isForeground == renderInForeground) {
 
@@ -257,47 +267,54 @@ public abstract class Widget {
     }
 
     public int originalX() {
+        if (originalXCache != null) return originalXCache;
         double x = originalPos.x.apply(parent.w(), parent.h());
         if (align == Align.CENTER) x -= w() / 2.0;
         else if (align == Align.RIGHT) x -= w();
-        return (int) Math.round(x);
+        return originalXCache = (int) Math.round(x);
     }
 
     public int originalY() {
+        if (originalYCache != null) return originalYCache;
         double y = originalPos.y.apply(parent.w(), parent.h());
         if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
         else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
-        return (int) Math.round(y);
+        return originalYCache = (int) Math.round(y);
     }
 
     public int originalW() {
-        return originalSize.x.apply(parent.w(), parent.h());
+        if (originalWCache != null) return originalWCache;
+        return originalWCache = originalSize.x.apply(parent.w(), parent.h());
     }
 
     public int originalH() {
-        return originalSize.y.apply(parent.w(), parent.h());
+        if (originalHCache != null) return originalHCache;
+        return originalHCache = originalSize.y.apply(parent.w(), parent.h());
     }
 
     public int getScreenW() {
+        if (screenWCache != null) return screenWCache;
         var parent = this;
 
         while (!(parent instanceof Widget.Root)) {
             parent = parent.parent;
         }
 
-        return parent.w();
+        return screenWCache = parent.w();
     }
     public int getScreenH() {
+        if (screenHCache != null) return screenHCache;
         var parent = this;
 
         while (!(parent instanceof Widget.Root)) {
             parent = parent.parent;
         }
 
-        return parent.h();
+        return screenHCache = parent.h();
     }
 
     public int x() {
+        if (xCache != null) return xCache;
         double x = originalPos.x.apply(parent.w(), parent.h()) + dx.getInt() + parent.x();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -312,10 +329,11 @@ public abstract class Widget {
         }
         if (align == Align.CENTER) x -= w() / 2.0;
         else if (align == Align.RIGHT) x -= w();
-        return (int) Math.round(x);
+        return xCache = (int) Math.round(x);
     }
 
     public int y() {
+        if (yCache != null) return yCache;
         double y = originalPos.y.apply(parent.w(), parent.h()) + dy.getInt() + parent.y();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -330,10 +348,11 @@ public abstract class Widget {
         }
         if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
         else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
-        return (int) Math.round(y);
+        return yCache = (int) Math.round(y);
     }
 
     public int w() {
+        if (wCache != null) return wCache;
         double w = originalSize.x.apply(parent.w(), parent.h()) + dw.getInt();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -346,10 +365,11 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) w += animation.dw;
         }
-        return (int) Math.round(w);
+        return wCache = (int) Math.round(w);
     }
 
     public int h() {
+        if (hCache != null) return hCache;
         double h = originalSize.y.apply(parent.w(), parent.h()) + dh.getInt();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -362,10 +382,11 @@ public abstract class Widget {
         for (Animation animation : allAnimations) {
             if (animation.isActive()) h += animation.dh;
         }
-        return (int) Math.round(h);
+        return hCache = (int) Math.round(h);
     }
 
     public int menuX() {
+        if (menuXCache != null) return menuXCache;
         double x = originalPos.x.apply(parent.w(), parent.h()) + dx.getInt() + parent.menuX();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -380,10 +401,11 @@ public abstract class Widget {
         }
         if (align == Align.CENTER) x -= w() / 2.0;
         else if (align == Align.RIGHT) x -= w();
-        return (int) Math.round(x);
+        return menuXCache = (int) Math.round(x);
     }
 
     public int menuY() {
+        if (menuYCache != null) return menuYCache;
         double y = originalPos.y.apply(parent.w(), parent.h()) + dy.getInt() + parent.menuY();
         var allAnimations = new ArrayList<Animation>();
         var parent = this;
@@ -398,10 +420,11 @@ public abstract class Widget {
         }
         if (verticalAlign == VerticalAlign.CENTER) y -= h() / 2.0;
         else if (verticalAlign == VerticalAlign.BOTTOM) y -= h();
-        return (int) Math.round(y);
+        return menuYCache = (int) Math.round(y);
     }
 
     public int mainColorInt() {
+        if (mainColorIntCache != null) return mainColorIntCache;
         double mult = 1;
         Widget p = this;
         while (!(p instanceof Widget.Root)) {
@@ -413,7 +436,7 @@ public abstract class Widget {
 
         Widget colorWidget = this;
         while (colorWidget.originalMainColor == null) colorWidget = colorWidget.parent;
-        return colorWidget.originalMainColor.toArgbWithAlphaMult(mult);
+        return mainColorIntCache = colorWidget.originalMainColor.toArgbWithAlphaMult(mult);
     }
 
     public Color mainColor() {
@@ -421,6 +444,7 @@ public abstract class Widget {
     }
 
     public int bgColorInt() {
+        if (bgColorIntCache != null) return bgColorIntCache;
         double mult = 1;
         Widget p = this;
         while (!(p instanceof Widget.Root)) {
@@ -432,7 +456,7 @@ public abstract class Widget {
 
         Widget colorWidget = this;
         while (colorWidget.originalBgColor == null) colorWidget = colorWidget.parent;
-        return colorWidget.originalBgColor.toArgbWithAlphaMult(mult);
+        return bgColorIntCache = colorWidget.originalBgColor.toArgbWithAlphaMult(mult);
     }
 
     public Color bgColor() {
@@ -440,6 +464,7 @@ public abstract class Widget {
     }
 
     public int textColorInt() {
+        if (textColorIntCache != null) return textColorIntCache;
         double mult = 1;
         Widget p = this;
         while (!(p instanceof Widget.Root)) {
@@ -451,7 +476,7 @@ public abstract class Widget {
 
         Widget colorWidget = this;
         while (colorWidget.originalTextColor == null) colorWidget = colorWidget.parent;
-        return colorWidget.originalTextColor.toArgbWithAlphaMult(mult);
+        return textColorIntCache = colorWidget.originalTextColor.toArgbWithAlphaMult(mult);
     }
 
     public Color textColor() {
