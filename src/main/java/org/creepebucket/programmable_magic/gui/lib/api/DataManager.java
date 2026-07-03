@@ -1,8 +1,11 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
@@ -14,7 +17,8 @@ public class DataManager {
     // 核心存储
     final Map<String, Object> values = new HashMap<>();
     final Map<String, SyncMode> modes = new HashMap<>();
-    public final Map<String, Runnable> onFirstArrival = new HashMap<>();
+	public final Map<String, Runnable> onFirstArrival = new HashMap<>();
+	final Map<String, List<Runnable>> onChange = new HashMap<>();
 
     // 待拉取列表 (客户端用)
     private final Set<String> pendingPulls = new LinkedHashSet<>();
@@ -65,9 +69,10 @@ public class DataManager {
      * 3. 核心写逻辑 (由 DynamicValue 调用)
      * 更新本地 -> 判断模式 -> 发送网络包
      */
-    void update(String key, Object newVal) {
-        values.put(key, newVal);
-        fire(key);
+	void update(String key, Object newVal) {
+		Object oldVal = values.put(key, newVal);
+		fire(key);
+		if (!Objects.equals(oldVal, newVal)) fireChange(key);
 
         // 尝试发送网络包
         SyncMode mode = modes.get(key);
@@ -103,8 +108,9 @@ public class DataManager {
         // === 情况 B: 普通数据同步 ===
         if (!values.containsKey(key)) return false; // 未知 key，不处理
 
-        values.put(key, val);
-        fire(key);
+		Object oldVal = values.put(key, val);
+		fire(key);
+		if (!Objects.equals(oldVal, val)) fireChange(key);
 
         // 特殊处理：如果是 C2S (客户端改的)，服务端收到后通常要广播回给客户端确认
         SyncMode mode = modes.get(key);
@@ -115,8 +121,13 @@ public class DataManager {
         return true;
     }
 
-    private void fire(String key) {
-        Runnable hook = onFirstArrival.remove(key);
-        if (hook != null) hook.run();
-    }
+	private void fire(String key) {
+		Runnable hook = onFirstArrival.remove(key);
+		if (hook != null) hook.run();
+	}
+
+	private void fireChange(String key) {
+		List<Runnable> changeHooks = onChange.get(key);
+		if (changeHooks != null) for (Runnable h : changeHooks) h.run();
+	}
 }

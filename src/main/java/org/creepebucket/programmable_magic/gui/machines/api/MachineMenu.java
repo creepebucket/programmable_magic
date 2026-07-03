@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
@@ -20,6 +21,12 @@ public abstract class MachineMenu extends Menu {
 	protected MachineMenu(MenuType<?> type, int containerId, Inventory playerInv, InteractionHand hand, Definition definition) {
 		super(type, containerId, playerInv, hand, definition);
 		powerSwitch = hook(new MachineHooks.PowerSwitchHook(this));
+		addPlayerInventorySlots();
+	}
+
+	protected void addPlayerInventorySlots() {
+		for (int i = 0; i < 9; i++) addSlot(new Slot(playerInv, i, -99, -99));
+		for (int i = 0; i < 27; i++) addSlot(new Slot(playerInv, 9 + i, -99, -99));
 	}
 
 	protected void setBlockPos(BlockPos pos) {

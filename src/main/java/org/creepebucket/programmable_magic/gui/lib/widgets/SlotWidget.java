@@ -21,7 +21,7 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
      * 创建一个槽位控件。
      */
     public SlotWidget(Slot slot, Coordinate pos) {
-        super(pos, Coordinate.ZERO);
+        super(pos, Coordinate.fromTopLeft(16, 16));
         this.slot = slot;
     }
 

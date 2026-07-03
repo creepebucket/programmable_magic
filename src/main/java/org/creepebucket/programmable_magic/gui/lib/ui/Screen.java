@@ -146,6 +146,7 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean fromMouse) {
+        super.mouseClicked(event, fromMouse);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseClicked(event, fromMouse)) return true;
@@ -158,11 +159,12 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
                 return true;
             }
         }
-        return super.mouseClicked(event, fromMouse);
+        return true;
     }
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
+        super.mouseReleased(event);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof Clickable clickable) {
                 if (clickable.mouseReleased(event)) return true;
@@ -170,57 +172,62 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
                 if (widget.isInBounds(event.x(), event.y()) && clickable.mouseReleasedChecked(event)) return true;
             }
         }
-        return super.mouseReleased(event);
+        return true;
     }
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        super.mouseDragged(event, dragX, dragY);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof MouseDraggable draggable) {
                 if (draggable.mouseDragged(event, dragX, dragY)) return true;
             }
         }
-        return super.mouseDragged(event, dragX, dragY);
+        return true;
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof MouseScrollable scrollable) {
                 if (scrollable.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
             }
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return true;
     }
 
     @Override
     public boolean keyPressed(KeyEvent event) {
+        super.keyPressed(event);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyPressed(event)) return true;
             }
         }
-        return super.keyPressed(event);
+        return true;
     }
 
     @Override
     public boolean keyReleased(KeyEvent event) {
+        super.keyReleased(event);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.keyReleased(event)) return true;
             }
         }
-        return super.keyReleased(event);
+        return true;
     }
 
     @Override
     public boolean charTyped(CharacterEvent event) {
+        super.charTyped(event);
         for (Widget widget : this.root.allChild()) {
             if (widget instanceof KeyInputable inputable) {
                 if (inputable.charTyped(event)) return true;
             }
         }
-        return super.charTyped(event);
+        return true;
     }
 
     public Widget addWidget(Widget widget) {

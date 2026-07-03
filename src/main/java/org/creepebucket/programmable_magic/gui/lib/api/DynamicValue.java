@@ -1,5 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import java.util.ArrayList;
 import java.util.function.Supplier;
 
 public class DynamicValue<T> {
@@ -20,10 +21,15 @@ public class DynamicValue<T> {
         manager.update(key, value);
     }
 
-    public DynamicValue<T> whenFirstDataArrivesDo(Runnable hook) {
-        if (manager != null) manager.onFirstArrival.put(key, hook);
-        return this;
-    }
+	public DynamicValue<T> whenFirstDataArrivesDo(Runnable hook) {
+		if (manager != null) manager.onFirstArrival.put(key, hook);
+		return this;
+	}
+
+	public DynamicValue<T> whenDataChangedDo(Runnable hook) {
+		if (manager != null) manager.onChange.computeIfAbsent(key, k -> new ArrayList<>()).add(hook);
+		return this;
+	}
 
     /**
      * 从函数里拆, 适用于DynamicValue<Map<?, ?>> 拆键的情况

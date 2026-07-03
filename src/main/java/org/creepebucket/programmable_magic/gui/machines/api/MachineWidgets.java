@@ -57,6 +57,7 @@ public class MachineWidgets {
 
     public static class InformationWindowWidget extends Widget implements Lifecycle, MouseDraggable, Clickable, Renderable {
         public Component name;
+        public TextWidget titleWidget;
         public boolean changingPosition, changingSize;
         public Widget closeButton;
         public int minW, minH;
@@ -107,9 +108,9 @@ public class MachineWidgets {
             dh.a = 250;
 
             addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopRight(0, 11)).mainColor(0xbf000000));
-            var a = addChild(new TextWidget(Coordinate.fromTopLeft(16, 2), name).noShadow().mainColor(0xff7f7f7f));
+            titleWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(16, 2), name).noShadow().mainColor(0xff7f7f7f));
             addChild(new RectangleWidget(Coordinate.fromTopLeft(3, 5), Coordinate.fromTopLeft(10, 1)).mainColor(0x7f7f7f7f));
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(a.w() + 18, 5), Coordinate.fromTopRight(-a.w() - 22, 1)).mainColor(0x7f7f7f7f));
+            addChild(new RectangleWidget(Coordinate.fromTopLeft(titleWidget.w() + 18, 5), Coordinate.fromTopRight(-titleWidget.w() - 22, 1)).mainColor(0x7f7f7f7f));
             closeButton = addChild(new RectangleWidget(Coordinate.fromTopRight(-7, 4), Coordinate.fromTopLeft(3, 3)));
 
             addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromBottomRight(0, -11)).mainColor(0x7f000000));
@@ -150,7 +151,8 @@ public class MachineWidgets {
                 changingSize = true;
                 return true;
             }
-		else if (enabled && isInBounds(event.x(), event.y())) {
+		    else if (enabled && isInBounds(event.x(), event.y())) {
+                // 只在子组件分发事件, 阻断传播
 				for (Widget widget : allChild()) {
                     if (widget instanceof Clickable clickable) {
                         if (clickable.mouseClicked(event, fromMouse)) return true;
@@ -229,7 +231,7 @@ public class MachineWidgets {
         @Override
         public void tick() {
             var windows = ((MachineScreen<?>) screen).windows;
-            for (int i = 0; i < windows.size(); i++) {
+            for (int i = 0; i < switches.size(); i++) {
                 switches.get(i).setPressed(windows.get(i).enabled && windows.get(i).animations.stream().noneMatch(animation -> animation instanceof Animation.FadeOut));
             }
         }
@@ -455,6 +457,28 @@ public class MachineWidgets {
             }
             graduations.add(addChild(new TextWidget(Coordinate.fromBottomLeft(7, -13), Component.literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
             graduations.add(addChild(new TextWidget(Coordinate.fromBottomRight(-6, -13), Component.literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
+        }
+    }
+
+    public static class InventoryWindow extends InformationWindowWidget {
+
+        public InventoryWindow(Coordinate pos, Coordinate size) {
+            super(pos, size, Component.literal("物品栏"), 184, 67);
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            var slots = screen.getMenu().slots;
+            for (int i = 0; i < 3; i++) for (int j = -4; j < 5; j++) {
+                addChild(new RectangleWidget(Coordinate.fromCenterTop(j * 18, i * 18 + 30), Coordinate.fromTopLeft(16, 1)).centerAlign().mainColor(0x1fffffff));
+                addChild(new SlotWidget(slots.get(i * 9 + j + 13), Coordinate.fromCenterTop(j * 18, i * 18 + 15)).centerAlign());
+            }
+            for (int j = -4; j < 5; j++) {
+                addChild(new RectangleWidget(Coordinate.fromCenterBottom(j * 18, -4), Coordinate.fromTopLeft(16, 1)).centerAlign().bottomAlignY().mainColor(0x1fffffff));
+                addChild(new SlotWidget(slots.get(j + 4), Coordinate.fromCenterBottom(j * 18, -4)).centerAlign().bottomAlignY());
+            }
         }
     }
 

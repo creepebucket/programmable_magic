@@ -24,8 +24,9 @@ public class SteamBoiler extends RotatableBasicMachine {
 
 	@Override
 	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		addFluidInput(-1, 0, 0, 1, 8000);
-		addFluidOutput(1, 0, 0, 1, 8000);
+		addFluidInput(-1, 0, 0, 8000);
+		addFluidOutput(1, 0, 0, 8000);
+		addItemInput(1, 1, 0);
 
 		return new SteamBoilerBlockEntity(pos, state);
 	}

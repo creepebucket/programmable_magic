@@ -50,19 +50,19 @@ public class MananetNodeBlocks {
 
 	public static final DeferredBlock<IoDummies.ItemInputBlock> ITEM_INPUT =
 			BLOCKS.register("item_input", registryName -> new IoDummies.ItemInputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 9));
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<IoDummies.ItemOutputBlock> ITEM_OUTPUT =
 			BLOCKS.register("item_output", registryName -> new IoDummies.ItemOutputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 9));
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
 	public static final DeferredBlock<IoDummies.FluidInputBlock> FLUID_INPUT =
 			BLOCKS.register("fluid_input", registryName -> new IoDummies.FluidInputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 1, 64000));
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 64000));
 
 	public static final DeferredBlock<IoDummies.FluidOutputBlock> FLUID_OUTPUT =
 			BLOCKS.register("fluid_output", registryName -> new IoDummies.FluidOutputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 1, 64000));
+					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 64000));
 
     public static final DeferredItem<BlockItem> WIND_TURBINE_BLOCK_ITEM =
             registerMachineItem(WIND_TURBINE);

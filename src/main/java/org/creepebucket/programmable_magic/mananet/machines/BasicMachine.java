@@ -33,7 +33,6 @@ public abstract class BasicMachine extends Block implements EntityBlock {
     public final VoxelShape HITBOX = hitbox();
     public List<BlockPos> DUMMY_OFFSETS, IO_OFFSETS = new ArrayList<>();
     public List<DeferredBlock<?>> IO_TYPES = new ArrayList<>();
-    public List<Integer> IO_SIZES = new ArrayList<>();
     public List<Integer> IO_CAPACITIES = new ArrayList<>();
 
     {
@@ -101,23 +100,22 @@ public abstract class BasicMachine extends Block implements EntityBlock {
                     Block.UPDATE_ALL
             );
 
-            int size = IO_SIZES.get(i);
             int capacity = IO_CAPACITIES.get(i);
             var be = level.getBlockEntity(dummyPos);
             if (be instanceof DummyBlockEntities.ItemInput ii) {
-                ii.container = new SimpleContainer(size);
+                ii.container = new SimpleContainer(DummyBlockEntities.ItemInput.SIZE);
                 ii.wrapper = new FlowControlHandler<>(VanillaContainerWrapper.of(ii.container), true, false);
             }
             if (be instanceof DummyBlockEntities.ItemOutput io) {
-                io.container = new SimpleContainer(size);
+                io.container = new SimpleContainer(DummyBlockEntities.ItemOutput.SIZE);
                 io.wrapper = new FlowControlHandler<>(VanillaContainerWrapper.of(io.container), false, true);
             }
             if (be instanceof DummyBlockEntities.FluidInput fi) {
-                fi.fluidHandler = new FluidStacksResourceHandler(size, capacity);
+                fi.fluidHandler = new FluidStacksResourceHandler(DummyBlockEntities.FluidInput.SIZE, capacity);
                 fi.wrapper = new FlowControlHandler<>(fi.fluidHandler, true, false);
             }
             if (be instanceof DummyBlockEntities.FluidOutput fo) {
-                fo.fluidHandler = new FluidStacksResourceHandler(size, capacity);
+                fo.fluidHandler = new FluidStacksResourceHandler(DummyBlockEntities.FluidOutput.SIZE, capacity);
                 fo.wrapper = new FlowControlHandler<>(fo.fluidHandler, false, true);
             }
             if (be != null) {
@@ -126,24 +124,24 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         }
     }
 
-    @Override
-    public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
-        if (level instanceof Level actual_level && !actual_level.isClientSide()) {
-            var facing = state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
-            for (var offset : DUMMY_OFFSETS) {
-                var rotated = rotateOffset(offset, facing);
-                var dummy_pos = pos.offset(rotated);
-                var dummy_state = actual_level.getBlockState(dummy_pos);
-                if (!(dummy_state.getBlock() instanceof DummyBlock)) continue;
-                if (!DummyBlock.get_main_pos(dummy_pos, dummy_state).equals(pos)) continue;
-                actual_level.setBlock(
-                        dummy_pos,
-                        actual_level.getFluidState(dummy_pos).createLegacyBlock(),
-                        Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS
-                );
-            }
-        }
-    }
+	@Override
+	public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
+		if (level instanceof Level actual_level && !actual_level.isClientSide()) {
+			var facing = state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
+			for (var offset : DUMMY_OFFSETS) {
+				var rotated = rotateOffset(offset, facing);
+				var dummy_pos = pos.offset(rotated);
+				var dummy_state = actual_level.getBlockState(dummy_pos);
+				if (!(dummy_state.getBlock() instanceof DummyBlock)) continue;
+				if (!DummyBlock.get_main_pos(dummy_pos, dummy_state).equals(pos)) continue;
+				actual_level.setBlock(
+						dummy_pos,
+						actual_level.getFluidState(dummy_pos).createLegacyBlock(),
+						Block.UPDATE_ALL
+				);
+			}
+		}
+	}
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -176,31 +174,27 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         };
     }
 
-    public void addItemInput(int facingOff, int yOff, int cw90Off, int size) {
+    public void addItemInput(int facingOff, int yOff, int cw90Off) {
         IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
         IO_TYPES.add(MananetNodeBlocks.ITEM_INPUT);
-        IO_SIZES.add(size);
         IO_CAPACITIES.add(0);
     }
 
-    public void addItemOutput(int facingOff, int yOff, int cw90Off, int size) {
+    public void addItemOutput(int facingOff, int yOff, int cw90Off) {
         IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
         IO_TYPES.add(MananetNodeBlocks.ITEM_OUTPUT);
-        IO_SIZES.add(size);
         IO_CAPACITIES.add(0);
     }
 
-    public void addFluidInput(int facingOff, int yOff, int cw90Off, int size, int capacity) {
+    public void addFluidInput(int facingOff, int yOff, int cw90Off, int capacity) {
         IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
         IO_TYPES.add(MananetNodeBlocks.FLUID_INPUT);
-        IO_SIZES.add(size);
         IO_CAPACITIES.add(capacity);
     }
 
-    public void addFluidOutput(int facingOff, int yOff, int cw90Off, int size, int capacity) {
+    public void addFluidOutput(int facingOff, int yOff, int cw90Off, int capacity) {
         IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
         IO_TYPES.add(MananetNodeBlocks.FLUID_OUTPUT);
-        IO_SIZES.add(size);
         IO_CAPACITIES.add(capacity);
     }
 

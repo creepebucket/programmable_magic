@@ -59,7 +59,7 @@ public abstract class RotatableBasicMachine extends BasicMachine {
 				actual_level.setBlock(
 						dummy_pos,
 						actual_level.getFluidState(dummy_pos).createLegacyBlock(),
-						Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS
+						Block.UPDATE_ALL
 				);
 			}
 		}
