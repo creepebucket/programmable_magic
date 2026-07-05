@@ -156,8 +156,7 @@ public abstract class CommandHandler {
 
 		@Override
 		public void handle(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-			ServerPlayer player = ctx.getSource().getPlayerOrException();
-			var level = player.level();
+			var level = ctx.getSource().getLevel();
 
 			double r = ctx.getArgument("radiation", Double.class) * 1000.0;
 			double t = ctx.getArgument("temperature", Double.class) * 1000.0;
