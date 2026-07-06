@@ -157,6 +157,15 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             return true;
         }
 
+        var checkCurrent = compiled.head;
+        while (checkCurrent != null) {
+            if (ModUtils.isSpellDisabled(checkCurrent)) {
+                ((Player) player).sendSystemMessage(Component.translatable("gui." + MODID + ".wand.disabled_spell_teacon"));
+                return true;
+            }
+            checkCurrent = checkCurrent.next;
+        }
+
         player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins, false, new ArrayList<>()));
         return true;
     }
