@@ -4,8 +4,9 @@ import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
+import org.creepebucket.programmable_magic.utils.Mana;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +16,10 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
 @EventBusSubscriber(modid = MODID)
 public class NetworkManaManager {
-    public static Map<Level, Map<Long, Map<String, ModUtils.Mana>>> data = new WeakHashMap<>(), last_tick = new WeakHashMap<>();
+    public static Map<Level, Map<Long, Map<String, Mana>>> data = new WeakHashMap<>(), last_tick = new WeakHashMap<>();
     public static Map<Level, Map<Long, Long>> touched_tick = new WeakHashMap<>();
-    public static Map<Level, Map<Long, ModUtils.Mana>> cached_load = new WeakHashMap<>();
-    public static Map<Level, Map<Long, ModUtils.Mana>> cached_cache = new WeakHashMap<>();
+    public static Map<Level, Map<Long, Mana>> cached_load = new WeakHashMap<>();
+    public static Map<Level, Map<Long, Mana>> cached_cache = new WeakHashMap<>();
     public static int nextSave = 0, tickCount = 99999999;
     public static long logic_tick = 0;
 
@@ -27,7 +28,7 @@ public class NetworkManaManager {
         touched_tick.get(level).put(id, logic_tick);
     }
 
-    public static ModUtils.Mana getCached(Level level, Long id, String key, ModUtils.Mana value) {
+    public static Mana getCached(Level level, Long id, String key, Mana value) {
         if (touched_tick.get(level).getOrDefault(id, -1L) != logic_tick) {
             if (key.equals("load")) return cached_load.get(level).getOrDefault(id, value);
             if (key.equals("cache")) return cached_cache.get(level).getOrDefault(id, value);
@@ -41,9 +42,9 @@ public class NetworkManaManager {
      * @param level 目标维度
      * @return 该维度下所有网络ID到魔力数据的映射
      */
-    public static Map<Long, Map<String, ModUtils.Mana>> getAllData(Level level) {
+    public static Map<Long, Map<String, Mana>> getAllData(Level level) {
         if (!last_tick.containsKey(level)) {
-            var copy = new HashMap<Long, Map<String, ModUtils.Mana>>();
+            var copy = new HashMap<Long, Map<String, Mana>>();
             level.getData(ModAttachments.DIMENSIONAL_MANA_DATA).forEach((k, v) -> copy.put(k, new HashMap<>(v)));
             data.put(level, copy);
             last_tick.put(level, copy);
@@ -69,18 +70,18 @@ public class NetworkManaManager {
             var levelData = data.get(level);
             if (!levelData.containsKey(id)) {
                 // 需要判断新网络的情况
-                var fresh = new HashMap<>(Map.of("current", new ModUtils.Mana(), "cache", new ModUtils.Mana(), "load", new ModUtils.Mana()));
+                var fresh = new HashMap<>(Map.of("current", new Mana(), "cache", new Mana(), "load", new Mana()));
                 levelData.put(id, fresh);
-                cached_load.get(level).put(id, new ModUtils.Mana());
-                cached_cache.get(level).put(id, new ModUtils.Mana());
+                cached_load.get(level).put(id, new Mana());
+                cached_cache.get(level).put(id, new Mana());
                 return new NetworkManaData(id, level, fresh);
 			} else {
-				levelData.get(id).putIfAbsent("current", new ModUtils.Mana());
+				levelData.get(id).putIfAbsent("current", new Mana());
 				return new NetworkManaData(id, level, levelData.get(id));
 			}
         } else {
             // 获取世界的魔力信息, 然后再查找
-            var copy = new HashMap<Long, Map<String, ModUtils.Mana>>();
+            var copy = new HashMap<Long, Map<String, Mana>>();
             level.getData(ModAttachments.DIMENSIONAL_MANA_DATA).forEach((k, v) -> copy.put(k, new HashMap<>(v)));
             data.put(level, copy);
             touched_tick.put(level, new HashMap<>());
@@ -139,8 +140,8 @@ public class NetworkManaManager {
             var levelData = data.get(level);
             for (Long id : new HashMap<>(levelData).keySet()) {
                 var networkData = levelData.get(id);
-                networkData.put("load", new ModUtils.Mana());
-                networkData.put("cache", new ModUtils.Mana());
+                networkData.put("load", new Mana());
+                networkData.put("cache", new Mana());
             }
         }
 

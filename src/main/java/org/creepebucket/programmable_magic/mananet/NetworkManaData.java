@@ -1,45 +1,45 @@
 package org.creepebucket.programmable_magic.mananet;
 
 import net.minecraft.world.level.Level;
-import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.Map;
 
 public class NetworkManaData {
     public Long id;
     public Level level;
-    public Map<String, ModUtils.Mana> data;
+    public Map<String, Mana> data;
 
-    public NetworkManaData(Long id, Level level, Map<String, ModUtils.Mana> data) {
+    public NetworkManaData(Long id, Level level, Map<String, Mana> data) {
         this.data = data;
         this.id = id;
         this.level = level;
     }
 
-    public ModUtils.Mana getCurrent(){
+    public Mana getCurrent(){
         return data.get("current");
     }
 
-    public NetworkManaData setCurrent(ModUtils.Mana current){
+    public NetworkManaData setCurrent(Mana current){
         data.put("current", current);
         return this;
     }
 
-    public ModUtils.Mana getLoad(){
+    public Mana getLoad(){
         return NetworkManaManager.getCached(level, id, "load", data.get("load"));
     }
 
-    public NetworkManaData setLoadW(ModUtils.Mana load){
+    public NetworkManaData setLoadW(Mana load){
         NetworkManaManager.touch(level, id);
         data.put("load", data.get("load").add(load.scale(1.0 / 20.0)));
         return this;
     }
 
-    public ModUtils.Mana getCache(){
+    public Mana getCache(){
         return NetworkManaManager.getCached(level, id, "cache", data.get("cache"));
     }
 
-    public NetworkManaData setCache(ModUtils.Mana cache){
+    public NetworkManaData setCache(Mana cache){
         NetworkManaManager.touch(level, id);
         data.put("cache", data.get("cache").add(cache));
         return this;
@@ -48,14 +48,14 @@ public class NetworkManaData {
     /**
      * 获取下一刻的魔力储量
      */
-    public ModUtils.Mana getNext(){
+    public Mana getNext(){
         return getCurrent().subtract(getLoad());
     }
 
     /**
      * 获取下一刻能不能继续运行
      */
-    public boolean canProduce(ModUtils.Mana load){
-        return !new ModUtils.Mana().anyGreaterThan(getNext().subtract(load.scale(1.0 / 20.0)));
+    public boolean canProduce(Mana load){
+        return !new Mana().anyGreaterThan(getNext().subtract(load.scale(1.0 / 20.0)));
     }
 }

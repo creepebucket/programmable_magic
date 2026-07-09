@@ -2,10 +2,10 @@ package org.creepebucket.programmable_magic.spells.api;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.spells_compute.ValueLiteralSpell;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +81,7 @@ public abstract class SpellItemLogic implements Cloneable {
     /*
      * 魔力消耗计算
      */
-    public abstract ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity);
+    public abstract Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity);
 
     /*
      * 带检验的法术执行

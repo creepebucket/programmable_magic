@@ -3,11 +3,14 @@ package org.creepebucket.programmable_magic.gui.machines.api;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import org.creepebucket.programmable_magic.ModUtils;
+import net.minecraft.resources.Identifier;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.*;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
+import org.creepebucket.programmable_magic.utils.ModColors;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,7 +193,7 @@ public class MachineWidgets {
                 graphics.fill(right() + 1, bottom() - 4, right(), bottom(), -1);
             }
             else if (isIn(mouseX, mouseY, right() - 9, top() + 2, 7, 7)) {
-                closeButton.mainColor(0xffff0000);
+                closeButton.mainColor(ModColors.MAIN_COLOR_T);
             }
         }
 
@@ -341,10 +344,10 @@ public class MachineWidgets {
             addChild(new TextWidget(Coordinate.fromTopRight(-66, 15), Component.literal("魔力缓存")).noShadow().rightAlign().mainColor(0xffbfbfbf));
             addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), Component.literal("净功率")).noShadow().rightAlign().mainColor(0xffbfbfbf));
 
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0   , 29), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbfffff00));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.25, 21), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbfff0000));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.5 , 13), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbf00ffff));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.75, 5 ), Coordinate.custom(0, 2, 0.25, -11)).mainColor(0xbf00ff00));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0   , 29), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.25, 21), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_T));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.5 , 13), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_M));
+            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.75, 5 ), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_P));
 
             addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0   , 29), menu.radiationStorageJ  , 7, 1, true).mainColor(-1));
             addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.25, 21), menu.temperatureStorageJ, 7, 1, true).mainColor(-1));
@@ -366,10 +369,10 @@ public class MachineWidgets {
             addChild(new TextWidget(Coordinate.custom(1, -67, 0.5 , 14), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
             addChild(new TextWidget(Coordinate.custom(1, -67, 0.75, 6 ), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
 
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0   , 29), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbfffff00));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.25, 21), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbfff0000));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.5 , 13), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbf00ffff));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.75, 5 ), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(0xbf00ff00));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0   , 29), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.25, 21), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_T));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.5 , 13), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_M));
+            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.75, 5 ), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_P));
 
             addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0   , 29), menu.radiationPowerW  , 7, 1, true).rightAlign().mainColor(0xff000000));
             addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.25, 21), menu.temperaturePowerW, 7, 1, true).rightAlign().mainColor(0xff000000));
@@ -381,10 +384,10 @@ public class MachineWidgets {
             addChild(new TextWidget(Coordinate.custom(1, -9, 0.5 , 14), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
             addChild(new TextWidget(Coordinate.custom(1, -9, 0.75, 6 ), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
 
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.25, 18), Coordinate.custom(1, -18, 0.25, -21), menu.radiationStorageJ  , menu.radiationCacheJ  ).bottomAlignY().mainColor(0xffffff00).bgColor(0x0fffff00));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.5 , 10), Coordinate.custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(0xffff0000).bgColor(0x0fff0000));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.75, 2 ), Coordinate.custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(0xff00ffff).bgColor(0x0f00ffff));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 1   , -6), Coordinate.custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(0xff00ff00).bgColor(0x0f00ff00));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.25, 18), Coordinate.custom(1, -18, 0.25, -21), menu.radiationStorageJ  , menu.radiationCacheJ  ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_R).bgColor(ModColors.MAIN_COLOR_R.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.5 , 10), Coordinate.custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_T).bgColor(ModColors.MAIN_COLOR_T.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.75, 2 ), Coordinate.custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_M).bgColor(ModColors.MAIN_COLOR_M.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 1   , -6), Coordinate.custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_P).bgColor(ModColors.MAIN_COLOR_P.withAlpha(0x0f)));
         }
     }
 
@@ -438,7 +441,7 @@ public class MachineWidgets {
             addChild(new NumberDisplayWidget(Coordinate.fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign());
 
             addChild(new TextWidget(Coordinate.fromTopRight(-7, 24), Component.literal("控制成本 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(0xffffff00));
+            addChild(new NumberDisplayWidget(Coordinate.fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
 
             powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(Coordinate.fromBottomLeft(7, -9), Coordinate.fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
         }
@@ -457,6 +460,38 @@ public class MachineWidgets {
             }
             graduations.add(addChild(new TextWidget(Coordinate.fromBottomLeft(7, -13), Component.literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
             graduations.add(addChild(new TextWidget(Coordinate.fromBottomRight(-6, -13), Component.literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
+        }
+    }
+
+    public static class FluidInfoWidget extends Widget implements Lifecycle {
+        public DynamicValue<String> fluidId;
+        public FluidTextureWidget fluidTexture;
+        public TextWidget fluidNameText;
+        public TextWidget fluidIdText;
+
+        public FluidInfoWidget(Coordinate pos, DynamicValue<String> fluidId) {
+            super(pos, Coordinate.ZERO);
+            this.fluidId = fluidId;
+        }
+
+        @Override
+        public void onInitialize() {
+            addChild(new TextWidget(Coordinate.fromTopLeft(0, 0), Component.literal("流体类型")).noShadow().mainColor(0xff7f7f7f));
+            fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(10, 10), fluidId.get()));
+            fluidNameText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(13, 13), fluidId.get().isEmpty() ? Component.literal("") :
+                    Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow());
+            fluidIdText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(0, 25), Component.literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f));
+
+            fluidId.whenDataChangedDo(() -> {
+                fluidTexture.addAnimation(new Animation.FadeOut.ToRight(0.3), 0);
+                fluidNameText.addAnimation(new Animation.FadeOut.ToRight(0.3), 0.05);
+                fluidIdText.addAnimation(new Animation.FadeOut.ToRight(0.3), 0.1);
+
+                fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(10, 10), fluidId.get()).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0));
+                fluidNameText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(13, 13), fluidId.get().isEmpty() ? Component.literal("") :
+                        Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow().addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.05));
+                fluidIdText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(0, 25), Component.literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
+            });
         }
     }
 

@@ -18,15 +18,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.level.storage.TagValueInput;
-import org.slf4j.LoggerFactory;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.NetworkManaData;
 import org.creepebucket.programmable_magic.mananet.NetworkManaManager;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
+import org.creepebucket.programmable_magic.utils.Mana;
+import org.creepebucket.programmable_magic.utils.ModUtils;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +106,7 @@ public abstract class CommandHandler {
 				return;
 			}
 
-			var entity = new SpellEntity(level, caster, compiled, new HashMap<>(), new ModUtils.Mana(1.0, 1.0, 1.0, 1.0), new ArrayList<>(), false, new ArrayList<>());
+			var entity = new SpellEntity(level, caster, compiled, new HashMap<>(), new Mana(1.0, 1.0, 1.0, 1.0), new ArrayList<>(), false, new ArrayList<>());
 			entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
 
 			if (ctx.getNodes().stream().anyMatch(n -> n.getNode().getName().equals("nbt"))) {
@@ -162,7 +162,7 @@ public abstract class CommandHandler {
 			double t = ctx.getArgument("temperature", Double.class) * 1000.0;
 			double m = ctx.getArgument("momentum", Double.class) * 1000.0;
 			double p = ctx.getArgument("pressure", Double.class) * 1000.0;
-			ModUtils.Mana mana = new ModUtils.Mana(r, t, m, p);
+			Mana mana = new Mana(r, t, m, p);
 
 			Long networkId;
 			if (ctx.getNodes().stream().anyMatch(n -> n.getNode().getName().equals("network_id"))) {

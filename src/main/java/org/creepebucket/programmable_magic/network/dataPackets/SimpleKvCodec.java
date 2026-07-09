@@ -3,7 +3,7 @@ package org.creepebucket.programmable_magic.network.dataPackets;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 
-import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ public class SimpleKvCodec {
                 double t = ByteBufCodecs.DOUBLE.decode(buf);
                 double m = ByteBufCodecs.DOUBLE.decode(buf);
                 double p = ByteBufCodecs.DOUBLE.decode(buf);
-                yield new ModUtils.Mana(r, t, m, p);
+                yield new Mana(r, t, m, p);
             }
             default -> throw new IllegalStateException("unknown value tag: " + tag);
         };
@@ -73,7 +73,7 @@ public class SimpleKvCodec {
                 encodeValue(buf, entry.getKey());
                 encodeValue(buf, entry.getValue());
             }
-        } else if (v instanceof ModUtils.Mana mana) {
+        } else if (v instanceof Mana mana) {
             ByteBufCodecs.VAR_INT.encode(buf, 7);
             ByteBufCodecs.DOUBLE.encode(buf, mana.getRadiation());
             ByteBufCodecs.DOUBLE.encode(buf, mana.getTemperature());

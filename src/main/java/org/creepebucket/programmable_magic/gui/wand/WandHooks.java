@@ -4,7 +4,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
@@ -15,6 +14,8 @@ import org.creepebucket.programmable_magic.registries.SpellRegistry;
 import org.creepebucket.programmable_magic.spells.PackedSpell;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
+import org.creepebucket.programmable_magic.utils.Mana;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -234,7 +235,7 @@ public class WandHooks {
             if (menu.spell != null) menu.spell.debugMode = false;
 
             // 生成
-            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new ModUtils.Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins, menu.debugMode, menu.breakpointIds.get());
+            menu.spell = new SpellEntity(player.level(), player, compiled, new HashMap<>(), new Mana((Double) args[0], (Double) args[0], (Double) args[0], (Double) args[0]), plugins, menu.debugMode, menu.breakpointIds.get());
 
             player.level().addFreshEntity(menu.spell);
         }

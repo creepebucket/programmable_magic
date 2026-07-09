@@ -16,13 +16,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.Programmable_magic;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
 import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
+import org.creepebucket.programmable_magic.utils.Mana;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +37,7 @@ public class SpellEntity extends Entity {
     // 一些数据定义
 
     // 可用的魔力
-    public ModUtils.Mana availableMana = new ModUtils.Mana();
+    public Mana availableMana = new Mana();
     // 插件列表
     public List<ItemStack> pluginItems = List.of();
     // 法术列表
@@ -63,7 +63,7 @@ public class SpellEntity extends Entity {
         this.setNoGravity(true);
     }
 
-    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, ModUtils.Mana mana, List<ItemStack> plugins, boolean debugMode, List<Integer> breakpointIds) {
+    public SpellEntity(Level level, Player caster, SpellSequence spellSequence, Map<String, Object> spellData, Mana mana, List<ItemStack> plugins, boolean debugMode, List<Integer> breakpointIds) {
         // 创建实体
         this(ModEntityTypes.SPELL_ENTITY.get(), level);
 

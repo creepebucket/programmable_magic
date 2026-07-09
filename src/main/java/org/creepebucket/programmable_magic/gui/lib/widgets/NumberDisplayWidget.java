@@ -1,12 +1,12 @@
 package org.creepebucket.programmable_magic.gui.lib.widgets;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;

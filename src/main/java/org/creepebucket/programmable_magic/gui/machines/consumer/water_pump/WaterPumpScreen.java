@@ -6,6 +6,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
+import org.creepebucket.programmable_magic.utils.ModColors;
 
 public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 
@@ -17,7 +18,7 @@ public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 	public void buildWidget() {
 		super.buildWidget();
 
-		root.mainColor(0xff00ffff);
+		root.mainColor(ModColors.MAIN_COLOR_M);
 
 		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-125, -70), Coordinate.fromTopLeft(250, 80), menu.power, Component.literal("动量/Mom"),
 				Component.literal("水泵"), Component.literal("[每秒流量]"), Component.literal("Q="), "L"));

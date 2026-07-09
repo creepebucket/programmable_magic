@@ -6,12 +6,12 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.List;
 
@@ -30,8 +30,8 @@ public abstract class VisualEffectSpell extends SpellItemLogic implements SpellI
     }
 
     @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
+    public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new Mana();
     }
 
     public static class DebugPrintSpell extends VisualEffectSpell {

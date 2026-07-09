@@ -9,11 +9,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.Mana;
 
-import static org.creepebucket.programmable_magic.ModUtils.getTempKelvin;
+import static org.creepebucket.programmable_magic.utils.ModUtils.getTempKelvin;
 
 public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBlockEntity {
     public double solarConstant = 1367, directIrradiance, diffuseIrradiance, atmosphericTransmittanceDiffuse;
@@ -103,10 +103,10 @@ public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBloc
         }
 
         entity.power = entity.enabled ? (entity.directIrradiance + entity.diffuseIrradiance) * entity.panelArea * entity.efficiencyFact * 0.01 : 0;
-        var load = new ModUtils.Mana(-entity.power, 0d, 10d, 0d);
+        var load = new Mana(-entity.power, 0d, 10d, 0d);
 
         if (entity.getNetworkData().canProduce(load)) entity.getNetworkData().setLoadW(load);
-        entity.getNetworkData().setCache(new ModUtils.Mana(2000d, 2000d, 2000d, 2000d));
+        entity.getNetworkData().setCache(new Mana(2000d, 2000d, 2000d, 2000d));
     }
 
     private static double smoothstep(double edge0, double edge1, double x) {

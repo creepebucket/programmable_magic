@@ -17,7 +17,6 @@ import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.extensions.IItemExtension;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
@@ -26,6 +25,8 @@ import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.SpellEffects;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
+import org.creepebucket.programmable_magic.utils.Mana;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -157,7 +158,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             return true;
         }
 
-        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new ModUtils.Mana(mana, mana, mana, mana), plugins, false, new ArrayList<>()));
+        player.level().addFreshEntity(new SpellEntity(player.level(), (Player) player, compiled, new HashMap<>(), new Mana(mana, mana, mana, mana), plugins, false, new ArrayList<>()));
         return true;
     }
 

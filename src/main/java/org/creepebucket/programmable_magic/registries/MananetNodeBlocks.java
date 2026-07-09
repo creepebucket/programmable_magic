@@ -12,7 +12,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
 import org.creepebucket.programmable_magic.mananet.machines.IoDummies;
-import org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler.SteamBoiler;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeater;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPump;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanel;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbine;
@@ -36,8 +36,8 @@ public class MananetNodeBlocks {
             BLOCKS.register("water_pump", registryName -> new WaterPump(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
-    public static final DeferredBlock<SteamBoiler> STEAM_BOILER =
-            BLOCKS.register("steam_boiler", registryName -> new SteamBoiler(
+    public static final DeferredBlock<LiquidHeater> LIQUID_HEATER =
+            BLOCKS.register("liquid_heater", registryName -> new LiquidHeater(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
@@ -73,8 +73,8 @@ public class MananetNodeBlocks {
     public static final DeferredItem<BlockItem> WATER_PUMP_BLOCK_ITEM =
             registerMachineItem(WATER_PUMP);
 
-    public static final DeferredItem<BlockItem> STEAM_BOILER_BLOCK_ITEM =
-            registerMachineItem(STEAM_BOILER);
+    public static final DeferredItem<BlockItem> LIQUID_HEATER_BLOCK_ITEM =
+            registerMachineItem(LIQUID_HEATER);
 
     public static <B extends Block> DeferredItem<BlockItem> registerMachineItem(DeferredBlock<B> block) {
         return ITEMS.registerSimpleBlockItem(block);

@@ -6,7 +6,6 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.client.ClientUiContext;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
@@ -17,6 +16,8 @@ import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.SpellCompiler;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
+import org.creepebucket.programmable_magic.utils.ModColors;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -279,7 +280,7 @@ public class WandWidgets {
 
         @Override
         public void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-            Map<String, Integer> COLOR_MAP = ModUtils.SPELL_COLORS();
+            Map<String, Integer> COLOR_MAP = ModColors.SPELL_COLORS();
             var color = COLOR_MAP.getOrDefault(key, 0xFFFFFFFF);
             color = (color & 16777215) | ((int) (((color >>> 24) * 0.6)) << 24);
 

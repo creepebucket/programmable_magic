@@ -10,7 +10,7 @@ import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.creepebucket.programmable_magic.ModUtils.now;
+import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
     /**
      * UI 控件基类：提供位置和尺寸的基础支持，通过实现功能接口来获得能力。

@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler;
+package org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater;
 
 import com.geckolib.animatable.GeoBlockEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
@@ -10,12 +10,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 
-public class SteamBoilerBlockEntity extends MachineBlockEntity implements GeoBlockEntity {
+public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBlockEntity {
 
 	public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
-	public SteamBoilerBlockEntity(BlockPos pos, BlockState state) {
-		super(ModBlockEntities.STEAM_BOILER_BLOCK_ENTITY.get(), pos, state);
+	public LiquidHeaterBlockEntity(BlockPos pos, BlockState state) {
+		super(ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get(), pos, state);
 	}
 
 	@Override
@@ -26,6 +26,6 @@ public class SteamBoilerBlockEntity extends MachineBlockEntity implements GeoBlo
 		return geoCache;
 	}
 
-	public static void tick(Level level, BlockPos pos, BlockState state, SteamBoilerBlockEntity entity) {
+	public static void tick(Level level, BlockPos pos, BlockState state, LiquidHeaterBlockEntity entity) {
 	}
 }

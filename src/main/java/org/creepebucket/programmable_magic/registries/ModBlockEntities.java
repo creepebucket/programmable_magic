@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler.SteamBoilerBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeaterBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntities;
@@ -35,9 +35,9 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("water_pump", () -> new BlockEntityType<WaterPumpBlockEntity>(
                     WaterPumpBlockEntity::new, false, MananetNodeBlocks.WATER_PUMP.get()));
 
-    public static final Supplier<BlockEntityType<SteamBoilerBlockEntity>> STEAM_BOILER_BLOCK_ENTITY =
-            BLOCK_ENTITIES.register("steam_boiler", () -> new BlockEntityType<SteamBoilerBlockEntity>(
-                    SteamBoilerBlockEntity::new, false, MananetNodeBlocks.STEAM_BOILER.get()));
+    public static final Supplier<BlockEntityType<LiquidHeaterBlockEntity>> LIQUID_HEATER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("liquid_heater", () -> new BlockEntityType<LiquidHeaterBlockEntity>(
+                    LiquidHeaterBlockEntity::new, false, MananetNodeBlocks.LIQUID_HEATER.get()));
 
     public static final Supplier<BlockEntityType<DummyBlockEntities.ItemInput>> ITEM_INPUT =
             BLOCK_ENTITIES.register("item_input", () -> {

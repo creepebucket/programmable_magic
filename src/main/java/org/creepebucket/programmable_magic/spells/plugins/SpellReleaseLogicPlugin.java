@@ -3,8 +3,8 @@ package org.creepebucket.programmable_magic.spells.plugins;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
-import org.creepebucket.programmable_magic.ModUtils.WandValues;
+import org.creepebucket.programmable_magic.utils.ModUtils;
+import org.creepebucket.programmable_magic.utils.ModUtils.WandValues;
 
 import java.util.List;
 

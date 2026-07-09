@@ -19,7 +19,7 @@ import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 
 import java.util.List;
 
-import static org.creepebucket.programmable_magic.ModUtils.now;
+import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
 public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
 

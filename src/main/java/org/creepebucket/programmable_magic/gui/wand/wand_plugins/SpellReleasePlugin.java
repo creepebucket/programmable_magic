@@ -4,17 +4,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.Animation;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandWidgets;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import static net.minecraft.util.Mth.hsvToArgb;
-import static org.creepebucket.programmable_magic.ModUtils.formattedNumber;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+import static org.creepebucket.programmable_magic.utils.ModUtils.formattedNumber;
 
 public class SpellReleasePlugin extends BasePlugin {
     public int tier;

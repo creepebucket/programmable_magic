@@ -1,7 +1,5 @@
-package org.creepebucket.programmable_magic;
+package org.creepebucket.programmable_magic.utils;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
@@ -17,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Climate;
-import net.minecraft.world.phys.Vec3;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.spells.plugins.WandPluginLogic;
@@ -143,30 +140,6 @@ public class ModUtils {
             plugin.adjustWandValues(values, st);
         }
         return values;
-    }
-
-    // 法术 -> 颜色
-    public static Map<String, Integer> SPELL_COLORS() {
-        Map<String, Integer> COLOR_MAP = new LinkedHashMap<>();
-        COLOR_MAP.put("spell." + MODID + ".subcategory.visual", 0xFFC832A1);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.entity", 0xFFC82C59);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.block", 0xFFEB3838);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.trigger", 0xFFC8702C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.structure", 0xFFC8902C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.flow_control", 0xFFC8B32C);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.number", 0xFF9FE333);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.number", 0xFF5DEE22);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.number", 0xFF31FF7E);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.vector", 0xFF3AFFED);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.vector", 0xFF2DCDFF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.vector", 0xFF3498FF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.boolean", 0xFF424EF9);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.constants.boolean", 0xFF7747F0);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.dynamic_constant.entity", 0xFF8F21FF);
-        COLOR_MAP.put("spell." + MODID + ".subcategory.operations.block", 0xFFB53EDF);
-
-        COLOR_MAP.put("spell." + MODID + ".subcategory.custom", 0xFF000000);
-        return COLOR_MAP;
     }
 
     /**
@@ -300,165 +273,6 @@ public class ModUtils {
         public double chargeRateW = 0.0; // 充能功率（W）
         public int spellSlots = 0;       // 法术槽位有效容量
         public int pluginSlots = 0;      // 插件槽有效容量（当前未使用）
-    }
-
-    public static final class Mana {
-
-        public static final String RADIATION = "radiation";
-        public static final String TEMPERATURE = "temperature";
-        public static final String MOMENTUM = "momentum";
-        public static final String PRESSURE = "pressure";
-        public static final Codec<Mana> CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(
-                        Codec.DOUBLE.fieldOf("radiation").forGetter(Mana::getRadiation),
-                        Codec.DOUBLE.fieldOf("temperature").forGetter(Mana::getTemperature),
-                        Codec.DOUBLE.fieldOf("momentum").forGetter(Mana::getMomentum),
-                        Codec.DOUBLE.fieldOf("pressure").forGetter(Mana::getPressure)
-                ).apply(instance, Mana::new)
-        );
-        private final Map<String, Double> values;
-
-        public Mana(Double radiation, Double temperature, Double momentum, Double pressure) {
-            this.values = new HashMap<>();
-            // 预置四系键，初始为 0.0
-            values.put(RADIATION, radiation);
-            values.put(TEMPERATURE, temperature);
-            values.put(MOMENTUM, momentum);
-            values.put(PRESSURE, pressure);
-        }
-
-        public Mana() {
-            this(0.0, 0.0, 0.0, 0.0);
-        }
-
-        public Map<String, Double> toMap() {
-            return values;
-        }
-
-        public void add(String key, Double value) {
-            values.put(key, values.get(key) + value);
-        }
-
-        public Mana add(Mana mana) {
-            return new Mana(
-                    values.get(RADIATION) + mana.getRadiation(),
-                    values.get(TEMPERATURE) + mana.getTemperature(),
-                    values.get(MOMENTUM) + mana.getMomentum(),
-                    values.get(PRESSURE) + mana.getPressure()
-            );
-        }
-
-        public Mana subtract(Mana mana) {
-            return new Mana(
-                    values.get(RADIATION) - mana.getRadiation(),
-                    values.get(TEMPERATURE) - mana.getTemperature(),
-                    values.get(MOMENTUM) - mana.getMomentum(),
-                    values.get(PRESSURE) - mana.getPressure()
-            );
-        }
-
-        public Double getRadiation() {
-            return values.get(RADIATION);
-        }
-
-        public Double getTemperature() {
-            return values.get(TEMPERATURE);
-        }
-
-        public Double getMomentum() {
-            return values.get(MOMENTUM);
-        }
-
-        public Double getPressure() {
-            return values.get(PRESSURE);
-        }
-
-        public Mana scale(double factor) {
-            return new Mana(
-                    values.get(RADIATION) * factor,
-                    values.get(TEMPERATURE) * factor,
-                    values.get(MOMENTUM) * factor,
-                    values.get(PRESSURE) * factor
-            );
-        }
-
-        public Mana negative() {
-            Mana mana = new Mana();
-            for (Map.Entry<String, Double> entry : values.entrySet()) {
-                mana.add(entry.getKey(), -entry.getValue());
-            }
-            return mana;
-        }
-
-        public boolean greaterThan(Mana mana) {
-            return values.get(RADIATION) > mana.getRadiation() &&
-                    values.get(TEMPERATURE) > mana.getTemperature() &&
-                    values.get(MOMENTUM) > mana.getMomentum() &&
-                    values.get(PRESSURE) > mana.getPressure();
-        }
-
-        public boolean lessThan(Mana mana) {
-            return values.get(RADIATION) < mana.getRadiation() &&
-                    values.get(TEMPERATURE) < mana.getTemperature() &&
-                    values.get(MOMENTUM) < mana.getMomentum() &&
-                    values.get(PRESSURE) < mana.getPressure();
-        }
-
-        public Mana min(Mana mana){
-            return new Mana(
-                    Math.min(getRadiation(), mana.getRadiation()),
-                    Math.min(getTemperature(), mana.getTemperature()),
-                    Math.min(getMomentum(), mana.getMomentum()),
-                    Math.min(getPressure(), mana.getPressure())
-            );
-        }
-
-        /** 任一分量大于即返回真：用于“是否有任一系魔力不足”的判定 */
-        public boolean anyGreaterThan(Mana mana) {
-            return values.get(RADIATION) > mana.getRadiation() ||
-                    values.get(TEMPERATURE) > mana.getTemperature() ||
-                    values.get(MOMENTUM) > mana.getMomentum() ||
-                    values.get(PRESSURE) > mana.getPressure();
-        }
-    }
-
-    public class BezierUtils {
-        /**
-         * 计算三阶贝塞尔曲线上的单个点 (2个控制点)
-         * 公式: B(t) = (1-t)^3*P0 + 3*(1-t)^2*t*P1 + 3*(1-t)*t^2*P2 + t^3*P3
-         *
-         * @param t  进度 (0.0 到 1.0)
-         * @param p0 起始点
-         * @param p1 控制点1 (影响起始段的走向)
-         * @param p2 控制点2 (影响结束段的走向)
-         * @param p3 终点
-         */
-        public static Vec3 getCubicBezierPoint(float t, Vec3 p0, Vec3 p1, Vec3 p2, Vec3 p3) {
-            var u = 1 - t;
-
-            // 预计算次幂，减少计算量
-            var uu = u * u;
-            var uuu = uu * u;
-            var tt = t * t;
-            var ttt = tt * t;
-            // 计算各个分量 (1, 3, 3, 1 是杨辉三角的系数)
-            var x = uuu * p0.x + 3 * uu * t * p1.x + 3 * u * tt * p2.x + ttt * p3.x;
-            var y = uuu * p0.y + 3 * uu * t * p1.y + 3 * u * tt * p2.y + ttt * p3.y;
-            var z = uuu * p0.z + 3 * uu * t * p1.z + 3 * u * tt * p2.z + ttt * p3.z;
-            return new Vec3(x, y, z);
-        }
-        /**
-         * 生成三阶贝塞尔曲线的点集
-         * @param segments 线段数量（生成的点数为 segments + 1）
-         */
-        public static List<Vec3> generateCubicCurve(Vec3 start, Vec3 cp0, Vec3 cp1, Vec3 end, int segments) {
-            List<Vec3> points = new ArrayList<>();
-            for (int i = 0; i <= segments; i++) {
-                var t = (float) i / segments;
-                points.add(getCubicBezierPoint(t, start, cp0, cp1, end));
-            }
-            return points;
-        }
     }
 
     /**

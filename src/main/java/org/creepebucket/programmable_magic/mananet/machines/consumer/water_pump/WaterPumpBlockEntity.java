@@ -10,11 +10,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import static net.minecraft.world.level.block.Blocks.WATER;
 
@@ -58,9 +58,9 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 		}
 
 		var networkData = entity.getNetworkData();
-		networkData.setCache(new ModUtils.Mana(2000d, 2000d, 2000d, 2000d));
+		networkData.setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
-		var load = new ModUtils.Mana(Math.pow(4, entity.powerFact - 1) * 300, 0d, 2000 * entity.powerFact, 0d);
+		var load = new Mana(Math.pow(4, entity.powerFact - 1) * 300, 0d, 2000 * entity.powerFact, 0d);
 
 		var shouldBeWater = level.getBlockState(pos.relative(level.getBlockState(pos).getValue(RotatableBasicMachine.FACING).getOpposite()).below());
 		if (!networkData.canProduce(load) || !entity.enabled || !shouldBeWater.is(WATER)) {

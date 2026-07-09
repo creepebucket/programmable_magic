@@ -7,7 +7,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
-import org.creepebucket.programmable_magic.gui.machines.consumer.steam_boiler.SteamBoilerScreen;
+import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.solar_panel.SolarPanelScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.WindTurbineScreen;
@@ -48,8 +48,8 @@ public class ClientEventHandler {
 				WaterPumpScreen::new
 		);
 		event.register(
-				ModMenuTypes.STEAM_BOILER_MENU.get(),
-				SteamBoilerScreen::new
+				ModMenuTypes.LIQUID_HEATER_MENU.get(),
+				LiquidHeaterScreen::new
 		);
 		event.register(
 				ModMenuTypes.NETWORK_INFO.get(),
@@ -67,7 +67,7 @@ public class ClientEventHandler {
         registerMachineBER(event, ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), "wind_turbine", new AABB(-2, -1, -2, 3, 7, 3));
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
         registerMachineBER(event, ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), "water_pump", new AABB(-1, 0, -1, 2, 2, 2));
-        registerMachineBER(event, ModBlockEntities.STEAM_BOILER_BLOCK_ENTITY.get(), "steam_boiler", new AABB(-1, 0, -1, 2, 2, 2));
+        registerMachineBER(event, ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get(), "liquid_heater", new AABB(-1, 0, -1, 2, 2, 2));
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
     }
 

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Inventory;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
+import org.creepebucket.programmable_magic.utils.ModColors;
 
 public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
@@ -16,7 +17,7 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 	public void buildWidget() {
 		super.buildWidget();
 
-		root.mainColor(0xffffff00);
+		root.mainColor(ModColors.MAIN_COLOR_R);
 
 		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("辐射/Rad"),
 				Component.literal("太阳能板"), Component.literal("[输出功率]"), Component.literal("P="), "W"));

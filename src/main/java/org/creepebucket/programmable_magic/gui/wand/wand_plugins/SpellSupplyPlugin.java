@@ -5,13 +5,14 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.lib.api.*;
 import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandSlots;
 import org.creepebucket.programmable_magic.gui.wand.WandWidgets;
 import org.creepebucket.programmable_magic.registries.SpellRegistry;
+import org.creepebucket.programmable_magic.utils.ModColors;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +58,8 @@ public class SpellSupplyPlugin extends BasePlugin {
             int finalCategoriesCount = categoriesCount;
             subCategoryJumps.add(screen.addWidget(new WandWidgets.WandSubcategoryJumpButton(new Coordinate((w, h) -> 0, (w, h) -> (finalCategoriesCount * h / (spells.size() + 1))),
                     new Coordinate((w, h) -> 7, (w, h) -> (((finalCategoriesCount + 1) * h / (spells.size() + 1)) - (finalCategoriesCount * h / (spells.size() + 1)))), supplyDy, -categoryDy + 20)
-                    .mainColor(new Color(ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)))
-                    .bgColor(new Color(new Color(ModUtils.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)).toArgbWithAlphaMult(0.6)))
+                    .mainColor(new Color(ModColors.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)))
+                    .bgColor(new Color(new Color(ModColors.SPELL_COLORS().getOrDefault(key, 0xFFFFFFFF)).toArgbWithAlphaMult(0.6)))
                     .tooltip(Component.translatable(key))));
 
             // 子类别标题

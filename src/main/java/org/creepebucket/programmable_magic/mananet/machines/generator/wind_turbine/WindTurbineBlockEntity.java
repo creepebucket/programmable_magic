@@ -15,10 +15,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlockEntity {
     public double airDensityBase = 1.225, airDensityTempFactBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
@@ -134,8 +134,8 @@ public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlo
         entity.power = entity.enabled ? power : 0;
         entity.setData(ModAttachments.WIND_TURBINE_POWER, entity.power);
 
-        entity.getNetworkData().setLoadW(new ModUtils.Mana(0d, 0d, -entity.power, 0d));
-        entity.getNetworkData().setCache(new ModUtils.Mana(2000d, 2000d, 2000d, 2000d));
+        entity.getNetworkData().setLoadW(new Mana(0d, 0d, -entity.power, 0d));
+        entity.getNetworkData().setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
         // ========== 网络连接逻辑 ========== //
 

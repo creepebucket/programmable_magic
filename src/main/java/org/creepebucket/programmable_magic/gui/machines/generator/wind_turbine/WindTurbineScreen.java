@@ -7,6 +7,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
+import org.creepebucket.programmable_magic.utils.ModColors;
 
 public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 
@@ -18,7 +19,7 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 	public void buildWidget() {
 		super.buildWidget();
 
-		root.mainColor(0xff00ffff);
+		root.mainColor(ModColors.MAIN_COLOR_M);
 
 		// 主要信息显示
 		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("动量/Mom"),
@@ -51,7 +52,7 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 		exprAirDensity.addChild(new MachineWidgets.NumberDisplayWidget(Coordinate.fromTopLeft(132, 0), menu.airDensityTempFact, 6, 1, true));
 		exprAirDensity.addChild(new TextWidget(Coordinate.fromTopLeft(133, 11), Component.literal("温度修正")).noShadow().mainColor(0xffbfbfbf));
 		exprAirDensity.addChild(new TextWidget(Coordinate.fromTopLeft(170, 1), Component.literal("=")).noShadow().mainColor(0xffbfbfbf));
-		exprAirDensity.addChild(new MachineWidgets.NumberDisplayWidget(Coordinate.fromTopLeft(176, 0), menu.airDensity, 6, 1, true).mainColor(0xff00ffff));
+		exprAirDensity.addChild(new MachineWidgets.NumberDisplayWidget(Coordinate.fromTopLeft(176, 0), menu.airDensity, 6, 1, true).mainColor(ModColors.MAIN_COLOR_M));
 		exprAirDensity.addChild(new TextWidget(Coordinate.fromTopLeft(177, -10), Component.literal("空气密度")).noShadow());*/
 	}
 }

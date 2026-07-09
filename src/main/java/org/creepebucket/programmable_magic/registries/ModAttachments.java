@@ -9,7 +9,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.ModUtils;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +21,9 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public final class ModAttachments {
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(ATTACHMENT_TYPES, MODID);
-    public static final Supplier<AttachmentType<ModUtils.Mana>> MANA = ATTACHMENTS.register(
+    public static final Supplier<AttachmentType<Mana>> MANA = ATTACHMENTS.register(
             "mana",
-            () -> AttachmentType.builder(ModUtils.Mana::new).serialize(ModUtils.Mana.CODEC.fieldOf("mana")).build()
+            () -> AttachmentType.builder(Mana::new).serialize(Mana.CODEC.fieldOf("mana")).build()
     );
 
     public static final Supplier<AttachmentType<Map<Direction, BlockPos>>> CONNECTIONS = ATTACHMENTS.register(
@@ -77,16 +77,16 @@ public final class ModAttachments {
                     .build()
     );
 
-    public static final Supplier<AttachmentType<Map<Long, Map<String, ModUtils.Mana>>>> DIMENSIONAL_MANA_DATA = ATTACHMENTS.register(
+    public static final Supplier<AttachmentType<Map<Long, Map<String, Mana>>>> DIMENSIONAL_MANA_DATA = ATTACHMENTS.register(
             "pm_mananet_dimensional_data",
-            () -> AttachmentType.<Map<Long, Map<String, ModUtils.Mana>>>builder(() -> new HashMap<>())
-                    .serialize(Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, ModUtils.Mana.CODEC))
+            () -> AttachmentType.<Map<Long, Map<String, Mana>>>builder(() -> new HashMap<>())
+                    .serialize(Codec.unboundedMap(Codec.STRING, Codec.unboundedMap(Codec.STRING, Mana.CODEC))
                             .xmap(map -> {
-                                Map<Long, Map<String, ModUtils.Mana>> out = new HashMap<>();
+                                Map<Long, Map<String, Mana>> out = new HashMap<>();
                                 map.forEach((k, v) -> out.put(Long.parseLong(k), v));
                                 return out;
                             }, map -> {
-                                Map<String, Map<String, ModUtils.Mana>> out = new HashMap<>();
+                                Map<String, Map<String, Mana>> out = new HashMap<>();
                                 map.forEach((k, v) -> out.put(String.valueOf(k), v));
                                 return out;
                             })

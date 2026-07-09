@@ -38,6 +38,10 @@ public class Color {
         return (int) (a * mult) << 24 | r << 16 | g << 8 | b;
     }
 
+    public Color withAlpha(int alpha) {
+        return new Color(r, g, b, alpha);
+    }
+
     public Color mix(Color target, double ratio) {
         return new Color(
                 r * (1 - ratio) + target.r * ratio,

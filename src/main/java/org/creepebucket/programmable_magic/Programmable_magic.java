@@ -18,6 +18,7 @@ public class Programmable_magic {
     public static final String MODID = "programmable_magic";
     public static final TicketController SPELL_ENTITY_TICKET_CONTROLLER = new TicketController(Identifier.fromNamespaceAndPath(MODID, "spell_entity"));
 
+
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
 
         ModItems.register(modEventBus);

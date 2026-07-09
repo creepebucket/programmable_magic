@@ -8,13 +8,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.spells.SpellValueType;
 import org.creepebucket.programmable_magic.spells.api.ExecutionResult;
 import org.creepebucket.programmable_magic.spells.api.SpellExceptions;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
+import org.creepebucket.programmable_magic.utils.Mana;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,8 @@ public abstract class WorldInterationSpell extends SpellItemLogic implements Spe
     }
 
     @Override
-    public ModUtils.Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-        return new ModUtils.Mana();
+    public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new Mana();
     }
 
     public static class BreakBlockSpell extends WorldInterationSpell {

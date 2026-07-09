@@ -10,10 +10,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.renderer.api.RenderHelper;
+import org.creepebucket.programmable_magic.utils.BezierUtils;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
                         0, (connectedCenter.z - selfCenter.z) * facingToCpDirection.get(direction).z);
                 var cp1 = connectedCenter.add((selfCenter.x - connectedCenter.x) * facingToCpDirection.get(connectedFace).x,
                         0, (selfCenter.z - connectedCenter.z) * facingToCpDirection.get(connectedFace).z);
-                var measurePoints = ModUtils.BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, 10);
+                var measurePoints = BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, 10);
                 double totalLength = 0;
                 for (int j = 0; j < measurePoints.size() - 1; j++) {
                     totalLength += measurePoints.get(j).distanceTo(measurePoints.get(j + 1));
@@ -107,7 +107,7 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
                 int segments = (int) Math.round(totalLength / segmentUnit);
                 if (segments < 3) segments = 3;
                 if (segments % 2 == 0) segments++;
-                allCenters.add(ModUtils.BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, segments));
+                allCenters.add(BezierUtils.generateCubicCurve(selfCenter, cp0, cp1, connectedCenter, segments));
             }
 
             List<List<List<Vec3>>> allVertex = new ArrayList<>(List.of(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>()));

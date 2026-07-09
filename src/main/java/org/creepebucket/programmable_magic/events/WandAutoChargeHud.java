@@ -8,10 +8,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.gui.wand.WandMenu;
 import org.creepebucket.programmable_magic.items.Wand;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
+import org.creepebucket.programmable_magic.utils.ModUtils;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 

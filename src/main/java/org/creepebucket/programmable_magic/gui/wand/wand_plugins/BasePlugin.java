@@ -3,11 +3,11 @@ package org.creepebucket.programmable_magic.gui.wand.wand_plugins;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import org.creepebucket.programmable_magic.ModUtils.WandValues;
 import org.creepebucket.programmable_magic.entities.SpellEntity;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.api.SpellSequence;
+import org.creepebucket.programmable_magic.utils.ModUtils.WandValues;
 
 import java.util.List;
 import java.util.Map;

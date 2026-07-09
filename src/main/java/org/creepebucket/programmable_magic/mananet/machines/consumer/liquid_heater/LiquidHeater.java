@@ -1,8 +1,11 @@
-package org.creepebucket.programmable_magic.mananet.machines.consumer.steam_boiler;
+package org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,22 +16,23 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterMenu;
 import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.jspecify.annotations.Nullable;
 
-public class SteamBoiler extends RotatableBasicMachine {
+public class LiquidHeater extends RotatableBasicMachine {
 
-	public SteamBoiler(Properties properties) {
+	public LiquidHeater(Properties properties) {
 		super(properties);
+
+		addFluidInput(-1, 0, 0, 8000);
+		addFluidOutput(1, 0, 0, 8000);
+		addItemInput(1, 1, 0);
 	}
 
 	@Override
 	public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		addFluidInput(-1, 0, 0, 8000);
-		addFluidOutput(1, 0, 0, 8000);
-		addItemInput(1, 1, 0);
-
-		return new SteamBoilerBlockEntity(pos, state);
+		return new LiquidHeaterBlockEntity(pos, state);
 	}
 
 	public VoxelShape hitbox() {
@@ -48,12 +52,20 @@ public class SteamBoiler extends RotatableBasicMachine {
 
 	@Override
 	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-		return InteractionResult.PASS;
+		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+			serverPlayer.openMenu(state.getMenuProvider(level, pos), buf -> {
+				buf.writeBlockPos(pos);
+			});
+		}
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	protected @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
-		return null;
+		return new SimpleMenuProvider(
+				(containerId, inventory, p) -> new LiquidHeaterMenu(containerId, inventory, pos),
+				Component.literal("")
+		);
 	}
 
 	@Nullable

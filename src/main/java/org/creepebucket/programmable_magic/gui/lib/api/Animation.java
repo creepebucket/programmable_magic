@@ -1,6 +1,6 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
-import static org.creepebucket.programmable_magic.ModUtils.now;
+import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
 public abstract class Animation {
     public double start, duration = 0; // 秒

@@ -7,7 +7,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.creepebucket.programmable_magic.ModUtils;
 import org.creepebucket.programmable_magic.items.BaseSpellItem;
 import org.creepebucket.programmable_magic.spells.api.SpellItemLogic;
 import org.creepebucket.programmable_magic.spells.spells_adjust.TriggerSpell;
@@ -17,6 +16,7 @@ import org.creepebucket.programmable_magic.spells.spells_base.WorldInterationSpe
 import org.creepebucket.programmable_magic.spells.spells_compute.*;
 import org.creepebucket.programmable_magic.spells.spells_control.BoolOperationsSpell;
 import org.creepebucket.programmable_magic.spells.spells_control.FlowControlSpell;
+import org.creepebucket.programmable_magic.utils.ModColors;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -151,7 +151,7 @@ public class SpellRegistry {
 
     private static void reorderSpellsBySubcategory() {
         LinkedHashMap<String, List<Supplier<Item>>> reordered = new LinkedHashMap<>();
-        for (String key : ModUtils.SPELL_COLORS().keySet()) {
+        for (String key : ModColors.SPELL_COLORS().keySet()) {
             List<Supplier<Item>> value = SPELLS_BY_SUBCATEGORY.get(key);
             if (value != null) {
                 reordered.put(key, value);
