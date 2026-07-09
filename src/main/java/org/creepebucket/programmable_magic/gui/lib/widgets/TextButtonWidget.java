@@ -9,6 +9,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle {
     public Component text;
     public SmoothedValue pivot = new SmoothedValue(0);
@@ -28,7 +31,7 @@ public class TextButtonWidget extends RectangleButtonWidget implements Lifecycle
 
     @Override
     public void onInitialize() {
-        textWidget = addChild(new TextWidget(Coordinate.fromCenter(-ClientUiContext.getFont().width(text) / 2, -4), text));
+        textWidget = addChild(new TextWidget(fromCenter(-ClientUiContext.getFont().width(text) / 2, -4), text));
     }
 
     @Override

@@ -12,6 +12,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 import java.util.function.Consumer;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 public class SwitchWidget extends Widget implements Renderable, Clickable, Lifecycle {
     public Component text1, text2;
     public boolean pressed = false;
@@ -41,8 +44,8 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
 
     @Override
     public void onInitialize() {
-        addChild(new TextWidget(Coordinate.custom(0.25, 1, 0.5, 1), text1).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
-        addChild(new TextWidget(Coordinate.custom(0.75, 1, 0.5, 1), text2).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
+        addChild(new TextWidget(custom(0.25, 1, 0.5, 1), text1).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
+        addChild(new TextWidget(custom(0.75, 1, 0.5, 1), text2).scaled(Math.max(1, Math.floor((double) h() / 11))).mainColor(textColor()).centerAlign().centerAlignY());
         rectDx.set(pressed ? (double) w() / 2 : 0);
     }
 

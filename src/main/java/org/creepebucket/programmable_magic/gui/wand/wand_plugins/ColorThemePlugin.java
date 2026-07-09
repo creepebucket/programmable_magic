@@ -16,6 +16,9 @@ import org.creepebucket.programmable_magic.gui.wand.WandWidgets;
 
 import java.util.ArrayList;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 import static net.minecraft.util.Mth.hsvToArgb;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -32,24 +35,24 @@ public class ColorThemePlugin extends BasePlugin {
 
     @Override
     public void onAdd(WandScreen screen) {
-        bar = new Widget.BlankWidget(Coordinate.fromTopRight(0, 0), Coordinate.fromTopLeft(100, 0));
+        bar = new Widget.BlankWidget(fromTopRight(0, 0), fromTopLeft(100, 0));
         screen.addTopbar(bar);
         var dy = new SmoothedValue(-126);
 
-        bar.addChild(new TextureWidget(Coordinate.ZERO, Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/adjust_spell.png"), Coordinate.fromTopLeft(16, 16))
+        bar.addChild(new TextureWidget(ZERO, Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/adjust_spell.png"), fromTopLeft(16, 16))
                 .dy(dy).color(screen.mainColor));
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 3), Component.translatable("gui.programmable_magic.wand.theme.title")).color(screen.textColor).dy(dy));
+        bar.addChild(new TextWidget(fromTopLeft(16, 3), Component.translatable("gui.programmable_magic.wand.theme.title")).color(screen.textColor).dy(dy));
 
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 20), Component.translatable("gui.programmable_magic.wand.theme.main")).color(screen.textColor).dy(dy));
-        main = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 30), screen.mainColor).dy(dy).color(screen.mainColor));
+        bar.addChild(new TextWidget(fromTopLeft(0, 20), Component.translatable("gui.programmable_magic.wand.theme.main")).color(screen.textColor).dy(dy));
+        main = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(fromTopLeft(0, 30), screen.mainColor).dy(dy).color(screen.mainColor));
 
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 49), Component.translatable("gui.programmable_magic.wand.theme.background")).color(screen.textColor).dy(dy));
-        bg = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 59), screen.bgColor).dy(dy).color(screen.mainColor));
+        bar.addChild(new TextWidget(fromTopLeft(0, 49), Component.translatable("gui.programmable_magic.wand.theme.background")).color(screen.textColor).dy(dy));
+        bg = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(fromTopLeft(0, 59), screen.bgColor).dy(dy).color(screen.mainColor));
 
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(0, 78), Component.translatable("gui.programmable_magic.wand.theme.text")).color(screen.textColor).dy(dy));
-        text = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(Coordinate.fromTopLeft(0, 88), screen.textColor).dy(dy).color(screen.mainColor));
+        bar.addChild(new TextWidget(fromTopLeft(0, 78), Component.translatable("gui.programmable_magic.wand.theme.text")).color(screen.textColor).dy(dy));
+        text = (WandWidgets.ColorSelectionWidget) bar.addChild(new WandWidgets.ColorSelectionWidget(fromTopLeft(0, 88), screen.textColor).dy(dy).color(screen.mainColor));
 
-        bar.addChild(new TextButtonWidget(Coordinate.fromTopLeft(0, 110), Coordinate.fromTopLeft(100, 16), Component.translatable("gui.programmable_magic.wand.theme.reload"),
+        bar.addChild(new TextButtonWidget(fromTopLeft(0, 110), fromTopLeft(100, 16), Component.translatable("gui.programmable_magic.wand.theme.reload"),
                 () -> {
                     screen.mainColor = main.color();
                     screen.bgColor = new Color(bg.color().toArgbWithAlphaMult(0.5));
@@ -59,7 +62,7 @@ public class ColorThemePlugin extends BasePlugin {
                     screen.init();
                 }).dy(dy).mainColor(screen.mainColor).bgColor(screen.bgColor).textColor(screen.textColor));
 
-        bar.addChild(new RectangleButtonWidget(Coordinate.fromTopLeft(0, 127), Coordinate.fromTopLeft(100, 5), () -> {
+        bar.addChild(new RectangleButtonWidget(fromTopLeft(0, 127), fromTopLeft(100, 5), () -> {
             if (dy.get() != 7) dy.set(7);
             else dy.set(-126);
         }).mainColor(new Color(screen.mainColor.toArgbWithAlphaMult(0.5))).bgColor(screen.bgColor).dy(dy));

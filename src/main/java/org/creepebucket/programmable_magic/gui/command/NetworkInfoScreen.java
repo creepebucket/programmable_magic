@@ -12,6 +12,10 @@ import org.creepebucket.programmable_magic.utils.Mana;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 public class NetworkInfoScreen extends Screen<NetworkInfoMenu> {
     public InputBoxWidget box;
     public SearchResultWidget result;
@@ -22,20 +26,20 @@ public class NetworkInfoScreen extends Screen<NetworkInfoMenu> {
 
     @Override
     public void buildWidget() {
-        addWidget(new NumberInputWidget(Coordinate.fromTopRight(-50, 40), Coordinate.fromTopLeft(80, 16), menu.updateInterval, 1, 100).setDepth(1).disableMinMaxButton().rightAlign().tooltip(Component.translatable("gui.programmable_magic.network_info.update_interval_tip")));
+        addWidget(new NumberInputWidget(fromTopRight(-50, 40), fromTopLeft(80, 16), menu.updateInterval, 1, 100).setDepth(1).disableMinMaxButton().rightAlign().tooltip(Component.translatable("gui.programmable_magic.network_info.update_interval_tip")));
 
         // 搜索框
-        box = (InputBoxWidget) addWidget(new InputBoxWidget(Coordinate.fromTopLeft(52, 40), Coordinate.fromTopRight(-224, 16), "", 9999).mainColor(new Color(0)));
-        addWidget(new RectangleWidget(Coordinate.fromTopLeft(50, 40), Coordinate.fromTopLeft(2, 16)).color(new Color(0x80FFFFFF)));
+        box = (InputBoxWidget) addWidget(new InputBoxWidget(fromTopLeft(52, 40), fromTopRight(-224, 16), "", 9999).mainColor(new Color(0)));
+        addWidget(new RectangleWidget(fromTopLeft(50, 40), fromTopLeft(2, 16)).color(new Color(0x80FFFFFF)));
         box.box.setHint(Component.translatable("gui.programmable_magic.network_info.search_hint"));
-        addWidget(new TextButtonWidget(Coordinate.fromTopRight(-132, 40), Coordinate.fromTopLeft(38, 16), Component.translatable("gui.programmable_magic.network_info.search"), () -> result.setKeyword(box.box.getValue())).rightAlign());
+        addWidget(new TextButtonWidget(fromTopRight(-132, 40), fromTopLeft(38, 16), Component.translatable("gui.programmable_magic.network_info.search"), () -> result.setKeyword(box.box.getValue())).rightAlign());
 
         // 表格
-        result = (SearchResultWidget) addWidget(new SearchResultWidget(Coordinate.fromTopLeft(50, 58), Coordinate.fromBottomRight(-100, -98), menu.datas));
-        addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(50, 58), Coordinate.fromBottomRight(-100, -98), Coordinate.fromTopLeft(-10000, 0), 30, result.childDy));
+        result = (SearchResultWidget) addWidget(new SearchResultWidget(fromTopLeft(50, 58), fromBottomRight(-100, -98), menu.datas));
+        addWidget(new ScrollRegionWidget(fromTopLeft(50, 58), fromBottomRight(-100, -98), fromTopLeft(-10000, 0), 30, result.childDy));
 
         // 底部装饰
-        addWidget(new RectangleWidget(Coordinate.fromBottomLeft(50, -40), Coordinate.fromTopRight(-100, 1)).bottomAlignY());
+        addWidget(new RectangleWidget(fromBottomLeft(50, -40), fromTopRight(-100, 1)).bottomAlignY());
     }
 
     public static class SearchResultWidget extends Widget implements Lifecycle {
@@ -55,7 +59,7 @@ public class NetworkInfoScreen extends Screen<NetworkInfoMenu> {
             int c = 0;
             for (long key: datas.get().keySet()) {
                 if (keyword != "" && !String.valueOf(key).startsWith(keyword)) continue;
-                var child = addChild(new TableElementWidget(Coordinate.fromTopLeft(0, c * 33), Coordinate.fromTopRight(0, 32), key, datas));
+                var child = addChild(new TableElementWidget(fromTopLeft(0, c * 33), fromTopRight(0, 32), key, datas));
                 child.addAnimation(new Animation.FadeIn.FromBottom(0.5), c * 0.05);
                 child.dy = childDy;
                 c++;
@@ -87,39 +91,39 @@ public class NetworkInfoScreen extends Screen<NetworkInfoMenu> {
 
         @Override
         public void onInitialize() {
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromBottomRight(0, 0)).color(new Color(0x80000000)));
+            addChild(new RectangleWidget(fromTopLeft(0, 0), fromBottomRight(0, 0)).color(new Color(0x80000000)));
 
             // id
-            addChild(new TextWidget(Coordinate.fromTopLeft(5, 5), Component.translatable("gui.programmable_magic.network_info.id")).noShadow());
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(48, 2), Coordinate.fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
-            addChild(new TextWidget(Coordinate.fromTopLeft(53, 5), Component.literal(String.valueOf(id))).noShadow());
+            addChild(new TextWidget(fromTopLeft(5, 5), Component.translatable("gui.programmable_magic.network_info.id")).noShadow());
+            addChild(new RectangleWidget(fromTopLeft(48, 2), fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
+            addChild(new TextWidget(fromTopLeft(53, 5), literal(String.valueOf(id))).noShadow());
 
             // 存储
-            addChild(new TextWidget(Coordinate.fromCenterTop(5, 5), Component.translatable("gui.programmable_magic.network_info.storage")).noShadow());
-            addChild(new RectangleWidget(Coordinate.fromCenterTop(48, 2), Coordinate.fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
+            addChild(new TextWidget(fromCenterTop(5, 5), Component.translatable("gui.programmable_magic.network_info.storage")).noShadow());
+            addChild(new RectangleWidget(fromCenterTop(48, 2), fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
 
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52         , 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getRadiation()), 7, 1, true).color(new Color(255, 255, 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44    , 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getTemperature()), 7, 1, true).color(new Color(255, 0  , 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44 * 2, 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getMomentum()), 7, 1, true).color(new Color(0, 255, 255)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44 * 3, 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getPressure()), 7, 1, true).color(new Color(0  , 255, 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52         , 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getRadiation()), 7, 1, true).color(new Color(255, 255, 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44    , 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getTemperature()), 7, 1, true).color(new Color(255, 0  , 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44 * 2, 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getMomentum()), 7, 1, true).color(new Color(0, 255, 255)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44 * 3, 4), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("current", new Mana()).getPressure()), 7, 1, true).color(new Color(0  , 255, 0)));
 
             // 缓存
-            addChild(new TextWidget(Coordinate.fromTopLeft(5, 19), Component.translatable("gui.programmable_magic.network_info.cache")).noShadow());
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(48, 17), Coordinate.fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
+            addChild(new TextWidget(fromTopLeft(5, 19), Component.translatable("gui.programmable_magic.network_info.cache")).noShadow());
+            addChild(new RectangleWidget(fromTopLeft(48, 17), fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
 
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(52         , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getRadiation()), 7, 1, true).color(new Color(255, 255, 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(52 + 44    , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getTemperature()), 7, 1, true).color(new Color(255, 0  , 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(52 + 44 * 2, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getMomentum()), 7, 1, true).color(new Color(0, 255, 255)));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(52 + 44 * 3, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getPressure()), 7, 1, true).color(new Color(0  , 255, 0)));
+            addChild(new NumberDisplayWidget(fromTopLeft(52         , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getRadiation()), 7, 1, true).color(new Color(255, 255, 0)));
+            addChild(new NumberDisplayWidget(fromTopLeft(52 + 44    , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getTemperature()), 7, 1, true).color(new Color(255, 0  , 0)));
+            addChild(new NumberDisplayWidget(fromTopLeft(52 + 44 * 2, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getMomentum()), 7, 1, true).color(new Color(0, 255, 255)));
+            addChild(new NumberDisplayWidget(fromTopLeft(52 + 44 * 3, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("cache", new Mana()).getPressure()), 7, 1, true).color(new Color(0  , 255, 0)));
 
             // 功率
-            addChild(new TextWidget(Coordinate.fromCenterTop(5, 19), Component.translatable("gui.programmable_magic.network_info.power")).noShadow());
-            addChild(new RectangleWidget(Coordinate.fromCenterTop(48, 17), Coordinate.fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
+            addChild(new TextWidget(fromCenterTop(5, 19), Component.translatable("gui.programmable_magic.network_info.power")).noShadow());
+            addChild(new RectangleWidget(fromCenterTop(48, 17), fromTopLeft(2, 13)).color(new Color(0x80FFFFFF)));
 
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52         , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getRadiation()   * -20), 7, 1, true).color(new Color(255, 255, 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44    , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getTemperature() * -20), 7, 1, true).color(new Color(255, 0  , 0)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44 * 2, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getMomentum()    * -20), 7, 1, true).color(new Color(0, 255, 255)));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterTop(52 + 44 * 3, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getPressure()    * -20), 7, 1, true).color(new Color(0  , 255, 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52         , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getRadiation()   * -20), 7, 1, true).color(new Color(255, 255, 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44    , 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getTemperature() * -20), 7, 1, true).color(new Color(255, 0  , 0)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44 * 2, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getMomentum()    * -20), 7, 1, true).color(new Color(0, 255, 255)));
+            addChild(new NumberDisplayWidget(fromCenterTop(52 + 44 * 3, 19), DynamicValue.fromSupplier(() -> datas.get().getOrDefault(id, new HashMap<>()).getOrDefault("load", new Mana()).getPressure()    * -20), 7, 1, true).color(new Color(0  , 255, 0)));
         }
     }
 }

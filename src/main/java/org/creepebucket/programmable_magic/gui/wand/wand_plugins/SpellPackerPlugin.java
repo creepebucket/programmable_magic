@@ -12,6 +12,9 @@ import org.creepebucket.programmable_magic.gui.wand.WandScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandWidgets;
 import org.creepebucket.programmable_magic.registries.ModDataComponents;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 import static net.minecraft.util.Mth.hsvToArgb;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -25,12 +28,12 @@ public class SpellPackerPlugin extends BasePlugin {
 
     @Override
     public void onAdd(WandScreen screen) {
-        bar = new Widget.BlankWidget(Coordinate.fromTopRight(0, 0), Coordinate.fromTopLeft(80, 0));
+        bar = new Widget.BlankWidget(fromTopRight(0, 0), fromTopLeft(80, 0));
         screen.addTopbar(bar);
 
         var packedSpellDy = new SmoothedValue(-113);
 
-        bar.addChild(new ImageButtonWidget(Coordinate.fromTopLeft(64, 0), Coordinate.fromTopLeft(16, 16),
+        bar.addChild(new ImageButtonWidget(fromTopLeft(64, 0), fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_packed_spell.png"),
                 () -> {
                     if (!screen.textureInputbox.box.getValue().matches("[0-9a-z_./]+")) {
@@ -41,7 +44,7 @@ public class SpellPackerPlugin extends BasePlugin {
                     screen.notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.export_successful"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.export_to_packed_spell")).dy(packedSpellDy).color(screen.mainColor));
 
-        bar.addChild(new ImageButtonWidget(Coordinate.fromTopLeft(48, 0), Coordinate.fromTopLeft(16, 16),
+        bar.addChild(new ImageButtonWidget(fromTopLeft(48, 0), fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/export_to_wand.png"),
                 () -> {
                     if (screen.getMenu().packedSpellContainer.isEmpty()) {
@@ -55,7 +58,7 @@ public class SpellPackerPlugin extends BasePlugin {
                     screen.notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.export_successful"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.export_to_wand")).dy(packedSpellDy).color(screen.mainColor));
 
-        bar.addChild(new ImageButtonWidget(Coordinate.fromTopLeft(16, 0), Coordinate.fromTopLeft(16, 16),
+        bar.addChild(new ImageButtonWidget(fromTopLeft(16, 0), fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/import_from_wand.png"),
                 () -> {
                     if (screen.getMenu().packedSpellContainer.isEmpty()) {
@@ -66,7 +69,7 @@ public class SpellPackerPlugin extends BasePlugin {
                     screen.notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.packing_successful"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.import_from_wand")).dy(packedSpellDy).color(screen.mainColor));
 
-        bar.addChild(new ImageButtonWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(16, 16),
+        bar.addChild(new ImageButtonWidget(fromTopLeft(0, 0), fromTopLeft(16, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/add_to_supply.png"),
                 () -> {
                     if (!screen.textureInputbox.box.getValue().matches("[0-9a-z_./]+")) {
@@ -77,29 +80,29 @@ public class SpellPackerPlugin extends BasePlugin {
                     screen.notificationWidget.addDebug(Component.translatable("gui.programmable_magic.wand.errors.packing_successful"));
                 }).tooltip(Component.translatable("gui.programmable_magic.wand.inventory.add_to_supply")).dy(packedSpellDy).color(screen.mainColor));
 
-        bar.addChild(new SlotWidget(screen.getMenu().packedSpellSlots.get(0), Coordinate.fromTopLeft(32, 0)).dy(packedSpellDy));
-        bar.addChild(new RectangleWidget(Coordinate.fromTopLeft(33, 1), Coordinate.fromTopLeft(14, 14)).color(screen.bgColor).dy(packedSpellDy));
+        bar.addChild(new SlotWidget(screen.getMenu().packedSpellSlots.get(0), fromTopLeft(32, 0)).dy(packedSpellDy));
+        bar.addChild(new RectangleWidget(fromTopLeft(33, 1), fromTopLeft(14, 14)).color(screen.bgColor).dy(packedSpellDy));
 
-        screen.nameInputbox = ((InputBoxWidget) new InputBoxWidget(Coordinate.fromTopLeft(0, 32), Coordinate.fromTopLeft(80, 16),
+        screen.nameInputbox = ((InputBoxWidget) new InputBoxWidget(fromTopLeft(0, 32), fromTopLeft(80, 16),
                 Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_name_example").getString(), 1024).dy(packedSpellDy).bgColor(screen.bgColor).mainColor(new Color(0)).textColor(screen.textColor)).extendWhenFocus(220, -220);
-        screen.descInputbox = ((InputBoxWidget) new InputBoxWidget(Coordinate.fromTopLeft(0, 64), Coordinate.fromTopLeft(80, 16),
+        screen.descInputbox = ((InputBoxWidget) new InputBoxWidget(fromTopLeft(0, 64), fromTopLeft(80, 16),
                 Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc_example").getString(), 1024).dy(packedSpellDy).bgColor(screen.bgColor).mainColor(new Color(0)).textColor(screen.textColor)).extendWhenFocus(220, -220);
-        screen.textureInputbox = ((InputBoxWidget) new InputBoxWidget(Coordinate.fromTopLeft(0, 96), Coordinate.fromTopLeft(80, 16),
+        screen.textureInputbox = ((InputBoxWidget) new InputBoxWidget(fromTopLeft(0, 96), fromTopLeft(80, 16),
                 Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_texture_example").getString(), 1024).dy(packedSpellDy).bgColor(screen.bgColor).mainColor(new Color(0)).textColor(screen.textColor)).extendWhenFocus(220, -220);
 
         bar.addChild(screen.nameInputbox);
         bar.addChild(screen.descInputbox);
         bar.addChild(screen.textureInputbox);
 
-        bar.addChild(new TextureWidget(Coordinate.fromTopLeft(0, 16), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/nametag.png"), Coordinate.fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
-        bar.addChild(new TextureWidget(Coordinate.fromTopLeft(0, 48), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/description.png"), Coordinate.fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
-        bar.addChild(new TextureWidget(Coordinate.fromTopLeft(0, 80), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/directory.png"), Coordinate.fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
+        bar.addChild(new TextureWidget(fromTopLeft(0, 16), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/nametag.png"), fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
+        bar.addChild(new TextureWidget(fromTopLeft(0, 48), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/description.png"), fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
+        bar.addChild(new TextureWidget(fromTopLeft(0, 80), Identifier.fromNamespaceAndPath(MODID, "textures/gui/icons/directory.png"), fromTopLeft(16, 16)).dy(packedSpellDy).color(screen.mainColor));
 
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 20), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_name")).color(screen.textColor).dy(packedSpellDy));
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 52), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc")).color(screen.textColor).dy(packedSpellDy));
-        bar.addChild(new TextWidget(Coordinate.fromTopLeft(16, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir")).color(screen.textColor).dy(packedSpellDy));
+        bar.addChild(new TextWidget(fromTopLeft(16, 20), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_name")).color(screen.textColor).dy(packedSpellDy));
+        bar.addChild(new TextWidget(fromTopLeft(16, 52), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_desc")).color(screen.textColor).dy(packedSpellDy));
+        bar.addChild(new TextWidget(fromTopLeft(16, 84), Component.translatable("gui.programmable_magic.wand.inventory.packed_spell_dir")).color(screen.textColor).dy(packedSpellDy));
 
-        bar.addChild(new RectangleButtonWidget(Coordinate.fromTopLeft(0, 114), Coordinate.fromTopLeft(80, 5), () -> {
+        bar.addChild(new RectangleButtonWidget(fromTopLeft(0, 114), fromTopLeft(80, 5), () -> {
             if (packedSpellDy.get() != 7) packedSpellDy.set(7);
             else packedSpellDy.set(-113);
         }).mainColor(new Color(screen.mainColor.toArgbWithAlphaMult(0.5))).bgColor(screen.bgColor).dy(packedSpellDy));

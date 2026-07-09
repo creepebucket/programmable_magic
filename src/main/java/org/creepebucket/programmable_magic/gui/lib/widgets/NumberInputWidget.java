@@ -10,6 +10,10 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 
 import java.util.Objects;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 import static java.lang.Double.parseDouble;
 
 public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
@@ -31,27 +35,27 @@ public class NumberInputWidget extends Widget implements Lifecycle, Tickable {
     public void onInitialize() {
         // 最值按钮
         if (showMinMax) {
-            addChild(new TextButtonWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(h(), h()), Component.literal("|<"), () -> {num.set(min); buttonPressed = true;}));
-            addChild(new TextButtonWidget(Coordinate.fromTopRight(0, 0), Coordinate.fromTopLeft(h(), h()), Component.literal(">|"), () -> {num.set(max); buttonPressed = true;}).rightAlign());
+            addChild(new TextButtonWidget(fromTopLeft(0, 0), fromTopLeft(h(), h()), literal("|<"), () -> {num.set(min); buttonPressed = true;}));
+            addChild(new TextButtonWidget(fromTopRight(0, 0), fromTopLeft(h(), h()), literal(">|"), () -> {num.set(max); buttonPressed = true;}).rightAlign());
         }
 
         // 普通按钮
         for (int i = 0; i < depth; i++) {
             int finalI = i;
-            addChild(new TextButtonWidget(Coordinate.fromTopLeft((h() + 1) * i + (showMinMax ? h() + 1 : 0), 0), Coordinate.fromTopLeft(h(), h()),
-                    Component.literal("<".repeat(depth - i)), () -> {
+            addChild(new TextButtonWidget(fromTopLeft((h() + 1) * i + (showMinMax ? h() + 1 : 0), 0), fromTopLeft(h(), h()),
+                    literal("<".repeat(depth - i)), () -> {
                 num.set(Math.max(min, num.get() - step * Math.pow(fact, depth - finalI - 1)));
                 buttonPressed = true;
             }));
-            addChild(new TextButtonWidget(Coordinate.fromTopLeft(w() - (h() + 1) * i - (showMinMax ? h() + 1 : 0), 0), Coordinate.fromTopLeft(h(), h()),
-                    Component.literal(">".repeat(depth - i)), () -> {
+            addChild(new TextButtonWidget(fromTopLeft(w() - (h() + 1) * i - (showMinMax ? h() + 1 : 0), 0), fromTopLeft(h(), h()),
+                    literal(">".repeat(depth - i)), () -> {
                 num.set(Math.min(max, num.get() + step * Math.pow(fact, depth - finalI - 1)));
                 buttonPressed = true;
             }).rightAlign());
         }
 
         // 输入框
-        inputBox = (InputBoxWidget) addChild(new InputBoxWidget(Coordinate.fromTopLeft((h() + 1) * depth + (showMinMax ? h() + 1 : 0), 0), Coordinate.fromTopLeft(w() - 2 * ((h() + 1) * depth + (showMinMax ? h() + 1 : 0)), h()),
+        inputBox = (InputBoxWidget) addChild(new InputBoxWidget(fromTopLeft((h() + 1) * depth + (showMinMax ? h() + 1 : 0), 0), fromTopLeft(w() - 2 * ((h() + 1) * depth + (showMinMax ? h() + 1 : 0)), h()),
                 String.valueOf(num.get()), 1024).mainColor(new Color(0)));
     }
 

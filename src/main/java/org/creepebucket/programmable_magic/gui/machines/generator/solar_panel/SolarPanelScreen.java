@@ -7,6 +7,10 @@ import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
 import org.creepebucket.programmable_magic.utils.ModColors;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 	public SolarPanelScreen(SolarPanelMenu menu, Inventory playerInv, Component title) {
@@ -19,92 +23,92 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		root.mainColor(ModColors.MAIN_COLOR_R);
 
-		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-200, -90), Coordinate.fromTopLeft(210, 80), menu.power, Component.literal("辐射/Rad"),
-				Component.literal("太阳能板"), Component.literal("[输出功率]"), Component.literal("P="), "W"));
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-200, -90), fromTopLeft(210, 80), menu.power, literal("辐射/Rad"),
+				literal("太阳能板"), literal("[输出功率]"), literal("P="), "W"));
 
-		var calculationsWindow = new MachineWidgets.PowerInfoWindow(Coordinate.fromCenter(-200, 0), Coordinate.fromTopLeft(210, 90), Component.literal("总功率 = (G_b+G_d)×A×η"));
+		var calculationsWindow = new MachineWidgets.PowerInfoWindow(fromCenter(-200, 0), fromTopLeft(210, 90), literal("总功率 = (G_b+G_d)×A×η"));
 		addWidget(calculationsWindow);
 
-		calculationsWindow.addPowerInfoItem(Component.literal("直接辐照/G_b"), menu.directIrradiance, Component.literal("W/m²"));
-		calculationsWindow.addPowerInfoItem(Component.literal("散射辐照/G_d"), menu.diffuseIrradiance, Component.literal("W/m²"));
-		calculationsWindow.addPowerInfoItem(Component.literal("受光面积/A"), menu.panelArea, Component.literal("m²"));
-		calculationsWindow.addPowerInfoItem(Component.literal("转化效率/η"), menu.efficiencyFact, Component.literal("%"));
+		calculationsWindow.addPowerInfoItem(literal("直接辐照/G_b"), menu.directIrradiance, literal("W/m²"));
+		calculationsWindow.addPowerInfoItem(literal("散射辐照/G_d"), menu.diffuseIrradiance, literal("W/m²"));
+		calculationsWindow.addPowerInfoItem(literal("受光面积/A"), menu.panelArea, literal("m²"));
+		calculationsWindow.addPowerInfoItem(literal("转化效率/η"), menu.efficiencyFact, literal("%"));
 
-		addWidget(new MachineWidgets.NetworkInfoWindow(Coordinate.fromCenter(20, -90), Coordinate.fromTopLeft(180, 120), menu));
+		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(20, -90), fromTopLeft(180, 120), menu));
 
-		addWidget(new MachineWidgets.MachineControlWindow(Coordinate.fromCenter(20, 40), Coordinate.fromTopLeft(180, 50), menu));
+		addWidget(new MachineWidgets.MachineControlWindow(fromCenter(20, 40), fromTopLeft(180, 50), menu));
 
 		/*
 			// =================== 计算细节 =================== //
-		// .addDetailLine(Component.literal(""), , Component.literal(""), "");
+		// .addDetailLine(literal(""), , literal(""), "");
 
 		// (
-		addWidget(new RectangleWidget(Coordinate.fromCenter(-198, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .15);
-		addWidget(new TextWidget(Coordinate.fromCenter(-196, -70), Component.literal("(")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .17);
+		addWidget(new RectangleWidget(fromCenter(-198, -70), fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .15);
+		addWidget(new TextWidget(fromCenter(-196, -70), literal("(")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .17);
 
 		// 直接辐照度
-		var directIrradianceWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-185, -70), Coordinate.fromTopLeft(83, 11), menu.directIrradiance,
-				Component.literal("W/m^2"), Component.literal("直接辐照度")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .1);
+		var directIrradianceWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(fromCenter(-185, -70), fromTopLeft(83, 11), menu.directIrradiance,
+				literal("W/m^2"), literal("直接辐照度")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .1);
 
-		directIrradianceWidget.addDetailLine(Component.literal("天气修正"), menu.weatherFactDirect, Component.literal("云层会影响光线: 晴天最高, 雨天较低"), "x");
-		directIrradianceWidget.addDetailLine(Component.literal("海拔修正"), menu.altitudeFact, Component.literal("更高的海拔能降低大气质量"), " ");
-		directIrradianceWidget.addDetailLine(Component.literal("大气质量"), menu.airMass, Component.literal("原始值, 受时间(太阳高度角)影响"), " ");
-		directIrradianceWidget.addDetailLine(Component.literal("太阳常数"), menu.solarConstant, Component.literal("固定值, 原始的太阳辐照度"), "+");
+		directIrradianceWidget.addDetailLine(literal("天气修正"), menu.weatherFactDirect, literal("云层会影响光线: 晴天最高, 雨天较低"), "x");
+		directIrradianceWidget.addDetailLine(literal("海拔修正"), menu.altitudeFact, literal("更高的海拔能降低大气质量"), " ");
+		directIrradianceWidget.addDetailLine(literal("大气质量"), menu.airMass, literal("原始值, 受时间(太阳高度角)影响"), " ");
+		directIrradianceWidget.addDetailLine(literal("太阳常数"), menu.solarConstant, literal("固定值, 原始的太阳辐照度"), "+");
 
 		// +
-		addWidget(new RectangleWidget(Coordinate.fromCenter(-100, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .05);
-		addWidget(new TextWidget(Coordinate.fromCenter(-97, -70), Component.literal("+")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .07);
+		addWidget(new RectangleWidget(fromCenter(-100, -70), fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .05);
+		addWidget(new TextWidget(fromCenter(-97, -70), literal("+")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .07);
 
 		// 散射辐照度
-		var diffuseIrradianceWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(-87, -70), Coordinate.fromTopLeft(84, 11), menu.diffuseIrradiance,
-				Component.literal("W/m^2"), Component.literal("散射辐照度")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .0);
+		var diffuseIrradianceWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(fromCenter(-87, -70), fromTopLeft(84, 11), menu.diffuseIrradiance,
+				literal("W/m^2"), literal("散射辐照度")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .0);
 
-		diffuseIrradianceWidget.addDetailLine(Component.literal("天气修正"), menu.weatherFactDiffuse, Component.literal("云层会影响光线: 雨天最高, 晴天次之, 雷暴最低"), "x");
-		diffuseIrradianceWidget.addDetailLine(Component.literal("海拔修正"), menu.altitudeFact, Component.literal("更高的海拔能降低大气质量"), " ");
-		diffuseIrradianceWidget.addDetailLine(Component.literal("大气质量"), menu.airMass, Component.literal("原始值, 受时间(太阳高度角)影响"), " ");
-		diffuseIrradianceWidget.addDetailLine(Component.literal("太阳常数"), menu.solarConstant, Component.literal("固定值, 原始的太阳辐照度"), "+");
+		diffuseIrradianceWidget.addDetailLine(literal("天气修正"), menu.weatherFactDiffuse, literal("云层会影响光线: 雨天最高, 晴天次之, 雷暴最低"), "x");
+		diffuseIrradianceWidget.addDetailLine(literal("海拔修正"), menu.altitudeFact, literal("更高的海拔能降低大气质量"), " ");
+		diffuseIrradianceWidget.addDetailLine(literal("大气质量"), menu.airMass, literal("原始值, 受时间(太阳高度角)影响"), " ");
+		diffuseIrradianceWidget.addDetailLine(literal("太阳常数"), menu.solarConstant, literal("固定值, 原始的太阳辐照度"), "+");
 
 		// )x
-		addWidget(new RectangleWidget(Coordinate.fromCenter(-1, -70), Coordinate.fromTopLeft(17, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), 0);
-		addWidget(new TextWidget(Coordinate.fromCenter(2, -70), Component.literal(")x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .02);
+		addWidget(new RectangleWidget(fromCenter(-1, -70), fromTopLeft(17, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), 0);
+		addWidget(new TextWidget(fromCenter(2, -70), literal(")x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .02);
 
 		// 风速
-		var panelAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(18, -70), Coordinate.fromTopLeft(83, 11), menu.panelArea, Component.literal("m^2"),
-				Component.literal("受光面积")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .05);
+		var panelAreaWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(fromCenter(18, -70), fromTopLeft(83, 11), menu.panelArea, literal("m^2"),
+				literal("受光面积")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .05);
 
-		panelAreaWidget.addDetailLine(Component.literal("面积基准"), menu.solarConstant, Component.literal("该型号的受光面积"), "+");
+		panelAreaWidget.addDetailLine(literal("面积基准"), menu.solarConstant, literal("该型号的受光面积"), "+");
 
 		// x
-		addWidget(new RectangleWidget(Coordinate.fromCenter(103, -70), Coordinate.fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .1);
-		addWidget(new TextWidget(Coordinate.fromCenter(106, -70), Component.literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .12);
+		addWidget(new RectangleWidget(fromCenter(103, -70), fromTopLeft(11, 11)).mainColor(new Color(0, 0, 0, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .1);
+		addWidget(new TextWidget(fromCenter(106, -70), literal("x")).noShadow().mainColor(new Color(127, 127, 127)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .12);
 
 		// 功率系数
-		var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(Coordinate.fromCenter(116, -70), Coordinate.fromTopLeft(83, 11), menu.efficiencyFact,
-				Component.literal("%"), Component.literal("转化效率")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .15);
+		var powerCoeffWidget = (MachineWidgets.CalcationDetailsWidget) addWidget(new MachineWidgets.CalcationDetailsWidget(fromCenter(116, -70), fromTopLeft(83, 11), menu.efficiencyFact,
+				literal("%"), literal("转化效率")).mainColor(new Color(255, 255, 0)).bottomAlignY()).addAnimation(new Animation.FadeIn.FromTop(0.5), .15);
 
-		powerCoeffWidget.addDetailLine(Component.literal("材料系数"), menu.materialFact, Component.literal("该型号的材料系数"), "x");
-		powerCoeffWidget.addDetailLine(Component.literal("温度系数"), menu.thermalFact, Component.literal("当太阳直射太阳能板时, 效率会因产生热量而小幅下降"), "x");
-		powerCoeffWidget.addDetailLine(Component.literal("常数"), DynamicValue.staticValue(100d), Component.literal("常数"), "+");
+		powerCoeffWidget.addDetailLine(literal("材料系数"), menu.materialFact, literal("该型号的材料系数"), "x");
+		powerCoeffWidget.addDetailLine(literal("温度系数"), menu.thermalFact, literal("当太阳直射太阳能板时, 效率会因产生热量而小幅下降"), "x");
+		powerCoeffWidget.addDetailLine(literal("常数"), DynamicValue.staticValue(100d), literal("常数"), "+");
 
 		// =================== 功率显示 =================== //
-		addWidget(new MachineWidgets.PowerDisplayWidget(Coordinate.fromCenter(-198, -58), menu, menu.power,
-				new Color(255, 255, 0), Component.literal("辐射"),
+		addWidget(new MachineWidgets.PowerDisplayWidget(fromCenter(-198, -58), menu, menu.power,
+				new Color(255, 255, 0), literal("辐射"),
 				enabled -> menu.powerSwitch.trigger(enabled)));
 
 		// 维护成本
-		addWidget(new RectangleWidget(Coordinate.fromCenter(-131, 8), Coordinate.fromTopLeft(44, 20)).mainColor(new Color(0, 0, 0, 127)));
-		addWidget(new TextWidget(Coordinate.fromCenter(-129, 10), Component.literal("维护成本::")).noShadow());
-		addWidget(new TextWidget(Coordinate.fromCenter(-129, 19), Component.literal("0")) .noShadow().mainColor(new Color(255, 255, 0)));
-		addWidget(new TextWidget(Coordinate.fromCenter(-119, 19), Component.literal("0")) .noShadow().mainColor(new Color(255,   0, 0)));
-		addWidget(new TextWidget(Coordinate.fromCenter(-109, 19), Component.literal("10")).noShadow().mainColor(new Color(0, 255, 255)));
-		addWidget(new TextWidget(Coordinate.fromCenter(-94 , 19), Component.literal("0")) .noShadow().mainColor(new Color(0, 255, 0  )));
+		addWidget(new RectangleWidget(fromCenter(-131, 8), fromTopLeft(44, 20)).mainColor(new Color(0, 0, 0, 127)));
+		addWidget(new TextWidget(fromCenter(-129, 10), literal("维护成本::")).noShadow());
+		addWidget(new TextWidget(fromCenter(-129, 19), literal("0")) .noShadow().mainColor(new Color(255, 255, 0)));
+		addWidget(new TextWidget(fromCenter(-119, 19), literal("0")) .noShadow().mainColor(new Color(255,   0, 0)));
+		addWidget(new TextWidget(fromCenter(-109, 19), literal("10")).noShadow().mainColor(new Color(0, 255, 255)));
+		addWidget(new TextWidget(fromCenter(-94 , 19), literal("0")) .noShadow().mainColor(new Color(0, 255, 0  )));
 
 		// =================== 网络状态 =================== //
-		addWidget(new MachineWidgets.NetworkInfoWidget(Coordinate.fromCenter(10, -58), menu));
+		addWidget(new MachineWidgets.NetworkInfoWidget(fromCenter(10, -58), menu));
 
 		// =================== 标题装饰 =================== //
-		addWidget(new TextWidget(Coordinate.fromCenter(-198, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.machine_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
-		addWidget(new TextWidget(Coordinate.fromCenter(10, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.network_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
+		addWidget(new TextWidget(fromCenter(-198, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.machine_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
+		addWidget(new TextWidget(fromCenter(10, 40), Component.translatable("gui.programmable_magic.machine.wind_turbine.title.network_info")).scaled(2)).addAnimation(new Animation.FadeIn.FromRight(0.5), .00);
 		*/
 	}
 }

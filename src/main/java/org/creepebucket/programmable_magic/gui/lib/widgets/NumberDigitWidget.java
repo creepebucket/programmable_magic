@@ -8,6 +8,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
+
+import static net.minecraft.network.chat.Component.literal;
+
 /**
  * 负责处理单个字符（0-9, 小数点, 空格）渲染和滚动动画的内部类
  */
@@ -35,11 +38,11 @@ public class NumberDigitWidget extends Widget implements Renderable {
 
             // 绘制旧字符（逐渐滑出）
             if (old != ' ')
-                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(old)), menuX(), baseY - lineHeight + textDy.getInt(), (float) scale, mainColorInt(), false);
+                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(String.valueOf(old)), menuX(), baseY - lineHeight + textDy.getInt(), (float) scale, mainColorInt(), false);
 
             // 绘制新字符（逐渐滑入）
             if (current != ' ')
-                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY + textDy.getInt(), (float) scale, mainColorInt(), false);
+                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(String.valueOf(current)), menuX(), baseY + textDy.getInt(), (float) scale, mainColorInt(), false);
 
             // 动画结束后的状态重置
             if (textDy.getInt() == 0) {
@@ -52,13 +55,13 @@ public class NumberDigitWidget extends Widget implements Renderable {
         // 状态2：当前字符是非数字（如小数点或空格），静止绘制即可
         if (current < '0' || current > '9') {
             if (current != ' ')
-                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(current)), menuX(), baseY, (float) scale, mainColorInt(), false);
+                TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(String.valueOf(current)), menuX(), baseY, (float) scale, mainColorInt(), false);
             return;
         }
         // 状态3：当前字符是数字 0-9，执行数字卷轴渲染逻辑
         // 绘制一列 0 到 9，再加上一个 0 （总共11个），方便 9 向下无缝滚动到 0
         for (int i = 0; i < 11; i++)
-            TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(String.valueOf(i % 10)), menuX(), menuY() + lineHeight * i, (float) scale, mainColorInt(), false);
+            TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(String.valueOf(i % 10)), menuX(), menuY() + lineHeight * i, (float) scale, mainColorInt(), false);
         // ===== 无限循环滚动逻辑 =====
         // 当纸带向上滚动超出范围（10个数字的高度即 scale * 100）时，将真实位置和目标位置同时拉回一圈
         if (dy.getInt() < -scale * 100) {

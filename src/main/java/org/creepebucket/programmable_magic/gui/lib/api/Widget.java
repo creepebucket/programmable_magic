@@ -10,6 +10,9 @@ import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
     /**
@@ -509,7 +512,7 @@ public abstract class Widget {
 
     public static class Root extends Widget {
         public Root() {
-            super(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(0, 0));
+            super(fromTopLeft(0, 0), fromTopLeft(0, 0));
 
             this.originalMainColor = new Color(-1);
             this.originalBgColor = new Color(0, 0, 0, 128);
@@ -528,12 +531,12 @@ public abstract class Widget {
 
         @Override
         public int w() {
-            return Coordinate.getScreenWidth();
+            return getScreenWidth();
         }
 
         @Override
         public int h() {
-            return Coordinate.getScreenHeight();
+            return getScreenHeight();
         }
 
         @Override

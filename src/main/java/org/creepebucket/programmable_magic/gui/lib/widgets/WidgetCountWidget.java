@@ -7,6 +7,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
+
+import static net.minecraft.network.chat.Component.literal;
+
 public class WidgetCountWidget extends Widget implements Renderable, Lifecycle {
     TextWidget text = null;
 
@@ -16,7 +19,7 @@ public class WidgetCountWidget extends Widget implements Renderable, Lifecycle {
 
     @Override
     public void onInitialize() {
-        text = new TextWidget(originalPos, Component.literal(" "));
+        text = new TextWidget(originalPos, literal(" "));
         addChild(text);
     }
 
@@ -32,6 +35,6 @@ public class WidgetCountWidget extends Widget implements Renderable, Lifecycle {
 
         var a = last.allChild().size();
 
-        text.setText(Component.literal("Widgets: " + last.allChild().size()));
+        text.setText(literal("Widgets: " + last.allChild().size()));
     }
 }

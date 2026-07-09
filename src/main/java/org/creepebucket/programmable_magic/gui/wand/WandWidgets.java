@@ -24,6 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 import static net.minecraft.util.Mth.hsvToRgb;
 
 public class WandWidgets {
@@ -42,10 +46,10 @@ public class WandWidgets {
             this.editHook = editHook;
             this.deleteHook = deleteHook;
             this.storageSlots = storageSlots;
-            this.originalSize = Coordinate.fromTopLeft(16, 16);
+            this.originalSize = fromTopLeft(16, 16);
             this.currentSpellId = currentSpellId;
 
-            addChild(new BlankInsertionWidget(Coordinate.fromTopLeft(-8, 16)).mainColor(originalMainColor));
+            addChild(new BlankInsertionWidget(fromTopLeft(-8, 16)).mainColor(originalMainColor));
         }
 
         public void renderNumber(GuiGraphicsExtractor graphics, int n, int x, int y, int mouseX, int mouseY, int renderColor) {
@@ -210,7 +214,7 @@ public class WandWidgets {
 
         public static class BlankInsertionWidget extends Widget implements Clickable, Renderable {
             public BlankInsertionWidget(Coordinate pos) {
-                super(pos, Coordinate.fromTopLeft(16, 2));
+                super(pos, fromTopLeft(16, 2));
 
                 tooltip(Component.translatable("gui.programmable_magic.wand.spells.insertion"));
             }
@@ -272,7 +276,7 @@ public class WandWidgets {
         public String key;
 
         public WandSubCategoryWidget(Coordinate pos, String subCategoryKey) {
-            super(pos, Coordinate.ZERO);
+            super(pos, ZERO);
             this.key = subCategoryKey;
 
 
@@ -344,7 +348,7 @@ public class WandWidgets {
 
             if (!isCharging) tooltip = Component.translatable("gui.programmable_magic.wand.release");
             else
-                tooltip = Component.literal(ModUtils.FormattedManaString(
+                tooltip = literal(ModUtils.FormattedManaString(
                                 chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005))
                         .withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
 
@@ -389,7 +393,7 @@ public class WandWidgets {
         public List<SpellExceptions> errors = List.of();
 
         public CompileErrorWidget(Coordinate pos) {
-            super(pos, Coordinate.fromTopLeft(0, 0));
+            super(pos, fromTopLeft(0, 0));
         }
 
         @Override
@@ -560,9 +564,9 @@ public class WandWidgets {
                 if (nameWidget != null) nameWidget.addAnimation(new Animation.FadeOut.ToRight(.3), 0);
                 if (nameWidget != null) functionWidget.addAnimation(new Animation.FadeOut.ToRight(.3), .05);
 
-                nameWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 0), name)
+                nameWidget = (TextWidget) addChild(new TextWidget(fromTopLeft(-104, 0), name)
                         .color(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .1));
-                functionWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(-104, 9), function)
+                functionWidget = (TextWidget) addChild(new TextWidget(fromTopLeft(-104, 9), function)
                         .color(originalTextColor).addAnimation(new Animation.FadeIn.FromLeft(.3), .15));
             }
 
@@ -579,7 +583,7 @@ public class WandWidgets {
         public Color initialColor;
 
         public ColorSelectionWidget(Coordinate pos, Color initialColor) {
-            super(pos, Coordinate.ZERO);
+            super(pos, ZERO);
             this.initialColor = initialColor;
         }
 
@@ -589,11 +593,11 @@ public class WandWidgets {
 
         @Override
         public void onInitialize() {
-            r = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.ZERO, Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.r));
-            g = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 6), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.g));
-            b = (SlideBarWidget) addChild(new SlideBarWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(80, 5), Coordinate.fromTopLeft(0, 255), initialColor.b));
+            r = (SlideBarWidget) addChild(new SlideBarWidget(ZERO, fromTopLeft(80, 5), fromTopLeft(0, 255), initialColor.r));
+            g = (SlideBarWidget) addChild(new SlideBarWidget(fromTopLeft(0, 6), fromTopLeft(80, 5), fromTopLeft(0, 255), initialColor.g));
+            b = (SlideBarWidget) addChild(new SlideBarWidget(fromTopLeft(0, 12), fromTopLeft(80, 5), fromTopLeft(0, 255), initialColor.b));
 
-            preview = (RectangleWidget) addChild(new RectangleWidget(Coordinate.fromTopLeft(83, 0), Coordinate.fromTopLeft(17, 17)));
+            preview = (RectangleWidget) addChild(new RectangleWidget(fromTopLeft(83, 0), fromTopLeft(17, 17)));
         }
 
         @Override
@@ -626,8 +630,8 @@ public class WandWidgets {
 
         @Override
         public void onInitialize() {
-            background = (GridentRectangleWidget) addChild(new GridentRectangleWidget(Coordinate.ZERO, originalSize).color(originalBgColor));
-            selection = (OutlineWidget) addChild(new OutlineWidget(Coordinate.ZERO, Coordinate.fromTopLeft(3, h())).color(originalMainColor));
+            background = (GridentRectangleWidget) addChild(new GridentRectangleWidget(ZERO, originalSize).color(originalBgColor));
+            selection = (OutlineWidget) addChild(new OutlineWidget(ZERO, fromTopLeft(3, h())).color(originalMainColor));
             selection.dx.setImmediate((value - region.toScreenX()) / (region.toScreenY() - region.toScreenX()) * (w() - 3));
         }
 

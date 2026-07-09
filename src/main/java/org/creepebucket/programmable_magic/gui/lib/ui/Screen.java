@@ -19,6 +19,9 @@ import org.creepebucket.programmable_magic.network.dataPackets.SimpleKvPacket;
 
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
 public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
@@ -51,7 +54,7 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         // 1. 把屏幕位置同步给 Menu
         this.menu.guiLeft = this.leftPos;
         this.menu.guiTop = this.topPos;
-        Coordinate.updateContext(this.width, this.height, this.leftPos, this.topPos);
+        updateContext(this.width, this.height, this.leftPos, this.topPos);
         ClientUiContext.setFont(this.font);
 
         // 2. 绑定发包
@@ -82,7 +85,7 @@ public abstract class Screen<M extends Menu> extends SlotManipulationScreen<M> {
         // 窗口大小变了，更新 Menu 变量并通知控件重算位置
         this.menu.guiLeft = this.leftPos;
         this.menu.guiTop = this.topPos;
-        Coordinate.updateContext(width, height, this.leftPos, this.topPos);
+        updateContext(width, height, this.leftPos, this.topPos);
         ClientUiContext.setFont(this.font);
         this.menu.reportScreenSize(width, height);
     }

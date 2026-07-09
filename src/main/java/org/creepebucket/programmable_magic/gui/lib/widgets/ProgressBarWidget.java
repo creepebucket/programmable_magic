@@ -9,6 +9,10 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
     public DynamicValue<Double> numerator, denominator;
     public SmoothedValue smoothed = new SmoothedValue(0);
@@ -27,10 +31,10 @@ public class ProgressBarWidget extends Widget implements Renderable, Lifecycle {
 
     @Override
     public void onInitialize() {
-        textWidget = new TextWidget(Coordinate.fromCenterLeft(-2, 1), Component.literal("%"));
+        textWidget = new TextWidget(fromCenterLeft(-2, 1), literal("%"));
         addChild(textWidget.noShadow().rightAlign().centerAlignY());
 
-        ratioWidget = new NumberDisplayWidget(Coordinate.fromCenterLeft(-9, 0), DynamicValue.fromSupplier(() -> numerator.get() * 100 / denominator.get()), 5, 1, true);
+        ratioWidget = new NumberDisplayWidget(fromCenterLeft(-9, 0), DynamicValue.fromSupplier(() -> numerator.get() * 100 / denominator.get()), 5, 1, true);
         addChild(ratioWidget.rightAlign().centerAlignY());
     }
 

@@ -10,6 +10,9 @@ import org.creepebucket.programmable_magic.gui.lib.ui.Screen;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 public abstract class MachineScreen<M extends MachineMenu> extends Screen<M> {
 	public List<MachineWidgets.InformationWindowWidget> windows = new ArrayList<>();
 	public MachineWidgets.WindowManagementWindow managementWindow;
@@ -33,13 +36,13 @@ public abstract class MachineScreen<M extends MachineMenu> extends Screen<M> {
 
 	@Override
 	public void buildWidget() {
-		addWidget(new MachineWidgets.WindowHintWidget(Coordinate.fromCenter(0, 0)));
+		addWidget(new MachineWidgets.WindowHintWidget(fromCenter(0, 0)));
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		managementWindow = (MachineWidgets.WindowManagementWindow) addWidget(new MachineWidgets.WindowManagementWindow(Coordinate.fromCenter(-60, -50), Coordinate.fromTopLeft(120, 100)));
+		managementWindow = (MachineWidgets.WindowManagementWindow) addWidget(new MachineWidgets.WindowManagementWindow(fromCenter(-60, -50), fromTopLeft(120, 100)));
 		managementWindow.enabled = false;
 	}
 }

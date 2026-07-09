@@ -15,17 +15,21 @@ import org.creepebucket.programmable_magic.utils.ModUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 public class MachineWidgets {
     public static class WindowHintWidget extends Widget implements Lifecycle, Tickable, KeyInputable {
         public Widget hintText;
 
         public WindowHintWidget(Coordinate pos) {
-            super(pos, Coordinate.ZERO);
+            super(pos, ZERO);
         }
 
         @Override
         public void onInitialize() {
-            hintText = screen.addWidget(new TextWidget(Coordinate.fromCenter(0, 0), Component.literal("按下 Alt+W 开关窗口管理界面")).centerAlign().centerAlignY().mainColor(-1).disable());
+            hintText = screen.addWidget(new TextWidget(fromCenter(0, 0), literal("按下 Alt+W 开关窗口管理界面")).centerAlign().centerAlignY().mainColor(-1).disable());
         }
 
         @Override
@@ -110,13 +114,13 @@ public class MachineWidgets {
             dw.a = 250;
             dh.a = 250;
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopRight(0, 11)).mainColor(0xbf000000));
-            titleWidget = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(16, 2), name).noShadow().mainColor(0xff7f7f7f));
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(3, 5), Coordinate.fromTopLeft(10, 1)).mainColor(0x7f7f7f7f));
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(titleWidget.w() + 18, 5), Coordinate.fromTopRight(-titleWidget.w() - 22, 1)).mainColor(0x7f7f7f7f));
-            closeButton = addChild(new RectangleWidget(Coordinate.fromTopRight(-7, 4), Coordinate.fromTopLeft(3, 3)));
+            addChild(new RectangleWidget(fromTopLeft(0, 0), fromTopRight(0, 11)).mainColor(0xbf000000));
+            titleWidget = (TextWidget) addChild(new TextWidget(fromTopLeft(16, 2), name).noShadow().mainColor(0xff7f7f7f));
+            addChild(new RectangleWidget(fromTopLeft(3, 5), fromTopLeft(10, 1)).mainColor(0x7f7f7f7f));
+            addChild(new RectangleWidget(fromTopLeft(titleWidget.w() + 18, 5), fromTopRight(-titleWidget.w() - 22, 1)).mainColor(0x7f7f7f7f));
+            closeButton = addChild(new RectangleWidget(fromTopRight(-7, 4), fromTopLeft(3, 3)));
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 11), Coordinate.fromBottomRight(0, -11)).mainColor(0x7f000000));
+            addChild(new RectangleWidget(fromTopLeft(0, 11), fromBottomRight(0, -11)).mainColor(0x7f000000));
 
             addAnimation(new Animation.FadeIn.FromTop(0.3), (double) ModUtils.simpleRandInt(0, 2) / 20);
             onResize(w(), h());
@@ -204,31 +208,31 @@ public class MachineWidgets {
         public List<SwitchWidget> switches = new ArrayList<>();
 
         public WindowManagementWindow(Coordinate pos, Coordinate size) {
-            super(pos, size, Component.literal("窗口管理"), 120, 60);
+            super(pos, size, literal("窗口管理"), 120, 60);
         }
 
         @Override
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), Component.literal("窗口名称")).noShadow().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(Coordinate.fromTopRight(-16, 15), Component.literal("开关")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopLeft(7, 15), literal("窗口名称")).noShadow().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopRight(-16, 15), literal("开关")).noShadow().rightAlign().mainColor(0xffbfbfbf));
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 26), Coordinate.fromTopRight(-14, 1)).mainColor(mainColor().toArgbWithAlphaMult(0.5)));
+            addChild(new RectangleWidget(fromTopLeft(7, 26), fromTopRight(-14, 1)).mainColor(mainColor().toArgbWithAlphaMult(0.5)));
 
-            var cull = addChild(new CullAreaWidget(Coordinate.fromTopLeft(7, 28), Coordinate.fromBottomRight(-14, -35)));
+            var cull = addChild(new CullAreaWidget(fromTopLeft(7, 28), fromBottomRight(-14, -35)));
             var itemDy = new SmoothedValue(0);
             smoothedValues.add(itemDy);
             var y = 0;
 
             for (InformationWindowWidget window: ((MachineScreen<?>) screen).windows) {
-                cull.addChild(new TextWidget(Coordinate.fromTopLeft(0, 3 + y), window.name).noShadow().mainColor(-1).dy(itemDy));
-                switches.add((SwitchWidget) cull.addChild(new SwitchWidget(Coordinate.fromTopRight(-4, 1 + y), Coordinate.fromTopLeft(60, 11), Component.literal("关闭"),
-                        Component.literal("开启")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
+                cull.addChild(new TextWidget(fromTopLeft(0, 3 + y), window.name).noShadow().mainColor(-1).dy(itemDy));
+                switches.add((SwitchWidget) cull.addChild(new SwitchWidget(fromTopRight(-4, 1 + y), fromTopLeft(60, 11), literal("关闭"),
+                        literal("开启")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
                 y += 15;
             }
 
-            cull.addChild(new ScrollbarWidget(Coordinate.fromTopRight(-3, 1), Coordinate.fromBottomLeft(3, -2), Coordinate.fromTopLeft(-y, 0), itemDy, "y").reverseDirection());
+            cull.addChild(new ScrollbarWidget(fromTopRight(-3, 1), fromBottomLeft(3, -2), fromTopLeft(-y, 0), itemDy, "y").reverseDirection());
         }
 
         @Override
@@ -245,7 +249,7 @@ public class MachineWidgets {
         public DynamicValue<Double> value;
 
         public PowerInfoItemWidget(Coordinate pos, Component name, DynamicValue<Double> value, Component unit) {
-            super(pos, Coordinate.ZERO);
+            super(pos, ZERO);
             
             this.value = value;
             this.name = name;
@@ -254,10 +258,10 @@ public class MachineWidgets {
 
         @Override
         public void onInitialize() {
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(0, 0), Coordinate.fromTopLeft(1, 19)).mainColor(0xff7f7f7f));
-            var a = addChild(new TextWidget(Coordinate.fromTopLeft(3, 9), name).noShadow().mainColor(0xffbfbfbf).bottomAlignY());
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(3, 10), value, 6, 1, true));
-            var b = addChild(new TextWidget(Coordinate.fromTopLeft(41, 11), unit).noShadow().mainColor(-1));
+            addChild(new RectangleWidget(fromTopLeft(0, 0), fromTopLeft(1, 19)).mainColor(0xff7f7f7f));
+            var a = addChild(new TextWidget(fromTopLeft(3, 9), name).noShadow().mainColor(0xffbfbfbf).bottomAlignY());
+            addChild(new NumberDisplayWidget(fromTopLeft(3, 10), value, 6, 1, true));
+            var b = addChild(new TextWidget(fromTopLeft(41, 11), unit).noShadow().mainColor(-1));
             
             originalSize.x = (w, h) -> Math.max(a.w(), 41 + b.w());
             originalSize.y = (w, h) -> 18;
@@ -273,16 +277,16 @@ public class MachineWidgets {
             int row = index / 2;
             Coordinate pos;
             if (index % 2 == 0)
-                pos = Coordinate.fromTopLeft(7, 18 + row * 25);
+                pos = fromTopLeft(7, 18 + row * 25);
             else
-                pos = Coordinate.fromCenterTop(7, 18 + row * 25);
+                pos = fromCenterTop(7, 18 + row * 25);
             var item = new PowerInfoItemWidget(pos, name, value, unit);
             addChild(item);
             return item;
         }
 
         public PowerInfoWindow(Coordinate pos, Coordinate size, Component powerExpr) {
-            super(pos, size, Component.literal("计算信息"), 150, 50);
+            super(pos, size, literal("计算信息"), 150, 50);
             this.powerExpr = powerExpr;
         }
 
@@ -290,8 +294,8 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new RectangleWidget(Coordinate.fromBottomLeft(7, -7), Coordinate.fromTopRight(-14, 18)).mainColor(0x7f000000).bottomAlignY());
-            addChild(new TextWidget(Coordinate.fromCenterBottom(0, -11), powerExpr).noShadow().centerAlign().bottomAlignY().mainColor(0xffbfbfbf));
+            addChild(new RectangleWidget(fromBottomLeft(7, -7), fromTopRight(-14, 18)).mainColor(0x7f000000).bottomAlignY());
+            addChild(new TextWidget(fromCenterBottom(0, -11), powerExpr).noShadow().centerAlign().bottomAlignY().mainColor(0xffbfbfbf));
         }
     }
 
@@ -301,7 +305,7 @@ public class MachineWidgets {
         public String unit;
 
         public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType, Component machineType, Component mainText1, Component mainText2, String unit) {
-            super(pos, size, Component.literal("机器总览"), 210, 40);
+            super(pos, size, literal("机器总览"), 210, 40);
 
             this.manaType = manaType;
             this.power = power;
@@ -315,15 +319,15 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(Coordinate.fromTopLeft(7, 39), Component.literal("机器类型")).noShadow().bottomAlignY().mainColor(0xff7f7f7f));
-            addChild(new TextWidget(Coordinate.fromTopLeft(7, 15), machineType).scaled(1.5));
-            addChild(new TextWidget(Coordinate.fromTopRight(-7, 39), Component.literal("魔力类型")).noShadow().rightAlign().bottomAlignY().mainColor(0xff7f7f7f));
-            addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
-            addChild(new TextWidget(Coordinate.fromCenterBottom(0, -33), mainText1).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
-            addChild(new TextWidget(Coordinate.fromCenterBottom(-72, -5), mainText2).noShadow().scaled(2).rightAlign().bottomAlignY().mainColor(0xffffffff));
-            var unit = new TextSwitchWidget(Coordinate.fromCenterBottom(73, -5), Coordinate.fromTopLeft(26, 18), 2, this.unit);
+            addChild(new TextWidget(fromTopLeft(7, 39), literal("机器类型")).noShadow().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromTopLeft(7, 15), machineType).scaled(1.5));
+            addChild(new TextWidget(fromTopRight(-7, 39), literal("魔力类型")).noShadow().rightAlign().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
+            addChild(new TextWidget(fromCenterBottom(0, -33), mainText1).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromCenterBottom(-72, -5), mainText2).noShadow().scaled(2).rightAlign().bottomAlignY().mainColor(0xffffffff));
+            var unit = new TextSwitchWidget(fromCenterBottom(73, -5), fromTopLeft(26, 18), 2, this.unit);
             addChild(unit.bottomAlignY().mainColor(0xffffffff));
-            addChild(new NumberDisplayWidget(Coordinate.fromCenterBottom(0, -5), power, 6, 3, unit, this.unit, false).centerAlign().bottomAlignY());
+            addChild(new NumberDisplayWidget(fromCenterBottom(0, -5), power, 6, 3, unit, this.unit, false).centerAlign().bottomAlignY());
         }
     }
 
@@ -331,7 +335,7 @@ public class MachineWidgets {
         public MachineMenu menu;
 
         public NetworkInfoWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, Component.literal("网络信息"), 180, 90);
+            super(pos, size, literal("网络信息"), 180, 90);
             this.menu = menu;
         }
 
@@ -339,55 +343,55 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new RectangleWidget(Coordinate.fromTopLeft(7, 14), Coordinate.fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
-            addChild(new TextWidget(Coordinate.fromTopLeft(11, 15), Component.literal("当前魔力")).noShadow().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(Coordinate.fromTopRight(-66, 15), Component.literal("魔力缓存")).noShadow().rightAlign().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(Coordinate.fromTopRight(-7, 15), Component.literal("净功率")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new RectangleWidget(fromTopLeft(7, 14), fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
+            addChild(new TextWidget(fromTopLeft(11, 15), literal("当前魔力")).noShadow().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopRight(-7, 15), literal("净功率")).noShadow().rightAlign().mainColor(0xffbfbfbf));
 
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0   , 29), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.25, 21), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_T));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.5 , 13), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_M));
-            addChild(new RectangleWidget(Coordinate.custom(0, 7, 0.75, 5 ), Coordinate.custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_P));
+            addChild(new RectangleWidget(custom(0, 7, 0   , 29), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
+            addChild(new RectangleWidget(custom(0, 7, 0.25, 21), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_T));
+            addChild(new RectangleWidget(custom(0, 7, 0.5 , 13), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_M));
+            addChild(new RectangleWidget(custom(0, 7, 0.75, 5 ), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_P));
 
-            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0   , 29), menu.radiationStorageJ  , 7, 1, true).mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.25, 21), menu.temperatureStorageJ, 7, 1, true).mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.5 , 13), menu.momentumStorageJ   , 7, 1, true).mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(0, 11, 0.75, 5 ), menu.pressureStorageJ   , 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(0, 11, 0   , 29), menu.radiationStorageJ  , 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(0, 11, 0.25, 21), menu.temperatureStorageJ, 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(0, 11, 0.5 , 13), menu.momentumStorageJ   , 7, 1, true).mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(0, 11, 0.75, 5 ), menu.pressureStorageJ   , 7, 1, true).mainColor(-1));
 
-            addChild(new TextWidget(Coordinate.custom(0, 54, 0   , 30), Component.literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(0, 54, 0.25, 22), Component.literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(0, 54, 0.5 , 14), Component.literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(0, 54, 0.75, 6 ), Component.literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(custom(0, 54, 0   , 30), literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(custom(0, 54, 0.25, 22), literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(custom(0, 54, 0.5 , 14), literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(custom(0, 54, 0.75, 6 ), literal("J")).noShadow().mainColor(-1));
 
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
+            addChild(new NumberDisplayWidget(custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
 
-            addChild(new TextWidget(Coordinate.custom(1, -67, 0   , 30), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(1, -67, 0.25, 22), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(1, -67, 0.5 , 14), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(Coordinate.custom(1, -67, 0.75, 6 ), Component.literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(custom(1, -67, 0   , 30), literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(custom(1, -67, 0.25, 22), literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(custom(1, -67, 0.5 , 14), literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(custom(1, -67, 0.75, 6 ), literal("J")).noShadow().rightAlign().mainColor(-1));
 
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0   , 29), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.25, 21), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_T));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.5 , 13), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_M));
-            addChild(new RectangleWidget(Coordinate.custom(1, -7, 0.75, 5 ), Coordinate.fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_P));
+            addChild(new RectangleWidget(custom(1, -7, 0   , 29), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
+            addChild(new RectangleWidget(custom(1, -7, 0.25, 21), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_T));
+            addChild(new RectangleWidget(custom(1, -7, 0.5 , 13), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_M));
+            addChild(new RectangleWidget(custom(1, -7, 0.75, 5 ), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_P));
 
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0   , 29), menu.radiationPowerW  , 7, 1, true).rightAlign().mainColor(0xff000000));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.25, 21), menu.temperaturePowerW, 7, 1, true).rightAlign().mainColor(0xff000000));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.5 , 13), menu.momentumPowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
-            addChild(new NumberDisplayWidget(Coordinate.custom(1, -16, 0.75, 5 ), menu.pressurePowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(custom(1, -16, 0   , 29), menu.radiationPowerW  , 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(custom(1, -16, 0.25, 21), menu.temperaturePowerW, 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(custom(1, -16, 0.5 , 13), menu.momentumPowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
+            addChild(new NumberDisplayWidget(custom(1, -16, 0.75, 5 ), menu.pressurePowerW   , 7, 1, true).rightAlign().mainColor(0xff000000));
 
-            addChild(new TextWidget(Coordinate.custom(1, -9, 0   , 30), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
-            addChild(new TextWidget(Coordinate.custom(1, -9, 0.25, 22), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
-            addChild(new TextWidget(Coordinate.custom(1, -9, 0.5 , 14), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
-            addChild(new TextWidget(Coordinate.custom(1, -9, 0.75, 6 ), Component.literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(custom(1, -9, 0   , 30), literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(custom(1, -9, 0.25, 22), literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(custom(1, -9, 0.5 , 14), literal("W")).noShadow().rightAlign().mainColor(0xff000000));
+            addChild(new TextWidget(custom(1, -9, 0.75, 6 ), literal("W")).noShadow().rightAlign().mainColor(0xff000000));
 
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.25, 18), Coordinate.custom(1, -18, 0.25, -21), menu.radiationStorageJ  , menu.radiationCacheJ  ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_R).bgColor(ModColors.MAIN_COLOR_R.withAlpha(0x0f)));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.5 , 10), Coordinate.custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_T).bgColor(ModColors.MAIN_COLOR_T.withAlpha(0x0f)));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 0.75, 2 ), Coordinate.custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_M).bgColor(ModColors.MAIN_COLOR_M.withAlpha(0x0f)));
-            addChild(new ProgressBarWidget(Coordinate.custom(0, 11, 1   , -6), Coordinate.custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_P).bgColor(ModColors.MAIN_COLOR_P.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(custom(0, 11, 0.25, 18), custom(1, -18, 0.25, -21), menu.radiationStorageJ  , menu.radiationCacheJ  ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_R).bgColor(ModColors.MAIN_COLOR_R.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(custom(0, 11, 0.5 , 10), custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_T).bgColor(ModColors.MAIN_COLOR_T.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(custom(0, 11, 0.75, 2 ), custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_M).bgColor(ModColors.MAIN_COLOR_M.withAlpha(0x0f)));
+            addChild(new ProgressBarWidget(custom(0, 11, 1   , -6), custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_P).bgColor(ModColors.MAIN_COLOR_P.withAlpha(0x0f)));
         }
     }
 
@@ -395,7 +399,7 @@ public class MachineWidgets {
         public MachineMenu menu;
 
         public MachineControlWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, Component.literal("机器控制"), 60, 40);
+            super(pos, size, literal("机器控制"), 60, 40);
             this.menu = menu;
         }
 
@@ -403,7 +407,7 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            var switchWidget = new SwitchWidget(Coordinate.fromTopLeft(7, 16), Coordinate.fromTopLeft(50, 19), Component.literal("关闭"), Component.literal("开启"));
+            var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), literal("关闭"), literal("开启"));
             addChild(switchWidget.mainColor(-1));
 
             menu.enabled.whenFirstDataArrivesDo(() -> {
@@ -421,29 +425,29 @@ public class MachineWidgets {
         public List<Widget> graduations = new ArrayList<>();
 
         public OverclockWindow(Coordinate pos, Coordinate size, DynamicValue<Double> powerFact, double basePower, double baseControl, double maxFact) {
-            super(pos, size, Component.literal("生产控制"), 165, 40);
+            super(pos, size, literal("生产控制"), 165, 40);
             this.powerFact = powerFact;
             this.basePower = basePower;
             this.baseControl = baseControl;
             this.maxFact = maxFact;
 
-            arrowWidget = addChild(new TextWidget(Coordinate.fromCenterTop(-7, 19), Component.literal(">>>")).noShadow().mainColor(0x7fffffff));
+            arrowWidget = addChild(new TextWidget(fromCenterTop(-7, 19), literal(">>>")).noShadow().mainColor(0x7fffffff));
         }
 
         @Override
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(Coordinate.fromTopLeft(7, 20), Component.literal("超频倍率")).noShadow().mainColor(-1));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopLeft(44, 16), powerFact, 4, 1.5, true));
+            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).noShadow().mainColor(-1));
+            addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true));
 
-            addChild(new TextWidget(Coordinate.fromTopRight(-45, 24), Component.literal("预期功率 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign());
+            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
+            addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign());
 
-            addChild(new TextWidget(Coordinate.fromTopRight(-7, 24), Component.literal("控制成本 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
-            addChild(new NumberDisplayWidget(Coordinate.fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
+            addChild(new TextWidget(fromTopRight(-7, 24), literal("控制成本 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
+            addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
 
-            powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(Coordinate.fromBottomLeft(7, -9), Coordinate.fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
+            powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(fromBottomLeft(7, -9), fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
         }
 
         @Override
@@ -456,10 +460,10 @@ public class MachineWidgets {
 
             graduations.forEach(Widget::removeMyself);
             for (int i = 1; i < maxFact; i++) {
-                graduations.add(addChild(new TextWidget(Coordinate.fromBottomLeft(8 + (int) (i * (width - 16) / maxFact), -13), Component.literal(String.valueOf(i))).scaled(0.5).noShadow().centerAlign().mainColor(0x7fffffff)));
+                graduations.add(addChild(new TextWidget(fromBottomLeft(8 + (int) (i * (width - 16) / maxFact), -13), literal(String.valueOf(i))).scaled(0.5).noShadow().centerAlign().mainColor(0x7fffffff)));
             }
-            graduations.add(addChild(new TextWidget(Coordinate.fromBottomLeft(7, -13), Component.literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
-            graduations.add(addChild(new TextWidget(Coordinate.fromBottomRight(-6, -13), Component.literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
+            graduations.add(addChild(new TextWidget(fromBottomLeft(7, -13), literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
+            graduations.add(addChild(new TextWidget(fromBottomRight(-6, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
         }
     }
 
@@ -470,27 +474,27 @@ public class MachineWidgets {
         public TextWidget fluidIdText;
 
         public FluidInfoWidget(Coordinate pos, DynamicValue<String> fluidId) {
-            super(pos, Coordinate.ZERO);
+            super(pos, ZERO);
             this.fluidId = fluidId;
         }
 
         @Override
         public void onInitialize() {
-            addChild(new TextWidget(Coordinate.fromTopLeft(0, 0), Component.literal("流体类型")).noShadow().mainColor(0xff7f7f7f));
-            fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(10, 10), fluidId.get()));
-            fluidNameText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(13, 13), fluidId.get().isEmpty() ? Component.literal("") :
+            addChild(new TextWidget(fromTopLeft(0, 0), literal("流体类型")).noShadow().mainColor(0xff7f7f7f));
+            fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(fromTopLeft(0, 12), fromTopLeft(10, 10), fluidId.get()));
+            fluidNameText = (TextWidget) addChild(new TextWidget(fromTopLeft(13, 13), fluidId.get().isEmpty() ? literal("") :
                     Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow());
-            fluidIdText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(0, 25), Component.literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f));
+            fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f));
 
             fluidId.whenDataChangedDo(() -> {
                 fluidTexture.addAnimation(new Animation.FadeOut.ToRight(0.3), 0);
                 fluidNameText.addAnimation(new Animation.FadeOut.ToRight(0.3), 0.05);
                 fluidIdText.addAnimation(new Animation.FadeOut.ToRight(0.3), 0.1);
 
-                fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(Coordinate.fromTopLeft(0, 12), Coordinate.fromTopLeft(10, 10), fluidId.get()).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0));
-                fluidNameText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(13, 13), fluidId.get().isEmpty() ? Component.literal("") :
+                fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(fromTopLeft(0, 12), fromTopLeft(10, 10), fluidId.get()).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0));
+                fluidNameText = (TextWidget) addChild(new TextWidget(fromTopLeft(13, 13), fluidId.get().isEmpty() ? literal("") :
                         Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow().addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.05));
-                fluidIdText = (TextWidget) addChild(new TextWidget(Coordinate.fromTopLeft(0, 25), Component.literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
+                fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
             });
         }
     }
@@ -498,7 +502,7 @@ public class MachineWidgets {
     public static class InventoryWindow extends InformationWindowWidget {
 
         public InventoryWindow(Coordinate pos, Coordinate size) {
-            super(pos, size, Component.literal("物品栏"), 184, 67);
+            super(pos, size, literal("物品栏"), 184, 67);
         }
 
         @Override
@@ -507,12 +511,12 @@ public class MachineWidgets {
 
             var slots = screen.getMenu().slots;
             for (int i = 0; i < 3; i++) for (int j = -4; j < 5; j++) {
-                addChild(new RectangleWidget(Coordinate.fromCenterTop(j * 18, i * 18 + 30), Coordinate.fromTopLeft(16, 1)).centerAlign().mainColor(0x1fffffff));
-                addChild(new SlotWidget(slots.get(i * 9 + j + 13), Coordinate.fromCenterTop(j * 18, i * 18 + 15)).centerAlign());
+                addChild(new RectangleWidget(fromCenterTop(j * 18, i * 18 + 30), fromTopLeft(16, 1)).centerAlign().mainColor(0x1fffffff));
+                addChild(new SlotWidget(slots.get(i * 9 + j + 13), fromCenterTop(j * 18, i * 18 + 15)).centerAlign());
             }
             for (int j = -4; j < 5; j++) {
-                addChild(new RectangleWidget(Coordinate.fromCenterBottom(j * 18, -4), Coordinate.fromTopLeft(16, 1)).centerAlign().bottomAlignY().mainColor(0x1fffffff));
-                addChild(new SlotWidget(slots.get(j + 4), Coordinate.fromCenterBottom(j * 18, -4)).centerAlign().bottomAlignY());
+                addChild(new RectangleWidget(fromCenterBottom(j * 18, -4), fromTopLeft(16, 1)).centerAlign().bottomAlignY().mainColor(0x1fffffff));
+                addChild(new SlotWidget(slots.get(j + 4), fromCenterBottom(j * 18, -4)).centerAlign().bottomAlignY());
             }
         }
     }

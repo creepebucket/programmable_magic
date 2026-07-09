@@ -17,6 +17,10 @@ import org.creepebucket.programmable_magic.utils.ModUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 import static net.minecraft.util.Mth.hsvToArgb;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -34,7 +38,7 @@ public class SpellSupplyPlugin extends BasePlugin {
     public void onAdd(WandScreen screen) {
 
         // 背景
-        background = screen.addWidget(new RectangleWidget(Coordinate.fromTopLeft(7, 0), Coordinate.fromBottomLeft(80, 0)).color(screen.bgColor));
+        background = screen.addWidget(new RectangleWidget(fromTopLeft(7, 0), fromBottomLeft(80, 0)).color(screen.bgColor));
 
         var slotIndex = screen.getMenu().supplySlotsStartIndex;
         var supplyDy = new SmoothedValue(0);
@@ -63,11 +67,11 @@ public class SpellSupplyPlugin extends BasePlugin {
                     .tooltip(Component.translatable(key))));
 
             // 子类别标题
-            scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(dx + 8, categoryDy), key).dy(supplyDy).textColor(screen.textColor));
+            scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(fromTopLeft(dx + 8, categoryDy), key).dy(supplyDy).textColor(screen.textColor));
 
             // 法术
             for (int i = 0; i < subCategorySpells.size(); i++) {
-                var pos = Coordinate.fromTopLeft(dx % 80 + 7, categoryDy + Math.floorDiv(dx, 80) * 16 + 32);
+                var pos = fromTopLeft(dx % 80 + 7, categoryDy + Math.floorDiv(dx, 80) * 16 + 32);
 
                 scrollWidgets.add(new SlotWidget(screen.getMenu().slots.get(slotIndex), pos).dy(supplyDy));
                 slotIndex++;
@@ -83,7 +87,7 @@ public class SpellSupplyPlugin extends BasePlugin {
         // 自定义法术供应栏
         int customCategoryDy = dy;
 
-        scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(Coordinate.fromTopLeft(8, customCategoryDy), "spell." + MODID + ".subcategory.custom").dy(supplyDy));
+        scrollWidgets.add(new WandWidgets.WandSubCategoryWidget(fromTopLeft(8, customCategoryDy), "spell." + MODID + ".subcategory.custom").dy(supplyDy));
 
         subCategoryJumps.add(screen.addWidget(new RectangleButtonWidget(
                 new Coordinate((w, h) -> 0, (w, h) -> (h - 1 - h / (spells.size() + 1))),
@@ -92,14 +96,14 @@ public class SpellSupplyPlugin extends BasePlugin {
                 .mainColor(new Color(0xFF000000)).bgColor(new Color(0xB0000000)).tooltip(Component.translatable("spell." + MODID + ".subcategory.custom")).textColor(screen.textColor)));
 
         for (WandSlots.CustomSupplySlot slot : screen.getMenu().customSupplySlots) {
-            scrollWidgets.add(new SlotWidget(slot, Coordinate.fromTopLeft(dx % 80 + 7, customCategoryDy + 32 + Math.floorDiv(dx, 80) * 16)).dy(supplyDy));
+            scrollWidgets.add(new SlotWidget(slot, fromTopLeft(dx % 80 + 7, customCategoryDy + 32 + Math.floorDiv(dx, 80) * 16)).dy(supplyDy));
             dx = dx + 16;
         }
 
         int finalDy = customCategoryDy + 160 + 64;
 
         // 自定义供应的锁定按钮
-        screen.lockButton = (SelectableImageButtonWidget) new SelectableImageButtonWidget(Coordinate.fromTopLeft(7, finalDy - 28), Coordinate.fromTopLeft(80, 16),
+        screen.lockButton = (SelectableImageButtonWidget) new SelectableImageButtonWidget(fromTopLeft(7, finalDy - 28), fromTopLeft(80, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_lock_button.png"))
                 .selectedTexture(Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/wand_unlock_button.png")).tooltip(Component.translatable("gui.programmable_magic.wand.spells.unlock_custom")).dy(supplyDy).mainColor(screen.mainColor);
         lockCustomSupply = screen.lockButton;
@@ -108,13 +112,13 @@ public class SpellSupplyPlugin extends BasePlugin {
         for (Widget widget : scrollWidgets) screen.addWidget(widget);
 
         // 滚动交互
-        scroll = screen.addWidget(new ScrollRegionWidget(Coordinate.fromTopLeft(8, 0), Coordinate.fromTopLeft(80, 999),
+        scroll = screen.addWidget(new ScrollRegionWidget(fromTopLeft(8, 0), fromTopLeft(80, 999),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), 16, supplyDy));
         // 滚动条
-        scrollBar = screen.addWidget(new ScrollbarWidget(Coordinate.fromTopLeft(88, 0), Coordinate.fromBottomLeft(4, 0),
+        scrollBar = screen.addWidget(new ScrollbarWidget(fromTopLeft(88, 0), fromBottomLeft(4, 0),
                 new Coordinate((w, h) -> (-finalDy + h), (w, h) -> 0), supplyDy, "y").reverseDirection().mainColor(screen.mainColor));
 
-        bottomUpperBound = screen.addWidget(new RectangleWidget(Coordinate.fromTopLeft(93, 0), Coordinate.fromBottomLeft(2, 0)).color(screen.mainColor));
+        bottomUpperBound = screen.addWidget(new RectangleWidget(fromTopLeft(93, 0), fromBottomLeft(2, 0)).color(screen.mainColor));
 
         bottomUpperBound.addAnimation(new Animation.FadeIn.FromTop(.3), 0);
         background.addAnimation(new Animation.FadeIn.FromTop(.5), 0);
@@ -171,7 +175,7 @@ public class SpellSupplyPlugin extends BasePlugin {
     @Override
     public Component function() {
         return Component.translatable("gui.programmable_magic.wand.plugin.mana_mult_mult")
-                .append(Component.literal("x" + ModUtils.formattedNumber(Math.pow(0.95, tier - 1)))
+                .append(literal("x" + ModUtils.formattedNumber(Math.pow(0.95, tier - 1)))
                         .withColor(hsvToArgb((Minecraft.getInstance().level.getGameTime() * 0.01f) % 1, 1, 1, 255)));
     }
 }

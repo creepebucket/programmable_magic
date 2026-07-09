@@ -16,6 +16,10 @@ import org.creepebucket.programmable_magic.gui.wand.WandWidgets;
 
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 import static net.minecraft.util.Mth.hsvToArgb;
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
@@ -52,24 +56,24 @@ public class SpellStoragePlugin extends BasePlugin {
         var targetMin = Math.min(0, (-tier * 10 - 2) * 16 + spellCountCanFit * 16);
 
         // 两边遮挡
-        leftShift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomLeft(94, -115), Coordinate.fromTopLeft(32, 16),
+        leftShift = screen.addWidget(new ImageButtonWidget(fromBottomLeft(94, -115), fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_left.png"),
                 () -> storageDx.set(Math.clamp(storageDx.get() + 80, targetMin, 0)))
                 .tooltip(Component.translatable("gui.programmable_magic.wand.spells.left_shift")).color(screen.mainColor));
-        rightShift = screen.addWidget(new ImageButtonWidget(Coordinate.fromBottomRight(-30, -115), Coordinate.fromTopLeft(32, 16),
+        rightShift = screen.addWidget(new ImageButtonWidget(fromBottomRight(-30, -115), fromTopLeft(32, 16),
                 Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"), Identifier.fromNamespaceAndPath(MODID, "textures/gui/ui/stright_end_bar_right.png"),
                 () -> storageDx.set(Math.clamp(storageDx.get() - 80, targetMin, 0)))
                 .tooltip(Component.translatable("gui.programmable_magic.wand.spells.right_shift")).color(screen.mainColor));
 
         // 滚动条
-        scrollBar = screen.addWidget(new ScrollbarWidget(Coordinate.fromBottomLeft(96, -112 + 15), Coordinate.fromTopRight(-96, 4),
-                Coordinate.fromTopLeft(targetMin, 0), storageDx, "X").mainColor(screen.mainColor));
+        scrollBar = screen.addWidget(new ScrollbarWidget(fromBottomLeft(96, -112 + 15), fromTopRight(-96, 4),
+                fromTopLeft(targetMin, 0), storageDx, "X").mainColor(screen.mainColor));
 
         // 滚轮区域
-        scroll = screen.addWidget(new ScrollRegionWidget(Coordinate.fromBottomLeft(94, -113), Coordinate.fromTopLeft(999, 16), Coordinate.fromTopLeft(targetMin, 0), 80, storageDx));
+        scroll = screen.addWidget(new ScrollRegionWidget(fromBottomLeft(94, -113), fromTopLeft(999, 16), fromTopLeft(targetMin, 0), 80, storageDx));
 
-        invTopBound = screen.addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95, -76 - 16), Coordinate.fromTopRight(0, 2)).color(screen.mainColor));
-        invRightBound = screen.addWidget(new RectangleWidget(Coordinate.fromBottomLeft(95 + 18 * 9 + 2, -76 - 16), Coordinate.fromTopLeft(2, 92)).color(screen.mainColor));
+        invTopBound = screen.addWidget(new RectangleWidget(fromBottomLeft(95, -76 - 16), fromTopRight(0, 2)).color(screen.mainColor));
+        invRightBound = screen.addWidget(new RectangleWidget(fromBottomLeft(95 + 18 * 9 + 2, -76 - 16), fromTopLeft(2, 92)).color(screen.mainColor));
 
         double t = 0;
 
@@ -110,7 +114,7 @@ public class SpellStoragePlugin extends BasePlugin {
     @Override
     public Component function() {
         return Component.translatable("gui.programmable_magic.wand.plugin.spell_storage")
-                .append(Component.literal("" + tier * 10)
+                .append(literal("" + tier * 10)
                         .withColor(hsvToArgb((Minecraft.getInstance().level.getGameTime() * 0.01f) % 1, 1, 1, 255)));
     }
 }

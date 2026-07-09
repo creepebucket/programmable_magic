@@ -8,6 +8,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 /**
  * 槽位控件：每 tick 将 {@link Slot} 的客户端坐标同步到 {@link ClientSlotManager}。
  */
@@ -21,7 +24,7 @@ public class SlotWidget extends Widget implements Lifecycle, Renderable {
      * 创建一个槽位控件。
      */
     public SlotWidget(Slot slot, Coordinate pos) {
-        super(pos, Coordinate.fromTopLeft(16, 16));
+        super(pos, fromTopLeft(16, 16));
         this.slot = slot;
     }
 

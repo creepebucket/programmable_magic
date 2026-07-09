@@ -9,6 +9,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseDraggable;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, MouseDraggable {
     public double min, max, step = 1, preciseValue;
     public DynamicValue<Double> value;
@@ -30,9 +33,9 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
         filled = new SmoothedValue(value.get() * (w() - 2) / max);
         preciseValue = value.get();
 
-        addChild(new RectangleWidget(Coordinate.fromCenterRight(0, 0), Coordinate.fromTopRight(0, 1)).dw(filled.multiply(-1).minus(3)).rightAlign().mainColor(bgColor()));
-        addChild(new RectangleWidget(Coordinate.fromCenterLeft(0, 0), Coordinate.fromTopLeft(0, 1)).dw(filled));
-        addChild(new OutlineWidget(Coordinate.fromCenterLeft(0, -1), Coordinate.fromTopLeft(3, 3)).dx(filled));
+        addChild(new RectangleWidget(fromCenterRight(0, 0), fromTopRight(0, 1)).dw(filled.multiply(-1).minus(3)).rightAlign().mainColor(bgColor()));
+        addChild(new RectangleWidget(fromCenterLeft(0, 0), fromTopLeft(0, 1)).dw(filled));
+        addChild(new OutlineWidget(fromCenterLeft(0, -1), fromTopLeft(3, 3)).dx(filled));
     }
 
     @Override

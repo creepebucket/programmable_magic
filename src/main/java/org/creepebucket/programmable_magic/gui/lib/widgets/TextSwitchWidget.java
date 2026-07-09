@@ -8,6 +8,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
+
+import static net.minecraft.network.chat.Component.literal;
+
 public class TextSwitchWidget extends Widget implements Renderable {
     public String old = "";
     public String current = "";
@@ -28,8 +31,8 @@ public class TextSwitchWidget extends Widget implements Renderable {
         graphics.enableScissor(left(), top(), right(), bottom());
 
         graphics.fill(left(), top(), right(), bottom(), bgColorInt());
-        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(old), left() + scale, top() + scale - h() + textDy.getInt(), scale, mainColorInt(), false);
-        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), Component.literal(current), left() + scale, top() + scale + textDy.getInt(), scale, mainColorInt(), false);
+        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(old), left() + scale, top() + scale - h() + textDy.getInt(), scale, mainColorInt(), false);
+        TextWidget.drawScaledString(graphics, ClientUiContext.getFont(), literal(current), left() + scale, top() + scale + textDy.getInt(), scale, mainColorInt(), false);
 
         graphics.disableScissor();
     }

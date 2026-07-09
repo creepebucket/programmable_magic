@@ -8,6 +8,10 @@ import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
 import org.creepebucket.programmable_magic.utils.ModColors;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 
 	public WaterPumpScreen(WaterPumpMenu menu, Inventory playerInv, Component title) {
@@ -20,19 +24,19 @@ public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 
 		root.mainColor(ModColors.MAIN_COLOR_M);
 
-		addWidget(new MachineWidgets.MachineInfoWindow(Coordinate.fromCenter(-125, -70), Coordinate.fromTopLeft(250, 80), menu.power, Component.literal("动量/Mom"),
-				Component.literal("水泵"), Component.literal("[每秒流量]"), Component.literal("Q="), "L"));
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-125, -70), fromTopLeft(250, 80), menu.power, literal("动量/Mom"),
+				literal("水泵"), literal("[每秒流量]"), literal("Q="), "L"));
 
-		addWidget(new MachineWidgets.OverclockWindow(Coordinate.fromCenter(-125, 20), Coordinate.fromTopLeft(170, 50), menu.powerFact, 2000d, 300d, 4d));
+		addWidget(new MachineWidgets.OverclockWindow(fromCenter(-125, 20), fromTopLeft(170, 50), menu.powerFact, 2000d, 300d, 4d));
 
-		addWidget(new MachineWidgets.MachineControlWindow(Coordinate.fromCenter(55, 20), Coordinate.fromTopLeft(70, 50), menu));
+		addWidget(new MachineWidgets.MachineControlWindow(fromCenter(55, 20), fromTopLeft(70, 50), menu));
 
-		addWidget(new MachineWidgets.NetworkInfoWindow(Coordinate.fromCenter(-90, -50), Coordinate.fromTopLeft(180, 100), menu).disable());
+		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(-90, -50), fromTopLeft(180, 100), menu).disable());
 
-		var info = new MachineWidgets.PowerInfoWindow(Coordinate.fromCenter(-90, -40), Coordinate.fromTopLeft(180, 80), Component.literal("总流量 = Q₀×k"));
+		var info = new MachineWidgets.PowerInfoWindow(fromCenter(-90, -40), fromTopLeft(180, 80), literal("总流量 = Q₀×k"));
 		addWidget(info.disable());
-		info.addPowerInfoItem(Component.literal("基础流量/Q₀"), DynamicValue.staticValue(1000d), Component.literal("L/s"));
-		info.addPowerInfoItem(Component.literal("超频倍率/k"), menu.powerFact, Component.literal("x"));
+		info.addPowerInfoItem(literal("基础流量/Q₀"), DynamicValue.staticValue(1000d), literal("L/s"));
+		info.addPowerInfoItem(literal("超频倍率/k"), menu.powerFact, literal("x"));
 
 	}
 }

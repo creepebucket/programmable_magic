@@ -9,6 +9,9 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import org.joml.Matrix3x2fStack;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 /**
  * 文本控件：在指定坐标渲染动态文本。
  */
@@ -21,7 +24,7 @@ public class TextWidget extends Widget implements Renderable {
     public boolean shadow = true;
 
     public TextWidget(Coordinate pos, Component text) {
-        super(pos, Coordinate.ZERO);
+        super(pos, ZERO);
         setText(text);
     }
 
@@ -34,7 +37,7 @@ public class TextWidget extends Widget implements Renderable {
         Font font = ClientUiContext.getFont();
         int w = (int) Math.round(font.width(text) * scale);
         int h = (int) Math.round(font.lineHeight * scale);
-        originalSize = Coordinate.fromTopLeft(w, h);
+        originalSize = fromTopLeft(w, h);
         return this;
     }
 

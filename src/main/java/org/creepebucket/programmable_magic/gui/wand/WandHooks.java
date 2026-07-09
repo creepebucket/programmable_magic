@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
+import static net.minecraft.network.chat.Component.literal;
+
 import static net.minecraft.core.component.DataComponents.CUSTOM_NAME;
 
 public class WandHooks {
@@ -125,7 +128,7 @@ public class WandHooks {
 
             var stack = new ItemStack(ModItems.PACKED_SPELL.get());
             stack.set(ModDataComponents.AUTHER, player.getGameProfile().name());
-            stack.set(CUSTOM_NAME, Component.literal(name));
+            stack.set(CUSTOM_NAME, literal(name));
             stack.set(ModDataComponents.DESCRIPTION, desc);
             stack.set(ModDataComponents.RESOURCE_LOCATION, path);
 
@@ -181,7 +184,7 @@ public class WandHooks {
 
             var stack = new ItemStack(ModItems.PACKED_SPELL.get());
             stack.set(ModDataComponents.AUTHER, player.getGameProfile().name());
-            stack.set(CUSTOM_NAME, Component.literal(name));
+            stack.set(CUSTOM_NAME, literal(name));
             stack.set(ModDataComponents.DESCRIPTION, desc);
             stack.set(ModDataComponents.RESOURCE_LOCATION, path);
 

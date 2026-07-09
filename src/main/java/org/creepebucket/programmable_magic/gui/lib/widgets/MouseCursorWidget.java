@@ -13,6 +13,10 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static net.minecraft.network.chat.Component.literal;
+
 import static net.minecraft.util.Mth.hsvToRgb;
 
 public class MouseCursorWidget extends Widget implements Renderable, Clickable {
@@ -20,7 +24,7 @@ public class MouseCursorWidget extends Widget implements Renderable, Clickable {
     public List<Boolean> downs = new ArrayList<>(List.of(false, false, false));
 
     public MouseCursorWidget() {
-        super(Coordinate.ZERO, Coordinate.ZERO);
+        super(ZERO, ZERO);
         renderInForeground = true;
     }
 
@@ -32,15 +36,15 @@ public class MouseCursorWidget extends Widget implements Renderable, Clickable {
 
         int dy = 0;
         if (downs.get(0)) {
-            graphics.text(ClientUiContext.getFont(), Component.literal(mb.get(0)), mouseX + 5, mouseY + dy, color, false);
+            graphics.text(ClientUiContext.getFont(), literal(mb.get(0)), mouseX + 5, mouseY + dy, color, false);
             dy += 9;
         }
         if (downs.get(1)) {
-            graphics.text(ClientUiContext.getFont(), Component.literal(mb.get(1)), mouseX + 5, mouseY + dy, color, false);
+            graphics.text(ClientUiContext.getFont(), literal(mb.get(1)), mouseX + 5, mouseY + dy, color, false);
             dy += 9;
         }
         if (downs.get(2)) {
-            graphics.text(ClientUiContext.getFont(), Component.literal(mb.get(2)), mouseX + 5, mouseY + dy, color, false);
+            graphics.text(ClientUiContext.getFont(), literal(mb.get(2)), mouseX + 5, mouseY + dy, color, false);
             dy += 9;
         }
     }

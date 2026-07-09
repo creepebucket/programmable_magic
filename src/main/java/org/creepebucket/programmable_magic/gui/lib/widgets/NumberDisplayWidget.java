@@ -11,6 +11,9 @@ import org.creepebucket.programmable_magic.utils.ModUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+
 /**
  * 纯ai （注：可能是作者留下的注释，暗示这部分逻辑非常巧妙/自动化）
  * 整体数字显示屏组件，包含多个单数字体（Digit）和一个单位显示器
@@ -27,7 +30,7 @@ public class NumberDisplayWidget extends Widget implements Renderable, Tickable 
 
     public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, TextSwitchWidget unitWidget, String baseUnit, Boolean compactMode) {
         // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-        super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
+        super(pos, fromTopLeft((int) ((compactMode ? 7 : 8) * scale * digits - scale), (int) (9 * scale)));
         this.number = number;
         this.digits = digits;
         this.scale = scale;
@@ -39,13 +42,13 @@ public class NumberDisplayWidget extends Widget implements Renderable, Tickable 
 
         for (int i = 0; i < digits; i++)
             digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                    Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
-                    Coordinate.fromTopLeft(40, 50), scale)));
+                    fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
+                    fromTopLeft(40, 50), scale)));
     }
 
     public NumberDisplayWidget(Coordinate pos, DynamicValue<Double> number, int digits, double scale, Boolean compactMode) {
         // 初始化大小：宽度 = (8 * 缩放 * 位数 - 缩放) [计算出刚好容纳所有数字的宽度]，高度 = 9 * 缩放
-        super(pos, Coordinate.fromTopLeft((int) ((compactMode ? 6 : 8) * scale * digits - scale + 1), (int) (9 * scale)));
+        super(pos, fromTopLeft((int) ((compactMode ? 6 : 8) * scale * digits - scale + 1), (int) (9 * scale)));
         this.number = number;
         this.digits = digits;
         this.scale = scale;
@@ -56,8 +59,8 @@ public class NumberDisplayWidget extends Widget implements Renderable, Tickable 
 
         for (int i = 0; i < digits; i++)
             digit.add((NumberDigitWidget) addChild(new NumberDigitWidget(
-                    Coordinate.fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
-                    Coordinate.fromTopLeft(40, 50), scale)));
+                    fromTopLeft((int) (scale + (compactMode ? 6 : 8) * scale * i), (int) scale), // 错开 X 坐标排列
+                    fromTopLeft(40, 50), scale)));
     }
 
     @Override
