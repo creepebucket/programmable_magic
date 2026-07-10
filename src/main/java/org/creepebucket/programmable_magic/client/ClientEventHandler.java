@@ -68,6 +68,9 @@ public class ClientEventHandler {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
         registerMachineBER(event, ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), "water_pump", new AABB(-1, 0, -1, 2, 2, 2));
         registerMachineBER(event, ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get(), "liquid_heater", new AABB(-1, 0, -1, 2, 2, 2));
+        registerMachineBER(event, ModBlockEntities.SMALL_MANA_BUFFER_BLOCK_ENTITY.get(), "small_mana_buffer", new AABB(0, 0, 0, 1, 1, 1));
+        registerMachineBER(event, ModBlockEntities.MEDIUM_MANA_BUFFER_BLOCK_ENTITY.get(), "medium_mana_buffer", new AABB(0, 0, 0, 1, 3, 1));
+        registerMachineBER(event, ModBlockEntities.LARGE_MANA_BUFFER_BLOCK_ENTITY.get(), "large_mana_buffer", new AABB(-1, 0, -1, 2, 4, 2));
         event.registerBlockEntityRenderer(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
         event.registerBlockEntityRenderer(ModBlockEntities.HORIZONTAL_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());
         event.registerBlockEntityRenderer(ModBlockEntities.VERTICAL_MANA_CONNECTOR_BLOCK_ENTITY.get(), context -> new NetNodeBlockEntityBER());

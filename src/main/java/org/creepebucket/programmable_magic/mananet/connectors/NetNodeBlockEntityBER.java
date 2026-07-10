@@ -68,7 +68,11 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
             if (connectedBlockFacing == null) continue;
 
             var selfBlockFacing = renderState.direction;
-            if (!selfBlockFacing.getAxis().isHorizontal()) continue;
+            if (!selfBlockFacing.getAxis().isHorizontal()) {
+                if (connectedBlockFacing.getAxis().isHorizontal()) continue;
+                if (renderState.blockPos.asLong() > connectedBlockPos.asLong()) continue;
+                selfBlockFacing = direction.getCounterClockWise();
+            }
 
             if (!connectedBlockFacing.getAxis().isHorizontal()) {
                 int steps = 0;

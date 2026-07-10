@@ -12,6 +12,9 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
 import org.creepebucket.programmable_magic.mananet.machines.IoDummies;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.LargeManaBuffer;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.MediumManaBuffer;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.SmallManaBuffer;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeater;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPump;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanel;
@@ -38,6 +41,18 @@ public class MananetNodeBlocks {
 
     public static final DeferredBlock<LiquidHeater> LIQUID_HEATER =
             BLOCKS.register("liquid_heater", registryName -> new LiquidHeater(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+    public static final DeferredBlock<SmallManaBuffer> SMALL_MANA_BUFFER =
+            BLOCKS.register("small_mana_buffer", registryName -> new SmallManaBuffer(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+    public static final DeferredBlock<MediumManaBuffer> MEDIUM_MANA_BUFFER =
+            BLOCKS.register("medium_mana_buffer", registryName -> new MediumManaBuffer(
+                    BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+    public static final DeferredBlock<LargeManaBuffer> LARGE_MANA_BUFFER =
+            BLOCKS.register("large_mana_buffer", registryName -> new LargeManaBuffer(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
     public static final DeferredBlock<DummyBlock> DUMMY_BLOCK =
@@ -75,6 +90,15 @@ public class MananetNodeBlocks {
 
     public static final DeferredItem<BlockItem> LIQUID_HEATER_BLOCK_ITEM =
             registerMachineItem(LIQUID_HEATER);
+
+    public static final DeferredItem<BlockItem> SMALL_MANA_BUFFER_BLOCK_ITEM =
+            registerMachineItem(SMALL_MANA_BUFFER);
+
+    public static final DeferredItem<BlockItem> MEDIUM_MANA_BUFFER_BLOCK_ITEM =
+            registerMachineItem(MEDIUM_MANA_BUFFER);
+
+    public static final DeferredItem<BlockItem> LARGE_MANA_BUFFER_BLOCK_ITEM =
+            registerMachineItem(LARGE_MANA_BUFFER);
 
     public static <B extends Block> DeferredItem<BlockItem> registerMachineItem(DeferredBlock<B> block) {
         return ITEMS.registerSimpleBlockItem(block);

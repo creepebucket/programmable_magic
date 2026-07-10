@@ -5,6 +5,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.LargeManaBufferBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.MediumManaBufferBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.buffer.SmallManaBufferBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeaterBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntity;
@@ -46,6 +49,18 @@ public class ModBlockEntities {
     public static final Supplier<BlockEntityType<LiquidHeaterBlockEntity>> LIQUID_HEATER_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("liquid_heater", () -> new BlockEntityType<LiquidHeaterBlockEntity>(
                     LiquidHeaterBlockEntity::new, false, MananetNodeBlocks.LIQUID_HEATER.get()));
+
+    public static final Supplier<BlockEntityType<SmallManaBufferBlockEntity>> SMALL_MANA_BUFFER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("small_mana_buffer", () -> new BlockEntityType<SmallManaBufferBlockEntity>(
+                    SmallManaBufferBlockEntity::new, false, MananetNodeBlocks.SMALL_MANA_BUFFER.get()));
+
+    public static final Supplier<BlockEntityType<MediumManaBufferBlockEntity>> MEDIUM_MANA_BUFFER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("medium_mana_buffer", () -> new BlockEntityType<MediumManaBufferBlockEntity>(
+                    MediumManaBufferBlockEntity::new, false, MananetNodeBlocks.MEDIUM_MANA_BUFFER.get()));
+
+    public static final Supplier<BlockEntityType<LargeManaBufferBlockEntity>> LARGE_MANA_BUFFER_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("large_mana_buffer", () -> new BlockEntityType<LargeManaBufferBlockEntity>(
+                    LargeManaBufferBlockEntity::new, false, MananetNodeBlocks.LARGE_MANA_BUFFER.get()));
 
     public static final Supplier<BlockEntityType<DummyBlockEntities.ItemInput>> ITEM_INPUT =
             BLOCK_ENTITIES.register("item_input", () -> {
