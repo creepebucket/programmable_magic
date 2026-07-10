@@ -27,6 +27,14 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("basic_mana_connector", () -> new BlockEntityType<NetNodeBlockEntity>(
                     NetNodeBlockEntity::new, false, ModBlocks.BASIC_MANA_CONNECTOR.get()));
 
+    public static final Supplier<BlockEntityType<NetNodeBlockEntity>> HORIZONTAL_MANA_CONNECTOR_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("horizontal_mana_connector", () -> new BlockEntityType<NetNodeBlockEntity>(
+                    NetNodeBlockEntity::new, false, ModBlocks.HORIZONTAL_MANA_CONNECTOR.get()));
+
+    public static final Supplier<BlockEntityType<NetNodeBlockEntity>> VERTICAL_MANA_CONNECTOR_BLOCK_ENTITY =
+            BLOCK_ENTITIES.register("vertical_mana_connector", () -> new BlockEntityType<NetNodeBlockEntity>(
+                    NetNodeBlockEntity::new, false, ModBlocks.VERTICAL_MANA_CONNECTOR.get()));
+
     public static final Supplier<BlockEntityType<SolarPanelBlockEntity>> SOLAR_PANEL_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("solar_panel", () -> new BlockEntityType<SolarPanelBlockEntity>(
                     SolarPanelBlockEntity::new, false, MananetNodeBlocks.SOLAR_PANEL.get()));

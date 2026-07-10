@@ -18,21 +18,21 @@
     "face=wall,facing=north": {
       "model": "programmable_magic:block/basic_mana_connector_wall",
       "y": 270,
-      "uvlock": true
+      "uvlock": false
     },
     "face=wall,facing=east": {
       "model": "programmable_magic:block/basic_mana_connector_wall",
-      "uvlock": true
+      "uvlock": false
     },
     "face=wall,facing=south": {
       "model": "programmable_magic:block/basic_mana_connector_wall",
       "y": 90,
-      "uvlock": true
+      "uvlock": false
     },
     "face=wall,facing=west": {
       "model": "programmable_magic:block/basic_mana_connector_wall",
       "y": 180,
-      "uvlock": true
+      "uvlock": false
     },
     "face=ceiling,facing=south": {
       "model": "programmable_magic:block/basic_mana_connector"

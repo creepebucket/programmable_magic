@@ -32,6 +32,12 @@ public class ModItems {
     public static final DeferredItem<BlockItem> BASIC_MAMA_CONNECTOR_BLOCK_ITEM =
             ITEMS.registerSimpleBlockItem(ModBlocks.BASIC_MANA_CONNECTOR);
 
+    public static final DeferredItem<BlockItem> HORIZONTAL_MANA_CONNECTOR_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem(ModBlocks.HORIZONTAL_MANA_CONNECTOR);
+
+    public static final DeferredItem<BlockItem> VERTICAL_MANA_CONNECTOR_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem(ModBlocks.VERTICAL_MANA_CONNECTOR);
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

@@ -7,6 +7,8 @@
   "block.programmable_magic.energy_hatch_t5": "能源仓 T5",
   "block.programmable_magic.mana_buffer": "魔力缓存器",
   "block.programmable_magic.mana_cable": "魔力线缆",
+  "block.programmable_magic.horizontal_mana_connector": "水平魔力连接器",
+  "block.programmable_magic.vertical_mana_connector": "垂直魔力连接器",
   "block.programmable_magic.mana_generator": "魔力发生器",
   "entity.programmable_magic.spell_entity": "法术",
   "gui.programmable_magic.wand.inventory": "背包",
