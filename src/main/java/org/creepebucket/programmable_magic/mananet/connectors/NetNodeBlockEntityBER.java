@@ -29,7 +29,6 @@ public class NetNodeBlockEntityBER implements BlockEntityRenderer<NetNodeBlockEn
         var boundingBox = new AABB(selfPos);
 
         for (var connectedPos : blockEntity.getData(ModAttachments.CONNECTIONS).values()) {
-            if (selfPos.asLong() > connectedPos.asLong()) continue;
             boundingBox = boundingBox.minmax(new AABB(connectedPos));
         }
 

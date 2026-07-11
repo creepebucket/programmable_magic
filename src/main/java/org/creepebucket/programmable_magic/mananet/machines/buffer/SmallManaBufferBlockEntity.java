@@ -5,6 +5,7 @@ import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.util.GeckoLibUtil;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
@@ -30,5 +31,9 @@ public class SmallManaBufferBlockEntity extends NetNodeBlockEntity implements Ge
 		if (level.isClientSide()) return;
 
 		entity.getNetworkData().setCache(new Mana(1e9, 1e9, 1e9, 1e9));
+
+		if (level.getBlockEntity(pos.above()) instanceof NetNodeBlockEntity nodeBe) {
+			nodeBe.connect(level, pos, Direction.UP, Direction.DOWN);
+		}
 	}
 }

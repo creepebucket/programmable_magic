@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.registries.ModBlocks;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -21,11 +22,17 @@ public class NetNodeBlockEntity extends BlockEntity {
     public boolean enabled;
 
     public NetNodeBlockEntity(BlockPos pos, BlockState blockState) {
-        this(ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get(), pos, blockState);
+        this(resolve_type(blockState), pos, blockState);
     }
 
     public NetNodeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
+    }
+
+    public static BlockEntityType<?> resolve_type(BlockState blockState) {
+        if (blockState.is(ModBlocks.HORIZONTAL_MANA_CONNECTOR.get())) return ModBlockEntities.HORIZONTAL_MANA_CONNECTOR_BLOCK_ENTITY.get();
+        if (blockState.is(ModBlocks.VERTICAL_MANA_CONNECTOR.get())) return ModBlockEntities.VERTICAL_MANA_CONNECTOR_BLOCK_ENTITY.get();
+        return ModBlockEntities.BASIC_MANA_CONNECTOR_BLOCK_ENTITY.get();
     }
 
     @Override
