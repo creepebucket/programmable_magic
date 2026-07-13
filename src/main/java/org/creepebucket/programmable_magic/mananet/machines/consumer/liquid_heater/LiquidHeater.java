@@ -17,7 +17,9 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterMenu;
+import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
+import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.jspecify.annotations.Nullable;
 
 public class LiquidHeater extends RotatableBasicMachine {
@@ -71,10 +73,14 @@ public class LiquidHeater extends RotatableBasicMachine {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+		if (type == ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get()) {
+			return (lvl, pos, st, blockEntity) -> LiquidHeaterBlockEntity.tick(lvl, pos, st, (LiquidHeaterBlockEntity) blockEntity);
+		}
 		return null;
 	}
 
 	@Override
 	protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+		NetNodeBlockEntity.rebuildNetworkId(level, pos);
 	}
 }

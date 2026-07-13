@@ -168,8 +168,8 @@ public abstract class BasicMachine extends Block implements EntityBlock {
     public static BlockPos rotateOffset(BlockPos offset, Direction direction) {
         return switch (direction) {
             case SOUTH -> new BlockPos(-offset.getX(), offset.getY(), -offset.getZ());
-            case WEST -> new BlockPos(-offset.getZ(), offset.getY(), offset.getX());
-            case EAST -> new BlockPos(offset.getZ(), offset.getY(), -offset.getX());
+            case WEST -> new BlockPos(offset.getZ(), offset.getY(), -offset.getX());
+            case EAST -> new BlockPos(-offset.getZ(), offset.getY(), offset.getX());
             default -> offset;
         };
     }

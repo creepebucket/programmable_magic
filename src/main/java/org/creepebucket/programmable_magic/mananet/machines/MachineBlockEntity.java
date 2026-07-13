@@ -24,6 +24,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.ItemInputBlock)) continue;
 			if (count++ != index) continue;
 			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			getLevel().getChunkAt(ioPos);
 			var be = (DummyBlockEntities.ItemInput) getLevel().getBlockEntity(ioPos);
 			return ((FlowControlHandler<ItemResource>) be.wrapper).handler;
 		}
@@ -38,6 +39,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.ItemOutputBlock)) continue;
 			if (count++ != index) continue;
 			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			getLevel().getChunkAt(ioPos);
 			var be = (DummyBlockEntities.ItemOutput) getLevel().getBlockEntity(ioPos);
 			return ((FlowControlHandler<ItemResource>) be.wrapper).handler;
 		}
@@ -52,6 +54,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidInputBlock)) continue;
 			if (count++ != index) continue;
 			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			getLevel().getChunkAt(ioPos);
 			var be = (DummyBlockEntities.FluidInput) getLevel().getBlockEntity(ioPos);
 			return ((FlowControlHandler<FluidResource>) be.wrapper).handler;
 		}
@@ -66,6 +69,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidOutputBlock)) continue;
 			if (count++ != index) continue;
 			var ioPos = getBlockPos().offset(DummyBlock.transformOffset(facing, block.IO_OFFSETS.get(i).getX(), block.IO_OFFSETS.get(i).getY(), block.IO_OFFSETS.get(i).getZ()));
+			getLevel().getChunkAt(ioPos);
 			var be = (DummyBlockEntities.FluidOutput) getLevel().getBlockEntity(ioPos);
 			return ((FlowControlHandler<FluidResource>) be.wrapper).handler;
 		}

@@ -15,9 +15,8 @@ import org.creepebucket.programmable_magic.utils.ModUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
 
 public class MachineWidgets {
     public static class WindowHintWidget extends Widget implements Lifecycle, Tickable, KeyInputable {
@@ -407,14 +406,8 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), literal("关闭"), literal("开启"));
+            var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), literal("关闭"), literal("开启"), menu.enabled).onSwitch(enabled -> menu.powerSwitch.trigger(enabled));
             addChild(switchWidget.mainColor(-1));
-
-            menu.enabled.whenFirstDataArrivesDo(() -> {
-                switchWidget.pressed = menu.enabled.get();
-                switchWidget.rectDx.set(switchWidget.pressed ? (double) switchWidget.w() / 2 : 0);
-            });
-            switchWidget.onSwitch(pressed -> menu.powerSwitch.trigger(pressed));
         }
     }
 
@@ -430,8 +423,6 @@ public class MachineWidgets {
             this.basePower = basePower;
             this.baseControl = baseControl;
             this.maxFact = maxFact;
-
-            arrowWidget = addChild(new TextWidget(fromCenterTop(-7, 19), literal(">>>")).noShadow().mainColor(0x7fffffff));
         }
 
         @Override
@@ -448,22 +439,13 @@ public class MachineWidgets {
             addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
 
             powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(fromBottomLeft(7, -9), fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
-        }
 
-        @Override
-        public void onResize(int width, int height) {
-            if (width < 190) {
-                arrowWidget.disable();
-            } else {
-                arrowWidget.enable();
-            }
-
-            graduations.forEach(Widget::removeMyself);
+            // 添加刻度
             for (int i = 1; i < maxFact; i++) {
-                graduations.add(addChild(new TextWidget(fromBottomLeft(8 + (int) (i * (width - 16) / maxFact), -13), literal(String.valueOf(i))).scaled(0.5).noShadow().centerAlign().mainColor(0x7fffffff)));
+                graduations.add(addChild(new TextWidget(custom((double) i / (int) maxFact, (int) Math.floor(-14 * (double) i / (int) maxFact + 7), 1, -13), literal(String.valueOf(i))).scaled(0.5).noShadow().centerAlign().mainColor(0x7fffffff)));
             }
-            graduations.add(addChild(new TextWidget(fromBottomLeft(7, -13), literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
-            graduations.add(addChild(new TextWidget(fromBottomRight(-6, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
+            graduations.add(addChild(new TextWidget(custom(0, 7, 1, -13), literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
+            graduations.add(addChild(new TextWidget(custom(1, -6, 1, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
         }
     }
 

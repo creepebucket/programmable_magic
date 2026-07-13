@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
+import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SmoothedValue;
 import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
@@ -12,8 +13,7 @@ import org.creepebucket.programmable_magic.gui.lib.api.widgets.Renderable;
 
 import java.util.function.Consumer;
 
-
-import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.custom;
 
 public class SwitchWidget extends Widget implements Renderable, Clickable, Lifecycle {
     public Component text1, text2;
@@ -28,6 +28,16 @@ public class SwitchWidget extends Widget implements Renderable, Clickable, Lifec
         this.text2 = text2;
 
         smoothedValues.add(rectDx);
+    }
+
+    public SwitchWidget(Coordinate pos, Coordinate size, Component text1, Component text2, DynamicValue<Boolean> enabled) {
+        this(pos, size, text1, text2);
+
+        enabled.whenFirstDataArrivesDo(() -> {
+            pressed = enabled.get();
+            rectDx.set(pressed ? (double) w() / 2 : 0);
+        });
+        onSwitch = enabled::set;
     }
 
     public SwitchWidget setPressed(boolean pressed) {

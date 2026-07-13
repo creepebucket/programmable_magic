@@ -80,7 +80,9 @@ public class ModUtils {
         int exp = (int) Math.floor(Math.log10(value));
 
         try {
-            if (value < 10) {
+            if (Double.isInfinite(value)) {
+                return "∞" + " ".repeat(stringLength - 1);
+            } else if (value < 10) {
                 // 不可以log的情况
                 return String.format("%." + (stringLength - 3) + "f", value) + " ";
             } else if (value >= 1e27) {

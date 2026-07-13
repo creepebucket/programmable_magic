@@ -8,11 +8,12 @@ import org.creepebucket.programmable_magic.gui.lib.api.Widget;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Clickable;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.Lifecycle;
 import org.creepebucket.programmable_magic.gui.lib.api.widgets.MouseDraggable;
+import org.creepebucket.programmable_magic.gui.lib.api.widgets.Tickable;
 
 
 import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
 
-public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, MouseDraggable {
+public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, MouseDraggable, Tickable {
     public double min, max, step = 1, preciseValue;
     public DynamicValue<Double> value;
     public boolean focus;
@@ -31,7 +32,7 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
     @Override
     public void onInitialize() {
         filled = new SmoothedValue(value.get() * (w() - 2) / max);
-        preciseValue = value.get();
+        value.whenFirstDataArrivesDo(() -> preciseValue = value.get());
 
         addChild(new RectangleWidget(fromCenterRight(0, 0), fromTopRight(0, 1)).dw(filled.multiply(-1).minus(3)).rightAlign().mainColor(bgColor()));
         addChild(new RectangleWidget(fromCenterLeft(0, 0), fromTopLeft(0, 1)).dw(filled));
@@ -59,5 +60,10 @@ public class ThinSlideBarWidget extends Widget implements Lifecycle, Clickable, 
             filled.set(value.get() * (w() - 2) / max);
         }
         return false;
+    }
+
+    @Override
+    public void tick() {
+        filled.set(value.get() * (w() - 2) / max);
     }
 }

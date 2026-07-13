@@ -2,15 +2,14 @@ package org.creepebucket.programmable_magic.gui.machines.consumer.water_pump;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import org.creepebucket.programmable_magic.gui.lib.api.Coordinate;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineScreen;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineWidgets;
 import org.creepebucket.programmable_magic.utils.ModColors;
 
-
-import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.fromCenter;
+import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.fromTopLeft;
 
 public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 
@@ -31,7 +30,8 @@ public class WaterPumpScreen extends MachineScreen<WaterPumpMenu> {
 
 		addWidget(new MachineWidgets.MachineControlWindow(fromCenter(55, 20), fromTopLeft(70, 50), menu));
 
-		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(-90, -50), fromTopLeft(180, 100), menu).disable());
+		var w = addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(-90, -50), fromTopLeft(180, 100), menu));
+		w.enabled = false; // 不能.disable();
 
 		var info = new MachineWidgets.PowerInfoWindow(fromCenter(-90, -40), fromTopLeft(180, 80), literal("总流量 = Q₀×k"));
 		addWidget(info.disable());
