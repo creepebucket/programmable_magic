@@ -61,7 +61,7 @@ public class SpellItemModelProvider implements DataProvider {
             } catch (Exception ignored) {
             }
 
-            // 2) 生成 1.21.8 必需的 client item：items/spell_display_<name>.json
+            // 2) 生成必需的 client item：items/spell_display_<name>.json
             JsonObject clientItem = new JsonObject();
             JsonObject model = new JsonObject();
             model.addProperty("type", "minecraft:model");

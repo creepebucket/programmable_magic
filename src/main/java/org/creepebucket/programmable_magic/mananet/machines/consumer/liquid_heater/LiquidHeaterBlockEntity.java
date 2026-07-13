@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,16 +21,17 @@ import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.registries.ModRecipeTypes;
 import org.creepebucket.programmable_magic.utils.Mana;
 
 public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBlockEntity {
 
 	public double powerFact = 1d;
 	public boolean inputMode = true;
-	public double conversionCost = 12345d, inputSpeed = 30d, outputSpeed = 120d;
+	public double conversionCost, inputSpeed, outputSpeed;
 	public double fuelTotalValue, fuelCurrentValue;
 	public double pendingInput, pendingOutput;
-	public String inputId = "minecraft:water", outputId = "minecraft:lava", currentFuelId = "minecraft:air";
+	public String inputId = "", outputId = "", currentFuelId = "";
 
 	public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -82,29 +84,38 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		var networkData = entity.getNetworkData();
 		networkData.setCache(new Mana(2000d, 2000d, 2000d, 2000d));
 
-		if (!entity.enabled || entity.powerFact <= 0) return;
+		if (!entity.enabled) return;
 
 		// 获取流体输入输出端
 		var inputHandler = entity.getFluidInput(0);
 		var outputHandler = entity.getFluidOutput(0);
 
-		// 检查输入流体
+		// 查找匹配输入流体的配方
 		var inputResource = inputHandler.getResource(0);
-		var inputFluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.inputId));
-		if (!inputResource.equals(FluidResource.of(inputFluid))) return;
+		var inputId = BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
+		if (!(level instanceof ServerLevel serverLevel)) return;
+		var optional = serverLevel.recipeAccess().getRecipeFor(ModRecipeTypes.LIQUID_HEATER.get(), new LiquidHeaterRecipies.Input(inputId), level);
+		if (optional.isEmpty()) return;
+		var matchedRecipe = optional.get().value();
+		entity.conversionCost = matchedRecipe.conversionCost();
+		entity.inputId = matchedRecipe.inputFluid();
+		entity.outputId = matchedRecipe.outputFluid();
+		var convertRatio = matchedRecipe.convertRatio();
 
 		// 检查输出空间
-		var outputFluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.outputId));
+		var outputFluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(matchedRecipe.outputFluid()));
 		var outputResource = FluidResource.of(outputFluid);
 		try (var transaction = Transaction.openRoot()) {
 			if (inputHandler.extract(0, inputResource, 1, transaction) != 1) return;
-			if (outputHandler.insert(0, outputResource, (int) (entity.outputSpeed / entity.inputSpeed), transaction) != (int) (entity.outputSpeed / entity.inputSpeed)) return;
+			if (outputHandler.insert(0, outputResource, (int) convertRatio, transaction) != (int) convertRatio) return;
 		}
 
 		// 计算本刻可处理的最大流体量
 		var power = 3e6 * entity.powerFact;
 		var workFact = entity.powerFact / (1 + 0.015 * (entity.powerFact - 1) * entity.powerFact);
 		var load = new Mana(0d, power, 0d, 0d);
+		entity.inputSpeed = power / entity.conversionCost * 60;
+		entity.outputSpeed = entity.inputSpeed * convertRatio;
 
 		// 双端累积：输入和输出分别记录小数，整数部分才走传输
 		if (entity.inputMode) {

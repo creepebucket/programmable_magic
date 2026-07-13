@@ -52,7 +52,7 @@ public class BindWandItemPlaceholderRecipe extends CustomRecipe {
         return out;
     }
 
-    // 1.21.8 的 CustomRecipe 不再要求 canCraftInDimensions，保留按需实现即可
+    // CustomRecipe 不再要求 canCraftInDimensions，保留按需实现即可
 
     @Override
     public RecipeSerializer<? extends CustomRecipe> getSerializer() {

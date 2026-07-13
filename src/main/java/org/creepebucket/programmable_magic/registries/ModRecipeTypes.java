@@ -1,0 +1,23 @@
+package org.creepebucket.programmable_magic.registries;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeaterRecipies;
+
+import java.util.function.Supplier;
+
+import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
+
+public class ModRecipeTypes {
+	public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES =
+			DeferredRegister.create(Registries.RECIPE_TYPE, MODID);
+
+	public static final Supplier<RecipeType<LiquidHeaterRecipies>> LIQUID_HEATER =
+			RECIPE_TYPES.register("liquid_heater", RecipeType::simple);
+
+	public static void register(IEventBus bus) {
+		RECIPE_TYPES.register(bus);
+	}
+}

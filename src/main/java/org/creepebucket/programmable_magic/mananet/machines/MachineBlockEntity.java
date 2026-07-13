@@ -18,7 +18,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 
 	public ResourceHandler<ItemResource> getItemInput(int index) {
 		var block = (BasicMachine) getBlockState().getBlock();
-		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		var facing = getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
 		int count = 0;
 		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.ItemInputBlock)) continue;
@@ -48,7 +48,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 
 	public ResourceHandler<FluidResource> getFluidInput(int index) {
 		var block = (BasicMachine) getBlockState().getBlock();
-		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		var facing = getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
 		int count = 0;
 		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidInputBlock)) continue;
@@ -63,7 +63,7 @@ public class MachineBlockEntity extends NetNodeBlockEntity {
 
 	public ResourceHandler<FluidResource> getFluidOutput(int index) {
 		var block = (BasicMachine) getBlockState().getBlock();
-		var facing = getBlockState().hasProperty(BlockStateProperties.FACING) ? getBlockState().getValue(BlockStateProperties.FACING) : Direction.NORTH;
+		var facing = getBlockState().hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
 		int count = 0;
 		for (int i = 0; i < block.IO_OFFSETS.size(); i++) {
 			if (!(block.IO_TYPES.get(i).get() instanceof IoDummies.FluidOutputBlock)) continue;

@@ -21,14 +21,17 @@ public class Programmable_magic {
 
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
 
-        ModItems.register(modEventBus);
-        ModBlocks.register(modEventBus);
-        MananetNodeBlocks.register(modEventBus);
+		ModItems.register(modEventBus);
+		ModBlocks.register(modEventBus);
+		ModFluids.register(modEventBus);
+		MananetNodeBlocks.register(modEventBus);
         ModAttachments.register(modEventBus);
         ModCreativeTabs.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModDataComponents.register(modEventBus);
         ModRecipeSerializers.register(modEventBus);
+        ModRecipeTypes.register(modEventBus);
+        ModRecipeBookCategories.register(modEventBus);
 		ModMenuTypes.register(modEventBus);
 		SpellRegistry.registerSpells(modEventBus);
         WandPluginRegistry.registerPlugins(modEventBus);
@@ -45,10 +48,12 @@ public class Programmable_magic {
             modEventBus.addListener(ClientEventHandler::registerParticleProviders);
             modEventBus.addListener(ClientEventHandler::registerRenderPipelines);
             modEventBus.addListener(ClientEventHandler::registerSpecialModelRenderers);
+            modEventBus.addListener(ClientEventHandler::registerFluidModels);
         }
         modEventBus.register(ModNetworkPackets.class);
 
         // Datagen
-        modEventBus.addListener(ModDataGenerators::gatherData);
+        modEventBus.addListener(ModDataGenerators::gatherClientData);
+        modEventBus.addListener(ModDataGenerators::gatherServerData);
     }
 }

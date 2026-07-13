@@ -6,6 +6,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.resources.model.sprite.Material;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
@@ -20,6 +23,7 @@ import org.creepebucket.programmable_magic.mananet.machines.generator.solar_pane
 import org.creepebucket.programmable_magic.particles.client.FastDustParticle;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.registries.ModEntityTypes;
+import org.creepebucket.programmable_magic.registries.ModFluids;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 import org.creepebucket.programmable_magic.registries.ModParticleTypes;
 import org.creepebucket.programmable_magic.renderer.SpellEntityRenderer;
@@ -105,5 +109,15 @@ public class ClientEventHandler {
                 Identifier.fromNamespaceAndPath(MODID, "packed_spell"),
                 PackedSpellSpecialRenderer.Unbaked.MAP_CODEC
         );
+    }
+
+    @SubscribeEvent
+    public static void registerFluidModels(RegisterFluidModelsEvent event) {
+        event.register(new FluidModel.Unbaked(
+                new Material(Identifier.fromNamespaceAndPath(MODID, "block/steam_still")),
+                new Material(Identifier.fromNamespaceAndPath(MODID, "block/steam_flowing")),
+                null,
+                (FluidTintSource) state -> 0xFF_CCCCCC
+        ), ModFluids.STEAM_SOURCE, ModFluids.STEAM_FLOWING);
     }
 }
