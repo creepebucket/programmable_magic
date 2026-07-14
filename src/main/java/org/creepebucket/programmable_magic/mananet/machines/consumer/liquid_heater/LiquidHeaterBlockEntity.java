@@ -111,10 +111,10 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		}
 
 		// 计算本刻可处理的最大流体量
-		var power = 3e6 * entity.powerFact;
-		var workFact = entity.powerFact / (1 + 0.015 * (entity.powerFact - 1) * entity.powerFact);
+		var effectivePower = 4e6 * entity.powerFact;
+		var power = 4e6 * (Math.pow(entity.powerFact + 1, Math.log10(3) * Math.log10(10) / Math.log10(2)) - 1);
 		var load = new Mana(0d, power, 0d, 0d);
-		entity.inputSpeed = power / entity.conversionCost * 60;
+		entity.inputSpeed = effectivePower / entity.conversionCost * 60;
 		entity.outputSpeed = entity.inputSpeed * convertRatio;
 
 		// 双端累积：输入和输出分别记录小数，整数部分才走传输
@@ -148,12 +148,11 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 				entity.fuelCurrentValue = entity.fuelTotalValue;
 				entity.currentFuelId = BuiltInRegistries.ITEM.getKey(itemResource.getItem()).toString();
 			}
-			// 本刻能处理的流体量（带小数），消耗对应热值
-			workFact *= Math.min(1, entity.fuelCurrentValue / (power / 20));
 		}
+		// 本刻能处理的流体量（带小数），消耗对应热值
 		// 两端取较小值，不足1L就累积等下刻
-		var nextPendingInput = entity.pendingInput + entity.inputSpeed * workFact / 1200;
-		var nextPendingOutput = entity.pendingOutput + entity.outputSpeed * workFact / 1200;
+		var nextPendingInput = entity.pendingInput + entity.inputSpeed / 1200;
+		var nextPendingOutput = entity.pendingOutput + entity.outputSpeed / 1200;
 		var fluidToProcess = (int) Math.min(Math.floor(nextPendingInput), Math.floor(nextPendingOutput * entity.inputSpeed / entity.outputSpeed));
 		var fluidToProduce = (int) (fluidToProcess * entity.outputSpeed / entity.inputSpeed);
 
@@ -168,7 +167,7 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		entity.pendingInput = nextPendingInput - fluidToProcess;
 		entity.pendingOutput = nextPendingOutput - fluidToProduce;
 		if (entity.inputMode) networkData.setLoadW(load);
-		else entity.fuelCurrentValue -= power / 20 * workFact / (entity.powerFact / (1 + 0.015 * (entity.powerFact - 1) * entity.powerFact));
+		else entity.fuelCurrentValue -= power / 20;
 		entity.setChanged();
 	}
 }

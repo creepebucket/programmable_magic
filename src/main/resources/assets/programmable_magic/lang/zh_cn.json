@@ -186,6 +186,7 @@
   "spell.programmable_magic.subcategory.visual": "视觉特效",
   "tooltip.programmable_magic.covered_rg_alloy_wire": "已绝缘.",
   "tooltip.programmable_magic.debris_clay": "具有高超的魔力绝缘性能, 可用于初级魔法部件制作.",
+  "tooltip.programmable_magic.heat_value": "§e热值: %sJ",
   "tooltip.programmable_magic.hold_lalt": "按住 LALT 查看详情",
   "tooltip.programmable_magic.packed_spell.auther": "作者: ",
   "tooltip.programmable_magic.packed_spell.comtains_spell_count": "包含法术数量: ",
@@ -473,5 +474,6 @@
   "gui.programmable_magic.network_info.id": "ID",
   "gui.programmable_magic.network_info.storage": "存储",
   "gui.programmable_magic.network_info.cache": "缓存",
-  "gui.programmable_magic.network_info.power": "功率"
+  "gui.programmable_magic.network_info.power": "功率",
+  "fluid_type.programmable_magic.steam": "蒸汽"
 }

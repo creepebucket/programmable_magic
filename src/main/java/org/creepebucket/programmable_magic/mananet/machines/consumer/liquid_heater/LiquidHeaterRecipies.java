@@ -27,8 +27,7 @@ import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, String outputFluid, double conversionCost, double convertRatio) implements Recipe<LiquidHeaterRecipies.Input> {
 
 	public static void buildRecipes(RecipeOutput output) {
-		addRecipe(output, "water_to_lava", "minecraft:water", "minecraft:lava", 12345d, 4d);
-		addRecipe(output, "water_to_steam", "minecraft:water", "programmable_magic:steam", 8000d, 10d);
+		addRecipe(output, "water_to_steam", "minecraft:water", "programmable_magic:steam", 4e6, 30d);
 	}
 
 	@Override

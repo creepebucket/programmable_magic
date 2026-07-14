@@ -194,6 +194,7 @@
   "spell.programmable_magic.subcategory.visual": "Visual Effect",
   "tooltip.programmable_magic.covered_rg_alloy_wire": "Insulated.",
   "tooltip.programmable_magic.debris_clay": "Excellent mana insulation; for basic magic parts.",
+  "tooltip.programmable_magic.heat_value": "§eHeat value: %sJ",
   "tooltip.programmable_magic.hold_lalt": "Hold LALT for details",
   "tooltip.programmable_magic.packed_spell.auther": "Author: ",
   "tooltip.programmable_magic.packed_spell.comtains_spell_count": "Spell count: ",
@@ -473,5 +474,6 @@
   "gui.programmable_magic.network_info.id": "ID",
   "gui.programmable_magic.network_info.storage": "Storage",
   "gui.programmable_magic.network_info.cache": "Cache",
-  "gui.programmable_magic.network_info.power": "Power"
+  "gui.programmable_magic.network_info.power": "Power",
+  "fluid_type.programmable_magic.steam": "Steam"
 }
