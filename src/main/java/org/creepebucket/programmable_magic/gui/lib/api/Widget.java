@@ -250,6 +250,11 @@ public abstract class Widget {
             return textColor(new Color(color));
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends Widget> T applyTheme(ThemeTemplate<T> template) {
+        return template.function.apply((T) this);
+    }
+
     public Widget color(Color color) {
         return mainColor(color).textColor(color);
     }
