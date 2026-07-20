@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
+import org.creepebucket.programmable_magic.ModConfig;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.utils.ModUtils;
@@ -31,7 +32,7 @@ public class ItemTooltipHandler {
             int burnTime = event.getItemStack().getBurnTime(RecipeType.SMELTING, level.fuelValues());
             if (burnTime > 0)
                 event.getToolTip().add(Component.translatable("tooltip.programmable_magic.heat_value",
-                    ModUtils.formattedNumber(burnTime * 1e8 / 1600)));
+                    ModUtils.formattedNumber(burnTime * ModConfig.CONFIG.fuelValueMultiplier.get())));
         }
 
         if (event.getItemStack().getItem() instanceof ModItemExtensions ext) {

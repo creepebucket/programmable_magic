@@ -109,7 +109,7 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 
 		fuelWindow.addChild(new RectangleWidget(fromBottomLeft(7, -35), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
 		fuelWindow.addChild(new TextWidget(fromBottomLeft(7, -45), literal("燃烧时间")).noShadow().mainColor(0x7fffffff));
-		fuelWindow.addChild(new NumberDisplayWidget(fromBottomLeft(7, -35),DynamicValue.fromSupplier(() -> menu.fuelCurrentValue.get() / (4e6 * (Math.pow(menu.powerFact.get() + 1, Math.log10(3) * Math.log10(10) / Math.log10(2)) - 1))), 5, 1.5, true).mainColor(-1));
+		fuelWindow.addChild(new NumberDisplayWidget(fromBottomLeft(7, -35),DynamicValue.fromSupplier(() -> menu.fuelCurrentValue.get() / (4e6 * 5 * (Math.pow(menu.powerFact.get() + 0.5, 2) - 0.25))), 5, 1.5, true).mainColor(-1));
 		fuelWindow.addChild(new TextWidget(fromBottomLeft(53, -28), literal("s")).noShadow().mainColor(ModColors.MAIN_COLOR_T.withAlpha(0xbf)));
 
 		fuelWindow.addChild(new RectangleWidget(fromCenterBottom(0, -35), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
@@ -129,7 +129,7 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 		overclockWindow.addChild(new NumberDisplayWidget(fromTopLeft(44, 16), menu.powerFact, 4, 1.5, true).mainColor(-1));
 
 		overclockWindow.addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
-		overclockWindow.addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> 4e6 * (Math.pow(menu.powerFact.get() + 1, Math.log10(3) * Math.log10(10) / Math.log10(2)) - 1)), 6, 1, true).rightAlign().mainColor(-1));
+		overclockWindow.addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> 4e6 * 5 * (Math.pow(menu.powerFact.get() + 0.5, 2) - 0.25)), 6, 1, true).rightAlign().mainColor(-1));
 
 		overclockWindow.addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)).rightAlign());
 		overclockWindow.addChild(new TextWidget(fromTopRight(-7, 24), literal("有效功率 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));

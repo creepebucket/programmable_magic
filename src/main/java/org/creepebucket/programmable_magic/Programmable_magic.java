@@ -8,7 +8,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.creepebucket.programmable_magic.client.ClientEventHandler;
+
 import org.creepebucket.programmable_magic.data.ModDataGenerators;
 import org.creepebucket.programmable_magic.events.CapabilityHandler;
 import org.creepebucket.programmable_magic.registries.*;
@@ -20,6 +23,7 @@ public class Programmable_magic {
 
 
     public Programmable_magic(IEventBus modEventBus, ModContainer modContainer) {
+		modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfig.CONFIG_SPEC);
 
 		ModItems.register(modEventBus);
 		ModBlocks.register(modEventBus);
@@ -41,6 +45,7 @@ public class Programmable_magic {
         modEventBus.addListener(CapabilityHandler::registerCapabilities);
 
         if (FMLEnvironment.getDist() == Dist.CLIENT) {
+			modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
             WandPluginRegistry.Client.registerClientPlugins();
             modEventBus.addListener(ClientEventHandler::registerScreen);

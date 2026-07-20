@@ -17,6 +17,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.creepebucket.programmable_magic.ModConfig;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
@@ -86,13 +87,15 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 
 		if (!entity.enabled) return;
 
-		// 获取流体输入输出端
-		var inputHandler = entity.getFluidInput(0);
-		var outputHandler = entity.getFluidOutput(0);
+		// 获取输入输出端
+		var fluidInput = entity.getFluidInput(0);
+		var fluidOutput = entity.getFluidOutput(0);
+		var itemInput = entity.getItemInput(0);
 
 		// 查找匹配输入流体的配方
-		var inputResource = inputHandler.getResource(0);
-		var inputId = BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
+		// 屎
+		var inputResource = fluidInput.getResource(0);
+		var inputId = entity.pendingInput > 0 ? Identifier.parse(entity.inputId) : BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		var optional = serverLevel.recipeAccess().getRecipeFor(ModRecipeTypes.LIQUID_HEATER.get(), new LiquidHeaterRecipies.Input(inputId), level);
 		if (optional.isEmpty()) return;
@@ -101,73 +104,102 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		entity.inputId = matchedRecipe.inputFluid();
 		entity.outputId = matchedRecipe.outputFluid();
 		var convertRatio = matchedRecipe.convertRatio();
+		var outputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.outputId)));
+		double energyCost = entity.conversionCost * 5 * (entity.powerFact + 1);
 
-		// 检查输出空间
-		var outputFluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(matchedRecipe.outputFluid()));
-		var outputResource = FluidResource.of(outputFluid);
-		try (var transaction = Transaction.openRoot()) {
-			if (inputHandler.extract(0, inputResource, 1, transaction) != 1) return;
-			if (outputHandler.insert(0, outputResource, (int) convertRatio, transaction) != (int) convertRatio) return;
-		}
+		// 从输入/输出侧获取本刻最高可处理数量
+		double maximumProcessCapacityFromInput = fluidInput.getAmountAsInt(0) + entity.pendingInput;
+		double maximumProcessCapacityFromOutput = Math.nextDown((fluidOutput.getCapacityAsInt(0, outputResource) - fluidOutput.getAmountAsInt(0) + (1 - entity.pendingOutput)) / convertRatio);
 
-		// 计算本刻可处理的最大流体量
-		var effectivePower = 4e6 * entity.powerFact;
-		var power = 4e6 * (Math.pow(entity.powerFact + 1, Math.log10(3) * Math.log10(10) / Math.log10(2)) - 1);
-		var load = new Mana(0d, power, 0d, 0d);
-		entity.inputSpeed = effectivePower / entity.conversionCost * 60;
-		entity.outputSpeed = entity.inputSpeed * convertRatio;
+		// 从机器功率侧获取本刻最高可处理数量
+		double maximumProcessCapacityFromMachine = entity.powerFact * 4e6 / 20 / entity.conversionCost;
+		// 从能源侧获取本刻最高可处理数量
+		double maximumProcessCapacityFromEnergy = entity.fuelCurrentValue / energyCost;
 
-		// 双端累积：输入和输出分别记录小数，整数部分才走传输
+		// 计划消耗的燃料
+		int[] fuelAmounts = new int[itemInput.size()];
+		// 计划消耗的燃料热值
+		double addedFuelValue = 0;
+		// 当前燃料
+		String currentFuelId = entity.currentFuelId;
+
+		// 计算当前处理量
+		double maximumProcessCapacity = Math.min(maximumProcessCapacityFromMachine, Math.min(maximumProcessCapacityFromInput, maximumProcessCapacityFromOutput));
+
 		if (entity.inputMode) {
 			// 魔力模式
-			if (!networkData.canProduce(load)) return;
+			maximumProcessCapacityFromEnergy = networkData.getNext().getTemperature() / energyCost;
 		} else {
-			// 燃料模式：热值不够就从物品输入端取新燃料
-			if (entity.fuelCurrentValue <= 0) {
-				var itemInput = entity.getItemInput(0);
-				int fuelSlot = -1;
-				int burnTime = 0;
-				for (int i = 0; i < itemInput.size(); i++) {
-					var itemResource = itemInput.getResource(i);
-					if (itemResource.isEmpty()) continue;
-					burnTime = itemResource.toStack().getBurnTime(RecipeType.SMELTING, level.fuelValues());
-					if (burnTime <= 0) continue;
-					fuelSlot = i;
-					break;
-				}
-				if (fuelSlot < 0) return;
-				var itemResource = itemInput.getResource(fuelSlot);
-				var fuelStack = itemResource.toStack();
-				try (var transaction = Transaction.openRoot()) {
-					if (itemInput.extract(fuelSlot, itemResource, 1, transaction) != 1) return;
-					var remainder = fuelStack.getCraftingRemainder();
-					if (remainder != null && itemInput.insert(ItemResource.of(remainder), 1, transaction) != 1) return;
-					transaction.commit();
-				}
-				entity.fuelTotalValue = burnTime * 1e8 / 1600;
-				entity.fuelCurrentValue = entity.fuelTotalValue;
-				entity.currentFuelId = BuiltInRegistries.ITEM.getKey(itemResource.getItem()).toString();
-			}
-		}
-		// 本刻能处理的流体量（带小数），消耗对应热值
-		// 两端取较小值，不足1L就累积等下刻
-		var nextPendingInput = entity.pendingInput + entity.inputSpeed / 1200;
-		var nextPendingOutput = entity.pendingOutput + entity.outputSpeed / 1200;
-		var fluidToProcess = (int) Math.min(Math.floor(nextPendingInput), Math.floor(nextPendingOutput * entity.inputSpeed / entity.outputSpeed));
-		var fluidToProduce = (int) (fluidToProcess * entity.outputSpeed / entity.inputSpeed);
+			// 燃料模式
+			for (int i = 0; i < itemInput.size(); i++) {
+				// 获取燃烧时间
+				var fuel = itemInput.getResource(i);
+				// 能烧吗
+				if (fuel.isEmpty() || fuel.toStack().getBurnTime(RecipeType.SMELTING, level.fuelValues()) <= 0) continue;
+				// 如果处理能力已经达到了 就跳过燃料计算
+				if (maximumProcessCapacityFromEnergy >= maximumProcessCapacity) break;
 
-		// handler传输只支持整数，耗掉整数部分，余数已留在pending里
-		if (fluidToProcess > 0) {
-			try (var transaction = Transaction.openRoot()) {
-				if (outputHandler.insert(0, outputResource, fluidToProduce, transaction) != fluidToProduce) return;
-				if (inputHandler.extract(0, inputResource, fluidToProcess, transaction) != fluidToProcess) return;
-				transaction.commit();
+				double fuelValue = fuel.toStack().getBurnTime(RecipeType.SMELTING, level.fuelValues()) * ModConfig.CONFIG.fuelValueMultiplier.get();
+
+				// 预取燃料
+				fuelAmounts[i] = Math.min(itemInput.getAmountAsInt(i), (int) Math.ceil((maximumProcessCapacity * energyCost - entity.fuelCurrentValue - addedFuelValue) / fuelValue));
+				addedFuelValue += fuelAmounts[i] * fuelValue;
+
+				// 更新最大处理量
+				maximumProcessCapacityFromEnergy = (entity.fuelCurrentValue + addedFuelValue) / energyCost;
+				// 更新当前燃料
+				currentFuelId = BuiltInRegistries.ITEM.getKey(fuel.getItem()).toString();
 			}
 		}
-		entity.pendingInput = nextPendingInput - fluidToProcess;
-		entity.pendingOutput = nextPendingOutput - fluidToProduce;
-		if (entity.inputMode) networkData.setLoadW(load);
-		else entity.fuelCurrentValue -= power / 20;
+
+		// 计算最高的本刻处理量
+		maximumProcessCapacity = Math.min(maximumProcessCapacityFromEnergy, maximumProcessCapacity);
+
+		// 根据本刻处理量计算每分钟处理量
+		entity.inputSpeed = maximumProcessCapacity * 1200;
+		entity.outputSpeed = entity.inputSpeed * convertRatio;
+
+		// 执行前检测
+		if (maximumProcessCapacity <= 0) return;
+
+		// 执行逻辑
+		// 计算待输入/输出的流体 (并舍入)
+		int fluidToProcess = Math.max(0, (int) Math.ceil(maximumProcessCapacity - entity.pendingInput));
+		int fluidToProduce = (int) Math.floor(entity.pendingOutput + maximumProcessCapacity * convertRatio);
+
+		// 预期功率计算
+		double energyConsumption = maximumProcessCapacity * energyCost;
+
+		// 实际消耗燃料
+		try (var transaction = Transaction.openRoot()) {
+			for (int i = 0; i < fuelAmounts.length; i++) {
+				if (fuelAmounts[i] <= 0) continue;
+				var fuel = itemInput.getResource(i);
+
+				// 根据先前计算取出燃料
+				if (itemInput.extract(i, fuel, fuelAmounts[i], transaction) != fuelAmounts[i]) return;
+				// 获取可能的燃烧后剩余物品(如空桶)
+				var remainder = fuel.toStack().getCraftingRemainder();
+				if (remainder != null && itemInput.insert(ItemResource.of(remainder), fuelAmounts[i] * remainder.count(), transaction) != fuelAmounts[i] * remainder.count()) return;
+			}
+
+			if (fluidOutput.insert(0, outputResource, fluidToProduce, transaction) != fluidToProduce) return;
+			if (fluidToProcess > 0 && fluidInput.extract(0, inputResource, fluidToProcess, transaction) != fluidToProcess) return;
+			transaction.commit();
+		}
+
+		// 根据实际存取的流体计算剩余流体
+		entity.pendingInput += fluidToProcess - maximumProcessCapacity;
+		entity.pendingOutput += maximumProcessCapacity * convertRatio - fluidToProduce;
+
+		// 如果是魔力模式 就扣魔力
+		if (entity.inputMode) networkData.setLoadW(new Mana(0d, energyConsumption * 20, 0d, 0d));
+		else {
+			// 如果是燃料模式 计算燃料信息
+			entity.fuelTotalValue = addedFuelValue > 0 ? addedFuelValue : entity.fuelTotalValue;
+			entity.fuelCurrentValue += addedFuelValue - energyConsumption;
+			entity.currentFuelId = currentFuelId;
+		}
 		entity.setChanged();
 	}
 }
