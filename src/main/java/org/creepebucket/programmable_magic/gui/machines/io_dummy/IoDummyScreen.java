@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.programmable_magic.gui.lib.api.ThemeTemplate.*;
 
 public class IoDummyScreen extends MachineScreen<IoDummyMenu> {
 	public MachineWidgets.InformationWindowWidget contentWindow;
@@ -51,7 +52,7 @@ public class IoDummyScreen extends MachineScreen<IoDummyMenu> {
 
 			upper.addChild(new MachineWidgets.FluidInfoWidget(fromTopLeft(7, 15), menu.fluidId));
 
-			upper.addChild(new TextWidget(fromCenterTop(4, 15), literal("流体存取")).noShadow().mainColor(0xff7f7f7f));
+			upper.addChild(new TextWidget(fromCenterTop(4, 15), literal("流体存取")).applyTheme(LABEL_TEXT));
 			upper.addChild(new SlotWidget(menu.slots.get(52), fromCenterTop(4, 27)));
 			upper.addChild(new SlotWidget(menu.slots.get(53), fromCenterTop(40, 27)));
 			upper.addChild(new OutlineWidget(fromCenterTop(4, 27), fromTopLeft(16, 16)).mainColor(0x0fffffff));
@@ -64,11 +65,11 @@ public class IoDummyScreen extends MachineScreen<IoDummyMenu> {
 			var doubleCapacity = DynamicValue.fromSupplier(() -> Double.valueOf(menu.fluidCapacity.get()));
 			var bottom = contentWindow.addChild(new Widget.BlankWidget(fromTopLeft(0, -5), fromBottomRight(0, 0)));
 
-			bottom.addChild(new TextWidget(fromBottomLeft(7, -20), literal("流体存储")).noShadow().mainColor(0xff7f7f7f).bottomAlignY());
+			bottom.addChild(new TextWidget(fromBottomLeft(7, -20), literal("流体存储")).applyTheme(LABEL_TEXT).bottomAlignY());
 			bottom.addChild(new NumberDisplayWidget(fromCenterBottom(-11, -21), doubleAmount, 6, 1, true).rightAlign().bottomAlignY());
 			bottom.addChild(new TextWidget(fromCenterBottom(-4, -20), literal("L")).noShadow().rightAlign().bottomAlignY());
 
-			bottom.addChild(new TextWidget(fromCenterBottom(4, -20), literal("最大缓存")).noShadow().mainColor(0xff7f7f7f).bottomAlignY());
+			bottom.addChild(new TextWidget(fromCenterBottom(4, -20), literal("最大缓存")).applyTheme(LABEL_TEXT).bottomAlignY());
 			bottom.addChild(new NumberDisplayWidget(fromBottomRight(-14, -21), doubleCapacity, 6, 1, true).rightAlign().bottomAlignY());
 			bottom.addChild(new TextWidget(fromBottomRight(-7, -20), literal("L")).noShadow().rightAlign().bottomAlignY());
 

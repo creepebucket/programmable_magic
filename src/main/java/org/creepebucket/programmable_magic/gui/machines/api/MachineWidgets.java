@@ -12,6 +12,8 @@ import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.utils.ModColors;
 import org.creepebucket.programmable_magic.utils.ModUtils;
 
+import static org.creepebucket.programmable_magic.gui.lib.api.ThemeTemplate.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,13 +115,13 @@ public class MachineWidgets {
             dw.a = 250;
             dh.a = 250;
 
-            addChild(new RectangleWidget(fromTopLeft(0, 0), fromTopRight(0, 11)).mainColor(0xbf000000));
-            titleWidget = (TextWidget) addChild(new TextWidget(fromTopLeft(16, 2), name).noShadow().mainColor(0xff7f7f7f));
+            addChild(new RectangleWidget(fromTopLeft(0, 0), fromTopRight(0, 11)).applyTheme(TITLE_BAR_BG));
+            titleWidget = (TextWidget) addChild(new TextWidget(fromTopLeft(16, 2), name).applyTheme(LABEL_TEXT));
             addChild(new RectangleWidget(fromTopLeft(3, 5), fromTopLeft(10, 1)).mainColor(0x7f7f7f7f));
             addChild(new RectangleWidget(fromTopLeft(titleWidget.w() + 18, 5), fromTopRight(-titleWidget.w() - 22, 1)).mainColor(0x7f7f7f7f));
             closeButton = addChild(new RectangleWidget(fromTopRight(-7, 4), fromTopLeft(3, 3)));
 
-            addChild(new RectangleWidget(fromTopLeft(0, 11), fromBottomRight(0, -11)).mainColor(0x7f000000));
+            addChild(new RectangleWidget(fromTopLeft(0, 11), fromBottomRight(0, -11)).applyTheme(DARK_BG));
 
             addAnimation(new Animation.FadeIn.FromTop(0.3), (double) ModUtils.simpleRandInt(0, 2) / 20);
             onResize(w(), h());
@@ -214,8 +216,8 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 15), literal("窗口名称")).noShadow().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(fromTopRight(-16, 15), literal("开关")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopLeft(7, 15), literal("窗口名称")).applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopRight(-16, 15), literal("开关")).rightAlign().applyTheme(BRIGHT_LABEL));
 
             addChild(new RectangleWidget(fromTopLeft(7, 26), fromTopRight(-14, 1)).mainColor(mainColor().toArgbWithAlphaMult(0.5)));
 
@@ -225,7 +227,7 @@ public class MachineWidgets {
             var y = 0;
 
             for (InformationWindowWidget window: ((MachineScreen<?>) screen).windows) {
-                cull.addChild(new TextWidget(fromTopLeft(0, 3 + y), window.name).noShadow().mainColor(-1).dy(itemDy));
+                cull.addChild(new TextWidget(fromTopLeft(0, 3 + y), window.name).applyTheme(GENERAL_TEXT).dy(itemDy));
                 switches.add((SwitchWidget) cull.addChild(new SwitchWidget(fromTopRight(-4, 1 + y), fromTopLeft(60, 11), literal("关闭"),
                         literal("开启")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
                 y += 15;
@@ -258,9 +260,9 @@ public class MachineWidgets {
         @Override
         public void onInitialize() {
             addChild(new RectangleWidget(fromTopLeft(0, 0), fromTopLeft(1, 19)).mainColor(0xff7f7f7f));
-            var a = addChild(new TextWidget(fromTopLeft(3, 9), name).noShadow().mainColor(0xffbfbfbf).bottomAlignY());
+            var a = addChild(new TextWidget(fromTopLeft(3, 9), name).applyTheme(BRIGHT_LABEL).bottomAlignY());
             addChild(new NumberDisplayWidget(fromTopLeft(3, 10), value, 6, 1, true));
-            var b = addChild(new TextWidget(fromTopLeft(41, 11), unit).noShadow().mainColor(-1));
+            var b = addChild(new TextWidget(fromTopLeft(41, 11), unit).applyTheme(GENERAL_TEXT));
             
             originalSize.x = (w, h) -> Math.max(a.w(), 41 + b.w());
             originalSize.y = (w, h) -> 18;
@@ -293,8 +295,8 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new RectangleWidget(fromBottomLeft(7, -7), fromTopRight(-14, 18)).mainColor(0x7f000000).bottomAlignY());
-            addChild(new TextWidget(fromCenterBottom(0, -11), powerExpr).noShadow().centerAlign().bottomAlignY().mainColor(0xffbfbfbf));
+            addChild(new RectangleWidget(fromBottomLeft(7, -7), fromTopRight(-14, 18)).applyTheme(DARK_BG).bottomAlignY());
+            addChild(new TextWidget(fromCenterBottom(0, -11), powerExpr).centerAlign().bottomAlignY().applyTheme(BRIGHT_LABEL));
         }
     }
 
@@ -318,9 +320,9 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 39), literal("机器类型")).noShadow().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromTopLeft(7, 39), literal("机器类型")).bottomAlignY().applyTheme(LABEL_TEXT));
             addChild(new TextWidget(fromTopLeft(7, 15), machineType).scaled(1.5));
-            addChild(new TextWidget(fromTopRight(-7, 39), literal("魔力类型")).noShadow().rightAlign().bottomAlignY().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromTopRight(-7, 39), literal("魔力类型")).rightAlign().bottomAlignY().applyTheme(LABEL_TEXT));
             addChild(new TextWidget(fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
             addChild(new TextWidget(fromCenterBottom(0, -33), mainText1).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
             addChild(new TextWidget(fromCenterBottom(-72, -5), mainText2).noShadow().scaled(2).rightAlign().bottomAlignY().mainColor(0xffffffff));
@@ -343,9 +345,9 @@ public class MachineWidgets {
             super.onInitialize();
 
             addChild(new RectangleWidget(fromTopLeft(7, 14), fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
-            addChild(new TextWidget(fromTopLeft(11, 15), literal("当前魔力")).noShadow().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).noShadow().rightAlign().mainColor(0xffbfbfbf));
-            addChild(new TextWidget(fromTopRight(-7, 15), literal("净功率")).noShadow().rightAlign().mainColor(0xffbfbfbf));
+            addChild(new TextWidget(fromTopLeft(11, 15), literal("当前魔力")).applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).rightAlign().applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopRight(-7, 15), literal("净功率")).rightAlign().applyTheme(BRIGHT_LABEL));
 
             addChild(new RectangleWidget(custom(0, 7, 0   , 29), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
             addChild(new RectangleWidget(custom(0, 7, 0.25, 21), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_T));
@@ -357,20 +359,20 @@ public class MachineWidgets {
             addChild(new NumberDisplayWidget(custom(0, 11, 0.5 , 13), menu.momentumStorageJ   , 7, 1, true).mainColor(-1));
             addChild(new NumberDisplayWidget(custom(0, 11, 0.75, 5 ), menu.pressureStorageJ   , 7, 1, true).mainColor(-1));
 
-            addChild(new TextWidget(custom(0, 54, 0   , 30), literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(custom(0, 54, 0.25, 22), literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(custom(0, 54, 0.5 , 14), literal("J")).noShadow().mainColor(-1));
-            addChild(new TextWidget(custom(0, 54, 0.75, 6 ), literal("J")).noShadow().mainColor(-1));
+            addChild(new TextWidget(custom(0, 54, 0   , 30), literal("J")).applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(0, 54, 0.25, 22), literal("J")).applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(0, 54, 0.5 , 14), literal("J")).applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(0, 54, 0.75, 6 ), literal("J")).applyTheme(GENERAL_TEXT));
 
             addChild(new NumberDisplayWidget(custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1));
             addChild(new NumberDisplayWidget(custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1));
             addChild(new NumberDisplayWidget(custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
             addChild(new NumberDisplayWidget(custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
 
-            addChild(new TextWidget(custom(1, -67, 0   , 30), literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(custom(1, -67, 0.25, 22), literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(custom(1, -67, 0.5 , 14), literal("J")).noShadow().rightAlign().mainColor(-1));
-            addChild(new TextWidget(custom(1, -67, 0.75, 6 ), literal("J")).noShadow().rightAlign().mainColor(-1));
+            addChild(new TextWidget(custom(1, -67, 0   , 30), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(1, -67, 0.25, 22), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(1, -67, 0.5 , 14), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(custom(1, -67, 0.75, 6 ), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
 
             addChild(new RectangleWidget(custom(1, -7, 0   , 29), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
             addChild(new RectangleWidget(custom(1, -7, 0.25, 21), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_T));
@@ -429,23 +431,23 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).noShadow().mainColor(-1));
+            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
             addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true));
 
-            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
+            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign());
 
-            addChild(new TextWidget(fromTopRight(-7, 24), literal("控制成本 / W")).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff));
+            addChild(new TextWidget(fromTopRight(-7, 24), literal("控制成本 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
 
             powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(fromBottomLeft(7, -9), fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
 
             // 添加刻度
             for (int i = 1; i < maxFact; i++) {
-                graduations.add(addChild(new TextWidget(custom((double) i / (int) maxFact, (int) Math.floor(-14 * (double) i / (int) maxFact + 7), 1, -13), literal(String.valueOf(i))).scaled(0.5).noShadow().centerAlign().mainColor(0x7fffffff)));
+                graduations.add(addChild(new TextWidget(custom((double) i / (int) maxFact, (int) Math.floor(-14 * (double) i / (int) maxFact + 7), 1, -13), literal(String.valueOf(i))).scaled(0.5).centerAlign().applyTheme(DIM_TEXT)));
             }
-            graduations.add(addChild(new TextWidget(custom(0, 7, 1, -13), literal("0")).scaled(0.5).noShadow().mainColor(0x7fffffff)));
-            graduations.add(addChild(new TextWidget(custom(1, -6, 1, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).noShadow().rightAlign().mainColor(0x7fffffff)));
+            graduations.add(addChild(new TextWidget(custom(0, 7, 1, -13), literal("0")).scaled(0.5).applyTheme(DIM_TEXT)));
+            graduations.add(addChild(new TextWidget(custom(1, -6, 1, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).rightAlign().applyTheme(DIM_TEXT)));
         }
     }
 
@@ -462,11 +464,11 @@ public class MachineWidgets {
 
         @Override
         public void onInitialize() {
-            addChild(new TextWidget(fromTopLeft(0, 0), literal("流体类型")).noShadow().mainColor(0xff7f7f7f));
+            addChild(new TextWidget(fromTopLeft(0, 0), literal("流体类型")).applyTheme(LABEL_TEXT));
             fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(fromTopLeft(0, 12), fromTopLeft(10, 10), fluidId.get()));
             fluidNameText = (TextWidget) addChild(new TextWidget(fromTopLeft(13, 13), fluidId.get().isEmpty() ? literal("") :
                     Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow());
-            fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f));
+            fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).applyTheme(LABEL_TEXT));
 
             fluidId.whenDataChangedDo(() -> {
                 fluidTexture.addAnimation(new Animation.FadeOut.ToRight(0.3), 0);
@@ -476,7 +478,7 @@ public class MachineWidgets {
                 fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(fromTopLeft(0, 12), fromTopLeft(10, 10), fluidId.get()).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0));
                 fluidNameText = (TextWidget) addChild(new TextWidget(fromTopLeft(13, 13), fluidId.get().isEmpty() ? literal("") :
                         Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow().addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.05));
-                fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).noShadow().mainColor(0xff7f7f7f).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
+                fluidIdText = (TextWidget) addChild(new TextWidget(fromTopLeft(0, 25), literal(fluidId.get())).scaled(0.5).applyTheme(LABEL_TEXT).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
             });
         }
     }
