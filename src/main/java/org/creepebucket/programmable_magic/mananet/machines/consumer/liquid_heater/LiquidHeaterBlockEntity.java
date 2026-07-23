@@ -31,7 +31,7 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 	public boolean inputMode = true;
 	public double conversionCost, inputSpeed, outputSpeed;
 	public double fuelTotalValue, fuelCurrentValue;
-	public double pendingInput, pendingOutput;
+	public double recipeProgress;
 	public String inputId = "", outputId = "", currentFuelId = "";
 
 	public final AnimatableInstanceCache geoCache = GeckoLibUtil.createInstanceCache(this);
@@ -47,8 +47,8 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		inputMode = input.getBooleanOr("input_mode", true);
 		fuelTotalValue = input.getDoubleOr("fuel_total_value", 0d);
 		fuelCurrentValue = input.getDoubleOr("fuel_current_value", 0d);
-		pendingInput = input.getDoubleOr("pending_input", 0d);
-		pendingOutput = input.getDoubleOr("pending_output", 0d);
+		recipeProgress = input.getDoubleOr("recipe_progress", 0d);
+		inputId = input.getStringOr("input_id", "minecraft:air");
 		currentFuelId = input.getStringOr("current_fuel_id", "minecraft:air");
 	}
 
@@ -59,8 +59,8 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		output.putBoolean("input_mode", inputMode);
 		output.putDouble("fuel_total_value", fuelTotalValue);
 		output.putDouble("fuel_current_value", fuelCurrentValue);
-		output.putDouble("pending_input", pendingInput);
-		output.putDouble("pending_output", pendingOutput);
+		output.putDouble("recipe_progress", recipeProgress);
+		output.putString("input_id", inputId);
 		output.putString("current_fuel_id", currentFuelId);
 	}
 
@@ -95,7 +95,7 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		// 查找匹配输入流体的配方
 		// 屎
 		var inputResource = fluidInput.getResource(0);
-		var inputId = entity.pendingInput > 0 ? Identifier.parse(entity.inputId) : BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
+		var inputId = entity.recipeProgress > 0 ? Identifier.parse(entity.inputId) : BuiltInRegistries.FLUID.getKey(inputResource.getFluid());
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		var optional = serverLevel.recipeAccess().getRecipeFor(ModRecipeTypes.LIQUID_HEATER.get(), new LiquidHeaterRecipies.Input(inputId), level);
 		if (optional.isEmpty()) return;
@@ -104,12 +104,13 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		entity.inputId = matchedRecipe.inputFluid();
 		entity.outputId = matchedRecipe.outputFluid();
 		var convertRatio = matchedRecipe.convertRatio();
+		inputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.inputId)));
 		var outputResource = FluidResource.of(BuiltInRegistries.FLUID.getValue(Identifier.parse(entity.outputId)));
 		double energyCost = entity.conversionCost * 5 * (entity.powerFact + 1);
 
 		// 从输入/输出侧获取本刻最高可处理数量
-		double maximumProcessCapacityFromInput = fluidInput.getAmountAsInt(0) + entity.pendingInput;
-		double maximumProcessCapacityFromOutput = Math.nextDown((fluidOutput.getCapacityAsInt(0, outputResource) - fluidOutput.getAmountAsInt(0) + (1 - entity.pendingOutput)) / convertRatio);
+		double maximumProcessCapacityFromInput = Math.max(0d, fluidInput.getAmountAsInt(0) - entity.recipeProgress);
+		double maximumProcessCapacityFromOutput = Math.max(0d, Math.floor((fluidOutput.getCapacityAsInt(0, outputResource) - fluidOutput.getAmountAsInt(0)) / convertRatio) - entity.recipeProgress);
 
 		// 从机器功率侧获取本刻最高可处理数量
 		double maximumProcessCapacityFromMachine = entity.powerFact * 4e6 / 20 / entity.conversionCost;
@@ -164,8 +165,8 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 
 		// 执行逻辑
 		// 计算待输入/输出的流体 (并舍入)
-		int fluidToProcess = Math.max(0, (int) Math.ceil(maximumProcessCapacity - entity.pendingInput));
-		int fluidToProduce = (int) Math.floor(entity.pendingOutput + maximumProcessCapacity * convertRatio);
+		int fluidToProcess = (int) Math.floor(entity.recipeProgress + maximumProcessCapacity);
+		int fluidToProduce = (int) Math.floor(fluidToProcess * convertRatio);
 
 		// 预期功率计算
 		double energyConsumption = maximumProcessCapacity * energyCost;
@@ -189,8 +190,7 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		}
 
 		// 根据实际存取的流体计算剩余流体
-		entity.pendingInput += fluidToProcess - maximumProcessCapacity;
-		entity.pendingOutput += maximumProcessCapacity * convertRatio - fluidToProduce;
+		entity.recipeProgress += maximumProcessCapacity - fluidToProcess;
 
 		// 如果是魔力模式 就扣魔力
 		if (entity.inputMode) networkData.setLoadW(new Mana(0d, energyConsumption * 20, 0d, 0d));
