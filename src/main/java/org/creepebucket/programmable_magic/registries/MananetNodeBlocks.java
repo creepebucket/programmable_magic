@@ -11,13 +11,16 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
-import org.creepebucket.programmable_magic.mananet.machines.IoDummies;
+import org.creepebucket.programmable_magic.mananet.machines.IoDummyBlock;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.LargeManaBuffer;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.MediumManaBuffer;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.SmallManaBuffer;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeater;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPump;
+import org.creepebucket.programmable_magic.mananet.machines.generator.heat_exchanger.HeatExchanger;
+import org.creepebucket.programmable_magic.mananet.machines.generator.pressure_relief_valve.PressureReliefValve;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanel;
+import org.creepebucket.programmable_magic.mananet.machines.generator.steam_turbine.SteamTurbine;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbine;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
@@ -35,7 +38,19 @@ public class MananetNodeBlocks {
             BLOCKS.register("solar_panel", registryName -> new SolarPanel(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
-    public static final DeferredBlock<WaterPump> WATER_PUMP =
+	public static final DeferredBlock<HeatExchanger> HEAT_EXCHANGER =
+			BLOCKS.register("heat_exchanger", registryName -> new HeatExchanger(
+					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+	public static final DeferredBlock<SteamTurbine> STEAM_TURBINE =
+			BLOCKS.register("steam_turbine", registryName -> new SteamTurbine(
+					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+	public static final DeferredBlock<PressureReliefValve> PRESSURE_RELIEF_VALVE =
+			BLOCKS.register("pressure_relief_valve", registryName -> new PressureReliefValve(
+					BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
+
+	public static final DeferredBlock<WaterPump> WATER_PUMP =
             BLOCKS.register("water_pump", registryName -> new WaterPump(
                     BlockBehaviour.Properties.of().noOcclusion().setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
@@ -59,33 +74,27 @@ public class MananetNodeBlocks {
             BLOCKS.register("dummy_block", registryName -> new DummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
-    public static final DeferredBlock<DummyBlock> IO_DUMMY_BLOCK =
-            BLOCKS.register("io_dummy_block", registryName -> new DummyBlock(
+    public static final DeferredBlock<IoDummyBlock> IO_DUMMY_BLOCK =
+            BLOCKS.register("io_dummy_block", registryName -> new IoDummyBlock(
                     BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
 
-	public static final DeferredBlock<IoDummies.ItemInputBlock> ITEM_INPUT =
-			BLOCKS.register("item_input", registryName -> new IoDummies.ItemInputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
-
-	public static final DeferredBlock<IoDummies.ItemOutputBlock> ITEM_OUTPUT =
-			BLOCKS.register("item_output", registryName -> new IoDummies.ItemOutputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName))));
-
-	public static final DeferredBlock<IoDummies.FluidInputBlock> FLUID_INPUT =
-			BLOCKS.register("fluid_input", registryName -> new IoDummies.FluidInputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 64000));
-
-	public static final DeferredBlock<IoDummies.FluidOutputBlock> FLUID_OUTPUT =
-			BLOCKS.register("fluid_output", registryName -> new IoDummies.FluidOutputBlock(
-					BlockBehaviour.Properties.of().noOcclusion().instabreak().noLootTable().pushReaction(PushReaction.BLOCK).setId(ResourceKey.create(Registries.BLOCK, registryName)), 64000));
 
     public static final DeferredItem<BlockItem> WIND_TURBINE_BLOCK_ITEM =
             registerMachineItem(WIND_TURBINE);
 
-    public static final DeferredItem<BlockItem> SOLAR_PANEL_BLOCK_ITEM =
-            registerMachineItem(SOLAR_PANEL);
+	public static final DeferredItem<BlockItem> SOLAR_PANEL_BLOCK_ITEM =
+			registerMachineItem(SOLAR_PANEL);
 
-    public static final DeferredItem<BlockItem> WATER_PUMP_BLOCK_ITEM =
+	public static final DeferredItem<BlockItem> HEAT_EXCHANGER_BLOCK_ITEM =
+			registerMachineItem(HEAT_EXCHANGER);
+
+	public static final DeferredItem<BlockItem> STEAM_TURBINE_BLOCK_ITEM =
+			registerMachineItem(STEAM_TURBINE);
+
+	public static final DeferredItem<BlockItem> PRESSURE_RELIEF_VALVE_BLOCK_ITEM =
+			registerMachineItem(PRESSURE_RELIEF_VALVE);
+
+	public static final DeferredItem<BlockItem> WATER_PUMP_BLOCK_ITEM =
             registerMachineItem(WATER_PUMP);
 
     public static final DeferredItem<BlockItem> LIQUID_HEATER_BLOCK_ITEM =

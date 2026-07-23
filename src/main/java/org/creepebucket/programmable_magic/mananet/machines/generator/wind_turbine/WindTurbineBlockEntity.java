@@ -16,11 +16,12 @@ import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModAttachments;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.utils.Mana;
 
-public class WindTurbineBlockEntity extends NetNodeBlockEntity implements GeoBlockEntity {
+public class WindTurbineBlockEntity extends MachineBlockEntity implements GeoBlockEntity {
     public double airDensityBase = 1.225, airDensityTempFactBase, airDensityTempFact, airDensityPressureFact, airDensityHumidFact, airDensity;
     public double windSpeedBase = 4.5, windSpeedAltitudeFact, windSpeedTimeFact, windSpeedWeatherFact, windSpeed;
     public double windShearExponent, power;

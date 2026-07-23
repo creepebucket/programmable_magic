@@ -2,7 +2,6 @@ package org.creepebucket.programmable_magic.mananet.machines;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -11,36 +10,38 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.VanillaContainerWrapper;
 import org.creepebucket.programmable_magic.registries.MananetNodeBlocks;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class BasicMachine extends Block implements EntityBlock {
 
     public final VoxelShape HITBOX = hitbox();
-    public List<BlockPos> DUMMY_OFFSETS, IO_OFFSETS = new ArrayList<>();
-    public List<DeferredBlock<?>> IO_TYPES = new ArrayList<>();
-    public List<Integer> IO_CAPACITIES = new ArrayList<>();
+    public List<RelativeBlockPos> DUMMY_OFFSETS;
+    public Map<RelativeBlockPos, String> IO_DEFINITION = new HashMap<>(); // v = "item_input"/"item_output"/"fluid_output"/"fluid_input"
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public VoxelShape[] HITBOXES = {rotate(HITBOX, Direction.SOUTH), rotate(HITBOX, Direction.WEST), HITBOX, rotate(HITBOX, Direction.EAST)};
 
     {
-        var offsets = new ArrayList<BlockPos>();
+        var offsets = new ArrayList<RelativeBlockPos>();
         for (var offset : BlockPos.betweenClosed(-4, -4, -4, 4, 4, 4)) {
             if (offset.getX() == 0 && offset.getY() == 0 && offset.getZ() == 0) continue;
             if (Shapes.joinIsNotEmpty(HITBOX, Shapes.block().move(offset), BooleanOp.AND)) {
-                offsets.add(offset.immutable());
+                offsets.add(new RelativeBlockPos(-offset.getZ(), offset.getY(), offset.getX()));
             }
         }
         DUMMY_OFFSETS = List.copyOf(offsets);
@@ -48,20 +49,28 @@ public abstract class BasicMachine extends Block implements EntityBlock {
 
     public BasicMachine(Properties p_49795_) {
         super(p_49795_);
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
     }
 
     public abstract VoxelShape hitbox();
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        var dir = context.getHorizontalDirection().getOpposite();
+        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) dir = dir.getOpposite();
+
         var level = context.getLevel();
         var pos = context.getClickedPos();
-        var dir = context.getHorizontalDirection().getOpposite();
         for (var offset : DUMMY_OFFSETS) {
-            var rotated = rotateOffset(offset, dir);
+            var rotated = offset.toAbsolutePos(dir);
             if (!level.getBlockState(pos.offset(rotated)).canBeReplaced()) return null;
         }
-        return defaultBlockState();
+        return defaultBlockState().setValue(FACING, dir);
     }
 
     @Override
@@ -69,10 +78,10 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         if (level.isClientSide()) return;
 
         // 放置dummy
-        var facing = state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
+        var facing = state.getValue(FACING);
         var dummy_block = MananetNodeBlocks.DUMMY_BLOCK.get();
         for (var offset : DUMMY_OFFSETS) {
-            var rotated = rotateOffset(offset, facing);
+            var rotated = offset.toAbsolutePos(facing);
             var dummy_pos = pos.offset(rotated);
             level.setBlock(
                     dummy_pos,
@@ -85,51 +94,27 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         }
 
         // 放置io
-        for (int i = 0; i < IO_OFFSETS.size(); i++) {
-            var offset = IO_OFFSETS.get(i);
-            var block = IO_TYPES.get(i);
-            var absoluteOffset = DummyBlock.transformOffset(facing, offset.getX(), offset.getY(), offset.getZ());
-            var dummyPos = pos.offset(absoluteOffset);
-
+        var ioDummyBlock = MananetNodeBlocks.IO_DUMMY_BLOCK.get();
+        for (var offset : IO_DEFINITION.keySet()) {
+            var rotated = offset.toAbsolutePos(facing);
+            if (rotated.equals(BlockPos.ZERO)) continue;
             level.setBlock(
-                    dummyPos,
-                    block.get().defaultBlockState()
-                            .setValue(DummyBlock.X_OFFSET, -absoluteOffset.getX())
-                            .setValue(DummyBlock.Y_OFFSET, -absoluteOffset.getY())
-                            .setValue(DummyBlock.Z_OFFSET, -absoluteOffset.getZ()),
+                    pos.offset(rotated),
+                    ioDummyBlock.defaultBlockState()
+                            .setValue(DummyBlock.X_OFFSET, -rotated.getX())
+                            .setValue(DummyBlock.Y_OFFSET, -rotated.getY())
+                            .setValue(DummyBlock.Z_OFFSET, -rotated.getZ()),
                     Block.UPDATE_ALL
             );
-
-            int capacity = IO_CAPACITIES.get(i);
-            var be = level.getBlockEntity(dummyPos);
-            if (be instanceof DummyBlockEntities.ItemInput ii) {
-                ii.container = new SimpleContainer(DummyBlockEntities.ItemInput.SIZE);
-                ii.wrapper = new FlowControlHandler<>(VanillaContainerWrapper.of(ii.container), true, false);
-            }
-            if (be instanceof DummyBlockEntities.ItemOutput io) {
-                io.container = new SimpleContainer(DummyBlockEntities.ItemOutput.SIZE);
-                io.wrapper = new FlowControlHandler<>(VanillaContainerWrapper.of(io.container), false, true);
-            }
-            if (be instanceof DummyBlockEntities.FluidInput fi) {
-                fi.fluidHandler = new FluidStacksResourceHandler(DummyBlockEntities.FluidInput.SIZE, capacity);
-                fi.wrapper = new FlowControlHandler<>(fi.fluidHandler, true, false);
-            }
-            if (be instanceof DummyBlockEntities.FluidOutput fo) {
-                fo.fluidHandler = new FluidStacksResourceHandler(DummyBlockEntities.FluidOutput.SIZE, capacity);
-                fo.wrapper = new FlowControlHandler<>(fo.fluidHandler, false, true);
-            }
-            if (be != null) {
-                be.setChanged();
-            }
         }
     }
 
 	@Override
 	public void destroy(LevelAccessor level, BlockPos pos, BlockState state) {
 		if (level instanceof Level actual_level && !actual_level.isClientSide()) {
-			var facing = state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.getValue(BlockStateProperties.HORIZONTAL_FACING) : Direction.NORTH;
+			var dir = state.getValue(FACING);
 			for (var offset : DUMMY_OFFSETS) {
-				var rotated = rotateOffset(offset, facing);
+				var rotated = offset.toAbsolutePos(dir);
 				var dummy_pos = pos.offset(rotated);
 				var dummy_state = actual_level.getBlockState(dummy_pos);
 				if (!(dummy_state.getBlock() instanceof DummyBlock)) continue;
@@ -145,10 +130,7 @@ public abstract class BasicMachine extends Block implements EntityBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            return rotate(HITBOX, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
-        }
-        return HITBOX;
+        return HITBOXES[state.getValue(FACING).get2DDataValue()];
     }
 
     public static VoxelShape rotate(VoxelShape shape, Direction direction) {
@@ -165,37 +147,20 @@ public abstract class BasicMachine extends Block implements EntityBlock {
         return result;
     }
 
-    public static BlockPos rotateOffset(BlockPos offset, Direction direction) {
-        return switch (direction) {
-            case SOUTH -> new BlockPos(-offset.getX(), offset.getY(), -offset.getZ());
-            case WEST -> new BlockPos(offset.getZ(), offset.getY(), -offset.getX());
-            case EAST -> new BlockPos(-offset.getZ(), offset.getY(), offset.getX());
-            default -> offset;
-        };
+    public void addItemInput(RelativeBlockPos pos) {
+        IO_DEFINITION.put(pos, "item_input");
     }
 
-    public void addItemInput(int facingOff, int yOff, int cw90Off) {
-        IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
-        IO_TYPES.add(MananetNodeBlocks.ITEM_INPUT);
-        IO_CAPACITIES.add(0);
+    public void addItemOutput(RelativeBlockPos pos) {
+        IO_DEFINITION.put(pos, "item_output");
     }
 
-    public void addItemOutput(int facingOff, int yOff, int cw90Off) {
-        IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
-        IO_TYPES.add(MananetNodeBlocks.ITEM_OUTPUT);
-        IO_CAPACITIES.add(0);
+    public void addFluidInput(RelativeBlockPos pos) {
+        IO_DEFINITION.put(pos, "fluid_input");
     }
 
-    public void addFluidInput(int facingOff, int yOff, int cw90Off, int capacity) {
-        IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
-        IO_TYPES.add(MananetNodeBlocks.FLUID_INPUT);
-        IO_CAPACITIES.add(capacity);
-    }
-
-    public void addFluidOutput(int facingOff, int yOff, int cw90Off, int capacity) {
-        IO_OFFSETS.add(new BlockPos(facingOff, yOff, cw90Off));
-        IO_TYPES.add(MananetNodeBlocks.FLUID_OUTPUT);
-        IO_CAPACITIES.add(capacity);
+    public void addFluidOutput(RelativeBlockPos pos) {
+        IO_DEFINITION.put(pos, "fluid_output");
     }
 
 }

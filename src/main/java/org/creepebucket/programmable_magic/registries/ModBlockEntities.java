@@ -5,13 +5,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.IoDummyBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.LargeManaBufferBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.MediumManaBufferBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.buffer.SmallManaBufferBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeaterBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.water_pump.WaterPumpBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.generator.heat_exchanger.HeatExchangerBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.generator.pressure_relief_valve.PressureReliefValveBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.solar_panel.SolarPanelBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntities;
+import org.creepebucket.programmable_magic.mananet.machines.generator.steam_turbine.SteamTurbineBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.generator.wind_turbine.WindTurbineBlockEntity;
 
 import java.util.function.Supplier;
@@ -22,11 +25,23 @@ public class ModBlockEntities {
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
 
-    public static final Supplier<BlockEntityType<WindTurbineBlockEntity>> WIND_TURBINE_BLOCK_ENTITY =
-            BLOCK_ENTITIES.register("wind_turbine", () -> new BlockEntityType<WindTurbineBlockEntity>(
-                    WindTurbineBlockEntity::new, false, MananetNodeBlocks.WIND_TURBINE.get()));
+	public static final Supplier<BlockEntityType<WindTurbineBlockEntity>> WIND_TURBINE_BLOCK_ENTITY =
+			BLOCK_ENTITIES.register("wind_turbine", () -> new BlockEntityType<WindTurbineBlockEntity>(
+					WindTurbineBlockEntity::new, false, MananetNodeBlocks.WIND_TURBINE.get()));
 
-    public static final Supplier<BlockEntityType<NetNodeBlockEntity>> BASIC_MANA_CONNECTOR_BLOCK_ENTITY =
+	public static final Supplier<BlockEntityType<HeatExchangerBlockEntity>> HEAT_EXCHANGER_BLOCK_ENTITY =
+			BLOCK_ENTITIES.register("heat_exchanger", () -> new BlockEntityType<HeatExchangerBlockEntity>(
+					HeatExchangerBlockEntity::new, false, MananetNodeBlocks.HEAT_EXCHANGER.get()));
+
+	public static final Supplier<BlockEntityType<SteamTurbineBlockEntity>> STEAM_TURBINE_BLOCK_ENTITY =
+			BLOCK_ENTITIES.register("steam_turbine", () -> new BlockEntityType<SteamTurbineBlockEntity>(
+					SteamTurbineBlockEntity::new, false, MananetNodeBlocks.STEAM_TURBINE.get()));
+
+	public static final Supplier<BlockEntityType<PressureReliefValveBlockEntity>> PRESSURE_RELIEF_VALVE_BLOCK_ENTITY =
+			BLOCK_ENTITIES.register("pressure_relief_valve", () -> new BlockEntityType<PressureReliefValveBlockEntity>(
+					PressureReliefValveBlockEntity::new, false, MananetNodeBlocks.PRESSURE_RELIEF_VALVE.get()));
+
+	public static final Supplier<BlockEntityType<NetNodeBlockEntity>> BASIC_MANA_CONNECTOR_BLOCK_ENTITY =
             BLOCK_ENTITIES.register("basic_mana_connector", () -> new BlockEntityType<NetNodeBlockEntity>(
                     NetNodeBlockEntity::new, false, ModBlocks.BASIC_MANA_CONNECTOR.get()));
 
@@ -62,29 +77,10 @@ public class ModBlockEntities {
             BLOCK_ENTITIES.register("large_mana_buffer", () -> new BlockEntityType<LargeManaBufferBlockEntity>(
                     LargeManaBufferBlockEntity::new, false, MananetNodeBlocks.LARGE_MANA_BUFFER.get()));
 
-    public static final Supplier<BlockEntityType<DummyBlockEntities.ItemInput>> ITEM_INPUT =
-            BLOCK_ENTITIES.register("item_input", () -> {
-                DummyBlockEntities.ItemInput.TYPE = new BlockEntityType<>(DummyBlockEntities.ItemInput::new, false, MananetNodeBlocks.ITEM_INPUT.get());
-                return DummyBlockEntities.ItemInput.TYPE;
-            });
+    public static final Supplier<BlockEntityType<IoDummyBlockEntity>> IO_DUMMY =
+            BLOCK_ENTITIES.register("io_dummy", () -> new BlockEntityType<IoDummyBlockEntity>(
+                    IoDummyBlockEntity::new, false, MananetNodeBlocks.IO_DUMMY_BLOCK.get()));
 
-    public static final Supplier<BlockEntityType<DummyBlockEntities.ItemOutput>> ITEM_OUTPUT =
-            BLOCK_ENTITIES.register("item_output", () -> {
-                DummyBlockEntities.ItemOutput.TYPE = new BlockEntityType<>(DummyBlockEntities.ItemOutput::new, false, MananetNodeBlocks.ITEM_OUTPUT.get());
-                return DummyBlockEntities.ItemOutput.TYPE;
-            });
-
-    public static final Supplier<BlockEntityType<DummyBlockEntities.FluidInput>> FLUID_INPUT =
-            BLOCK_ENTITIES.register("fluid_input", () -> {
-                DummyBlockEntities.FluidInput.TYPE = new BlockEntityType<>(DummyBlockEntities.FluidInput::new, false, MananetNodeBlocks.FLUID_INPUT.get());
-                return DummyBlockEntities.FluidInput.TYPE;
-            });
-
-    public static final Supplier<BlockEntityType<DummyBlockEntities.FluidOutput>> FLUID_OUTPUT =
-            BLOCK_ENTITIES.register("fluid_output", () -> {
-                DummyBlockEntities.FluidOutput.TYPE = new BlockEntityType<>(DummyBlockEntities.FluidOutput::new, false, MananetNodeBlocks.FLUID_OUTPUT.get());
-                return DummyBlockEntities.FluidOutput.TYPE;
-            });
 
     public static void register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

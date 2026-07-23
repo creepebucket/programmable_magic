@@ -1,12 +1,13 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import org.creepebucket.programmable_magic.gui.lib.widgets.RectangleWidget;
 import org.creepebucket.programmable_magic.gui.lib.widgets.TextWidget;
 
 import java.util.function.Function;
 
 public class ThemeTemplate<T extends Widget> {
-	public static final ThemeTemplate<Widget> DARK_BG = new ThemeTemplate<>(w -> { w.bgColor(0x7f000000); return w; });
-	public static final ThemeTemplate<Widget> TITLE_BAR_BG = new ThemeTemplate<>(w -> { w.bgColor(0xbf000000); return w; });
+	public static final ThemeTemplate<RectangleWidget> DARK_BG = new ThemeTemplate<>(w -> { w.mainColor(0x7f000000); return w; });
+	public static final ThemeTemplate<RectangleWidget> TITLE_BAR_BG = new ThemeTemplate<>(w -> { w.mainColor(0xbf000000); return w; });
 
 	public static final ThemeTemplate<TextWidget> NO_SHADOW = new ThemeTemplate<>(TextWidget::noShadow);
 	public static final ThemeTemplate<TextWidget> WHITE = new ThemeTemplate<>(w -> { w.mainColor(-1); return w; });

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "programmable_magic:block/pressure_relief_valve"
+    }
+  }
+}

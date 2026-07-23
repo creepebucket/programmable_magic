@@ -44,7 +44,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
-import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -82,14 +81,7 @@ public class BasicMachinePlacementPreview {
             render_state = render_state.setValue(BlockStateProperties.HORIZONTAL_FACING, mc.player.getDirection().getOpposite());
         }
         if (placement_state == null) can_place = false;
-        if (block_item.getBlock() instanceof BasicMachine machine && !(machine instanceof RotatableBasicMachine)) {
-            for (var offset : machine.DUMMY_OFFSETS) {
-                if (!mc.level.getBlockState(pos.offset(offset)).canBeReplaced()) {
-                    can_place = false;
-                    break;
-                }
-            }
-        }
+
         if (placement_state != null) {
             if (!placement_state.canSurvive(mc.level, pos)) can_place = false;
             if (!mc.level.isUnobstructed(placement_state, pos, CollisionContext.placementContext(mc.player))) can_place = false;

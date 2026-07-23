@@ -20,7 +20,8 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.creepebucket.programmable_magic.ModConfig;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.registries.ModRecipeTypes;
 import org.creepebucket.programmable_magic.utils.Mana;
@@ -76,7 +77,7 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		if (level.isClientSide()) return;
 
 		// 连接到魔力网络
-		var facing = level.getBlockState(pos).getValue(RotatableBasicMachine.FACING).getOpposite();
+		var facing = level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite();
 		var pending = pos.relative(facing).above();
 		if (level.getBlockEntity(pending) instanceof NetNodeBlockEntity) {
 			entity.connect(level, pending, Direction.DOWN, Direction.DOWN);
@@ -88,9 +89,18 @@ public class LiquidHeaterBlockEntity extends MachineBlockEntity implements GeoBl
 		if (!entity.enabled) return;
 
 		// 获取输入输出端
-		var fluidInput = entity.getFluidInput(0);
-		var fluidOutput = entity.getFluidOutput(0);
-		var itemInput = entity.getItemInput(0);
+		var block = (BasicMachine) entity.getBlockState().getBlock();
+		RelativeBlockPos fluidInputPos = null, fluidOutputPos = null, itemInputPos = null;
+		for (var entry : block.IO_DEFINITION.entrySet()) {
+			switch (entry.getValue()) {
+				case "fluid_input" -> fluidInputPos = entry.getKey();
+				case "fluid_output" -> fluidOutputPos = entry.getKey();
+				case "item_input" -> itemInputPos = entry.getKey();
+			}
+		}
+		var fluidInput = fluidInputPos != null ? entity.fluidStorage.get(fluidInputPos) : null;
+		var fluidOutput = fluidOutputPos != null ? entity.fluidStorage.get(fluidOutputPos) : null;
+		var itemInput = itemInputPos != null ? entity.itemStorage.get(itemInputPos) : null;
 
 		// 查找匹配输入流体的配方
 		// 屎

@@ -9,19 +9,20 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
-import org.creepebucket.programmable_magic.gui.lib.ui.Menu;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
-import org.creepebucket.programmable_magic.mananet.machines.DummyBlockEntities;
+import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
+import org.creepebucket.programmable_magic.mananet.machines.IoDummyBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class IoDummyMenu extends MachineMenu {
@@ -29,40 +30,38 @@ public class IoDummyMenu extends MachineMenu {
 	public DynamicValue<String> fluidId;
 	public DynamicValue<Integer> fluidAmount;
 	public DynamicValue<Integer> fluidCapacity;
-
-	public Container itemContainer, fluidIoContainer;
+	public ResourceHandler<?> resourceHandler;
+	public Container fluidIoContainer;
+	public boolean canInput, canOutput;
 
 	public IoDummyMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
-		this(containerId, playerInv, extra.readBlockPos());
+		this(containerId, playerInv, extra.readBlockPos(), extra.readBoolean(), extra.readBoolean(), extra.readBoolean());
 	}
 
-	public IoDummyMenu(int containerId, Inventory playerInv, BlockPos pos) {
+	public IoDummyMenu(int containerId, Inventory playerInv, BlockPos pos, boolean item, boolean canInput, boolean canOutput) {
+		this(containerId, playerInv, pos, item
+				? new ItemStacksResourceHandler(16)
+				: new FluidStacksResourceHandler(1, 16000), canInput, canOutput);
+	}
+
+	public IoDummyMenu(int containerId, Inventory playerInv, BlockPos pos, ResourceHandler<?> resourceHandler, boolean canInput, boolean canOutput) {
 		super(ModMenuTypes.IO_DUMMY.get(), containerId, playerInv, InteractionHand.MAIN_HAND, m -> {
 			IoDummyMenu menu = (IoDummyMenu) m;
 			menu.pos = pos;
+			menu.resourceHandler = resourceHandler;
+			menu.canInput = canInput;
+			menu.canOutput = canOutput;
 			menu.count = 15;
 			menu.init();
 		});
-		for (int i = 0; i < 16; i++)
-			addSlot(new Slot(itemContainer, i, -99, -99));
-
-		// 流体输入/输出
-		addSlot(new Slot(fluidIoContainer, 0, -99, -99));
-		addSlot(new Slot(fluidIoContainer, 1, -99, -99));
-	}
-
-	public IoDummyMenu(int containerId, Inventory playerInv) {
-		this(containerId, playerInv, InteractionHand.MAIN_HAND);
-	}
-
-	public IoDummyMenu(int containerId, Inventory playerInv, InteractionHand hand) {
-		super(ModMenuTypes.IO_DUMMY.get(), containerId, playerInv, hand, Menu::init);
-		for (int i = 0; i < 16; i++)
-			addSlot(new Slot(itemContainer, i, -99, -99));
-
-		// 流体输入/输出
-		addSlot(new Slot(fluidIoContainer, 0, -99, -99));
-		addSlot(new Slot(fluidIoContainer, 1, -99, -99));
+		if (resourceHandler.getResource(0) instanceof ItemResource) {
+			ItemStacksResourceHandler storage = (ItemStacksResourceHandler) resourceHandler;
+			for (int i = 0; i < 16; i++)
+				addSlot(new ResourceHandlerSlot(storage, storage::set, i, -99, -99));
+		} else {
+			addSlot(new Slot(fluidIoContainer, 0, -99, -99));
+			addSlot(new Slot(fluidIoContainer, 1, -99, -99));
+		}
 	}
 
 	@Override
@@ -72,48 +71,26 @@ public class IoDummyMenu extends MachineMenu {
 		fluidId = registerData("fluid_id", SyncMode.S2C, "");
 		fluidAmount = registerData("fluid_amount", SyncMode.S2C, 0);
 		fluidCapacity = registerData("fluid_capacity", SyncMode.S2C, 0);
-
-		itemContainer = new SimpleContainer(16);
 		fluidIoContainer = new SimpleContainer(2);
-		if (playerInv.player.level().isClientSide() || pos == null)
+		if (resourceHandler.getResource(0) instanceof ItemResource) {
+			ioType.set(canInput ? "item_input" : "item_output");
 			return;
-
-		BlockEntity be = playerInv.player.level().getBlockEntity(pos);
-		if (be instanceof DummyBlockEntities.ItemInput ii) {
-			ioType.set("item_input");
-			itemContainer = ii.container;
-		} else if (be instanceof DummyBlockEntities.ItemOutput io) {
-			ioType.set("item_output");
-			itemContainer = io.container;
-		} else if (be instanceof DummyBlockEntities.FluidInput fi) {
-			ioType.set("fluid_input");
-			fluidIoContainer = fi.fluidIoContainer;
-			FluidResource resource = fi.fluidHandler.getResource(0);
-			fluidId.set(resource.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString());
-			fluidAmount.set(fi.fluidHandler.getAmountAsInt(0));
-			fluidCapacity.set(fi.fluidHandler.getCapacityAsInt(0, FluidResource.EMPTY));
-		} else if (be instanceof DummyBlockEntities.FluidOutput fo) {
-			ioType.set("fluid_output");
-			fluidIoContainer = fo.fluidIoContainer;
-			FluidResource resource = fo.fluidHandler.getResource(0);
-			fluidId.set(resource.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString());
-			fluidAmount.set(fo.fluidHandler.getAmountAsInt(0));
-			fluidCapacity.set(fo.fluidHandler.getCapacityAsInt(0, FluidResource.EMPTY));
 		}
+
+		ioType.set(canInput ? "fluid_input" : "fluid_output");
+		syncFluidData((ResourceHandler<FluidResource>) resourceHandler);
 	}
 
 	@Override
 	public void tick() {
 		if (playerInv.player.level().isClientSide()) return;
-		if (pos == null) return;
 		if (count == 15) {
 			count = 0;
 			onNetworkSynced();
-			BlockEntity be = playerInv.player.level().getBlockEntity(pos);
-			if (be instanceof DummyBlockEntities.FluidInput fi)
-				tryProcessFluidIo(fi.fluidIoContainer, fi.fluidHandler);
-			else if (be instanceof DummyBlockEntities.FluidOutput fo)
-				tryProcessFluidIo(fo.fluidIoContainer, fo.fluidHandler);
+			if (resourceHandler.getResource(0) instanceof FluidResource)
+				tryProcessFluidIo(fluidIoContainer, (ResourceHandler<FluidResource>) resourceHandler);
+			var ioDummy = (IoDummyBlockEntity) playerInv.player.level().getBlockEntity(pos);
+			playerInv.player.level().getBlockEntity(DummyBlock.get_main_pos(pos, ioDummy.getBlockState())).setChanged();
 		}
 		count++;
 	}
@@ -132,21 +109,18 @@ public class IoDummyMenu extends MachineMenu {
 		if (moved == null) return;
 		io.getItem(0).shrink(1);
 		io.setItem(1, temp.getResource(0).toStack());
-		BlockEntity be = playerInv.player.level().getBlockEntity(pos);
-		be.setChanged();
 	}
 
 	@Override
 	protected void onNetworkSynced() {
-		BlockEntity be = playerInv.player.level().getBlockEntity(pos);
-		if (be instanceof DummyBlockEntities.FluidInput fi) {
-			FluidResource resource = fi.fluidHandler.getResource(0);
-			fluidId.set(resource.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString());
-			fluidAmount.set(fi.fluidHandler.getAmountAsInt(0));
-		} else if (be instanceof DummyBlockEntities.FluidOutput fo) {
-			FluidResource resource = fo.fluidHandler.getResource(0);
-			fluidId.set(resource.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString());
-			fluidAmount.set(fo.fluidHandler.getAmountAsInt(0));
-		}
+		if (resourceHandler.getResource(0) instanceof FluidResource)
+			syncFluidData((ResourceHandler<FluidResource>) resourceHandler);
+	}
+
+	public void syncFluidData(ResourceHandler<FluidResource> handler) {
+		FluidResource resource = handler.getResource(0);
+		fluidId.set(resource.isEmpty() ? "" : BuiltInRegistries.FLUID.getKey(resource.getFluid()).toString());
+		fluidAmount.set(handler.getAmountAsInt(0));
+		fluidCapacity.set(handler.getCapacityAsInt(0, FluidResource.EMPTY));
 	}
 }

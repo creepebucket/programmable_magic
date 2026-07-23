@@ -2,7 +2,7 @@ package org.creepebucket.programmable_magic.gui.machines.api;
 
 import net.minecraft.world.entity.player.Player;
 import org.creepebucket.programmable_magic.gui.lib.api.hooks.Hook;
-import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 
 public class MachineHooks {
     public static class PowerSwitchHook extends Hook {
@@ -18,7 +18,7 @@ public class MachineHooks {
             if (player.level().isClientSide()) return;
 
             var enabled = (Boolean) args[0];
-            var blockEntity = (NetNodeBlockEntity) player.level().getBlockEntity(menu.pos);
+            var blockEntity = (MachineBlockEntity) player.level().getBlockEntity(menu.pos);
             blockEntity.enabled = enabled;
             blockEntity.setChanged();
         }

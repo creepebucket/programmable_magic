@@ -18,18 +18,19 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
-public class LiquidHeater extends RotatableBasicMachine {
+public class LiquidHeater extends BasicMachine {
 
 	public LiquidHeater(Properties properties) {
 		super(properties);
 
-		addFluidInput(-1, 0, 0, 8000);
-		addFluidOutput(1, 0, 0, 8000);
-		addItemInput(1, 1, 0);
+		addFluidInput(new RelativeBlockPos(-1, 0, 0));
+		addFluidOutput(new RelativeBlockPos(1, 0, 0));
+		addItemInput(new RelativeBlockPos(1, 1, 0));
 	}
 
 	@Override

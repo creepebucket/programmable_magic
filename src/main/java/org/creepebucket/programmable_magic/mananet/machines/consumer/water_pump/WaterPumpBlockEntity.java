@@ -8,13 +8,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
-import org.creepebucket.programmable_magic.mananet.machines.RotatableBasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.utils.Mana;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 
 import static net.minecraft.world.level.block.Blocks.WATER;
 
@@ -52,7 +56,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 	public static void tick(Level level, BlockPos pos, BlockState state, WaterPumpBlockEntity entity) {
 		if (level.isClientSide()) return;
 
-		var pending = pos.relative(level.getBlockState(pos).getValue(RotatableBasicMachine.FACING).getOpposite()).above();
+		var pending = pos.relative(level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite()).above();
 		if (level.getBlockEntity(pending) instanceof NetNodeBlockEntity) {
 			entity.connect(level, pending, Direction.DOWN, Direction.DOWN);
 		}
@@ -62,12 +66,24 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 
 		var load = new Mana(Math.pow(4, entity.powerFact - 1) * 300, 0d, 2000 * entity.powerFact, 0d);
 
-		var shouldBeWater = level.getBlockState(pos.relative(level.getBlockState(pos).getValue(RotatableBasicMachine.FACING).getOpposite()).below());
+		var shouldBeWater = level.getBlockState(pos.relative(level.getBlockState(pos).getValue(BasicMachine.FACING).getOpposite()).below());
 		if (!networkData.canProduce(load) || !entity.enabled || !shouldBeWater.is(WATER)) {
 			entity.power = 0;
 			return;
 		}
 		networkData.setLoadW(load);
 		entity.power = entity.powerFact * 1000;
+
+		var water = FluidResource.of(Fluids.WATER);
+		var fluidHandler = entity.fluidStorage.get(new RelativeBlockPos(0, 0, 0));
+		var maxSpace = fluidHandler.getCapacityAsInt(0, water) - fluidHandler.getAmountAsInt(0);
+		var waterToProduce = Math.min(maxSpace, (int) entity.power);
+		if (waterToProduce > 0) {
+			try (var transaction = Transaction.openRoot()) {
+				if (fluidHandler.insert(0, water, waterToProduce, transaction) == waterToProduce) {
+					transaction.commit();
+				}
+			}
+		}
 	}
 }

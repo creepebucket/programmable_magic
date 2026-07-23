@@ -12,7 +12,10 @@ import net.minecraft.client.resources.model.sprite.Material;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
+import org.creepebucket.programmable_magic.gui.machines.generator.heat_exchanger.HeatExchangerScreen;
+import org.creepebucket.programmable_magic.gui.machines.generator.pressure_relief_valve.PressureReliefValveScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.solar_panel.SolarPanelScreen;
+import org.creepebucket.programmable_magic.gui.machines.generator.steam_turbine.SteamTurbineScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.WindTurbineScreen;
 import org.creepebucket.programmable_magic.gui.machines.io_dummy.IoDummyScreen;
 import org.creepebucket.programmable_magic.gui.wand.WandScreen;
@@ -48,6 +51,18 @@ public class ClientEventHandler {
 				SolarPanelScreen::new
 		);
 		event.register(
+				ModMenuTypes.HEAT_EXCHANGER_MENU.get(),
+				HeatExchangerScreen::new
+		);
+		event.register(
+				ModMenuTypes.STEAM_TURBINE_MENU.get(),
+				SteamTurbineScreen::new
+		);
+		event.register(
+				ModMenuTypes.PRESSURE_RELIEF_VALVE_MENU.get(),
+				PressureReliefValveScreen::new
+		);
+		event.register(
 				ModMenuTypes.WATER_PUMP_MENU.get(),
 				WaterPumpScreen::new
 		);
@@ -68,9 +83,12 @@ public class ClientEventHandler {
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntityTypes.SPELL_ENTITY.get(), SpellEntityRenderer::new);
 
-        registerMachineBER(event, ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), "wind_turbine", new AABB(-2, -1, -2, 3, 7, 3));
-        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
-        registerMachineBER(event, ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), "water_pump", new AABB(-1, 0, -1, 2, 2, 2));
+		registerMachineBER(event, ModBlockEntities.WIND_TURBINE_BLOCK_ENTITY.get(), "wind_turbine", new AABB(-2, -1, -2, 3, 7, 3));
+		event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_PANEL_BLOCK_ENTITY.get(), SolarPanelBlockEntityBER::new);
+		registerMachineBER(event, ModBlockEntities.HEAT_EXCHANGER_BLOCK_ENTITY.get(), "heat_exchanger", new AABB(-1, 0, -1, 2, 2, 2));
+		registerMachineBER(event, ModBlockEntities.STEAM_TURBINE_BLOCK_ENTITY.get(), "steam_turbine", new AABB(-1, 0, -1, 2, 5, 2));
+		registerMachineBER(event, ModBlockEntities.PRESSURE_RELIEF_VALVE_BLOCK_ENTITY.get(), "pressure_relief_valve", new AABB(0, 0, 0, 1, 5, 1));
+		registerMachineBER(event, ModBlockEntities.WATER_PUMP_BLOCK_ENTITY.get(), "water_pump", new AABB(-1, 0, -1, 2, 2, 2));
         registerMachineBER(event, ModBlockEntities.LIQUID_HEATER_BLOCK_ENTITY.get(), "liquid_heater", new AABB(-1, 0, -1, 2, 2, 2));
         registerMachineBER(event, ModBlockEntities.SMALL_MANA_BUFFER_BLOCK_ENTITY.get(), "small_mana_buffer", new AABB(0, 0, 0, 1, 1, 1));
         registerMachineBER(event, ModBlockEntities.MEDIUM_MANA_BUFFER_BLOCK_ENTITY.get(), "medium_mana_buffer", new AABB(0, 0, 0, 1, 3, 1));

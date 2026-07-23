@@ -10,12 +10,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
+import org.creepebucket.programmable_magic.mananet.machines.MachineBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
 import org.creepebucket.programmable_magic.utils.Mana;
 
 import static org.creepebucket.programmable_magic.utils.ModUtils.getTempKelvin;
 
-public class SolarPanelBlockEntity extends NetNodeBlockEntity implements GeoBlockEntity {
+public class SolarPanelBlockEntity extends MachineBlockEntity implements GeoBlockEntity {
     public double solarConstant = 1367, directIrradiance, diffuseIrradiance, atmosphericTransmittanceDiffuse;
     public double atmosphericTransmittanceDirect = 0.8, airMass, weatherFactDirect, weatherFactDiffuse, panelArea = 6;
     public double baseTemperature, cellTemperature, thermalFact, materialFact = 0.15, altitudeFact, power, efficiencyFact;

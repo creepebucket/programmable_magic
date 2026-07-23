@@ -53,8 +53,8 @@ public class IoDummyScreen extends MachineScreen<IoDummyMenu> {
 			upper.addChild(new MachineWidgets.FluidInfoWidget(fromTopLeft(7, 15), menu.fluidId));
 
 			upper.addChild(new TextWidget(fromCenterTop(4, 15), literal("流体存取")).applyTheme(LABEL_TEXT));
-			upper.addChild(new SlotWidget(menu.slots.get(52), fromCenterTop(4, 27)));
-			upper.addChild(new SlotWidget(menu.slots.get(53), fromCenterTop(40, 27)));
+			upper.addChild(new SlotWidget(menu.slots.get(36), fromCenterTop(4, 27)));
+			upper.addChild(new SlotWidget(menu.slots.get(37), fromCenterTop(40, 27)));
 			upper.addChild(new OutlineWidget(fromCenterTop(4, 27), fromTopLeft(16, 16)).mainColor(0x0fffffff));
 			upper.addChild(new OutlineWidget(fromCenterTop(40, 27), fromTopLeft(16, 16)).mainColor(0x0fffffff));
 			upper.addChild(new TextWidget(fromCenterTop(11, 31), literal("I")).noShadow().mainColor(0x1fffffff));
