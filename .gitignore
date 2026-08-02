@@ -125,3 +125,7 @@ runs/
 /bin/
 /.project
 /.classpath
+/.tmp/
+/META-INF/
+/com/
+/mezz/

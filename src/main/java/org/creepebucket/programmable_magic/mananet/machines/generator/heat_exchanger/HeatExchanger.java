@@ -28,6 +28,7 @@ public class HeatExchanger extends BasicMachine {
 	public HeatExchanger(Properties properties) {
 		super(properties);
 		addFluidInput(new RelativeBlockPos(-1, 0, 0));
+		addFluidOutput(new RelativeBlockPos(1, 0, 0));
 	}
 
 	@Override

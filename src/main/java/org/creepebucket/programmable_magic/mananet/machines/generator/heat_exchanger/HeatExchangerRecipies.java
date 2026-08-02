@@ -1,4 +1,4 @@
-package org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater;
+package org.creepebucket.programmable_magic.mananet.machines.generator.heat_exchanger;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -24,10 +24,10 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.creepebucket.programmable_magic.Programmable_magic.MODID;
 
-public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, String outputFluid, double conversionCost, double convertRatio) implements Recipe<LiquidHeaterRecipies.Input> {
+public record HeatExchangerRecipies(CommonInfo commonInfo, String inputFluid, double inputAmount, String outputFluid, double outputAmount, double heatPerLiter) implements Recipe<HeatExchangerRecipies.Input> {
 
 	public static void buildRecipes(RecipeOutput output) {
-		addRecipe(output, "water_to_steam", "minecraft:water", "programmable_magic:steam", 4_000_000, 30d);
+		addRecipe(output, "steam_to_water", "programmable_magic:steam", 30, "minecraft:water", 1, (double) 4_000_000 / 30);
 	}
 
 	@Override
@@ -42,12 +42,12 @@ public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, Str
 
 	@Override
 	public RecipeSerializer<? extends Recipe<Input>> getSerializer() {
-		return ModRecipeSerializers.LIQUID_HEATER.get();
+		return ModRecipeSerializers.HEAT_EXCHANGER.get();
 	}
 
 	@Override
 	public RecipeType<? extends Recipe<Input>> getType() {
-		return ModRecipeTypes.LIQUID_HEATER.get();
+		return ModRecipeTypes.HEAT_EXCHANGER.get();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, Str
 
 	@Override
 	public RecipeBookCategory recipeBookCategory() {
-		return ModRecipeBookCategories.LIQUID_HEATER.get();
+		return ModRecipeBookCategories.HEAT_EXCHANGER.get();
 	}
 
 	@Override
@@ -70,34 +70,37 @@ public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, Str
 		return "";
 	}
 
-	public static final MapCodec<LiquidHeaterRecipies> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
+	public static final MapCodec<HeatExchangerRecipies> CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
 			CommonInfo.MAP_CODEC.forGetter(r -> r.commonInfo),
 			Codec.STRING.fieldOf("input_fluid").forGetter(r -> r.inputFluid),
+			Codec.DOUBLE.fieldOf("input_amount").forGetter(r -> r.inputAmount),
 			Codec.STRING.fieldOf("output_fluid").forGetter(r -> r.outputFluid),
-			Codec.DOUBLE.fieldOf("conversion_cost").forGetter(r -> r.conversionCost),
-			Codec.DOUBLE.fieldOf("convert_ratio").forGetter(r -> r.convertRatio)
-	).apply(inst, LiquidHeaterRecipies::new));
+			Codec.DOUBLE.fieldOf("output_amount").forGetter(r -> r.outputAmount),
+			Codec.DOUBLE.fieldOf("heat_per_liter").forGetter(r -> r.heatPerLiter)
+	).apply(inst, HeatExchangerRecipies::new));
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, LiquidHeaterRecipies> STREAM_CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, HeatExchangerRecipies> STREAM_CODEC = StreamCodec.composite(
 			CommonInfo.STREAM_CODEC, r -> r.commonInfo,
 			ByteBufCodecs.STRING_UTF8, r -> r.inputFluid,
+			ByteBufCodecs.DOUBLE, r -> r.inputAmount,
 			ByteBufCodecs.STRING_UTF8, r -> r.outputFluid,
-			ByteBufCodecs.DOUBLE, r -> r.conversionCost,
-			ByteBufCodecs.DOUBLE, r -> r.convertRatio,
-			LiquidHeaterRecipies::new
+			ByteBufCodecs.DOUBLE, r -> r.outputAmount,
+			ByteBufCodecs.DOUBLE, r -> r.heatPerLiter,
+			HeatExchangerRecipies::new
 	);
 
-	public static final RecipeSerializer<LiquidHeaterRecipies> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+	public static final RecipeSerializer<HeatExchangerRecipies> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
 
-	public static void addRecipe(RecipeOutput output, String id, String inputFluid, String outputFluid, double conversionCost, double convertRatio) {
-		var recipe = new LiquidHeaterRecipies(
+	public static void addRecipe(RecipeOutput output, String id, String inputFluid, double inputAmount, String outputFluid, double outputAmount, double heatPerLiter) {
+		var recipe = new HeatExchangerRecipies(
 				new CommonInfo(false),
 				inputFluid,
+				inputAmount,
 				outputFluid,
-				conversionCost,
-				convertRatio
+				outputAmount,
+				heatPerLiter
 		);
-		output.accept(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MODID, "liquid_heater/" + id)), recipe, null);
+		output.accept(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(MODID, "heat_exchanger/" + id)), recipe, null);
 	}
 
 	public static class Provider extends RecipeProvider {
@@ -107,7 +110,7 @@ public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, Str
 
 		@Override
 		protected void buildRecipes() {
-			LiquidHeaterRecipies.buildRecipes(output);
+			HeatExchangerRecipies.buildRecipes(output);
 		}
 	}
 
@@ -123,7 +126,7 @@ public record LiquidHeaterRecipies(CommonInfo commonInfo, String inputFluid, Str
 
 		@Override
 		public String getName() {
-			return "Liquid Heater Recipes";
+			return "Heat Exchanger Recipes";
 		}
 	}
 

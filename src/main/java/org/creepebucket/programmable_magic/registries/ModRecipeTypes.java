@@ -5,6 +5,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.mananet.machines.consumer.liquid_heater.LiquidHeaterRecipies;
+import org.creepebucket.programmable_magic.mananet.machines.generator.heat_exchanger.HeatExchangerRecipies;
 
 import java.util.function.Supplier;
 
@@ -16,6 +17,9 @@ public class ModRecipeTypes {
 
 	public static final Supplier<RecipeType<LiquidHeaterRecipies>> LIQUID_HEATER =
 			RECIPE_TYPES.register("liquid_heater", RecipeType::simple);
+
+	public static final Supplier<RecipeType<HeatExchangerRecipies>> HEAT_EXCHANGER =
+			RECIPE_TYPES.register("heat_exchanger", RecipeType::simple);
 
 	public static void register(IEventBus bus) {
 		RECIPE_TYPES.register(bus);

@@ -12,13 +12,12 @@ import org.creepebucket.programmable_magic.gui.lib.widgets.*;
 import org.creepebucket.programmable_magic.utils.ModColors;
 import org.creepebucket.programmable_magic.utils.ModUtils;
 
-import static org.creepebucket.programmable_magic.gui.lib.api.ThemeTemplate.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.network.chat.Component.literal;
 import static org.creepebucket.programmable_magic.gui.lib.api.Coordinate.*;
+import static org.creepebucket.programmable_magic.gui.lib.api.ThemeTemplate.*;
 
 public class MachineWidgets {
     public static class WindowHintWidget extends Widget implements Lifecycle, Tickable, KeyInputable {
@@ -334,9 +333,10 @@ public class MachineWidgets {
 
     public static class NetworkInfoWindow extends InformationWindowWidget {
         public MachineMenu menu;
+        public List<Widget> cacheWidgets = new ArrayList<>();
 
         public NetworkInfoWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, literal("网络信息"), 180, 90);
+            super(pos, size, literal("网络信息"), 130, 90);
             this.menu = menu;
         }
 
@@ -346,7 +346,8 @@ public class MachineWidgets {
 
             addChild(new RectangleWidget(fromTopLeft(7, 14), fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
             addChild(new TextWidget(fromTopLeft(11, 15), literal("当前魔力")).applyTheme(BRIGHT_LABEL));
-            addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).rightAlign().applyTheme(BRIGHT_LABEL));
+            var cacheLabel = addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).rightAlign().applyTheme(BRIGHT_LABEL));
+            cacheWidgets.add(cacheLabel);
             addChild(new TextWidget(fromTopRight(-7, 15), literal("净功率")).rightAlign().applyTheme(BRIGHT_LABEL));
 
             addChild(new RectangleWidget(custom(0, 7, 0   , 29), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
@@ -364,15 +365,15 @@ public class MachineWidgets {
             addChild(new TextWidget(custom(0, 54, 0.5 , 14), literal("J")).applyTheme(GENERAL_TEXT));
             addChild(new TextWidget(custom(0, 54, 0.75, 6 ), literal("J")).applyTheme(GENERAL_TEXT));
 
-            addChild(new NumberDisplayWidget(custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
-            addChild(new NumberDisplayWidget(custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1));
+            cacheWidgets.add(addChild(new NumberDisplayWidget(custom(1, -74, 0   , 29), menu.radiationCacheJ  , 7, 1, true).rightAlign().mainColor(-1)));
+            cacheWidgets.add(addChild(new NumberDisplayWidget(custom(1, -74, 0.25, 21), menu.temperatureCacheJ, 7, 1, true).rightAlign().mainColor(-1)));
+            cacheWidgets.add(addChild(new NumberDisplayWidget(custom(1, -74, 0.5 , 13), menu.momentumCacheJ   , 7, 1, true).rightAlign().mainColor(-1)));
+            cacheWidgets.add(addChild(new NumberDisplayWidget(custom(1, -74, 0.75, 5 ), menu.pressureCacheJ   , 7, 1, true).rightAlign().mainColor(-1)));
 
-            addChild(new TextWidget(custom(1, -67, 0   , 30), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
-            addChild(new TextWidget(custom(1, -67, 0.25, 22), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
-            addChild(new TextWidget(custom(1, -67, 0.5 , 14), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
-            addChild(new TextWidget(custom(1, -67, 0.75, 6 ), literal("J")).rightAlign().applyTheme(GENERAL_TEXT));
+            cacheWidgets.add(addChild(new TextWidget(custom(1, -67, 0   , 30), literal("J")).rightAlign().applyTheme(GENERAL_TEXT)));
+            cacheWidgets.add(addChild(new TextWidget(custom(1, -67, 0.25, 22), literal("J")).rightAlign().applyTheme(GENERAL_TEXT)));
+            cacheWidgets.add(addChild(new TextWidget(custom(1, -67, 0.5 , 14), literal("J")).rightAlign().applyTheme(GENERAL_TEXT)));
+            cacheWidgets.add(addChild(new TextWidget(custom(1, -67, 0.75, 6 ), literal("J")).rightAlign().applyTheme(GENERAL_TEXT)));
 
             addChild(new RectangleWidget(custom(1, -7, 0   , 29), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
             addChild(new RectangleWidget(custom(1, -7, 0.25, 21), fromTopLeft(53, 9)).rightAlign().mainColor(ModColors.MAIN_COLOR_T));
@@ -393,6 +394,17 @@ public class MachineWidgets {
             addChild(new ProgressBarWidget(custom(0, 11, 0.5 , 10), custom(1, -18, 0.25, -21), menu.temperatureStorageJ, menu.temperatureCacheJ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_T).bgColor(ModColors.MAIN_COLOR_T.withAlpha(0x0f)));
             addChild(new ProgressBarWidget(custom(0, 11, 0.75, 2 ), custom(1, -18, 0.25, -21), menu.momentumStorageJ   , menu.momentumCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_M).bgColor(ModColors.MAIN_COLOR_M.withAlpha(0x0f)));
             addChild(new ProgressBarWidget(custom(0, 11, 1   , -6), custom(1, -18, 0.25, -21), menu.pressureStorageJ   , menu.pressureCacheJ   ).bottomAlignY().mainColor(ModColors.MAIN_COLOR_P).bgColor(ModColors.MAIN_COLOR_P.withAlpha(0x0f)));
+
+            onResize(w(), h());
+        }
+
+        @Override
+        public void onResize(int width, int height) {
+            boolean showCache = width >= 180;
+            for (var w : cacheWidgets) {
+                if (showCache) w.enable();
+                else w.disable();
+            }
         }
     }
 
@@ -410,6 +422,42 @@ public class MachineWidgets {
 
             var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), literal("关闭"), literal("开启"), menu.enabled).onSwitch(enabled -> menu.powerSwitch.trigger(enabled));
             addChild(switchWidget.mainColor(-1));
+        }
+    }
+
+    public static class GeneratorOverclockWindow extends InformationWindowWidget {
+        public DynamicValue<Double> powerFact;
+        public double basePower, maxFact;
+
+        public GeneratorOverclockWindow(Coordinate pos, Coordinate size, DynamicValue<Double> powerFact, double basePower, double maxFact) {
+            super(pos, size, literal("功率控制"), 165, 40);
+            this.powerFact = powerFact;
+            this.basePower = basePower;
+            this.maxFact = maxFact;
+        }
+
+        @Override
+        public void onInitialize() {
+            super.onInitialize();
+
+            addChild(new RectangleWidget(fromTopLeft(6, 25), fromTopLeft(75, 2)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
+            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
+            addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true).mainColor(-1));
+
+            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * 5 * (Math.pow(powerFact.get() + 0.5, 2) - 0.25)), 6, 1, true).rightAlign().mainColor(-1));
+
+            addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)).rightAlign());
+            addChild(new TextWidget(fromTopRight(-7, 24), literal("有效功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign().mainColor(-1));
+
+            for (int i = 1; i < maxFact; i++) {
+                addChild(new TextWidget(custom((double) i / maxFact, (int) Math.floor(-14 * (double) i / maxFact + 7), 1, -13), literal(String.valueOf(i))).scaled(0.5).centerAlign().applyTheme(DIM_TEXT));
+            }
+            addChild(new TextWidget(custom(0, 7, 1, -13), literal("0")).scaled(0.5).applyTheme(DIM_TEXT));
+            addChild(new TextWidget(custom(1, -6, 1, -13), literal(String.valueOf((int) maxFact))).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+
+            addChild(new ThinSlideBarWidget(fromBottomLeft(7, -9), fromTopRight(-14, 5), 0, maxFact, powerFact).step(0.05).bgColor(-1));
         }
     }
 
