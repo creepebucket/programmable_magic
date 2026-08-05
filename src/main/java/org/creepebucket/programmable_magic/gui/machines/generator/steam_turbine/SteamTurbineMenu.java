@@ -13,8 +13,9 @@ import org.creepebucket.programmable_magic.mananet.machines.generator.steam_turb
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class SteamTurbineMenu extends MachineMenu {
-	public DynamicValue<Double> power;
 	public DynamicValue<Double> powerFact;
+	public DynamicValue<Double> manaPowerW;
+	public DynamicValue<Boolean> voidOverflow;
 	public boolean enabled_synced;
 
 	public SteamTurbineMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
@@ -41,20 +42,24 @@ public class SteamTurbineMenu extends MachineMenu {
 	@Override
 	public void init() {
 		initNetworkData();
-		power = registerData("power", SyncMode.S2C, 0d);
+
 		powerFact = registerData("power_fact", SyncMode.BOTH, 1d);
+		manaPowerW = registerData("mana_power_w", SyncMode.S2C, 0d);
+		voidOverflow = registerData("void_overflow", SyncMode.BOTH, false);
 	}
 
 	@Override
 	protected void onNetworkSynced() {
 		var blockEntity = (SteamTurbineBlockEntity) playerInv.player.level().getBlockEntity(pos);
-		power.set(blockEntity.power);
 		if (!enabled_synced) {
 			powerFact.set(blockEntity.powerFact);
+			voidOverflow.set(blockEntity.voidOverflow);
 			enabled_synced = true;
 			enabled.set(blockEntity.enabled);
 		}
 		blockEntity.powerFact = powerFact.get();
+		blockEntity.voidOverflow = voidOverflow.get();
+		manaPowerW.set(blockEntity.manaPowerW);
 		blockEntity.setChanged();
 	}
 }

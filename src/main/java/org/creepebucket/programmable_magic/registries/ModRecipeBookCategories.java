@@ -19,6 +19,12 @@ public class ModRecipeBookCategories {
 	public static final Supplier<RecipeBookCategory> HEAT_EXCHANGER =
 			RECIPE_BOOK_CATEGORIES.register("heat_exchanger", RecipeBookCategory::new);
 
+	public static final Supplier<RecipeBookCategory> STEAM_TURBINE =
+			RECIPE_BOOK_CATEGORIES.register("steam_turbine", RecipeBookCategory::new);
+
+	public static final Supplier<RecipeBookCategory> PRESSURE_RELIEF_VALVE =
+			RECIPE_BOOK_CATEGORIES.register("pressure_relief_valve", RecipeBookCategory::new);
+
 	public static void register(IEventBus bus) {
 		RECIPE_BOOK_CATEGORIES.register(bus);
 	}

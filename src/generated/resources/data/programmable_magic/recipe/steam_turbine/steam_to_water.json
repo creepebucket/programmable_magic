@@ -1,0 +1,9 @@
+{
+  "type": "programmable_magic:steam_turbine",
+  "heat_per_liter": 133333.33333333334,
+  "input_amount": 30.0,
+  "input_fluid": "programmable_magic:steam",
+  "output_amount": 1.0,
+  "output_fluid": "minecraft:water",
+  "show_notification": false
+}

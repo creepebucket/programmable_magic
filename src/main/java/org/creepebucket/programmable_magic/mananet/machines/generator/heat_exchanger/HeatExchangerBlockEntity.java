@@ -118,8 +118,7 @@ public class HeatExchangerBlockEntity extends MachineBlockEntity implements GeoB
 		double actualPower = 1e6 * entity.powerFact;
 
 		// 效率系数
-		// FIXME powerFact=0 时 expectedPower=0, eff=0/0=NaN, 会通过 setLoadW 污染整个网络
-		double eff = actualPower / expectedPower;
+		double eff = expectedPower > 0 ? actualPower / expectedPower : 0d;
 
 		// 从流体存量计算潜在魔力
 		double inputFluidAmount = fluidInput.getAmountAsInt(0);
@@ -133,11 +132,6 @@ public class HeatExchangerBlockEntity extends MachineBlockEntity implements GeoB
 
 		// 本 tick 消耗的原始魔力(上限为预期功率)
 		double consumedRawMana = Math.min(hiddenMana, expectedPower / 20);
-
-		// 按实际效率产魔
-		// FIXME 流体不足一个配方单位时 extract 失败 return, 但这里的负载已写入网络, 机器凭空供能
-		networkData.setLoadW(new Mana(0d, -consumedRawMana * 20 * eff, 0d, 0d));
-		entity.manaPowerW = consumedRawMana * 20 * eff;
 
 		// 消耗配方数量的流体
 		double recipeConsumeMult = Math.ceil((consumedRawMana - entity.unoutputtedMana) / heatPerUnit);
@@ -155,6 +149,10 @@ public class HeatExchangerBlockEntity extends MachineBlockEntity implements GeoB
 				transaction.commit();
 			}
 		}
+
+		// 按实际效率产魔
+		networkData.setLoadW(new Mana(0d, -consumedRawMana * 20 * eff, 0d, 0d));
+		entity.manaPowerW = consumedRawMana * 20 * eff;
 
 		// 剩余未产出魔力留到下 tick
 		entity.unoutputtedMana -= consumedRawMana - heatPerUnit * recipeConsumeMult;

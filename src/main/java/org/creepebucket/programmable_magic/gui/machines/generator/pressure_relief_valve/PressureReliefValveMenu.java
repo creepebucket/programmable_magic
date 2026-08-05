@@ -13,8 +13,8 @@ import org.creepebucket.programmable_magic.mananet.machines.generator.pressure_r
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class PressureReliefValveMenu extends MachineMenu {
-	public DynamicValue<Double> power;
 	public DynamicValue<Double> powerFact;
+	public DynamicValue<Double> manaPowerW;
 	public boolean enabled_synced;
 
 	public PressureReliefValveMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
@@ -41,20 +41,21 @@ public class PressureReliefValveMenu extends MachineMenu {
 	@Override
 	public void init() {
 		initNetworkData();
-		power = registerData("power", SyncMode.S2C, 0d);
+
 		powerFact = registerData("power_fact", SyncMode.BOTH, 1d);
+		manaPowerW = registerData("mana_power_w", SyncMode.S2C, 0d);
 	}
 
 	@Override
 	protected void onNetworkSynced() {
 		var blockEntity = (PressureReliefValveBlockEntity) playerInv.player.level().getBlockEntity(pos);
-		power.set(blockEntity.power);
 		if (!enabled_synced) {
 			powerFact.set(blockEntity.powerFact);
 			enabled_synced = true;
 			enabled.set(blockEntity.enabled);
 		}
 		blockEntity.powerFact = powerFact.get();
+		manaPowerW.set(blockEntity.manaPowerW);
 		blockEntity.setChanged();
 	}
 }

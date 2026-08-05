@@ -20,13 +20,14 @@ import org.creepebucket.programmable_magic.gui.machines.generator.pressure_relie
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
 public class PressureReliefValve extends BasicMachine {
 
 	public PressureReliefValve(Properties properties) {
 		super(properties);
-		//addFluidInput(-1, 0, 0, 8000);
+		addFluidInput(new RelativeBlockPos(0, 0, 0));
 	}
 
 	@Override

@@ -440,14 +440,14 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new RectangleWidget(fromTopLeft(6, 25), fromTopLeft(75, 2)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
+            addChild(new RectangleWidget(fromTopLeft(6, 25), fromTopLeft(75, 2)).mainColor(mainColor().withAlpha(0x7f)));
             addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
             addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true).mainColor(-1));
 
             addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * 5 * (Math.pow(powerFact.get() + 0.5, 2) - 0.25)), 6, 1, true).rightAlign().mainColor(-1));
 
-            addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)).rightAlign());
+            addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(mainColor().withAlpha(0x7f)).rightAlign());
             addChild(new TextWidget(fromTopRight(-7, 24), literal("有效功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign().mainColor(-1));
 
