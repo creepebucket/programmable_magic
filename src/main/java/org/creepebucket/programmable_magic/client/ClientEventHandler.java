@@ -10,6 +10,7 @@ import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.resources.model.sprite.Material;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoScreen;
+import org.creepebucket.programmable_magic.gui.machines.buffer.ManaBufferScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterScreen;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpScreen;
 import org.creepebucket.programmable_magic.gui.machines.generator.heat_exchanger.HeatExchangerScreen;
@@ -77,6 +78,10 @@ public class ClientEventHandler {
 		event.register(
 				ModMenuTypes.IO_DUMMY.get(),
 				IoDummyScreen::new
+		);
+		event.register(
+				ModMenuTypes.MANA_BUFFER_MENU.get(),
+				ManaBufferScreen::new
 		);
 	}
 

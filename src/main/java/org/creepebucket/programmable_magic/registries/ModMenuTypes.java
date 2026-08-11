@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.creepebucket.programmable_magic.gui.command.NetworkInfoMenu;
+import org.creepebucket.programmable_magic.gui.machines.buffer.ManaBufferMenu;
 import org.creepebucket.programmable_magic.gui.machines.consumer.liquid_heater.LiquidHeaterMenu;
 import org.creepebucket.programmable_magic.gui.machines.consumer.water_pump.WaterPumpMenu;
 import org.creepebucket.programmable_magic.gui.machines.generator.heat_exchanger.HeatExchangerMenu;
@@ -35,6 +36,7 @@ public class ModMenuTypes {
 	public static final Supplier<MenuType<PressureReliefValveMenu>> PRESSURE_RELIEF_VALVE_MENU = MENUS.register("pressure_relief_valve_menu", () -> IMenuTypeExtension.create(PressureReliefValveMenu::new));
 	public static final Supplier<MenuType<WaterPumpMenu>> WATER_PUMP_MENU = MENUS.register("water_pump_menu", () -> IMenuTypeExtension.create(WaterPumpMenu::new));
 	public static final Supplier<MenuType<LiquidHeaterMenu>> LIQUID_HEATER_MENU = MENUS.register("liquid_heater_menu", () -> IMenuTypeExtension.create(LiquidHeaterMenu::new));
+	public static final Supplier<MenuType<ManaBufferMenu>> MANA_BUFFER_MENU = MENUS.register("mana_buffer_menu", () -> IMenuTypeExtension.create(ManaBufferMenu::new));
 	public static final Supplier<MenuType<NetworkInfoMenu>> NETWORK_INFO = MENUS.register("network_info", () -> IMenuTypeExtension.create(NetworkInfoMenu::new));
 	public static final Supplier<MenuType<IoDummyMenu>> IO_DUMMY = MENUS.register("io_dummy", () -> IMenuTypeExtension.create(IoDummyMenu::new));
 
