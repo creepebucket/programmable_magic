@@ -30,6 +30,6 @@ public class VerticalManaConnector extends AbstractManaConnector {
 
 	@Override
 	protected boolean isValidConnectionFace(Direction face) {
-		return true;
+		return face.getAxis().isHorizontal();
 	}
 }
