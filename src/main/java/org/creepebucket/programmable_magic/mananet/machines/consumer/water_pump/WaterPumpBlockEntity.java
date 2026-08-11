@@ -77,7 +77,7 @@ public class WaterPumpBlockEntity extends MachineBlockEntity implements GeoBlock
 		var water = FluidResource.of(Fluids.WATER);
 		var fluidHandler = entity.fluidStorage.get(new RelativeBlockPos(0, 0, 0));
 		var maxSpace = fluidHandler.getCapacityAsInt(0, water) - fluidHandler.getAmountAsInt(0);
-		var waterToProduce = Math.min(maxSpace, (int) entity.power);
+		var waterToProduce = Math.min(maxSpace, (int) entity.power / 40);
 		if (waterToProduce > 0) {
 			try (var transaction = Transaction.openRoot()) {
 				if (fluidHandler.insert(0, water, waterToProduce, transaction) == waterToProduce) {
