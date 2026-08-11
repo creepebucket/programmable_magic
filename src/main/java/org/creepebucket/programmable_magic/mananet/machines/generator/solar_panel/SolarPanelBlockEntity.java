@@ -104,7 +104,7 @@ public class SolarPanelBlockEntity extends MachineBlockEntity implements GeoBloc
         }
 
         entity.power = entity.enabled ? (entity.directIrradiance + entity.diffuseIrradiance) * entity.panelArea * entity.efficiencyFact * 0.01 : 0;
-        var load = new Mana(-entity.power, 0d, 10d, 0d);
+        var load = new Mana(-entity.power, 0d, 0d, 0d);
 
         if (entity.getNetworkData().canProduce(load)) entity.getNetworkData().setLoadW(load);
         entity.getNetworkData().setCache(new Mana(2000d, 2000d, 2000d, 2000d));
