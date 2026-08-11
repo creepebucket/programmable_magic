@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 public class RelativeBlockPos {
+    public static final RelativeBlockPos ZERO = new RelativeBlockPos(0, 0, 0);
     public int facing_off, y_off, cw90_off;
 
     public RelativeBlockPos(int facing_off, int y_off, int cw90_off) {
@@ -49,7 +50,7 @@ public class RelativeBlockPos {
     public long asLong() {
         long l = (long) (facing_off & 0x3FFFFFF) << 38;
         long m = (long) (y_off & 0xFFF) << 26;
-        long n = (long) (cw90_off & 0x3FFFFFF);
+        long n = cw90_off & 0x3FFFFFF;
         return l | m | n;
     }
 

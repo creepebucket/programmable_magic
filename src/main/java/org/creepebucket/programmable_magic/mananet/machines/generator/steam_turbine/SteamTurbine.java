@@ -2,17 +2,13 @@ package org.creepebucket.programmable_magic.mananet.machines.generator.steam_tur
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -49,16 +45,6 @@ public class SteamTurbine extends BasicMachine {
 		shape = Shapes.join(shape, Shapes.box(0, 4.4375, 0, 1, 4.8125, 1), BooleanOp.OR);
 
 		return shape;
-	}
-
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-			serverPlayer.openMenu(state.getMenuProvider(level, pos), buf -> {
-				buf.writeBlockPos(pos);
-			});
-		}
-		return InteractionResult.SUCCESS;
 	}
 
 	@Override

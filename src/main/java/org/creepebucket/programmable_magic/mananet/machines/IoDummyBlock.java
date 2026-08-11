@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.creepebucket.programmable_magic.gui.machines.io_dummy.IoDummyMenu;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
 public class IoDummyBlock extends DummyBlock implements EntityBlock {
@@ -31,27 +32,29 @@ public class IoDummyBlock extends DummyBlock implements EntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!player.isCrouching()) return super.useWithoutItem(state, level, pos, player, hitResult);
-        return openMenu(level, pos, player);
+		var blockEntity = (IoDummyBlockEntity) level.getBlockEntity(pos);
+		var mainPos = DummyBlock.get_main_pos(pos, level.getBlockState(pos));
+        return openIoMenu(level, mainPos, blockEntity.getRelativePos(), player);
     }
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!player.isCrouching()) return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
-        return openMenu(level, pos, player);
+		var blockEntity = (IoDummyBlockEntity) level.getBlockEntity(pos);
+		var mainPos = DummyBlock.get_main_pos(pos, level.getBlockState(pos));
+		return openIoMenu(level, mainPos, blockEntity.getRelativePos(), player);
     }
 
-	public InteractionResult openMenu(Level level, BlockPos pos, Player player) {
+	public static InteractionResult openIoMenu(Level level, BlockPos mainPos, RelativeBlockPos relativePos, Player player) {
 		if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
-			var blockEntity = (IoDummyBlockEntity) level.getBlockEntity(pos);
-			var mainBlockEntity = (MachineBlockEntity) level.getBlockEntity(DummyBlock.get_main_pos(pos, level.getBlockState(pos)));
-			var relativePos = blockEntity.getRelativePos();
+			var mainBlockEntity = (MachineBlockEntity) level.getBlockEntity(mainPos);
 			var handler = mainBlockEntity.itemStorage.containsKey(relativePos) ? mainBlockEntity.getItemHandler(relativePos) : mainBlockEntity.getFluidHandler(relativePos);
 			var flowControl = (FlowControlHandler<?>) handler;
 			serverPlayer.openMenu(new SimpleMenuProvider(
-					(containerId, inventory, extra) -> new IoDummyMenu(containerId, inventory, pos, flowControl.handler, flowControl.canInput, flowControl.canOutput),
+					(containerId, inventory, extra) -> new IoDummyMenu(containerId, inventory, mainPos, flowControl.handler, flowControl.canInput, flowControl.canOutput),
 					Component.literal("")
 			), buf -> {
-				buf.writeBlockPos(pos);
+				buf.writeBlockPos(mainPos);
 				buf.writeBoolean(handler.getResource(0) instanceof ItemResource);
 				buf.writeBoolean(flowControl.canInput);
 				buf.writeBoolean(flowControl.canOutput);

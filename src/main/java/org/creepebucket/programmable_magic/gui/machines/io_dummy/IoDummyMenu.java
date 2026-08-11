@@ -21,8 +21,6 @@ import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 import org.creepebucket.programmable_magic.gui.lib.api.DynamicValue;
 import org.creepebucket.programmable_magic.gui.lib.api.SyncMode;
 import org.creepebucket.programmable_magic.gui.machines.api.MachineMenu;
-import org.creepebucket.programmable_magic.mananet.machines.DummyBlock;
-import org.creepebucket.programmable_magic.mananet.machines.IoDummyBlockEntity;
 import org.creepebucket.programmable_magic.registries.ModMenuTypes;
 
 public class IoDummyMenu extends MachineMenu {
@@ -89,8 +87,7 @@ public class IoDummyMenu extends MachineMenu {
 			onNetworkSynced();
 			if (resourceHandler.getResource(0) instanceof FluidResource)
 				tryProcessFluidIo(fluidIoContainer, (ResourceHandler<FluidResource>) resourceHandler);
-			var ioDummy = (IoDummyBlockEntity) playerInv.player.level().getBlockEntity(pos);
-			playerInv.player.level().getBlockEntity(DummyBlock.get_main_pos(pos, ioDummy.getBlockState())).setChanged();
+			playerInv.player.level().getBlockEntity(pos).setChanged();
 		}
 		count++;
 	}

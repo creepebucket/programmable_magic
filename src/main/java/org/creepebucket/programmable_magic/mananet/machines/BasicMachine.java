@@ -2,7 +2,11 @@ package org.creepebucket.programmable_magic.mananet.machines;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -15,6 +19,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -161,6 +166,34 @@ public abstract class BasicMachine extends Block implements EntityBlock {
 
     public void addFluidOutput(RelativeBlockPos pos) {
         IO_DEFINITION.put(pos, "fluid_output");
+    }
+
+    public InteractionResult openIoMenu(Level level, BlockPos pos, Player player) {
+        if (!IO_DEFINITION.containsKey(RelativeBlockPos.ZERO)) return InteractionResult.PASS;
+        return IoDummyBlock.openIoMenu(level, pos, RelativeBlockPos.ZERO, player);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (player.isCrouching()) {
+            var result = openIoMenu(level, pos, player);
+            if (result != InteractionResult.PASS) return result;
+        }
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            var provider = state.getMenuProvider(level, pos);
+            if (provider == null) return InteractionResult.PASS;
+            serverPlayer.openMenu(provider, buf -> buf.writeBlockPos(pos));
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+        if (player.isCrouching()) {
+            var result = openIoMenu(level, pos, player);
+            if (result != InteractionResult.PASS) return result;
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
 }
