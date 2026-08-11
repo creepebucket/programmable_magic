@@ -1,5 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import org.creepebucket.programmable_magic.ModConfig;
+
 import java.util.function.Function;
 
 public class SmoothedValue {
@@ -31,6 +33,11 @@ public class SmoothedValue {
     }
 
     public void doStep(double dt) {
+        if (ModConfig.CONFIG.disableAnimations.get()) {
+            current = target;
+            speed = 0;
+            return;
+        }
         last = current;
         speed += (target - current) * a * dt - speed * (Math.abs(target - current) < 2 ? b / 3 : b) * dt; // 末端缓冲
         current += speed * dt;

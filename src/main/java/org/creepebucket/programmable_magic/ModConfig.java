@@ -9,6 +9,7 @@ public class ModConfig {
 
 	public final ModConfigSpec.DoubleValue fuelValueMultiplier;
 	public final ModConfigSpec.BooleanValue moreBalancedFuel;
+	public final ModConfigSpec.BooleanValue disableAnimations;
 
 	static {
 		Pair<ModConfig, ModConfigSpec> pair = new ModConfigSpec.Builder()
@@ -72,6 +73,14 @@ public class ModConfig {
 		moreBalancedFuel = builder.comment("使燃料热值更贴近现实")
 				.translation("programmable_magic.config.more_balanced_fuel")
 				.define("more_balanced_fuel", false);
+
+		builder.pop();
+
+		builder.push("visual");
+
+		disableAnimations = builder.comment("禁用动画")
+				.translation("programmable_magic.config.disable_animations")
+				.define("disable_animations", false);
 
 		builder.pop();
 	}

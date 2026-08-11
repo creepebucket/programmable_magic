@@ -1,5 +1,7 @@
 package org.creepebucket.programmable_magic.gui.lib.api;
 
+import org.creepebucket.programmable_magic.ModConfig;
+
 import static org.creepebucket.programmable_magic.utils.ModUtils.now;
 
 public abstract class Animation {
@@ -14,7 +16,7 @@ public abstract class Animation {
     }
 
     public boolean isExpired() {
-        return start + duration <= now();
+        return ModConfig.CONFIG.disableAnimations.get() || start + duration <= now();
     }
     public boolean isStarted() {
         return now() >= start && !started;
