@@ -27,6 +27,7 @@ public class LiquidHeater extends BasicMachine {
 		addFluidInput(new RelativeBlockPos(-1, 0, 0));
 		addFluidOutput(new RelativeBlockPos(1, 0, 0));
 		addItemInput(new RelativeBlockPos(1, 1, 0));
+		addManaLink(new RelativeBlockPos(1, 1, 0));
 	}
 
 	@Override

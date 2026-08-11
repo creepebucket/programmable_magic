@@ -16,12 +16,14 @@ import org.creepebucket.programmable_magic.gui.machines.buffer.ManaBufferMenu;
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
 public class MediumManaBuffer extends BasicMachine {
 
 	public MediumManaBuffer(Properties properties) {
 		super(properties);
+		addManaLink(new RelativeBlockPos(0, 3, 0));
 	}
 
 	@Override

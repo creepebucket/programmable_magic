@@ -39,7 +39,7 @@ public abstract class AbstractManaConnector extends Block implements EntityBlock
 		var hitLoc = hitResult.getLocation();
 		var clickedFace = Direction.getApproximateNearest(hitLoc.x - pos.getX() - 0.5, hitLoc.y - pos.getY() - 0.5, hitLoc.z - pos.getZ() - 0.5);
 		if (!isValidConnectionFace(clickedFace)) {
-			player.sendSystemMessage(Component.literal("拒绝连接: 无法在此面连接"));
+			player.sendSystemMessage(Component.translatable("message.programmable_magic.connector.reject_face"));
 			return InteractionResult.CONSUME;
 		}
 
@@ -51,13 +51,13 @@ public abstract class AbstractManaConnector extends Block implements EntityBlock
 
 			player.removeData(ModAttachments.PENDING_CONNECTION);
 			player.removeData(ModAttachments.PENDING_FACE);
-			player.sendSystemMessage(Component.literal("已连接 " + connectedPos.toShortString() + " " + connectedFace.getName() + " -> " + pos.toShortString() + " " + selfFace.getName()));
+			player.sendSystemMessage(Component.translatable("message.programmable_magic.connector.connected", connectedPos.toShortString(), connectedFace.getName(), pos.toShortString(), selfFace.getName()));
 			return InteractionResult.CONSUME;
 		}
 
 		player.setData(ModAttachments.PENDING_CONNECTION, pos);
 		player.setData(ModAttachments.PENDING_FACE, clickedFace);
-		player.sendSystemMessage(Component.literal("连接起点已设置为 " + pos.toShortString() + " " + clickedFace.getName()));
+		player.sendSystemMessage(Component.translatable("message.programmable_magic.connector.pending_set", pos.toShortString(), clickedFace.getName()));
 		return InteractionResult.CONSUME;
 	}
 }

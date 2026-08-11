@@ -26,17 +26,17 @@ public class WindTurbineScreen extends MachineScreen<WindTurbineMenu> {
 		root.mainColor(ModColors.MAIN_COLOR_M);
 
 		// 主要信息显示
-		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-200, -90), fromTopLeft(210, 80), menu.power, literal("动量/Mom"),
-				literal("风力涡轮机"), literal("[输出功率]"), literal("P="), "W"));
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-200, -90), fromTopLeft(210, 80), menu.power, Component.translatable("gui.programmable_magic.machine.mana_type.momentum"),
+				Component.translatable("gui.programmable_magic.machine.type.wind_turbine"), Component.translatable("gui.programmable_magic.machine.main_text.output_power"), literal("P="), "W"));
 
 		// 功率计算
-		var calculationsWindow = new MachineWidgets.PowerInfoWindow(fromCenter(-200, 0), fromTopLeft(210, 90), literal("总功率 = 0.5×ρ×s×v³×η"));
+		var calculationsWindow = new MachineWidgets.PowerInfoWindow(fromCenter(-200, 0), fromTopLeft(210, 90), Component.translatable("gui.programmable_magic.machine.wind_turbine.power_expr"));
 		addWidget(calculationsWindow);
 
-		calculationsWindow.addPowerInfoItem(literal("空气密度/ρ"), menu.airDensity, literal("kg/m³"));
-		calculationsWindow.addPowerInfoItem(literal("风速/v"), menu.windSpeed, literal("m/s"));
-		calculationsWindow.addPowerInfoItem(literal("扫风面积/s"), DynamicValue.staticValue(6d), literal("m²"));
-		calculationsWindow.addPowerInfoItem(literal("转换效率/η"), DynamicValue.staticValue(25d), literal("%"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.wind_turbine.air_density_item"), menu.airDensity, literal("kg/m³"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.wind_turbine.wind_speed_item"), menu.windSpeed, literal("m/s"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.wind_turbine.swept_area_item"), DynamicValue.staticValue(6d), literal("m²"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.wind_turbine.efficiency_item"), DynamicValue.staticValue(25d), literal("%"));
 
 		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(20, -90), fromTopLeft(180, 120), menu));
 

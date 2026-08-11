@@ -31,13 +31,13 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 
 		// ================= 生产窗口 ================= //
 
-		var productionWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(-175, -100), fromTopLeft(350, 70), literal("生产总览"), 0, 0));
+		var productionWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(-175, -100), fromTopLeft(350, 70), Component.translatable("gui.programmable_magic.machine.liquid_heater.window.production"), 0, 0));
 
 		// 头
-		productionWindow.addChild(new TextWidget(fromTopLeft(7, 39), literal("机器类型")).bottomAlignY().applyTheme(LABEL_TEXT));
-		productionWindow.addChild(new TextWidget(fromTopLeft(7, 15), literal("液体加热器")).scaled(1.5));
-		productionWindow.addChild(new TextWidget(fromTopRight(-7, 39), literal("魔力类型")).rightAlign().bottomAlignY().applyTheme(LABEL_TEXT));
-		productionWindow.addChild(new TextWidget(fromTopRight(-7, 15), literal("温度/Tem")).scaled(1.5).rightAlign());
+		productionWindow.addChild(new TextWidget(fromTopLeft(7, 39), Component.translatable("gui.programmable_magic.machine.label.machine_type")).bottomAlignY().applyTheme(LABEL_TEXT));
+		productionWindow.addChild(new TextWidget(fromTopLeft(7, 15), Component.translatable("gui.programmable_magic.machine.type.liquid_heater")).scaled(1.5));
+		productionWindow.addChild(new TextWidget(fromTopRight(-7, 39), Component.translatable("gui.programmable_magic.machine.label.mana_type")).rightAlign().bottomAlignY().applyTheme(LABEL_TEXT));
+		productionWindow.addChild(new TextWidget(fromTopRight(-7, 15), Component.translatable("gui.programmable_magic.machine.mana_type.temperature")).scaled(1.5).rightAlign());
 
 		// 转换能量
 		productionWindow.addChild(new TextWidget(fromCenterBottom(0, -5), literal(">>>")).noShadow().scaled(3).bottomAlignY().centerAlign().mainColor(0x1fffffff));
@@ -86,9 +86,9 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 
 		// ================= 燃料窗口 ================= //
 
-		var fuelWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(-175, -20), fromTopLeft(170, 100), literal("燃料信息"), 0 ,0));
+		var fuelWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(-175, -20), fromTopLeft(170, 100), Component.translatable("gui.programmable_magic.machine.liquid_heater.window.fuel"), 0 ,0));
 
-		fuelWindow.addChild(new TextWidget(fromTopLeft(7, 18), literal("当前燃料")).applyTheme(DIM_TEXT));
+		fuelWindow.addChild(new TextWidget(fromTopLeft(7, 18), Component.translatable("gui.programmable_magic.machine.liquid_heater.label.current_fuel")).applyTheme(DIM_TEXT));
 		fuelWindow.addChild(new RectangleWidget(fromTopLeft(7, 28), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
 		var texture = (ItemTextureWidget) fuelWindow.addChild(new ItemTextureWidget(fromTopLeft(8, 28), fromTopLeft(16, 16), menu.currentFuelId.get()));
 		fuelNameText = (TextWidget) fuelWindow.addChild(new TextWidget(fromTopLeft(16, 29), Component.translatable(BuiltInRegistries.ITEM.getValue(Identifier.parse(menu.currentFuelId.get())).getDescriptionId())).applyTheme(GENERAL_TEXT));
@@ -102,19 +102,19 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 			fuelIdText = (TextWidget) fuelWindow.addChild(new TextWidget(fromTopLeft(16, 39), literal(menu.currentFuelId.get())).applyTheme(HALF_LABEL).addAnimation(new Animation.FadeIn.FromLeft(0.3), 0.1));
 		});
 
-		fuelWindow.addChild(new TextWidget(fromCenterTop(0, 18), literal("燃料热值")).applyTheme(DIM_TEXT));
+		fuelWindow.addChild(new TextWidget(fromCenterTop(0, 18), Component.translatable("gui.programmable_magic.machine.liquid_heater.label.fuel_heat_value")).applyTheme(DIM_TEXT));
 		fuelWindow.addChild(new RectangleWidget(fromCenterTop(0, 28), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
 		var unit = new TextSwitchWidget(fromCenterTop(45, 34), fromTopLeft(13, 9), 1, "J").mainColor(ModColors.MAIN_COLOR_T.withAlpha(0xbf)).bgColor(0);
 		fuelWindow.addChild(new NumberDisplayWidget(fromCenterTop(0, 28), menu.fuelTotalValue, 5, 1.5, (TextSwitchWidget) unit, "J", true).mainColor(-1));
 		fuelWindow.addChild(unit);
 
 		fuelWindow.addChild(new RectangleWidget(fromBottomLeft(7, -35), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
-		fuelWindow.addChild(new TextWidget(fromBottomLeft(7, -45), literal("燃烧时间")).applyTheme(DIM_TEXT));
+		fuelWindow.addChild(new TextWidget(fromBottomLeft(7, -45), Component.translatable("gui.programmable_magic.machine.liquid_heater.label.burn_time")).applyTheme(DIM_TEXT));
 		fuelWindow.addChild(new NumberDisplayWidget(fromBottomLeft(7, -35),DynamicValue.fromSupplier(() -> menu.fuelCurrentValue.get() / (4e6 * 5 * (Math.pow(menu.powerFact.get() + 0.5, 2) - 0.25))), 5, 1.5, true).mainColor(-1));
 		fuelWindow.addChild(new TextWidget(fromBottomLeft(53, -28), literal("s")).noShadow().mainColor(ModColors.MAIN_COLOR_T.withAlpha(0xbf)));
 
 		fuelWindow.addChild(new RectangleWidget(fromCenterBottom(0, -35), fromTopLeft(8, 16)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
-		fuelWindow.addChild(new TextWidget(fromCenterBottom(0, -45), literal("剩余热值")).applyTheme(DIM_TEXT));
+		fuelWindow.addChild(new TextWidget(fromCenterBottom(0, -45), Component.translatable("gui.programmable_magic.machine.liquid_heater.label.remaining_heat")).applyTheme(DIM_TEXT));
 		var currentUnit = new TextSwitchWidget(fromCenterBottom(45, -29), fromTopLeft(13, 9), 1, "J").mainColor(ModColors.MAIN_COLOR_T.withAlpha(0xbf)).bgColor(0);
 		fuelWindow.addChild(new NumberDisplayWidget(fromCenterBottom(0, -35), menu.fuelCurrentValue, 5, 1.5, (TextSwitchWidget) currentUnit, "J", true).mainColor(-1));
 		fuelWindow.addChild(currentUnit);
@@ -123,17 +123,17 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 
 		// ================= 超频窗口 ================= //
 
-		var overclockWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(5, -20), fromTopLeft(170, 50), literal("功率控制"), 0 ,0));
+		var overclockWindow = addWidget(new MachineWidgets.InformationWindowWidget(fromCenter(5, -20), fromTopLeft(170, 50), Component.translatable("gui.programmable_magic.machine.window.power_control"), 0 ,0));
 
 		overclockWindow.addChild(new RectangleWidget(fromTopLeft(6, 25), fromTopLeft(75, 2)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)));
-		overclockWindow.addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
+		overclockWindow.addChild(new TextWidget(fromTopLeft(7, 20), Component.translatable("gui.programmable_magic.machine.label.overclock_factor")).applyTheme(GENERAL_TEXT));
 		overclockWindow.addChild(new NumberDisplayWidget(fromTopLeft(44, 16), menu.powerFact, 4, 1.5, true).mainColor(-1));
 
-		overclockWindow.addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+		overclockWindow.addChild(new TextWidget(fromTopRight(-45, 24), Component.translatable("gui.programmable_magic.machine.label.expected_power")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
 		overclockWindow.addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> 4e6 * 5 * (Math.pow(menu.powerFact.get() + 0.5, 2) - 0.25)), 6, 1, true).rightAlign().mainColor(-1));
 
 		overclockWindow.addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(ModColors.MAIN_COLOR_T.withAlpha(0x7f)).rightAlign());
-		overclockWindow.addChild(new TextWidget(fromTopRight(-7, 24), literal("有效功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+		overclockWindow.addChild(new TextWidget(fromTopRight(-7, 24), Component.translatable("gui.programmable_magic.machine.label.effective_power")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
 		overclockWindow.addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> 4e6 * menu.powerFact.get()), 6, 1, true).rightAlign().mainColor(-1));
 
 		// 添加刻度
@@ -149,6 +149,6 @@ public class LiquidHeaterScreen extends MachineScreen<LiquidHeaterMenu> {
 
 		var controlWindow = addWidget(new MachineWidgets.MachineControlWindow(fromCenter(5, 40), fromTopLeft(170, 40), menu));
 
-		controlWindow.addChild(new SwitchWidget(fromTopRight(-7, 16), fromTopLeft(50, 19), literal("燃料"), literal("魔力"), menu.inputMode).rightAlign());
+		controlWindow.addChild(new SwitchWidget(fromTopRight(-7, 16), fromTopLeft(50, 19), Component.translatable("gui.programmable_magic.machine.liquid_heater.switch.fuel"), Component.translatable("gui.programmable_magic.machine.liquid_heater.switch.mana"), menu.inputMode).rightAlign());
 	}
 }

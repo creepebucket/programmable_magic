@@ -102,7 +102,7 @@ public abstract class CommandHandler {
 			var compiled = compiler.compile(container);
 
 			if (!compiler.errors.isEmpty()) {
-				ctx.getSource().sendFailure(Component.literal("法术编译错误"));
+				ctx.getSource().sendFailure(Component.translatable("message.programmable_magic.command.spell_compile_error"));
 				return;
 			}
 
@@ -116,7 +116,7 @@ public abstract class CommandHandler {
 			}
 
 			level.addFreshEntity(entity);
-			ctx.getSource().sendSuccess(() -> Component.literal("已在 " + pos.toShortString() + " 发射法术"), true);
+			ctx.getSource().sendSuccess(() -> Component.translatable("message.programmable_magic.command.spell_cast", pos.toShortString()), true);
 		}
 	}
 
@@ -170,7 +170,7 @@ public abstract class CommandHandler {
 			} else {
 				BlockPos pos = BlockPosArgument.getBlockPos(ctx, "pos");
 				if (!(level.getBlockEntity(pos) instanceof NetNodeBlockEntity node)) {
-					ctx.getSource().sendFailure(Component.literal("该坐标不是魔力网络节点"));
+					ctx.getSource().sendFailure(Component.translatable("message.programmable_magic.command.not_mana_node"));
 					return;
 				}
 				networkId = node.getData(ModAttachments.NETWORK_ID);
@@ -181,7 +181,7 @@ public abstract class CommandHandler {
 			NetworkManaManager.update(data);
 			NetworkManaManager.touch(level, networkId);
 
-			ctx.getSource().sendSuccess(() -> Component.literal("已将网络 " + networkId + " 魔力设置为 辐射:" + r + "KJ 温度:" + t + "KJ 动量:" + m + "KJ 压力:" + p + "KJ"), true);
+			ctx.getSource().sendSuccess(() -> Component.translatable("message.programmable_magic.command.network_set", networkId, r, t, m, p), true);
 		}
 	}
 }

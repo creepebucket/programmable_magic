@@ -29,7 +29,7 @@ public class MachineWidgets {
 
         @Override
         public void onInitialize() {
-            hintText = screen.addWidget(new TextWidget(fromCenter(0, 0), literal("按下 Alt+W 开关窗口管理界面")).centerAlign().centerAlignY().mainColor(-1).disable());
+            hintText = screen.addWidget(new TextWidget(fromCenter(0, 0), Component.translatable("gui.programmable_magic.machine.window.hint")).centerAlign().centerAlignY().mainColor(-1).disable());
         }
 
         @Override
@@ -208,15 +208,15 @@ public class MachineWidgets {
         public List<SwitchWidget> switches = new ArrayList<>();
 
         public WindowManagementWindow(Coordinate pos, Coordinate size) {
-            super(pos, size, literal("窗口管理"), 120, 60);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.management"), 120, 60);
         }
 
         @Override
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 15), literal("窗口名称")).applyTheme(BRIGHT_LABEL));
-            addChild(new TextWidget(fromTopRight(-16, 15), literal("开关")).rightAlign().applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopLeft(7, 15), Component.translatable("gui.programmable_magic.machine.window.name")).applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopRight(-16, 15), Component.translatable("gui.programmable_magic.machine.window.toggle")).rightAlign().applyTheme(BRIGHT_LABEL));
 
             addChild(new RectangleWidget(fromTopLeft(7, 26), fromTopRight(-14, 1)).mainColor(mainColor().toArgbWithAlphaMult(0.5)));
 
@@ -227,8 +227,8 @@ public class MachineWidgets {
 
             for (InformationWindowWidget window: ((MachineScreen<?>) screen).windows) {
                 cull.addChild(new TextWidget(fromTopLeft(0, 3 + y), window.name).applyTheme(GENERAL_TEXT).dy(itemDy));
-                switches.add((SwitchWidget) cull.addChild(new SwitchWidget(fromTopRight(-4, 1 + y), fromTopLeft(60, 11), literal("关闭"),
-                        literal("开启")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
+                switches.add((SwitchWidget) cull.addChild(new SwitchWidget(fromTopRight(-4, 1 + y), fromTopLeft(60, 11), Component.translatable("gui.programmable_magic.machine.switch.off"),
+                        Component.translatable("gui.programmable_magic.machine.switch.on")).setPressed(window.enabled).onSwitch(b -> {if (b) window.enable(); else window.disable();}).rightAlign().dy(itemDy)));
                 y += 15;
             }
 
@@ -286,7 +286,7 @@ public class MachineWidgets {
         }
 
         public PowerInfoWindow(Coordinate pos, Coordinate size, Component powerExpr) {
-            super(pos, size, literal("计算信息"), 150, 50);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.calc_info"), 150, 50);
             this.powerExpr = powerExpr;
         }
 
@@ -305,7 +305,7 @@ public class MachineWidgets {
         public String unit;
 
         public MachineInfoWindow(Coordinate pos, Coordinate size, DynamicValue power, Component manaType, Component machineType, Component mainText1, Component mainText2, String unit) {
-            super(pos, size, literal("机器总览"), 210, 40);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.machine_overview"), 210, 40);
 
             this.manaType = manaType;
             this.power = power;
@@ -319,9 +319,9 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 39), literal("机器类型")).bottomAlignY().applyTheme(LABEL_TEXT));
+            addChild(new TextWidget(fromTopLeft(7, 39), Component.translatable("gui.programmable_magic.machine.label.machine_type")).bottomAlignY().applyTheme(LABEL_TEXT));
             addChild(new TextWidget(fromTopLeft(7, 15), machineType).scaled(1.5));
-            addChild(new TextWidget(fromTopRight(-7, 39), literal("魔力类型")).rightAlign().bottomAlignY().applyTheme(LABEL_TEXT));
+            addChild(new TextWidget(fromTopRight(-7, 39), Component.translatable("gui.programmable_magic.machine.label.mana_type")).rightAlign().bottomAlignY().applyTheme(LABEL_TEXT));
             addChild(new TextWidget(fromTopRight(-7, 15), manaType).scaled(1.5).rightAlign());
             addChild(new TextWidget(fromCenterBottom(0, -33), mainText1).centerAlign().bottomAlignY().mainColor(0xff7f7f7f));
             addChild(new TextWidget(fromCenterBottom(-72, -5), mainText2).noShadow().scaled(2).rightAlign().bottomAlignY().mainColor(0xffffffff));
@@ -336,7 +336,7 @@ public class MachineWidgets {
         public List<Widget> cacheWidgets = new ArrayList<>();
 
         public NetworkInfoWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, literal("网络信息"), 130, 90);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.network_info"), 130, 90);
             this.menu = menu;
         }
 
@@ -345,10 +345,10 @@ public class MachineWidgets {
             super.onInitialize();
 
             addChild(new RectangleWidget(fromTopLeft(7, 14), fromTopLeft(2, 10)).mainColor(0xbfbfbfbf));
-            addChild(new TextWidget(fromTopLeft(11, 15), literal("当前魔力")).applyTheme(BRIGHT_LABEL));
-            var cacheLabel = addChild(new TextWidget(fromTopRight(-66, 15), literal("魔力缓存")).rightAlign().applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopLeft(11, 15), Component.translatable("gui.programmable_magic.machine.label.current_mana")).applyTheme(BRIGHT_LABEL));
+            var cacheLabel = addChild(new TextWidget(fromTopRight(-66, 15), Component.translatable("gui.programmable_magic.machine.label.mana_cache")).rightAlign().applyTheme(BRIGHT_LABEL));
             cacheWidgets.add(cacheLabel);
-            addChild(new TextWidget(fromTopRight(-7, 15), literal("净功率")).rightAlign().applyTheme(BRIGHT_LABEL));
+            addChild(new TextWidget(fromTopRight(-7, 15), Component.translatable("gui.programmable_magic.machine.label.net_power")).rightAlign().applyTheme(BRIGHT_LABEL));
 
             addChild(new RectangleWidget(custom(0, 7, 0   , 29), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_R));
             addChild(new RectangleWidget(custom(0, 7, 0.25, 21), custom(0, 2, 0.25, -11)).mainColor(ModColors.MAIN_COLOR_T));
@@ -412,7 +412,7 @@ public class MachineWidgets {
         public MachineMenu menu;
 
         public MachineControlWindow(Coordinate pos, Coordinate size, MachineMenu menu) {
-            super(pos, size, literal("机器控制"), 60, 40);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.machine_control"), 60, 40);
             this.menu = menu;
         }
 
@@ -420,7 +420,7 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), literal("关闭"), literal("开启"), menu.enabled).onSwitch(enabled -> menu.powerSwitch.trigger(enabled));
+            var switchWidget = new SwitchWidget(fromTopLeft(7, 16), fromTopLeft(50, 19), Component.translatable("gui.programmable_magic.machine.switch.off"), Component.translatable("gui.programmable_magic.machine.switch.on"), menu.enabled).onSwitch(enabled -> menu.powerSwitch.trigger(enabled));
             addChild(switchWidget.mainColor(-1));
         }
     }
@@ -430,7 +430,7 @@ public class MachineWidgets {
         public double basePower, maxFact;
 
         public GeneratorOverclockWindow(Coordinate pos, Coordinate size, DynamicValue<Double> powerFact, double basePower, double maxFact) {
-            super(pos, size, literal("功率控制"), 165, 40);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.power_control"), 165, 40);
             this.powerFact = powerFact;
             this.basePower = basePower;
             this.maxFact = maxFact;
@@ -441,14 +441,14 @@ public class MachineWidgets {
             super.onInitialize();
 
             addChild(new RectangleWidget(fromTopLeft(6, 25), fromTopLeft(75, 2)).mainColor(mainColor().withAlpha(0x7f)));
-            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(fromTopLeft(7, 20), Component.translatable("gui.programmable_magic.machine.label.overclock_factor")).applyTheme(GENERAL_TEXT));
             addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true).mainColor(-1));
 
-            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new TextWidget(fromTopRight(-45, 24), Component.translatable("gui.programmable_magic.machine.label.expected_power")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * 5 * (Math.pow(powerFact.get() + 0.5, 2) - 0.25)), 6, 1, true).rightAlign().mainColor(-1));
 
             addChild(new RectangleWidget(fromTopRight(-6, 16), fromTopLeft(37, 9)).mainColor(mainColor().withAlpha(0x7f)).rightAlign());
-            addChild(new TextWidget(fromTopRight(-7, 24), literal("有效功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new TextWidget(fromTopRight(-7, 24), Component.translatable("gui.programmable_magic.machine.label.effective_power")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign().mainColor(-1));
 
             for (int i = 1; i < maxFact; i++) {
@@ -468,7 +468,7 @@ public class MachineWidgets {
         public List<Widget> graduations = new ArrayList<>();
 
         public OverclockWindow(Coordinate pos, Coordinate size, DynamicValue<Double> powerFact, double basePower, double baseControl, double maxFact) {
-            super(pos, size, literal("生产控制"), 165, 40);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.production_control"), 165, 40);
             this.powerFact = powerFact;
             this.basePower = basePower;
             this.baseControl = baseControl;
@@ -479,13 +479,13 @@ public class MachineWidgets {
         public void onInitialize() {
             super.onInitialize();
 
-            addChild(new TextWidget(fromTopLeft(7, 20), literal("超频倍率")).applyTheme(GENERAL_TEXT));
+            addChild(new TextWidget(fromTopLeft(7, 20), Component.translatable("gui.programmable_magic.machine.label.overclock_factor")).applyTheme(GENERAL_TEXT));
             addChild(new NumberDisplayWidget(fromTopLeft(44, 16), powerFact, 4, 1.5, true));
 
-            addChild(new TextWidget(fromTopRight(-45, 24), literal("预期功率 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new TextWidget(fromTopRight(-45, 24), Component.translatable("gui.programmable_magic.machine.label.expected_power")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-45, 16), DynamicValue.fromSupplier(() -> basePower * powerFact.get()), 6, 1, true).rightAlign());
 
-            addChild(new TextWidget(fromTopRight(-7, 24), literal("控制成本 / W")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
+            addChild(new TextWidget(fromTopRight(-7, 24), Component.translatable("gui.programmable_magic.machine.label.control_cost")).scaled(0.5).rightAlign().applyTheme(DIM_TEXT));
             addChild(new NumberDisplayWidget(fromTopRight(-7, 16), DynamicValue.fromSupplier(() -> Math.pow(4, powerFact.get() - 1) * baseControl), 6, 1, true).rightAlign().mainColor(ModColors.MAIN_COLOR_R));
 
             powerFact.whenFirstDataArrivesDo(() -> addChild(new ThinSlideBarWidget(fromBottomLeft(7, -9), fromTopRight(-14, 5), 0, 4, powerFact).step(0.05).bgColor(-1)));
@@ -512,7 +512,7 @@ public class MachineWidgets {
 
         @Override
         public void onInitialize() {
-            addChild(new TextWidget(fromTopLeft(0, 0), literal("流体类型")).applyTheme(LABEL_TEXT));
+            addChild(new TextWidget(fromTopLeft(0, 0), Component.translatable("gui.programmable_magic.machine.label.fluid_type")).applyTheme(LABEL_TEXT));
             fluidTexture = (FluidTextureWidget) addChild(new FluidTextureWidget(fromTopLeft(0, 12), fromTopLeft(10, 10), fluidId.get()));
             fluidNameText = (TextWidget) addChild(new TextWidget(fromTopLeft(13, 13), fluidId.get().isEmpty() ? literal("") :
                     Component.translatable(BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidId.get())).getFluidType().getDescriptionId())).noShadow());
@@ -534,7 +534,7 @@ public class MachineWidgets {
     public static class InventoryWindow extends InformationWindowWidget {
 
         public InventoryWindow(Coordinate pos, Coordinate size) {
-            super(pos, size, literal("物品栏"), 184, 67);
+            super(pos, size, Component.translatable("gui.programmable_magic.machine.window.inventory"), 184, 67);
         }
 
         @Override

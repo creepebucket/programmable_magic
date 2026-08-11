@@ -16,12 +16,14 @@ import org.creepebucket.programmable_magic.gui.machines.generator.wind_turbine.W
 import org.creepebucket.programmable_magic.mananet.NetNodeBlockEntity;
 import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.ModBlockEntities;
+import org.creepebucket.programmable_magic.utils.RelativeBlockPos;
 import org.jspecify.annotations.Nullable;
 
 public class WindTurbine extends BasicMachine {
 
     public WindTurbine(Properties properties) {
         super(properties);
+        addManaLink(new RelativeBlockPos(0, 5, 0));
     }
 
     @Override

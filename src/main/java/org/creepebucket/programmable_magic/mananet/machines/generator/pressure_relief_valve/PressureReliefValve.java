@@ -24,6 +24,7 @@ public class PressureReliefValve extends BasicMachine {
 	public PressureReliefValve(Properties properties) {
 		super(properties);
 		addFluidInput(new RelativeBlockPos(0, 0, 0));
+		addManaLink(new RelativeBlockPos(1, 1, 0));
 	}
 
 	@Override

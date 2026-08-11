@@ -25,6 +25,7 @@ public class SteamTurbine extends BasicMachine {
 		super(properties);
 		addFluidInput(new RelativeBlockPos(1, 0, 0));
 		addFluidOutput(new RelativeBlockPos(0, 2, 0));
+		addManaLink(new RelativeBlockPos(1, 1, 0));
 	}
 
 	@Override

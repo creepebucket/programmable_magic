@@ -38,6 +38,7 @@ public abstract class BasicMachine extends Block implements EntityBlock {
     public final VoxelShape HITBOX = hitbox();
     public List<RelativeBlockPos> DUMMY_OFFSETS;
     public Map<RelativeBlockPos, String> IO_DEFINITION = new HashMap<>(); // v = "item_input"/"item_output"/"fluid_output"/"fluid_input"
+    public List<RelativeBlockPos> MANA_LINK_POSITIONS = new ArrayList<>();
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public VoxelShape[] HITBOXES = {rotate(HITBOX, Direction.SOUTH), rotate(HITBOX, Direction.WEST), HITBOX, rotate(HITBOX, Direction.EAST)};
 
@@ -166,6 +167,10 @@ public abstract class BasicMachine extends Block implements EntityBlock {
 
     public void addFluidOutput(RelativeBlockPos pos) {
         IO_DEFINITION.put(pos, "fluid_output");
+    }
+
+    public void addManaLink(RelativeBlockPos pos) {
+        MANA_LINK_POSITIONS.add(pos);
     }
 
     public InteractionResult openIoMenu(Level level, BlockPos pos, Player player) {

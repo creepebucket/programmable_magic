@@ -23,16 +23,16 @@ public class SolarPanelScreen extends MachineScreen<SolarPanelMenu> {
 
 		root.mainColor(ModColors.MAIN_COLOR_R);
 
-		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-200, -90), fromTopLeft(210, 80), menu.power, literal("辐射/Rad"),
-				literal("太阳能板"), literal("[输出功率]"), literal("P="), "W"));
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-200, -90), fromTopLeft(210, 80), menu.power, Component.translatable("gui.programmable_magic.machine.mana_type.radiation"),
+				Component.translatable("gui.programmable_magic.machine.type.solar_panel"), Component.translatable("gui.programmable_magic.machine.main_text.output_power"), literal("P="), "W"));
 
-		var calculationsWindow = new MachineWidgets.PowerInfoWindow(fromCenter(-200, 0), fromTopLeft(210, 90), literal("总功率 = (G_b+G_d)×A×η"));
+		var calculationsWindow = new MachineWidgets.PowerInfoWindow(fromCenter(-200, 0), fromTopLeft(210, 90), Component.translatable("gui.programmable_magic.machine.solar_panel.power_expr"));
 		addWidget(calculationsWindow);
 
-		calculationsWindow.addPowerInfoItem(literal("直接辐照/G_b"), menu.directIrradiance, literal("W/m²"));
-		calculationsWindow.addPowerInfoItem(literal("散射辐照/G_d"), menu.diffuseIrradiance, literal("W/m²"));
-		calculationsWindow.addPowerInfoItem(literal("受光面积/A"), menu.panelArea, literal("m²"));
-		calculationsWindow.addPowerInfoItem(literal("转化效率/η"), menu.efficiencyFact, literal("%"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.solar_panel.direct_item"), menu.directIrradiance, literal("W/m²"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.solar_panel.diffuse_item"), menu.diffuseIrradiance, literal("W/m²"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.solar_panel.area_item"), menu.panelArea, literal("m²"));
+		calculationsWindow.addPowerInfoItem(Component.translatable("gui.programmable_magic.machine.solar_panel.efficiency_item"), menu.efficiencyFact, literal("%"));
 
 		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(20, -90), fromTopLeft(180, 120), menu));
 

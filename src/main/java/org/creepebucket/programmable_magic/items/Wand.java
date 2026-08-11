@@ -123,7 +123,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
         int used = Math.max(holdUsed, (int) Math.max(0L, dt));
 
         double rate = ModUtils.computeWandValues(stack.get(ModDataComponents.PLUGINS.get())).chargeRateW;
-        double mana = (used / 20.0) * (rate / 1000.0);
+        double mana = (used / 20.0) * rate;
 
         if (level.isClientSide()) {
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
@@ -194,7 +194,7 @@ public class Wand extends BowItem implements IItemExtension, ModItemExtensions {
             long now = level.getGameTime();
             if (last == null) last = now;
             long dt = Math.max(0L, now - last);
-            double mana = (dt / 20.0) * (rate / 1000.0);
+            double mana = (dt / 20.0) * rate;
             String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
             player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(bar));
         }

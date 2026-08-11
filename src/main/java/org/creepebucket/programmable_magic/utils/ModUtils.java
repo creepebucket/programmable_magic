@@ -43,10 +43,9 @@ public class ModUtils {
         return items;
     }
 
-    // 格式化魔力（1 点 availableMana = 1 KJ），保留约 4 位有效数字
+    // 格式化魔力（1 点 availableMana = 1 J），保留约 4 位有效数字
     public static String FormattedManaString(double mana) {
-        double joules = mana * 1000.0; // 转为焦耳
-        return formattedNumber(joules) + "J";
+        return formattedNumber(mana) + "J";
     }
 
     // 基础单位转换（1000 进制），不省略末尾 0

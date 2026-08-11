@@ -349,7 +349,7 @@ public class WandWidgets {
             if (!isCharging) tooltip = Component.translatable("gui.programmable_magic.wand.release");
             else
                 tooltip = literal(ModUtils.FormattedManaString(
-                                chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005))
+                                chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.05))
                         .withColor(hsvToRgb(chargedTick * 0.01f % 1, 1, 1));
 
             graphics.setTooltipForNextFrame(ClientUiContext.getFont(), tooltip, mouseX, mouseY);

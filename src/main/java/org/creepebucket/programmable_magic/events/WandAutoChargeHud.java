@@ -65,7 +65,7 @@ public class WandAutoChargeHud {
         long now = mc.level != null ? mc.level.getGameTime() : 0L;
         if (last_release == null) last_release = now;
         long dt = Math.max(0L, now - last_release);
-        double mana = (dt / 20.0) * (rate / 1000.0);
+        double mana = (dt / 20.0) * rate;
         if (mana <= 0.0) return;
         String bar = "|>>> " + ModUtils.FormattedManaString(mana) + " <<<|";
         player.sendOverlayMessage(net.minecraft.network.chat.Component.literal(bar));

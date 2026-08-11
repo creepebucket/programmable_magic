@@ -23,8 +23,8 @@ public class PressureReliefValveScreen extends MachineScreen<PressureReliefValve
 
 		// ================= 顶栏 ================= //
 
-		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-175, -100), fromTopLeft(350, 70), menu.manaPowerW, literal("压力/Pre"),
-				literal("泄压阀"), literal("[当前功率]"), literal("P="), "W"));
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-175, -100), fromTopLeft(350, 70), menu.manaPowerW, Component.translatable("gui.programmable_magic.machine.mana_type.pressure"),
+				Component.translatable("gui.programmable_magic.machine.type.pressure_relief_valve"), Component.translatable("gui.programmable_magic.machine.main_text.current_power"), literal("P="), "W"));
 
 		// ================= 网络信息窗口 ================= //
 

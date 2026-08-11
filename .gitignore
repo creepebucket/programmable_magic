@@ -129,3 +129,5 @@ runs/
 /META-INF/
 /com/
 /mezz/
+/docs/
+/.settings/

@@ -3,13 +3,16 @@ package org.creepebucket.programmable_magic.events;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.creepebucket.programmable_magic.ModConfig;
+import org.creepebucket.programmable_magic.events.machines.BasicMachineTooltip;
 import org.creepebucket.programmable_magic.items.api.ModItemExtensions;
+import org.creepebucket.programmable_magic.mananet.machines.BasicMachine;
 import org.creepebucket.programmable_magic.registries.WandPluginRegistry;
 import org.creepebucket.programmable_magic.utils.ModUtils;
 import org.lwjgl.glfw.GLFW;
@@ -26,6 +29,7 @@ public class ItemTooltipHandler {
         boolean ctrl = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL);
         boolean shift = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT);
         boolean alt = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT);
+        boolean tabKey = InputConstants.isKeyDown(window, GLFW.GLFW_KEY_TAB);
 
         var level = Minecraft.getInstance().level;
         if (level != null) {
@@ -41,6 +45,11 @@ public class ItemTooltipHandler {
         }
 
         var item = event.getItemStack().getItem();
+        if (item instanceof BlockItem bi && bi.getBlock() instanceof BasicMachine machine) {
+            BasicMachineTooltip.append(event.getItemStack(), event.getToolTip(), machine, ctrl, shift, alt, tabKey);
+            return;
+        }
+
         if (WandPluginRegistry.isPlugin(item)) {
             WandPluginRegistry.getPlugin(item).appendTooltip(event.getItemStack(), event.getToolTip(), ctrl, shift, alt);
         }

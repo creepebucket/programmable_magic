@@ -24,6 +24,7 @@ public class WaterPump extends BasicMachine {
 	public WaterPump(Properties properties) {
 		super(properties);
 		addFluidOutput(new RelativeBlockPos(0, 0, 0));
+		addManaLink(new RelativeBlockPos(1, 1, 0));
 	}
 
 	@Override
