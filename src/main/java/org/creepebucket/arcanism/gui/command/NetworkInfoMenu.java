@@ -1,0 +1,45 @@
+package org.creepebucket.arcanism.gui.command;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
+import org.creepebucket.arcanism.gui.lib.api.SyncMode;
+import org.creepebucket.arcanism.gui.lib.ui.Menu;
+import org.creepebucket.arcanism.mananet.NetworkManaManager;
+import org.creepebucket.arcanism.registries.ModMenuTypes;
+import org.creepebucket.arcanism.utils.Mana;
+
+import java.util.Map;
+
+public class NetworkInfoMenu extends Menu {
+	public DynamicValue<Double> updateInterval;
+	public DynamicValue<Map<Long, Map<String, Mana>>> datas;
+	public int count = 0;
+
+	public NetworkInfoMenu(int containerId, Inventory playerInv, RegistryFriendlyByteBuf extra) {
+		this(containerId, playerInv);
+	}
+
+	public NetworkInfoMenu(int containerId, Inventory playerInv) {
+		super(ModMenuTypes.NETWORK_INFO.get(), containerId, playerInv, InteractionHand.MAIN_HAND, Menu::init);
+	}
+
+	@Override
+	public void init() {
+		updateInterval = registerData("update_interval", SyncMode.BOTH, 15d);
+		datas = registerData("mana_data", SyncMode.BOTH, NetworkManaManager.getAllData(playerInv.player.level()));
+	}
+
+	@Override
+	public void tick() {
+		count++;
+
+		if (count >= updateInterval.get()) {
+			count = 0;
+
+			// 网络更新逻辑
+			datas.set(NetworkManaManager.getAllData(playerInv.player.level()));
+		}
+	}
+}

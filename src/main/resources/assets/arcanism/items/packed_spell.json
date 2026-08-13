@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "minecraft:item/generated",
+    "model": {
+      "type": "arcanism:packed_spell"
+    }
+  }
+}
+

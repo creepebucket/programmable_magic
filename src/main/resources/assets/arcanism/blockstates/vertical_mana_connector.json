@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "arcanism:block/vertical_mana_connector" }
+  }
+}

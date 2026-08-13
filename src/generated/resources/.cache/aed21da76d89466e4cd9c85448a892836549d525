@@ -1,7 +1,7 @@
-// 26.1.2	2026-06-22T18:05:49.007988377	General Item Models
-79fa5a23ef6d841dc008e106572b12d13c47e679 assets/programmable_magic/items/rg_alloy_wand.json
-276853ca4fafb4a46772a1999dd41cf6eeb40987 assets/programmable_magic/items/small_mana_cell.json
-fe1b14610f128d6bceb2281cd1400b442d21fe78 assets/programmable_magic/items/wand_item_placeholder.json
-93e5cdde275bcfabb64081a61b63d054c18ca63d assets/programmable_magic/models/item/rg_alloy_wand.json
-144348568415edacfafeff8ac89cba48e763f59b assets/programmable_magic/models/item/small_mana_cell.json
-62ca8c20d8552fc821eadebe34f1a5a5e68fed62 assets/programmable_magic/models/item/wand_item_placeholder.json
+// 26.1.2	2026-08-13T22:50:49.528381081	General Item Models
+e1dba185fed73e9448f20fd49534a0c98e73b8cd assets/arcanism/items/rg_alloy_wand.json
+f76508d9c7d9a8c44695fb72bc103302608894a3 assets/arcanism/items/small_mana_cell.json
+2c000f9f6837d13aeb705d54b2943674536291c4 assets/arcanism/items/wand_item_placeholder.json
+989971183233728ccfe76dc640eac3520b3dd984 assets/arcanism/models/item/rg_alloy_wand.json
+06ecba9ad185b633f9399745824ea82e9cb9d714 assets/arcanism/models/item/small_mana_cell.json
+834638ac11946b7bf0afa3f2401985033fdaf2a3 assets/arcanism/models/item/wand_item_placeholder.json

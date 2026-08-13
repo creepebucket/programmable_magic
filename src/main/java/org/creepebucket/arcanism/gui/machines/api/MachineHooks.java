@@ -1,0 +1,26 @@
+package org.creepebucket.arcanism.gui.machines.api;
+
+import net.minecraft.world.entity.player.Player;
+import org.creepebucket.arcanism.gui.lib.api.hooks.Hook;
+import org.creepebucket.arcanism.mananet.machines.MachineBlockEntity;
+
+public class MachineHooks {
+    public static class PowerSwitchHook extends Hook {
+        public MachineMenu menu;
+
+        public PowerSwitchHook(MachineMenu menu) {
+            super("machine_power_switch");
+            this.menu = menu;
+        }
+
+        @Override
+        public void handle(Player player, Object... args) {
+            if (player.level().isClientSide()) return;
+
+            var enabled = (Boolean) args[0];
+            var blockEntity = (MachineBlockEntity) player.level().getBlockEntity(menu.pos);
+            blockEntity.enabled = enabled;
+            blockEntity.setChanged();
+        }
+    }
+}

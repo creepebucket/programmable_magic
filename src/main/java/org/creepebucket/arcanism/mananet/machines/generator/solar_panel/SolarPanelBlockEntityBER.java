@@ -1,0 +1,37 @@
+package org.creepebucket.arcanism.mananet.machines.generator.solar_panel;
+
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.phys.AABB;
+import org.creepebucket.arcanism.mananet.machines.MachineBlockEntityBER;
+import org.creepebucket.arcanism.mananet.machines.MachineGeoModel;
+
+import static org.creepebucket.arcanism.Arcanism.MODID;
+
+public class SolarPanelBlockEntityBER extends MachineBlockEntityBER<SolarPanelBlockEntity> {
+
+    public SolarPanelBlockEntityBER(BlockEntityRendererProvider.Context context) {
+        super(context,
+                new MachineGeoModel<>(
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/solar_panel"),
+                        Identifier.fromNamespaceAndPath(MODID, "block/machines/solar_panel"),
+                        Identifier.fromNamespaceAndPath(MODID, "textures/machines/solar_panel.png")),
+                be -> {
+                    var pos = be.getBlockPos();
+                    return new AABB(pos.getX() - 1, pos.getY(), pos.getZ() - 1, pos.getX() + 2, pos.getY() + 3, pos.getZ() + 2);
+                });
+    }
+
+    @Override
+    public void adjustModelBonesForRender(RenderPassInfo<BlockEntityRenderState> render_pass_info, BoneSnapshots snapshots) {
+        var time = Minecraft.getInstance().level.getOverworldClockTime() % 24000;
+        var rot_x = (time <= 12000 ? 6000 - time : time - 18000) * (float) Math.PI / 12000f;
+
+        var group8 = snapshots.get("group8");
+        if (group8.isPresent()) group8.get().setRotX(rot_x);
+    }
+}

@@ -1,0 +1,13 @@
+package org.creepebucket.arcanism.gui.lib.api.widgets;
+
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+
+/**
+ * 渲染接口：实现此接口的 Widget 可以被渲染。
+ */
+public interface Renderable {
+    /**
+     * 渲染控件。
+     */
+    void render(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick);
+}

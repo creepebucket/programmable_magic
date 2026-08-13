@@ -9,10 +9,10 @@
 
 **资产路径**:
 
-- assets/programmable_magic/geckolib/animations/block/machines/wind_turbine.animation.json
-- assets/programmable_magic/geckolib/bbmodels/wind_turbine.bbmodel (模型部分)
-- assets/programmable_magic/geckolib/models/block/machines/wind_turbine.geo.json
-- assets/programmable_magic/textures/machines/wind_turbine.png
+- assets/arcanism/geckolib/animations/block/machines/wind_turbine.animation.json
+- assets/arcanism/geckolib/bbmodels/wind_turbine.bbmodel (模型部分)
+- assets/arcanism/geckolib/models/block/machines/wind_turbine.geo.json
+- assets/arcanism/textures/machines/wind_turbine.png
 
 **原作者**: 伈星海
 

@@ -1,0 +1,17 @@
+package org.creepebucket.arcanism.spells.plugins;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+
+public class ColorThemeLogicPlugin extends WandPluginLogic {
+    @Override
+    public void appendTooltip(ItemStack stack, List<Component> tooltip, boolean ctrl, boolean shift, boolean alt) {
+        appendWhenInstalledHeader(tooltip);
+        tooltip.add(Component.literal("+")
+                .append(Component.translatable("tooltip.arcanism.wand_plugin.color_theme"))
+                .withStyle(ChatFormatting.BLUE));
+    }
+}

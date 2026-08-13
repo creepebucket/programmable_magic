@@ -1,0 +1,101 @@
+package org.creepebucket.arcanism.gui.lib.ui;
+
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import org.creepebucket.arcanism.gui.lib.api.DataManager;
+import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
+import org.creepebucket.arcanism.gui.lib.api.SyncMode;
+import org.creepebucket.arcanism.gui.lib.api.hooks.Hook;
+import org.creepebucket.arcanism.gui.lib.api.hooks.HookManager;
+import org.creepebucket.arcanism.network.dataPackets.SimpleKvC2SHandler;
+import org.creepebucket.arcanism.network.dataPackets.SimpleKvS2CHandler;
+import org.creepebucket.arcanism.network.dataPackets.SimpleKvS2cPacket;
+
+public abstract class Menu extends AbstractContainerMenu implements SimpleKvC2SHandler, SimpleKvS2CHandler {
+
+    public final Inventory playerInv;
+    public final DataManager dataManager = new DataManager();
+    public final HookManager hooks = new HookManager();
+
+    // 屏幕信息
+    public int screenWidth;
+    public int screenHeight;
+    public int guiLeft;
+    public int guiTop;
+    public InteractionHand hand;
+
+    protected Menu(MenuType<?> type, int containerId, Inventory playerInv, InteractionHand hand, Definition definition) {
+        super(type, containerId);
+        this.hand = hand;
+        this.playerInv = playerInv;
+        this.hooks.bindMenuPlayer(playerInv.player);
+
+        // 服务端发包逻辑
+        if (playerInv.player instanceof ServerPlayer serverPlayer) {
+            this.dataManager.bindClientSender((key, value) -> {
+                var packet = new ClientboundCustomPayloadPacket(new SimpleKvS2cPacket(key, value));
+                serverPlayer.connection.send(packet);
+            });
+        }
+
+        // 2. 构建菜单（在这里面你可以调用 addWidget）
+        definition.build(this);
+    }
+
+    // 3. 当 Screen 尺寸变化时，Screen 会调用这个方法
+    // 我们在这里通知所有控件“初始化/位置更新”
+    public void reportScreenSize(int screenWidth, int screenHeight) {
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
+    }
+
+    public <T> DynamicValue<T> registerData(String key, SyncMode syncMode, T initialValue) {
+        return this.dataManager.register(key, syncMode, initialValue);
+    }
+
+    public <T extends Hook> T hook(T hook) {
+        return this.hooks.hook(hook);
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        return true;
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int index) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void handleSimpleKvC2S(String key, Object value) {
+        this.dataManager.handlePacket(key, value);
+    }
+
+    @Override
+    public void handleSimpleKvS2C(String key, Object value) {
+        this.dataManager.handlePacket(key, value);
+    }
+
+    public abstract void init();
+
+    @Override
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        tick();
+    }
+
+    public void tick() {
+    }
+
+    @FunctionalInterface
+    public interface Definition {
+        void build(Menu menu);
+    }
+}

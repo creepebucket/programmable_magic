@@ -1,0 +1,44 @@
+package org.creepebucket.arcanism.gui.machines.generator.steam_turbine;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import org.creepebucket.arcanism.gui.lib.api.DynamicValue;
+import org.creepebucket.arcanism.gui.lib.widgets.SwitchWidget;
+import org.creepebucket.arcanism.gui.machines.api.MachineScreen;
+import org.creepebucket.arcanism.gui.machines.api.MachineWidgets;
+import org.creepebucket.arcanism.utils.ModColors;
+
+import static net.minecraft.network.chat.Component.literal;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
+
+public class SteamTurbineScreen extends MachineScreen<SteamTurbineMenu> {
+
+	public SteamTurbineScreen(SteamTurbineMenu menu, Inventory playerInv, Component title) {
+		super(menu, playerInv, title);
+	}
+
+	@Override
+	public void buildWidget() {
+		super.buildWidget();
+
+		root.mainColor(ModColors.MAIN_COLOR_M);
+
+		// ================= 顶栏 ================= //
+
+		addWidget(new MachineWidgets.MachineInfoWindow(fromCenter(-175, -100), fromTopLeft(350, 70), menu.manaPowerW, Component.translatable("gui.arcanism.machine.mana_type.momentum"),
+				Component.translatable("gui.arcanism.machine.type.steam_turbine"), Component.translatable("gui.arcanism.machine.main_text.current_power"), literal("P="), "W"));
+
+		// ================= 网络信息窗口 ================= //
+
+		addWidget(new MachineWidgets.NetworkInfoWindow(fromCenter(-175, -20), fromTopLeft(170, 100), menu));
+
+		// ================= 超频窗口 ================= //
+
+		addWidget(new MachineWidgets.GeneratorOverclockWindow(fromCenter(5, -20), fromTopLeft(170, 50), menu.powerFact, 1e6, 5));
+
+		// ================= 控制窗口 ================= //
+
+		var controlWindow = (MachineWidgets.MachineControlWindow) addWidget(new MachineWidgets.MachineControlWindow(fromCenter(5, 40), fromTopLeft(170, 40), menu));
+		controlWindow.addChild(new SwitchWidget(fromTopRight(-7, 16), fromTopLeft(50, 19), Component.translatable("gui.arcanism.machine.switch.halt"), Component.translatable("gui.arcanism.machine.switch.destroy"), menu.voidOverflow).rightAlign());
+	}
+}

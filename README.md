@@ -1,18 +1,18 @@
 
 ---
 
-# Programmable Magic (可编程魔法)
+# Arcanism (魔导主义)
 
 <div align="center">
 
-[![Gradle Package](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/programmable_magic/actions/workflows/gradle-publish.yml)
-[![mc_version](https://img.shields.io/badge/minecraft-26.1.2-brightgreen?logo=minecraft)](https://github.com/creepebucket/programmable_magic)
-[![last_commit](https://img.shields.io/github/last-commit/creepebucket/programmable_magic?logo=github)](https://github.com/creepebucket/programmable_magic/commits)
-[![release](https://img.shields.io/github/v/release/creepebucket/programmable_magic?include_prereleases&logo=github)](https://github.com/creepebucket/programmable_magic/releases)
+[![Gradle Package](https://github.com/creepebucket/arcanism/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/arcanism/actions/workflows/gradle-publish.yml)
+[![mc_version](https://img.shields.io/badge/minecraft-26.1.2-brightgreen?logo=minecraft)](https://github.com/creepebucket/arcanism)
+[![last_commit](https://img.shields.io/github/last-commit/creepebucket/arcanism?logo=github)](https://github.com/creepebucket/arcanism/commits)
+[![release](https://img.shields.io/github/v/release/creepebucket/arcanism?include_prereleases&logo=github)](https://github.com/creepebucket/arcanism/releases)
 [![bilibili](https://img.shields.io/badge/bilibili-演示视频-00A1D6?logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1mHS8BWE9u)
-[![repo](https://img.shields.io/badge/repo-programmable_magic-181717?logo=github&logoColor=white)](https://github.com/creepebucket/programmable_magic)
+[![repo](https://img.shields.io/badge/repo-programmable_magic-181717?logo=github&logoColor=white)](https://github.com/creepebucket/arcanism)
 
-![GitHub Repo Card](https://githubcard.com/creepebucket/programmable_magic.svg?d=dU-_JTBK)
+![GitHub Repo Card](https://githubcard.com/creepebucket/arcanism.svg?d=dU-_JTBK)
 
 </div>
 
@@ -20,7 +20,7 @@
 
 在大多数魔法模组里，法术是现成的——右键放火球，shift 放护盾，威力看等级，区别只在于数值。玩法始终是"选技能、按按键、等冷却"。
 
-**Programmable Magic** 把施法变成了一门工程学。法术是零件——效果、运算、条件、循环。你需要把这些零件像写程序一样编排进魔杖，组合出自己的施法序列。
+**Arcanism** 把施法变成了一门工程学。法术是零件——效果、运算、条件、循环。你需要把这些零件像写程序一样编排进魔杖，组合出自己的施法序列。
 
 > 你的强弱，取决于你构建的逻辑。
 
@@ -59,7 +59,7 @@
 ## 📦 上手
 
 1. 环境：Minecraft `26.1.2` + NeoForge，前置 **GeckoLib**
-2. 从 [GitHub Releases](https://github.com/creepebucket/programmable_magic/releases) 下载
+2. 从 [GitHub Releases](https://github.com/creepebucket/arcanism/releases) 下载
 3. 放入 `mods`
 4. 合成一把魔杖和一些法术卡片，潜行右键打开编程界面，开始组装你的第一个法术序列
 
@@ -72,11 +72,11 @@
 ---
 
 <div align="center">
-<a href="https://www.star-history.com/#creepebucket/programmable_magic&type=date&legend=top-left">
+<a href="https://www.star-history.com/#creepebucket/arcanism&type=date&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=creepebucket/programmable_magic&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=creepebucket/programmable_magic&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=creepebucket/programmable_magic&type=date&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
  </picture>
 </a>
 </div>

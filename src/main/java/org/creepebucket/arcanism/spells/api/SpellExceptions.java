@@ -1,0 +1,74 @@
+package org.creepebucket.arcanism.spells.api;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import org.creepebucket.arcanism.spells.SpellValueType;
+
+import java.util.List;
+
+public class SpellExceptions {
+    public static final String COMPILE = "message.arcanism.error.types.compile";
+    public static final String RUNTIME = "message.arcanism.error.types.runtime";
+    public String errorType;
+    public Component message;
+    public Player player;
+    public SpellItemLogic spell;
+
+    // 构造函数
+    public SpellExceptions(String errorType, Component message, SpellItemLogic spell) {
+        this.errorType = errorType;
+        this.message = message;
+        this.spell = spell;
+    }
+
+    public static SpellExceptions COMPILE(Component message, SpellItemLogic spell) {
+        return new SpellExceptions(COMPILE, message, spell);
+    }
+
+    public static SpellExceptions RUNTIME(Component message, SpellItemLogic spell) {
+        return new SpellExceptions(RUNTIME, message, spell);
+    }
+
+    // 需要配对的法术未配对
+    public static SpellExceptions PAIRS_UNMATCHED(SpellItemLogic spell) {
+        return SpellExceptions.COMPILE(Component.translatable("message.arcanism.error.pairs_unmatched"), spell);
+    }
+
+    // 无效输入
+    public static SpellExceptions INVALID_INPUT(SpellItemLogic spell, List<SpellValueType> currentTypes, List<List<SpellValueType>> overloads) {
+        StringBuilder currentTypesString = new StringBuilder("\n[");
+        for (SpellValueType type : currentTypes) currentTypesString.append(type.toString() + ", ");
+        currentTypesString.append("]\n");
+
+        StringBuilder overloadsString = new StringBuilder("\n[\n");
+        for (List<SpellValueType> overload : overloads) {
+            overloadsString.append("[");
+            for (SpellValueType type : overload) overloadsString.append(type.toString() + ", ");
+            overloadsString.append("]\n");
+        }
+        overloadsString.append("]");
+
+        return SpellExceptions.RUNTIME(Component.translatable("message.arcanism.error.invalid_input", currentTypesString.toString(), overloadsString.toString()), spell);
+    }
+
+    // 编译错误
+
+    // 魔力不足
+    public static SpellExceptions NOT_ENOUGH_MANA(SpellItemLogic spell) {
+        return SpellExceptions.RUNTIME(Component.translatable("message.arcanism.error.not_enough_mana"), spell);
+    }
+
+    // 运行时错误
+
+    // 异常的本地化报错文本
+    public Component message() {
+        return Component.translatable(this.errorType).append(": ").append(
+                Component.translatable("message.arcanism.error.detail.at_spell",
+                        Component.translatable("item.arcanism.spell_display_" + spell.name), spell.id, message));
+    }
+
+    // 实际抛出这个错误
+    public void throwIt(Player player) {
+        player.sendSystemMessage(message());
+    }
+}

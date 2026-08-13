@@ -1,0 +1,113 @@
+package org.creepebucket.arcanism.spells.spells_base;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import org.creepebucket.arcanism.entities.SpellEntity;
+import org.creepebucket.arcanism.spells.SpellValueType;
+import org.creepebucket.arcanism.spells.api.ExecutionResult;
+import org.creepebucket.arcanism.spells.api.SpellExceptions;
+import org.creepebucket.arcanism.spells.api.SpellItemLogic;
+import org.creepebucket.arcanism.spells.api.SpellSequence;
+import org.creepebucket.arcanism.utils.Mana;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.creepebucket.arcanism.Arcanism.MODID;
+
+public abstract class WorldInterationSpell extends SpellItemLogic implements SpellItemLogic.BaseSpell {
+
+    public WorldInterationSpell() {
+        subCategory = "spell." + MODID + ".subcategory.block";
+        precedence = -99;
+        bypassShunting = true;
+    }
+
+    @Override
+    public boolean canRun(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return true;
+    }
+
+    @Override
+    public Mana getManaCost(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+        return new Mana();
+    }
+
+    public static class BreakBlockSpell extends WorldInterationSpell {
+        public BreakBlockSpell() {
+            name = "break_block";
+            outputTypes = List.of(List.of(SpellValueType.ITEM));
+        }
+
+        @Override
+        public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            BlockPos pos = spellEntity.blockPosition();
+            BlockState state = spellEntity.level().getBlockState(pos);
+            if (state.isAir() || state.getDestroySpeed(spellEntity.level(), pos) < 0) return ExecutionResult.FAILED(this);
+            spellEntity.level().destroyBlock(pos, false, caster);
+            return ExecutionResult.RETURNED(this, List.of(new ItemStack(state.getBlock().asItem())), List.of(SpellValueType.ITEM));
+        }
+    }
+
+    public static class MineBlockSpell extends WorldInterationSpell {
+        public MineBlockSpell() {
+            name = "mine_block";
+            outputTypes = List.of(List.of(SpellValueType.ITEM));
+        }
+
+        @Override
+        public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            BlockPos pos = spellEntity.blockPosition();
+            Level level = spellEntity.level();
+            BlockState state = level.getBlockState(pos);
+            if (state.isAir() || state.getDestroySpeed(level, pos) < 0) return ExecutionResult.FAILED(this);
+            List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, pos, null, caster, ItemStack.EMPTY);
+            level.destroyBlock(pos, false, caster);
+            if (drops.isEmpty()) return ExecutionResult.SUCCESS(this);
+            List<Object> values = new ArrayList<>(drops);
+            List<SpellValueType> types = new ArrayList<>();
+            for (int i = 0; i < drops.size(); i++) types.add(SpellValueType.ITEM);
+            return ExecutionResult.RETURNED(this, values, types);
+        }
+    }
+
+    public static class PlaceBlockSpell extends WorldInterationSpell {
+        public PlaceBlockSpell() {
+            name = "place_block";
+            inputTypes = List.of(List.of(SpellValueType.ITEM));
+        }
+
+        @Override
+        public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            ItemStack stack = (ItemStack) paramsList.get(0);
+            if (!(stack.getItem() instanceof BlockItem blockItem)) {
+                SpellExceptions.INVALID_INPUT(this, List.of(SpellValueType.fromValue(stack)), inputTypes).throwIt(caster);
+                return ExecutionResult.ERRORED();
+            }
+
+            BlockPos pos = BlockPos.containing(spellEntity.getX(), spellEntity.getY(), spellEntity.getZ());
+            spellEntity.level().setBlockAndUpdate(pos, blockItem.getBlock().defaultBlockState());
+            return ExecutionResult.SUCCESS(this);
+        }
+    }
+
+    public static class ExplosionSpell extends WorldInterationSpell {
+        public ExplosionSpell() {
+            name = "explosion";
+            inputTypes = List.of(List.of(SpellValueType.NUMBER));
+        }
+
+        @Override
+        public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
+            float radius = (float) Math.cbrt((Double) paramsList.get(0));
+            spellEntity.level().explode(spellEntity, spellEntity.getX(), spellEntity.getY(), spellEntity.getZ(), radius, false, Level.ExplosionInteraction.BLOCK);
+            return ExecutionResult.SUCCESS(this);
+        }
+    }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arcanism:block/pressure_relief_valve"
+    }
+  }
+}

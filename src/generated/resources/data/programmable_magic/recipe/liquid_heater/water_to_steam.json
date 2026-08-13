@@ -1,8 +1,0 @@
-{
-  "type": "programmable_magic:liquid_heater",
-  "conversion_cost": 4000000.0,
-  "convert_ratio": 30.0,
-  "input_fluid": "minecraft:water",
-  "output_fluid": "programmable_magic:steam",
-  "show_notification": false
-}

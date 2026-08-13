@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "arcanism:block/small_mana_buffer"
+    }
+  }
+}

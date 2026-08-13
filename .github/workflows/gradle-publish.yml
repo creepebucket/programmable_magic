@@ -56,14 +56,14 @@ jobs:
         build_date="$(TZ=Asia/Shanghai date +%y%m%d)"
         short_sha="${GITHUB_SHA::7}"
         echo "build_date=${build_date}" >> "$GITHUB_OUTPUT"
-        echo "devbuild_name=programmable_magic_devbuild_${build_date}_#${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+        echo "devbuild_name=arcanism_devbuild_${build_date}_#${{ github.run_number }}" >> "$GITHUB_OUTPUT"
         echo "short_sha=${short_sha}" >> "$GITHUB_OUTPUT"
         echo "tag_name=auto-${short_sha}" >> "$GITHUB_OUTPUT"
         echo "release_name=auto_build_${{ github.ref_name }}_${short_sha}" >> "$GITHUB_OUTPUT"
 
     - name: 重命名_ci_构建产物
       run: |
-        cp build/libs/programmable_magic-*.jar "build/libs/${{ steps.meta.outputs.devbuild_name }}.jar"
+        cp build/libs/arcanism-*.jar "build/libs/${{ steps.meta.outputs.devbuild_name }}.jar"
 
     - name: 创建_发布并上传_构建产物
       uses: softprops/action-gh-release@v2

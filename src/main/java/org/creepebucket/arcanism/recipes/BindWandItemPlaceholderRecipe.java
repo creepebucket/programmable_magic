@@ -1,0 +1,66 @@
+package org.creepebucket.arcanism.recipes;
+
+import com.mojang.serialization.MapCodec;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import org.creepebucket.arcanism.items.WandItemPlaceholder;
+import org.creepebucket.arcanism.registries.ModDataComponents;
+import org.creepebucket.arcanism.registries.ModItems;
+import org.creepebucket.arcanism.registries.ModRecipeSerializers;
+
+/**
+ * 无序合成：占位符 + 任意其他物品 → 绑定该物品的占位符。
+ */
+public class BindWandItemPlaceholderRecipe extends CustomRecipe {
+
+    @Override
+    public boolean matches(CraftingInput input, Level level) {
+        // 要求：恰好 1 个占位符 + 1 个非空、非占位符物品，其余为空
+        int placeholder = 0;
+        int others = 0;
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack st = input.getItem(i);
+            if (st.isEmpty()) continue;
+            if (st.getItem() instanceof WandItemPlaceholder) {
+                placeholder++;
+                continue;
+            }
+            others++;
+        }
+        return placeholder == 1 && others == 1;
+    }
+
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        ItemStack placeholder = ItemStack.EMPTY;
+        ItemStack target = ItemStack.EMPTY;
+        for (int i = 0; i < input.size(); i++) {
+            ItemStack st = input.getItem(i);
+            if (st.isEmpty()) continue;
+            if (st.getItem() instanceof WandItemPlaceholder) placeholder = st;
+            else target = st;
+        }
+        if (placeholder.isEmpty() || target.isEmpty()) return ItemStack.EMPTY;
+        ItemStack out = new ItemStack(ModItems.WAND_ITEM_PLACEHOLDER.get());
+        var key = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(target.getItem());
+        if (key != null) out.set(ModDataComponents.PLACEHOLDER_ITEM_ID.get(), key.toString());
+        return out;
+    }
+
+    // CustomRecipe 不再要求 canCraftInDimensions，保留按需实现即可
+
+    @Override
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
+        return ModRecipeSerializers.BIND_WAND_ITEM_PLACEHOLDER.get();
+    }
+
+    public static final BindWandItemPlaceholderRecipe INSTANCE = new BindWandItemPlaceholderRecipe();
+    public static final MapCodec<BindWandItemPlaceholderRecipe> CODEC = MapCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BindWandItemPlaceholderRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final RecipeSerializer<BindWandItemPlaceholderRecipe> SERIALIZER = new RecipeSerializer<>(CODEC, STREAM_CODEC);
+}
