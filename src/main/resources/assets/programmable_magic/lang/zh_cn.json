@@ -464,5 +464,5 @@
   "gui.programmable_magic.network_info.storage": "存储",
   "gui.programmable_magic.network_info.cache": "缓存",
   "gui.programmable_magic.network_info.power": "功率",
-  "gui.programmable_magic.wand.disabled_spell_teacon": "这是TeaCon版，为场地安全部分法术不开放。完整功能请下载普通版：https://github.com/creepebucket/programmable_magic"
+  "gui.programmable_magic.wand.disabled_spell_teacon": "这是TeaCon版，为场地安全部分法术不开放。完整功能请下载普通版：https://github.com/creepebucket/arcanism"
 }
