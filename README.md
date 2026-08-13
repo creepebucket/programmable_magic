@@ -1,7 +1,4 @@
-
----
-
-# Arcanism (魔导主义)
+# Arcanism（魔导主义）
 
 <div align="center">
 
@@ -16,56 +13,40 @@
 
 </div>
 
-## 🤔 把魔法写成代码，会怎样？
+Arcanism 是一个融合了科技要素和编程要素的魔法 Mod。这个 Mod 以魔力的生产与消耗作为核心玩法，构建了一套魔力体系。
 
-在大多数魔法模组里，法术是现成的——右键放火球，shift 放护盾，威力看等级，区别只在于数值。玩法始终是"选技能、按按键、等冷却"。
+> 当前正在早期开发版本，部分功能可能只有雏形，以下简介的功能可能只实现了一部分。
 
-**Arcanism** 把施法变成了一门工程学。法术是零件——效果、运算、条件、循环。你需要把这些零件像写程序一样编排进魔杖，组合出自己的施法序列。
+## 核心亮点
 
-> 你的强弱，取决于你构建的逻辑。
+- 类 "Factorio" 式的多方块结构机器和产线生产；
+- 四系魔力系统，魔力生产需要平衡各项；
+- 基于物理/第一性原理的多样化的魔力生产/消耗方式；
+- 类 "Noita" 的法术编程系统；
+- 模块化的法杖，定制你自己的施法方式；
+- 基于现实的产线和数值，不出现"缺乏平衡"的问题。
 
----
+## 魔力系统，怎么玩？
 
-## 🧩 一门真正的"魔法编程语言"
+四种魔力基于现实物理，每种魔力可以局部改变对应物理量。尝试使用天马行空的方式聚集能量，再通过魔导材料收集这些魔力吧！得益于此，每种魔力都会有很多独特的生产方式，也可以让一种魔力转换成另一种（当然，通过物理）。
 
-魔杖里流淌的是一段用卡片写成的程序。
+每种魔力都有自己的用途，有自己的独特机器，而且通过超频机制，你最高可以将机器速度提升 5 倍！
 
-**基础效果**是输出——爆炸、传送、方块放置、药水效果……这些是法术最终要做的事。一张火球还不够自动化，你需要**运算卡片**来计算——四则运算、三角函数、向量投影、动态获取施法者位置和视线方向，让参数告别硬编码。**控制卡片**来决策——`if` 条件分支区分敌我、`while` 循环批量处理、逻辑运算符组合判断。**触发器**来感知——接触地面时引爆、触碰到实体时追踪、延时精确到刻。
+## 法术编程，怎么做？
 
-数字用 0-9 卡片拼积木一样拼出来。括号决定优先级，逗号分隔参数。70+ 张卡片构成了一门完整的编程语言——有类型系统、有运算符优先级、有作用域、有异常处理。
+法术编程，不应该只按类别排列组合，而得是一个图灵完备的计算机器，才能真正做到"千人千术"。因此我们设计了完整的延时、计算、条件、循环等法术，让您能真正控制法术的所有行为。
 
-你组装的不是技能，是**可复用的法术函数**。一套优秀的序列可以针对战斗、挖掘、移动场景快速改装。
+调试艰难？模组法杖内置调试器，实时显示当前执行的法术，自动断点、单步运行、单刻运行、继续暂停……你想要的全都有！此外，法杖内置方便的编辑/导入/导出系统，无论是在魔杖或是 VSCode，都能提供 IDE 级别的编辑体验。
 
----
+## 不想科技/编程，怎么办？
 
-## 🔋 魔力是四维向量
+科技部分与法术编程部分完全独立，大部分材料都会设置探索或合成两种获取方式。无需迁就，寻找属于自己的魔导体验。
 
-传统的魔力就是一个数字，够不够看一眼蓝条就知道。这里，每条法术同时消耗**四种魔力**：辐射、温度、动量、压力。四系独立结算，任一项不足就施法失败。
+## 版本与前置
 
-这改变了发电机的意义——不能只造一种。风力涡轮产出动量，太阳能板产出辐射，水泵消耗动量产出压力，蒸汽锅炉把温度和压力转换成功。你需要搭建电力网级别的魔力网络，用线缆连接设备，用路由分配负荷，像管理电网一样管理魔力。
+Arcanism 需要 GeckoLib 作为前置，运行版本 26.1.2。
 
-不同的法术序列需要不同的魔力配比，意味着你需要规划产能结构。想做爆炸法师就多修动量塔，想走辅助路线则温度和辐射产线得跟上。
-
----
-
-## ⚙️ 魔杖即硬件，插件即配置
-
-空手施法在这里不存在。魔杖是法术的物理载体，有固定的法术槽位和插件槽位。插件是**可插拔的硬件配置**：供给插件决定魔力转化效率，存储插件扩展法术容量，释放插件控制充能功率。
-
-不同场景换不同插件，一把魔杖可以有完全不同的使用体验。这是模组化的思路——不强迫你农满级，只根据需求搭配。
-
----
-
-## 📦 上手
-
-1. 环境：Minecraft `26.1.2` + NeoForge，前置 **GeckoLib**
-2. 从 [GitHub Releases](https://github.com/creepebucket/arcanism/releases) 下载
-3. 放入 `mods`
-4. 合成一把魔杖和一些法术卡片，潜行右键打开编程界面，开始组装你的第一个法术序列
-
----
-
-## 📄 许可
+## 许可
 
 **源代码**：GPLv3。**美术资源**：原作者保留所有权利（ARR），绝大部分美术资源不可自由挪用。详见 `ASSET_LICENSE.md`。
 
@@ -73,12 +54,10 @@
 
 <div align="center">
 <a href="https://www.star-history.com/#creepebucket/arcanism&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
- </picture>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&theme=dark&legend=top-left" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=creepebucket/arcanism&type=date&legend=top-left" />
+  </picture>
 </a>
 </div>
-
----

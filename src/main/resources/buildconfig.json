@@ -98,7 +98,7 @@
       {"from_top_left": [123, 11], "from_bottom_right": [143, 31], "target_img_path": "assets/arcanism/textures/item/rg_alloy_wand_in_hand.png"},
       {"from_top_left": [96, 160], "from_bottom_right": [111, 175], "target_img_path": "assets/arcanism/textures/item/wand_item_placeholder.png"},
       {"from_top_left": [112, 32], "from_bottom_right": [127, 47], "target_img_path": "assets/arcanism/textures/block/mana_cable.png"},
-      {"from_top_left": [320, 32], "from_bottom_right": [383, 63], "target_img_path": "assets/arcanism/mod_logo.png"},
+      {"from_top_left": [256, 32], "from_bottom_right": [367, 79], "target_img_path": "assets/arcanism/mod_logo.png"},
       {"from_top_left": [0 , 0 ], "from_bottom_right": [15, 15], "target_img_path": "assets/arcanism/textures/item/wand_plugin_spell_supply_t1.png"},
       {"from_top_left": [16, 0 ], "from_bottom_right": [31, 15], "target_img_path": "assets/arcanism/textures/item/wand_plugin_spell_supply_t2.png"},
       {"from_top_left": [32, 0 ], "from_bottom_right": [47, 15], "target_img_path": "assets/arcanism/textures/item/wand_plugin_spell_supply_t3.png"},
