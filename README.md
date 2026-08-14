@@ -8,6 +8,9 @@
 [![release](https://img.shields.io/github/v/release/creepebucket/arcanism?include_prereleases&logo=github)](https://github.com/creepebucket/arcanism/releases)
 [![bilibili](https://img.shields.io/badge/bilibili-演示视频-00A1D6?logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1mHS8BWE9u)
 [![repo](https://img.shields.io/badge/repo-programmable_magic-181717?logo=github&logoColor=white)](https://github.com/creepebucket/arcanism)
+[![qq](https://img.shields.io/badge/QQ-1059127992-00A1D6?logo=qq&logoColor=white)](https://qun.qq.com/universal-share/share?ac=1&authKey=MQdJPTWNKeh682AceTvnQ7hwTIHtru4FqTXQFISKt3YE0eR3TCdAIyJd71NiB8FW&busi_data=eyJncm91cENvZGUiOiIxMDU5MTI3OTkyIiwidG9rZW4iOiJFUHloTmZSL0I2T3pQYWRybXppN3ErSzZzWE5FOXdCREN4d2FzNWtiNnlBQ0VJblhwbUpnNHZSZXRSQWx0aGRyIiwidWluIjoiMzMyNzAxODg5MCJ9&data=ocky4O1Jghsu1SeHuziiFNAyz9FI4VMZzigDnHqg93T1FSYnmVkd3T8gvT0kveKDph9oXCRokAGFuThLf-AoUQ&svctype=4&tempid=h5_group_info)
+
+> 欢迎点击上方链接加入QQ群一起分享!
 
 ![GitHub Repo Card](https://githubcard.com/creepebucket/arcanism.svg?d=dU-_JTBK)
 
