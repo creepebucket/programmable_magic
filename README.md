@@ -1,5 +1,7 @@
 # Arcanism（魔导主义）
 
+> **English**: [README_EN.md](README_EN.md)
+
 <div align="center">
 
 [![Gradle Package](https://github.com/creepebucket/arcanism/actions/workflows/gradle-publish.yml/badge.svg)](https://github.com/creepebucket/arcanism/actions/workflows/gradle-publish.yml)
