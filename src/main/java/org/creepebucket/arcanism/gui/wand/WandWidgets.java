@@ -24,11 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
-
 import static net.minecraft.util.Mth.hsvToRgb;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.ZERO;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.fromTopLeft;
 
 public class WandWidgets {
     public static class SpellStorageWidget extends SlotWidget implements Clickable, Tooltipable {
@@ -360,7 +359,6 @@ public class WandWidgets {
         public boolean mouseReleased(MouseButtonEvent event) {
             if (isCharging) {
                 isCharging = false;
-                chargedTick = 0;
                 // 释放法术
                 // 先过编译
                 var compiler = new SpellCompiler();
@@ -372,6 +370,7 @@ public class WandWidgets {
                     return false;
                 }
                 ((WandMenu) screen.getMenu()).releaseSpellHook.trigger(chargedTick * ((Wand) ((WandScreen) screen).getMenu().wand.getItem()).getWandValues(((WandScreen) screen).getMenu().wand).chargeRateW * 0.00005, ((WandScreen) screen).bypassCompileWidget.isSelected);
+                chargedTick = 0;
             }
             return false;
         }
