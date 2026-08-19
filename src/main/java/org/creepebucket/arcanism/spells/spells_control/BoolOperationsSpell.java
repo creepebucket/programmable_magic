@@ -11,6 +11,7 @@ import org.creepebucket.arcanism.spells.api.SpellSequence;
 import org.creepebucket.arcanism.utils.Mana;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.creepebucket.arcanism.Arcanism.MODID;
 
@@ -60,12 +61,12 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
     public static class EqualToSpell extends BoolOperationsSpell {
         public EqualToSpell() {
             name = "equal_to";
-            inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER));
+            inputTypes = List.of(List.of(SpellValueType.ANY, SpellValueType.ANY));
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of(paramsList.get(0) == paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
+            return ExecutionResult.RETURNED(this, List.of(Objects.equals(paramsList.get(0), paramsList.get(1))), List.of(SpellValueType.BOOLEAN));
         }
     }
 
@@ -96,12 +97,12 @@ public abstract class BoolOperationsSpell extends SpellItemLogic implements Spel
     public static class NotEqualToSpell extends BoolOperationsSpell {
         public NotEqualToSpell() {
             name = "not_equal_to";
-            inputTypes = List.of(List.of(SpellValueType.NUMBER, SpellValueType.NUMBER));
+            inputTypes = List.of(List.of(SpellValueType.ANY, SpellValueType.ANY));
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
-            return ExecutionResult.RETURNED(this, List.of(paramsList.get(0) != paramsList.get(1)), List.of(SpellValueType.BOOLEAN));
+            return ExecutionResult.RETURNED(this, List.of(!Objects.equals(paramsList.get(0), paramsList.get(1))), List.of(SpellValueType.BOOLEAN));
         }
     }
 

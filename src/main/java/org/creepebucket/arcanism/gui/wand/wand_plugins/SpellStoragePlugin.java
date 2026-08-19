@@ -16,12 +16,10 @@ import org.creepebucket.arcanism.gui.wand.WandWidgets;
 
 import java.util.List;
 
-
-import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
 import static net.minecraft.network.chat.Component.literal;
-
 import static net.minecraft.util.Mth.hsvToArgb;
 import static org.creepebucket.arcanism.Arcanism.MODID;
+import static org.creepebucket.arcanism.gui.lib.api.Coordinate.*;
 
 public class SpellStoragePlugin extends BasePlugin {
     public int tier;
@@ -39,12 +37,12 @@ public class SpellStoragePlugin extends BasePlugin {
 
         var storageDx = new SmoothedValue(0);
 
-        var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 8;
+        var spellCountCanFit = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 16 - 9;
 
         for (int i = 0; i < spellCountCanFit; i++) {
             int finalI = i;
             var storage = (WandWidgets.SpellStorageWidget) new WandWidgets.SpellStorageWidget(screen.getMenu().spellStoreSlots,
-                    new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + 64 + finalI * 16, (w, h) -> h - 115),
+                    new Coordinate((w, h) -> (w - spellCountCanFit * 16) / 2 + 53 + finalI * 16, (w, h) -> h - 115),
                     i, screen.getMenu().storedSpellsEditHook, screen.getMenu().clearSpellsHook, screen.storageSlots, screen.getMenu().currentSpellId)
                     .dx(storageDx).mainColor(screen.mainColor).textColor(screen.textColor).bgColor(screen.bgColor);
             screen.addWidget(storage);

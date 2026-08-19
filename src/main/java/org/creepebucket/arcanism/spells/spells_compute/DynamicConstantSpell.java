@@ -114,13 +114,14 @@ public abstract class DynamicConstantSpell extends SpellItemLogic implements Spe
         public NearestEntitySpell() {
             subCategory = "spell." + MODID + ".subcategory.dynamic_constant.entity";
             name = "nearest_entity";
+            inputTypes = List.of(List.of(SpellValueType.NUMBER));
             outputTypes = List.of(List.of(SpellValueType.ENTITY));
         }
 
         @Override
         public ExecutionResult run(Player caster, SpellSequence spellSequence, List<Object> paramsList, SpellEntity spellEntity) {
             // 半径
-            double radius = 4;
+            double radius = (Double) paramsList.get(0) / 2;
 
             AABB aabb = new AABB(
                     spellEntity.getX() - radius,
